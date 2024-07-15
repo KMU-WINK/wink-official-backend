@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { AppModule } from './app.module';
+import { AppModule } from './app/app.module';
 
 import { WinstonLogger } from './utils/logger/WinstonLogger';
 import { ResponseInterceptor } from './utils/interceptor/ResponseInterceptor';
