@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 import { WinstonLogger } from './utils/logger/WinstonLogger';
+import { ResponseInterceptor } from './utils/interceptor/ResponseInterceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -12,6 +13,7 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   SwaggerModule.setup(
     'swagger',
