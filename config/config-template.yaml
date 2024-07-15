@@ -1,0 +1,3 @@
+redis:
+  host: (Redis host, default localhost)
+  port: (Redis port, default 6379)
