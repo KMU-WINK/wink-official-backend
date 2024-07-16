@@ -6,6 +6,10 @@ import { AppModule } from './app/app.module';
 
 import { WinstonLogger } from './utils/logger/WinstonLogger';
 import { ResponseInterceptor } from './utils/interceptor/ResponseInterceptor';
+import {
+  HttpExceptionResponseFilter,
+  NotFoundExceptionResponseFilter,
+} from './utils/interceptor/ErrorResponseFilter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -14,6 +18,8 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalFilters(new HttpExceptionResponseFilter());
+  app.useGlobalFilters(new NotFoundExceptionResponseFilter());
 
   SwaggerModule.setup(
     'swagger',
