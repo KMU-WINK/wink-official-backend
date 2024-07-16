@@ -53,7 +53,9 @@ docker run --name wink-backend \
            -e MONGO_HOST=(MONGO_HOST) -e MONGO_PORT=(MONGO_PORT) \
            -e MONGO_USERNAME=(MONGO_USERNAME) -e MONGO_PASSWORD=(MONGO_PASSWORD) \
            -e MONGO_AUTH_SOURCE=(MONGO_AUTH_SOURCE) -e MONGO_DATABASE=(MONGO_DATABASE) \
-           -p 8080:8080 -d wink-backend
+           -p 8080:8080 \
+           -v /path/to/logs:/app/logs \
+           -d wink-backend
 ```
 
 만약 Redis 및 Mongo가 Docker Container로 실행되고 있다면 아래 명령어로 실행할 수 있습니다.
@@ -64,5 +66,7 @@ docker run --name wink-backend \
            -e REDIS_HOST=redis -e REDIS_PORT=6379 \
            -e MONGO_HOST=mongo -e MONGO_PORT=27017 \
            -e MONGO_DATABASE=wink \
-           -p 8080:8080 -d wink-backend
+           -p 8080:8080 \
+           -v /path/to/logs:/app/logs \
+           -d wink-backend
 ```
