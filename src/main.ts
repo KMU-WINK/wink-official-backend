@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { HttpException, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app/app.module';
 
+import { Validator } from './utils/validator/Validator';
 import { WinstonLogger } from './utils/logger/WinstonLogger';
 import { ResponseInterceptor } from './utils/interceptor/ResponseInterceptor';
 import {
@@ -16,14 +16,7 @@ async function bootstrap() {
     logger: WinstonLogger,
   });
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      exceptionFactory: (errors) => {
-        return new HttpException(Object.entries(errors[0].constraints)[0][1], 400);
-      },
-    }),
-  );
+  app.useGlobalPipes(Validator.getValidationPipe());
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionResponseFilter());
   app.useGlobalFilters(new NotFoundExceptionResponseFilter());
