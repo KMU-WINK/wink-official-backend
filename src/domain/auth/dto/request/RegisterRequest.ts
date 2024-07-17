@@ -36,7 +36,7 @@ export class RegisterRequest {
   })
   @ApiProperty({
     description: '인증 토큰',
-    example: 'aaaa-bbbb-cccc-dddd',
+    example: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
   })
   verifyToken: string;
 }

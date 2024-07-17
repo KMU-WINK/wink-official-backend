@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class MyInfoResponse {
   @ApiProperty({
     description: '유저 아이디',
-    example: 'aaaa-bbbb-cccc-dddd',
+    example: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
   })
   userId: string;
 
