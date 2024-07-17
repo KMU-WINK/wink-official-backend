@@ -1,6 +1,5 @@
 import { Role } from '../../../member/constant/Role';
-
-type LinkKey = 'github' | 'instagram' | 'blog';
+import { MyInfoLinks } from '../../../member/member.schema';
 
 export class MyInfoResponse {
   userId: string;
@@ -8,7 +7,7 @@ export class MyInfoResponse {
   studentId: number;
   avatar?: string;
   description?: string;
-  link: Record<LinkKey, string>;
+  link: MyInfoLinks;
   role: Role;
   fee: boolean;
 }
