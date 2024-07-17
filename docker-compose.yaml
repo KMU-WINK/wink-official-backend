@@ -1,0 +1,35 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "80:8080"
+    env_file:
+      - cicd.docker.env
+    depends_on:
+      - mongo
+      - redis
+    links:
+      - mongo
+      - redis
+    networks:
+      - wink
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - wink
+
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - wink
+
+volumes:
+  mongodb_data:
+
+networks:
+  wink:
