@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsNumber, Length, Matches, Max, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { IsNotEmpty, IsNumber, Length, Matches, Max, Min } from 'class-validator';
 
 export class RegisterRequest {
   @IsNotEmpty({ message: '이름은 필수 입력 값입니다.' })

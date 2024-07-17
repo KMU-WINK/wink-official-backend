@@ -1,5 +1,6 @@
-import { IsEmail, IsNotEmpty, IsNumberString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { IsEmail, IsNotEmpty, IsNumberString, Length } from 'class-validator';
 
 export class VerifyCodeRequest {
   @IsNotEmpty({ message: '이메일은 필수 입력 값입니다.' })

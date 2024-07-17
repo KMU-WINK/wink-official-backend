@@ -1,5 +1,5 @@
-import { ApiExtraModels, ApiProperty, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 import { applyDecorators, HttpStatus, Type } from '@nestjs/common';
+import { ApiExtraModels, ApiProperty, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 export class ApiCustomResponseDto {
   @ApiProperty({ type: Boolean, description: '오류 여부', default: false })
