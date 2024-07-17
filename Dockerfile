@@ -21,4 +21,4 @@ RUN rm -f ./config/config.yaml \
 
 EXPOSE 8080
 
-CMD ["node", "main"]
+CMD ["yarn", "start:prod"]
