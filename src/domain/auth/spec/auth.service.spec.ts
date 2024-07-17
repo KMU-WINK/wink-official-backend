@@ -3,20 +3,20 @@ import { ConfigService } from '@nestjs/config';
 
 import * as bcrypt from 'bcrypt';
 
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../auth.service';
 
-import { MemberRepository } from '../../../member/member.repository';
-import { NodeMail } from '../../../../utils/mail/NodeMail';
-import { RedisRepository } from '../../../../utils/redis/RedisRepository';
+import { MemberRepository } from '../../member/member.repository';
+import { NodeMail } from '../../../utils/mail/NodeMail';
+import { RedisRepository } from '../../../utils/redis/RedisRepository';
 
-import { Member } from '../../../member/member.schema';
+import { Member } from '../../member/member.schema';
 
-import { MemberNotFoundException } from '../../exception/MemberNotFoundException';
-import { WrongPasswordException } from '../../exception/WrongPasswordException';
-import { AlreadyRegisteredByEmailException } from '../../exception/AlreadyRegisteredByEmailException';
-import { AlreadyRegisteredByStudentIdException } from '../../exception/AlreadyRegisteredByStudentIdException';
-import { InvalidVerifyTokenException } from '../../exception/InvalidVerifyTokenException';
-import { InvalidVerifyCodeException } from '../../exception/InvalidVerifyCodeException';
+import { MemberNotFoundException } from '../exception/MemberNotFoundException';
+import { WrongPasswordException } from '../exception/WrongPasswordException';
+import { AlreadyRegisteredByEmailException } from '../exception/AlreadyRegisteredByEmailException';
+import { AlreadyRegisteredByStudentIdException } from '../exception/AlreadyRegisteredByStudentIdException';
+import { InvalidVerifyTokenException } from '../exception/InvalidVerifyTokenException';
+import { InvalidVerifyCodeException } from '../exception/InvalidVerifyCodeException';
 
 describe('Auth Service 테스트', () => {
   let service: AuthService;

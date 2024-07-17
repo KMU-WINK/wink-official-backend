@@ -3,18 +3,18 @@ import { ConfigService } from '@nestjs/config';
 
 import * as jwt from 'jsonwebtoken';
 
-import { AuthController } from '../../auth.controller';
-import { AuthService } from '../../auth.service';
+import { AuthController } from '../auth.controller';
+import { AuthService } from '../auth.service';
 
-import { MemberRepository } from '../../../member/member.repository';
-import { NodeMail } from '../../../../utils/mail/NodeMail';
-import { RedisRepository } from '../../../../utils/redis/RedisRepository';
+import { MemberRepository } from '../../member/member.repository';
+import { NodeMail } from '../../../utils/mail/NodeMail';
+import { RedisRepository } from '../../../utils/redis/RedisRepository';
 
-import { Member } from '../../../member/member.schema';
+import { Member } from '../../member/member.schema';
 
-import { SendCodeRequest } from '../request/SendCodeRequest';
-import { VerifyCodeRequest } from '../request/VerifyCodeRequest';
-import { RegisterRequest } from '../request/RegisterRequest';
+import { SendCodeRequest } from '../dto/request/SendCodeRequest';
+import { VerifyCodeRequest } from '../dto/request/VerifyCodeRequest';
+import { RegisterRequest } from '../dto/request/RegisterRequest';
 
 describe('Auth 통합 테스트', () => {
   let controller: AuthController;

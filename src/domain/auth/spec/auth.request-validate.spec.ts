@@ -1,9 +1,9 @@
-import { Validator } from '../../../../utils/validator/Validator';
+import { Validator } from '../../../utils/validator/Validator';
 
-import { LoginRequest } from '../request/LoginRequest';
-import { RegisterRequest } from '../request/RegisterRequest';
-import { SendCodeRequest } from '../request/SendCodeRequest';
-import { VerifyCodeRequest } from '../request/VerifyCodeRequest';
+import { LoginRequest } from '../dto/request/LoginRequest';
+import { RegisterRequest } from '../dto/request/RegisterRequest';
+import { SendCodeRequest } from '../dto/request/SendCodeRequest';
+import { VerifyCodeRequest } from '../dto/request/VerifyCodeRequest';
 
 describe('Auth Request DTO 검증 테스트', () => {
   let validator: Validator;
