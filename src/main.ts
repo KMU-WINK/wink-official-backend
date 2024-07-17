@@ -34,6 +34,8 @@ async function bootstrap() {
         .build(),
     ),
     {
+      customCssUrl:
+        'https://cdn.jsdelivr.net/npm/swagger-ui-themes/themes/3.x/theme-material.min.css',
       swaggerOptions: { defaultModelsExpandDepth: -1 },
     },
   );
