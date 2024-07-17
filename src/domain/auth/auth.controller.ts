@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Body, Controller, Get, HttpException, Post, Put } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
@@ -19,36 +18,32 @@ export class AuthController {
   async login(@Body() request: LoginRequest): Promise<LoginResponse> {
     const { email, password } = request;
 
-    // this.service.login(email, password);
+    const token = await this.service.login(email, password);
 
-    throw new HttpException('Not implemented', 501);
+    return { token };
   }
 
   @Put()
   async register(@Body() request: RegisterRequest): Promise<void> {
-    const { name, studentId, verifyToken, password } = request;
+    const { name, studentId, password, verifyToken } = request;
 
-    // this.service.register(studentId, email, password, verifyToken);
-
-    throw new HttpException('Not implemented', 501);
+    await this.service.register(name, studentId, password, verifyToken);
   }
 
   @Get('/code')
   async sendCode(@Body() request: SendCodeRequest): Promise<void> {
     const { email } = request;
 
-    // this.service.sendCode(email);
-
-    throw new HttpException('Not implemented', 501);
+    await this.service.sendCode(email);
   }
 
   @Post('/code')
   async verifyCode(@Body() request: VerifyCodeRequest): Promise<VerifyCodeResponse> {
     const { email, code } = request;
 
-    // this.service.verifyCode(email, code);
+    const verifyToken = await this.service.verifyCode(email, code);
 
-    throw new HttpException('Not implemented', 501);
+    return { verifyToken };
   }
 
   @Get('/me')

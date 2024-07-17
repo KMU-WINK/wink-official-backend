@@ -16,3 +16,7 @@ smtp:
   secure: ${SMTP_SECURE:=true}
   username: ${SMTP_USERNAME:=''}
   password: ${SMTP_PASSWORD:=''}
+
+jwt:
+    secret: ${JWT_SECRET:=secret}
+    expiresIn: ${JWT_EXPIRES_IN:=14d}
