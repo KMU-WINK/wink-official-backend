@@ -1,8 +1,11 @@
 name: PR Test
  
 on:
+  push:
+    paths: ['src/**']
   pull_request:
-    branches: [ master, develop ] 
+    paths: ['src/**']
+    types: [ opened, reopened, synchronize, labeled ]
 
 jobs:
   test:
