@@ -11,6 +11,8 @@ import {
   NotFoundExceptionResponseFilter,
 } from './utils/interceptor/ErrorResponseFilter';
 
+import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonLogger,
@@ -34,6 +36,7 @@ async function bootstrap() {
         .build(),
     ),
     {
+      customCss: new SwaggerTheme().getBuffer(SwaggerThemeNameEnum.DARK),
       swaggerOptions: { defaultModelsExpandDepth: -1 },
     },
   );
