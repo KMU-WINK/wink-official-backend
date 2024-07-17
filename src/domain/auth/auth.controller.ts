@@ -32,7 +32,7 @@ export class AuthController {
 
   @Post()
   @HttpCode(200)
-  @ApiOperation({ summary: '로그인' })
+  @ApiOperation({ summary: '로그인 테스트 !!' })
   @ApiProperty({ type: LoginRequest })
   @ApiCustomResponse({ type: LoginResponse, status: 200 })
   @ApiCustomErrorResponseDecorator([
