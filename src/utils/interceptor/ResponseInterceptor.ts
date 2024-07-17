@@ -16,7 +16,7 @@ export class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((content) => ({
         error: false,
-        content,
+        content: content ?? {},
       })),
 
       catchError((err) => {
