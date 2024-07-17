@@ -1,15 +1,3 @@
-# Build Stage
-FROM node:20 as build-stage
-
-WORKDIR /app
-
-COPY package.json yarn.lock ./
-RUN yarn install
-
-COPY . .
-RUN yarn build
-
-# Run Stage
 FROM node:20
 
 WORKDIR /app
@@ -22,8 +10,13 @@ RUN apt-get update && apt-get install -y curl \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build-stage /app/node_modules ./node_modules
-COPY --from=build-stage /app/package.json /app/yarn.lock /app/dist ./
+COPY 
+
+COPY package.json yarn.lock ./
+RUN yarn install
+
+COPY . .
+RUN yarn build
 
 RUN rm -f ./config/config.yaml \
     && envsubst < ./config/config.template.yaml > ./config/config.yaml
