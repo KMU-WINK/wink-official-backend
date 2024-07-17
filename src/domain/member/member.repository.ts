@@ -21,6 +21,10 @@ export class MemberRepository {
     return await this.memberModel.findOne({ email }).exec();
   }
 
+  async existsById(id: string | ObjectId): Promise<boolean> {
+    return !!(await this.memberModel.exists({ _id: id }).exec());
+  }
+
   async existsByEmail(email: string): Promise<boolean> {
     return !!(await this.memberModel.exists({ email }).exec());
   }

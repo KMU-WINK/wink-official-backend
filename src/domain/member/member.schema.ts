@@ -5,6 +5,14 @@ import { Role } from './constant/Role';
 
 export type MemberDocument = HydratedDocument<Member>;
 
+export type MyInfoLinks = Record<'github' | 'instagram' | 'blog', string>;
+
+const DEFAULT_LINKS: MyInfoLinks = {
+  github: null,
+  instagram: null,
+  blog: null,
+};
+
 @Schema()
 export class Member {
   @Prop({ required: true })
@@ -16,14 +24,23 @@ export class Member {
   @Prop({ required: true, unique: true, index: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ default: null })
+  avatar?: string;
+
+  @Prop({ default: null })
+  description?: string;
+
+  @Prop({ required: true, select: false })
   password: string;
 
-  @Prop({ default: Role.MEMBER })
+  @Prop({ type: Object, default: DEFAULT_LINKS })
+  link: MyInfoLinks;
+
+  @Prop({ default: Role.WAITING })
   role: Role;
 
   @Prop({ default: false })
-  isVerified: boolean;
+  fee: boolean;
 }
 
 export const MemberSchema = SchemaFactory.createForClass(Member);
