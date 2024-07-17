@@ -37,6 +37,7 @@ async function bootstrap() {
         .setTitle('Wink Official')
         .setDescription('윙크 공식 홈페이지 API 명세서')
         .setVersion('1.0.0')
+        .addSecurity('bearer', { type: 'http', scheme: 'bearer' })
         .build(),
     ),
     {
