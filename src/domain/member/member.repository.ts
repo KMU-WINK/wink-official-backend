@@ -28,4 +28,8 @@ export class MemberRepository {
   async existsByStudentId(studentId: number): Promise<boolean> {
     return !!(await this.memberModel.exists({ studentId }).exec());
   }
+
+  raw() {
+    return this.memberModel;
+  }
 }
