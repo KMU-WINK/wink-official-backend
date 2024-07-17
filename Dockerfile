@@ -10,8 +10,6 @@ RUN apt-get update && apt-get install -y curl \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-COPY 
-
 COPY package.json yarn.lock ./
 RUN yarn install
 
