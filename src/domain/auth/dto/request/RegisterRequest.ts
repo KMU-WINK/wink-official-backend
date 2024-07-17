@@ -19,7 +19,7 @@ export class RegisterRequest {
   })
   studentId: number;
 
-  @Matches(/^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{8,24}$/, {
+  @Matches(/^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d\W]{8,24}$/, {
     message: '비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
   })
   @ApiProperty({
