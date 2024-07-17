@@ -1,6 +1,10 @@
-import { Body, Controller, Get, HttpException, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guard';
+import { ReqMember } from './auth.middleware';
+
+import { Member } from '../member/member.schema';
 
 import { LoginRequest } from './dto/request/LoginRequest';
 import { LoginResponse } from './dto/response/LoginResponse';
@@ -47,7 +51,14 @@ export class AuthController {
   }
 
   @Get('/me')
-  async getMyInfo(): Promise<MyInfoResponse> {
-    throw new HttpException('Not implemented', 501);
+  @UseGuards(AuthGuard)
+  async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponse> {
+    const memberDoc = member['_doc'];
+    const memberId = member['_id'];
+
+    delete memberDoc['_id'];
+    delete memberDoc['__v'];
+
+    return { userId: memberId, ...memberDoc };
   }
 }
