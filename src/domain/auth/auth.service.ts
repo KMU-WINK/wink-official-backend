@@ -57,7 +57,6 @@ export class AuthService {
     }
 
     const email = await this.redis.get(verifyToken);
-    await this.redis.delete(verifyToken);
 
     if (await this.repository.existsByEmail(email)) {
       throw new AlreadyRegisteredByEmailException();
@@ -71,6 +70,8 @@ export class AuthService {
     const hash = await bcrypt.hash(password, salt);
 
     await this.repository.save({ name, studentId, email, password: hash });
+
+    await this.redis.delete(verifyToken);
   }
 
   async sendCode(email: string): Promise<void> {
