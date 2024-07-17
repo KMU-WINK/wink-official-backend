@@ -20,4 +20,16 @@ export class RedisRepository {
   async set(key: string, value: string) {
     return this.redisClient.set(key, value);
   }
+
+  async setex(key: string, value: string, seconds: number) {
+    return this.redisClient.setex(key, seconds, value);
+  }
+
+  async delete(key: string) {
+    return this.redisClient.del(key);
+  }
+
+  async exists(key: string) {
+    return this.redisClient.exists(key);
+  }
 }

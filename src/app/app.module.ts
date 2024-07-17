@@ -7,8 +7,10 @@ import { MemberModule } from '../domain/member/member.module';
 import { ActivityModule } from '../domain/activity/activity.module';
 
 import { RequestLoggingMiddleware } from '../utils/logger/RequestLoggingMiddleware';
-import configuration from '../utils/config/configuration';
+import { AuthMiddleware } from '../domain/auth/auth.middleware';
+
 import { MongooseConfigService } from '../utils/mongo/MongooseConfigService';
+import configuration from '../utils/config/configuration';
 
 @Module({
   imports: [
@@ -23,10 +25,10 @@ import { MongooseConfigService } from '../utils/mongo/MongooseConfigService';
     ActivityModule,
   ],
   controllers: [],
-  providers: [RequestLoggingMiddleware],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RequestLoggingMiddleware).forRoutes('*');
+    consumer.apply(AuthMiddleware).forRoutes('*');
   }
 }
