@@ -22,6 +22,18 @@ mongo:
   authSource: ${MONGO_AUTH_SOURCE:=''}
   database: ${MONGO_DATABASE:=test}
 
+smtp:
+  host: ${SMTP_HOST:=smtp.gmail.com}
+  port: ${SMTP_PORT:=465}
+  secure: ${SMTP_SECURE:=true}
+  username: ${SMTP_USERNAME:=''}
+  password: ${SMTP_PASSWORD:=''}
+
+jwt:
+  secret: ${JWT_SECRET:=secret}
+  expiresIn: ${JWT_EXPIRES_IN:=14d}
+
+
 ```
 
 ### 2. 의존성 설치
@@ -53,6 +65,10 @@ docker run --name wink-backend \
            -e MONGO_HOST=(MONGO_HOST) -e MONGO_PORT=(MONGO_PORT) \
            -e MONGO_USERNAME=(MONGO_USERNAME) -e MONGO_PASSWORD=(MONGO_PASSWORD) \
            -e MONGO_AUTH_SOURCE=(MONGO_AUTH_SOURCE) -e MONGO_DATABASE=(MONGO_DATABASE) \
+           -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
+           -e SMTP_USER=(SMTP_USER) -e SMTP_PASS=(SMTP_PASS) \
+           -e SMTP_SECURE=(SMTP_SECURE) -e \
+           -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
            -p 8080:8080 \
            -v /path/to/logs:/app/logs \
            -d wink-backend
@@ -66,6 +82,10 @@ docker run --name wink-backend \
            -e REDIS_HOST=redis -e REDIS_PORT=6379 \
            -e MONGO_HOST=mongo -e MONGO_PORT=27017 \
            -e MONGO_DATABASE=wink \
+           -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
+           -e SMTP_USER=(SMTP_USER) -e SMTP_PASS=(SMTP_PASS) \
+           -e SMTP_SECURE=(SMTP_SECURE) -e \
+           -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
            -p 8080:8080 \
            -v /path/to/logs:/app/logs \
            -d wink-backend
