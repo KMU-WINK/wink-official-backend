@@ -12,7 +12,6 @@ import { AuthMiddleware } from '../domain/auth/auth.middleware';
 import { MongooseConfigService } from '../utils/mongo/MongooseConfigService';
 import configuration from '../utils/config/configuration';
 
-// test
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
