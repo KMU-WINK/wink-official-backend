@@ -13,7 +13,6 @@ import {
 
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 
-// deploy test 12
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonLogger,
