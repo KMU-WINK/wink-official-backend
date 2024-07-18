@@ -1,0 +1,22 @@
+redis:
+  host: ${REDIS_HOST:=redis}
+  port: ${REDIS_PORT:=6379}
+
+mongo:
+  host: ${MONGO_HOST:=mongo}
+  port: ${MONGO_PORT:=27017}
+  username: ${MONGO_USERNAME:=''}
+  password: ${MONGO_PASSWORD:=''}
+  authSource: ${MONGO_AUTH_SOURCE:=''}
+  database: ${MONGO_DATABASE:=test}
+
+smtp:
+  host: ${SMTP_HOST:=smtp.gmail.com}
+  port: ${SMTP_PORT:=465}
+  secure: ${SMTP_SECURE:=true}
+  username: ${SMTP_USERNAME:=''}
+  password: ${SMTP_PASSWORD:=''}
+
+jwt:
+    secret: ${JWT_SECRET:=secret}
+    expiresIn: ${JWT_EXPIRES_IN:=14d}
