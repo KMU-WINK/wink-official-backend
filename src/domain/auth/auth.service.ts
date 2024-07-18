@@ -15,6 +15,7 @@ import { AlreadyRegisteredByEmailException } from './exception/AlreadyRegistered
 import { AlreadyRegisteredByStudentIdException } from './exception/AlreadyRegisteredByStudentIdException';
 import { MemberNotFoundException } from './exception/MemberNotFoundException';
 import { WrongPasswordException } from './exception/WrongPasswordException';
+import { EmailTemplate } from './util/EmailTemplate';
 
 @Injectable()
 export class AuthService {
@@ -84,7 +85,11 @@ export class AuthService {
 
     await this.redis.setex(email, code, 60 * 10);
 
-    await this.nodeMail.sendMail(email, '[WINK] 회원가입 인증코드', `인증코드: ${code}`);
+    await this.nodeMail.sendMail(
+      email,
+      '[WINK] 회원가입 인증코드',
+      EmailTemplate.verifyCode(email, code),
+    );
   }
 
   async verifyCode(email: string, code: string): Promise<string> {
