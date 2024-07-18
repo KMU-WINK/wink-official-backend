@@ -16,9 +16,6 @@ RUN yarn install
 COPY . .
 RUN yarn build
 
-RUN rm -f ./config/config.yaml \
-    && envsubst < ./config/config.template.yaml > ./config/config.yaml
-
 EXPOSE 8080
 
-CMD ["yarn", "start:prod"]
+CMD ["/bin/bash", "-c", "envsubst < config/config.template.yaml > config/config.yaml && yarn start:prod"]
