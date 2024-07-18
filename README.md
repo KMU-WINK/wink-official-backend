@@ -66,7 +66,7 @@ docker run --name wink-backend \
            -e MONGO_USERNAME=(MONGO_USERNAME) -e MONGO_PASSWORD=(MONGO_PASSWORD) \
            -e MONGO_AUTH_SOURCE=(MONGO_AUTH_SOURCE) -e MONGO_DATABASE=(MONGO_DATABASE) \
            -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
-           -e SMTP_USER=(SMTP_USER) -e SMTP_PASS=(SMTP_PASS) \
+           -e SMTP_USERNAME=(SMTP_USER) -e SMTP_PASSWORD=(SMTP_PASS) \
            -e SMTP_SECURE=(SMTP_SECURE) -e \
            -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
            -p 8080:8080 \
@@ -83,7 +83,7 @@ docker run --name wink-backend \
            -e MONGO_HOST=mongo -e MONGO_PORT=27017 \
            -e MONGO_DATABASE=wink \
            -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
-           -e SMTP_USER=(SMTP_USER) -e SMTP_PASS=(SMTP_PASS) \
+           -e SMTP_USERNAME=(SMTP_USER) -e SMTP_PASSWORD=(SMTP_PASS) \
            -e SMTP_SECURE=(SMTP_SECURE) -e \
            -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
            -p 8080:8080 \
