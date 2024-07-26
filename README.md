@@ -1,64 +1,89 @@
 # Wink Official Backend
 
-## 로컬 실행 방법
+![Logo](https://avatars.githubusercontent.com/u/69004745?s=300)
 
-### 1. 환경 설정
-`config/config.template.yaml` 파일을 `config/config.yaml`로 복사한 후, `config/config.yaml`을 수정해주세요.
+## Tech Stack
+
+**Runtime:**
+- ![nodejs](https://img.shields.io/badge/node.js-5FA04E?style=for-the-badge&logo=node.js&logoColor=white)
+- ![typescript](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+
+**Server:**
+- ![nestjs](https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+
+**Database:**
+- ![mongodb](https://img.shields.io/badge/MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white)
+- ![redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+
+**Convention:**
+- ![eslint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
+- ![prettier](https://img.shields.io/badge/prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=white)
+- ![husky](https://img.shields.io/badge/husky-5D4F85?style=for-the-badge&logoColor=white)
+
+**CI/CD:**
+- ![github actions](https://img.shields.io/badge/github%20actions-2088FF?style=for-the-badge&logo=github%20actions&logoColor=white)
+## Related
+[Wink Official Frontend](https://github.com/kmu-wink/wink-official-frontend)
+
+
+## Documentation
+
+[API Server (develop)](http://43.202.208.79/)
+[API Documentation (develop)](http://43.202.208.79/swagger)
+
+
+## Run Locally
+
+Clone the project
+
 ```bash
-cp config/config.template.yaml config/config.yaml
+git clone https://github.com/kmu-wink/wink-official-backend
 ```
 
-* config.template.yaml
-```yaml
-redis:
-  host: ${REDIS_HOST:=redis}
-  port: ${REDIS_PORT:=6379}
+Go to the project directory
 
-mongo:
-  host: ${MONGO_HOST:=mongo}
-  port: ${MONGO_PORT:=27017}
-  username: ${MONGO_USERNAME:=''}
-  password: ${MONGO_PASSWORD:=''}
-  authSource: ${MONGO_AUTH_SOURCE:=''}
-  database: ${MONGO_DATABASE:=test}
-
-smtp:
-  host: ${SMTP_HOST:=smtp.gmail.com}
-  port: ${SMTP_PORT:=465}
-  secure: ${SMTP_SECURE:=true}
-  username: ${SMTP_USERNAME:=''}
-  password: ${SMTP_PASSWORD:=''}
-
-jwt:
-  secret: ${JWT_SECRET:=secret}
-  expiresIn: ${JWT_EXPIRES_IN:=14d}
-
-
+```bash
+cd wink-official-backend
 ```
 
-### 2. 의존성 설치
+Install dependencies
+
 ```bash
 yarn install
 ```
 
-### 3. 빌드
+Copy the config file
+
 ```bash
-yarn build
+cp config/config.template.yaml config/config.yaml
 ```
 
-### 4. 애플리케이션 실행
+Edit the config file
+
 ```bash
-yarn start:prod
+vim config/config.yaml
 ```
 
-## 도커 컨테이너 생성 및 실행
+Start the server
 
-### 1. 도커 이미지 빌드
+```bash
+yarn start
+```
+
+## Run Locally with Docker
+
+Build the Docker image or pull the Docker image from Docker Hub
+
 ```bash
 docker build -t wink-backend .
 ```
 
-### 2. 도커 컨테이너 실행
+```bash
+docker pull ioloolo/wink-official-backend:latest
+```
+
+Run the Docker container
+
 ```bash
 docker run --name wink-backend \
            -e REDIS_HOST=(REDIS_HOST) -e REDIS_PORT=(REDIS_PORT) \
@@ -74,19 +99,18 @@ docker run --name wink-backend \
            -d wink-backend
 ```
 
-만약 Redis 및 Mongo가 Docker Container로 실행되고 있다면 아래 명령어로 실행할 수 있습니다.
+## Running Tests
+
+To run tests, run the following command
+
 ```bash
-# Redis 및 Mongo의 Container 이름이 각각 redis, mongo라고 가정한다.
-docker run --name wink-backend \
-           --link redis --link mongo \
-           -e REDIS_HOST=redis -e REDIS_PORT=6379 \
-           -e MONGO_HOST=mongo -e MONGO_PORT=27017 \
-           -e MONGO_DATABASE=wink \
-           -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
-           -e SMTP_USERNAME=(SMTP_USER) -e SMTP_PASSWORD=(SMTP_PASS) \
-           -e SMTP_SECURE=(SMTP_SECURE) -e \
-           -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
-           -p 8080:8080 \
-           -v /path/to/logs:/app/logs \
-           -d wink-backend
+  yarn test
 ```
+
+
+## Authors
+
+- [@ukly](https://www.github.com/ukly)
+- [@U-Geon](https://www.github.com/U-Geon)
+- [@son-daehyeon](https://www.github.com/son-daehyeon)
+
