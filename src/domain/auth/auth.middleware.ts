@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext, Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction } from 'express';
 
-import { MemberRepository } from '../member/member.repository';
-
 import * as jwt from 'jsonwebtoken';
+
+import { MemberRepository } from '../member/member.repository';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
