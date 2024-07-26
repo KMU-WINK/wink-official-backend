@@ -38,6 +38,8 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
+    "@automock/adapters.nestjs": "^2.1.0",
+    "@automock/jest": "^2.1.0",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@nestjs/cli": "^10.4.2",
@@ -67,6 +69,7 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "webpack": "^5.93.0"
   }
 }

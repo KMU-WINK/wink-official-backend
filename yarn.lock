@@ -45,6 +45,44 @@
     ora "5.4.1"
     rxjs "7.8.1"
 
+"@automock/adapters.nestjs@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@automock/adapters.nestjs/-/adapters.nestjs-2.1.0.tgz#5f3e24b3111b9d7d8d40792702d35f9b3645ea76"
+  integrity sha512-cwolpTMF+frIm6idLC/zD0obgG/Wf5wP6I8FKJBcRy+Cuc9Pyy/E7200zafYlOVzUlZUP16VqchgGWpUyb1U3Q==
+  dependencies:
+    "@automock/common" "^3.1.0"
+    "@automock/types" "^2.0.1"
+    reflect-metadata "^0.1.13"
+
+"@automock/common@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@automock/common/-/common-3.1.0.tgz#61048c994b8b58954bd033c501ac5a1460196303"
+  integrity sha512-Y7N4YnSZRuSIfGV4/PdG2JyURa9PK1maqGZBYUG2/sIW+H/Mlhc/3NpegnlUyQFRBexEJtgmUsvfzzI1/lm0JA==
+  dependencies:
+    "@automock/types" "^2.0.1"
+
+"@automock/core@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@automock/core/-/core-2.1.0.tgz#2e959e5f3d9522c93139f4e99c10e726b745441c"
+  integrity sha512-VIaY2woE7nWXhXKlNzk4+xzCuaVBXfGYwowrzdI+MmJBKqi2z0lUjNVix74hZRWhJpkOW+PR3UThFvThgyqIqQ==
+  dependencies:
+    "@automock/common" "^3.1.0"
+    "@automock/types" "^2.0.1"
+    lodash.isequal "^4.5.0"
+
+"@automock/jest@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@automock/jest/-/jest-2.1.0.tgz#8a1d4ad7fcfa505207df60e9965aeb23527af418"
+  integrity sha512-kJuTu/a5bbG8SICIfITgESpIrVbBfbMykDdICmPvJkeI51Ldq+tqiLS2Ded16vLWS9WeFKeTw/+2b/DO8QyV0Q==
+  dependencies:
+    "@automock/core" "^2.1.0"
+    "@automock/types" "^2.0.1"
+
+"@automock/types@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@automock/types/-/types-2.0.1.tgz#b06023d6e303544e64f952f5c836fdd9d5c1e502"
+  integrity sha512-ue35e4im3n7l+Eqq3kCA2nNs8jzJbjYLni+vlPdgJ+9KfsEykJjA1OpnNN/PG1tDaM0iyR2p/uZg27MOC/qiTg==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.7", "@babel/code-frame@^7.24.7":
   version "7.24.7"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.24.7.tgz#882fd9e09e8ee324e496bd040401c6f046ef4465"
@@ -4302,6 +4340,11 @@ lodash.isboolean@^3.0.3:
   resolved "https://registry.yarnpkg.com/lodash.isboolean/-/lodash.isboolean-3.0.3.tgz#6c2e171db2a257cd96802fd43b01b20d5f5870f6"
   integrity sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg==
 
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==
+
 lodash.isinteger@^4.0.4:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/lodash.isinteger/-/lodash.isinteger-4.0.4.tgz#619c0af3d03f8b04c31f5882840b77b11cd68343"
@@ -5169,6 +5212,11 @@ redis-parser@^3.0.0:
   integrity sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==
   dependencies:
     redis-errors "^1.0.0"
+
+reflect-metadata@^0.1.13:
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.14.tgz#24cf721fe60677146bb77eeb0e1f9dece3d65859"
+  integrity sha512-ZhYeb6nRaXCfhnndflDK8qI6ZQ/YcWZCISRAWICW9XYqMUwjZM9Z0DveWX/ABN01oxSHwVxKQmxeYZSsm0jh5A==
 
 reflect-metadata@^0.2.2:
   version "0.2.2"
@@ -6059,6 +6107,36 @@ webpack@5.92.1:
   version "5.92.1"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.92.1.tgz#eca5c1725b9e189cffbd86e8b6c3c7400efc5788"
   integrity sha512-JECQ7IwJb+7fgUFBlrJzbyu3GEuNBcdqr1LD7IbSzwkSmIevTm8PF+wej3Oxuz/JFBUZ6O1o43zsPkwm1C4TmA==
+  dependencies:
+    "@types/eslint-scope" "^3.7.3"
+    "@types/estree" "^1.0.5"
+    "@webassemblyjs/ast" "^1.12.1"
+    "@webassemblyjs/wasm-edit" "^1.12.1"
+    "@webassemblyjs/wasm-parser" "^1.12.1"
+    acorn "^8.7.1"
+    acorn-import-attributes "^1.9.5"
+    browserslist "^4.21.10"
+    chrome-trace-event "^1.0.2"
+    enhanced-resolve "^5.17.0"
+    es-module-lexer "^1.2.1"
+    eslint-scope "5.1.1"
+    events "^3.2.0"
+    glob-to-regexp "^0.4.1"
+    graceful-fs "^4.2.11"
+    json-parse-even-better-errors "^2.3.1"
+    loader-runner "^4.2.0"
+    mime-types "^2.1.27"
+    neo-async "^2.6.2"
+    schema-utils "^3.2.0"
+    tapable "^2.1.1"
+    terser-webpack-plugin "^5.3.10"
+    watchpack "^2.4.1"
+    webpack-sources "^3.2.3"
+
+webpack@^5.93.0:
+  version "5.93.0"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.93.0.tgz#2e89ec7035579bdfba9760d26c63ac5c3462a5e5"
+  integrity sha512-Y0m5oEY1LRuwly578VqluorkXbvXKh7U3rLoQCEO04M97ScRr44afGVkI0FQFsXzysk5OgFAxjZAb9rsGQVihA==
   dependencies:
     "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^1.0.5"
