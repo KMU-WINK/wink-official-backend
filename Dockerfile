@@ -1,3 +1,15 @@
+# Build
+FROM node:20 AS build
+
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN yarn install
+
+COPY . .
+RUN yarn build
+
+# Runtime
 FROM node:20
 
 WORKDIR /app
@@ -10,11 +22,12 @@ RUN apt-get update && apt-get install -y curl \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
-COPY package.json yarn.lock ./
-RUN yarn install
+COPY --from=build /app/config/config.template.yaml ./config/config.template.yaml
 
-COPY . .
-RUN yarn build
+COPY --from=build /app/package.json /app/yarn.lock ./
+RUN yarn install --production
+
+COPY --from=build /app/dist ./dist
 
 EXPOSE 8080
 
