@@ -37,7 +37,7 @@ export class AuthService {
       throw new MemberNotFoundException();
     }
 
-    const member = await this.repository.raw().findOne({ email }).select('+password').exec();
+    const member = await this.repository.findByEmailWithPassword(email);
 
     if (!(await bcrypt.compare(password, member.password))) {
       throw new WrongPasswordException();
