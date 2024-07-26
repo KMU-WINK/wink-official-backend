@@ -1,15 +1,7 @@
 name: Test and Deploy
 
 on:
-  push:
-    paths:
-      - 'src/**'
-      - 'package.json'
-  pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'src/**'
-      - 'package.json'
+  push: {}
 
 concurrency:
   group: ${{ github.ref }}
