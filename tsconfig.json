@@ -9,6 +9,5 @@
     "experimentalDecorators": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
-  },
-  "exclude": ["**/*.spec.ts"]
+  }
 }
