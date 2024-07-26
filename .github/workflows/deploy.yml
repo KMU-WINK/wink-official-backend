@@ -23,9 +23,6 @@ jobs:
           node-version: '20'
           cache: 'yarn'
 
-      - name: Get yarn cache directory
-        uses: c-hive/gha-yarn-cache@v2
-
       - name: Install packages
         run: yarn install --frozen-lockfile
 
@@ -47,7 +44,7 @@ jobs:
             cd ~/wink-official-backend
             
             if [ ! -f "./deploy/config/backend.env" ]; then
-              echo "Error: $FILE does not exist."
+              echo "Error: backend config file(./deploy/config/backend.env) does not exist."
               exit 1
             fi
             
