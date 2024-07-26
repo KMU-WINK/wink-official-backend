@@ -17,8 +17,8 @@ export class MemberRepository {
     return await this.memberModel.findById(id).exec();
   }
 
-  async findByEmail(email: string): Promise<Member> {
-    return await this.memberModel.findOne({ email }).exec();
+  async findByEmailWithPassword(email: string): Promise<Member> {
+    return await this.memberModel.findOne({ email }).select('+password').exec();
   }
 
   async existsById(id: string | ObjectId): Promise<boolean> {
@@ -31,9 +31,5 @@ export class MemberRepository {
 
   async existsByStudentId(studentId: number): Promise<boolean> {
     return !!(await this.memberModel.exists({ studentId }).exec());
-  }
-
-  raw() {
-    return this.memberModel;
   }
 }

@@ -11,9 +11,9 @@ export class AuthGuard implements CanActivate {
 
   constructor(
     private configService: ConfigService,
-    private repository: MemberRepository,
+    private memberRepository: MemberRepository,
   ) {
-    this.jwtSecret = this.configService.get<string>('jwt.secret');
+    this.jwtSecret = this.configService.getOrThrow<string>('jwt.secret');
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
       if (jwt.verify(token, this.jwtSecret)) {
         const id = jwt.decode(authorization.slice(7))['id'];
 
-        return await this.repository.existsById(id);
+        return await this.memberRepository.existsById(id);
       }
     }
 
