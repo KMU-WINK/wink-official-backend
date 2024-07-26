@@ -1,7 +1,7 @@
 {
-  "name": "wink-backend",
+  "name": "wink-official-backend",
   "version": "1.0.0",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prepare": "husky",
     "build": "nest build",
