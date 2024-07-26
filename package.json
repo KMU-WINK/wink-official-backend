@@ -1,6 +1,6 @@
 {
   "name": "wink-backend",
-  "version": "0.0.1-test1",
+  "version": "0.0.1-test2",
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "husky",
