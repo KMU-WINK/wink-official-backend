@@ -25,8 +25,8 @@ export class AuthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly repository: MemberRepository,
-    private readonly nodeMail: NodeMail,
     private readonly redis: RedisRepository,
+    private readonly nodeMail: NodeMail,
   ) {
     this.jwtSecret = this.configService.get<string>('jwt.secret');
     this.jwtExpiresIn = this.configService.get<string>('jwt.expiresIn');
