@@ -28,8 +28,8 @@ export class AuthService {
     private readonly redisRepository: RedisRepository,
     private readonly nodeMail: NodeMail,
   ) {
-    this.jwtSecret = this.configService.get<string>('jwt.secret');
-    this.jwtExpiresIn = this.configService.get<string>('jwt.expiresIn');
+    this.jwtSecret = this.configService.getOrThrow<string>('jwt.secret');
+    this.jwtExpiresIn = this.configService.getOrThrow<string>('jwt.expiresIn');
   }
 
   async login(email: string, password: string): Promise<string> {
