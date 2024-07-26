@@ -4,7 +4,7 @@ on:
   push: {}
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-${{ github.sha }}-deploy
   cancel-in-progress: true
 
 jobs:
