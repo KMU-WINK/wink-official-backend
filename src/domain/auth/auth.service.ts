@@ -83,7 +83,7 @@ export class AuthService {
       .toString()
       .padStart(6, '0');
 
-    await this.redis.setex(email, code, 60 * 10);
+    await this.redis.ttl(email, code, 60 * 10);
 
     await this.nodeMail.sendMail(
       email,
@@ -102,7 +102,7 @@ export class AuthService {
     await this.redis.delete(email);
 
     const verifyToken = uuid();
-    await this.redis.setex(verifyToken, email, 60 * 60);
+    await this.redis.ttl(verifyToken, email, 60 * 60);
 
     return verifyToken;
   }
