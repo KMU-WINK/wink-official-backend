@@ -7,7 +7,7 @@ import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private repository: MemberRepository) {}
+  constructor(private memberRepository: MemberRepository) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     const authorization = req.headers['authorization'];
@@ -15,7 +15,7 @@ export class AuthMiddleware implements NestMiddleware {
     if (authorization) {
       const id = jwt.decode(authorization.slice(7))['id'];
 
-      req['member'] = await this.repository.findById(id);
+      req['member'] = await this.memberRepository.findById(id);
     }
 
     next();
