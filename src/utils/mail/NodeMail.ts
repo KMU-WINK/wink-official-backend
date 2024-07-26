@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
 

@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
 import { AsyncModelFactory } from '@nestjs/mongoose';
+
+import { Schema } from 'mongoose';
 
 export class MongoModel {
   static generate(name: string, schema: Schema<any>): AsyncModelFactory {

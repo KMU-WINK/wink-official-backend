@@ -28,7 +28,7 @@ import { InvalidVerifyCodeException } from './exception/InvalidVerifyCodeExcepti
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
-  constructor(private readonly service: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post()
   @HttpCode(200)
@@ -48,7 +48,7 @@ export class AuthController {
   async login(@Body() request: LoginRequest): Promise<LoginResponse> {
     const { email, password } = request;
 
-    const token = await this.service.login(email, password);
+    const token = await this.authService.login(email, password);
 
     return { token };
   }
@@ -75,7 +75,7 @@ export class AuthController {
   async register(@Body() request: RegisterRequest): Promise<void> {
     const { name, studentId, password, verifyToken } = request;
 
-    await this.service.register(name, studentId, password, verifyToken);
+    await this.authService.register(name, studentId, password, verifyToken);
   }
 
   @Get('/code')
@@ -92,7 +92,7 @@ export class AuthController {
   async sendCode(@Body() request: SendCodeRequest): Promise<void> {
     const { email } = request;
 
-    await this.service.sendCode(email);
+    await this.authService.sendCode(email);
   }
 
   @Post('/code')
@@ -109,7 +109,7 @@ export class AuthController {
   async verifyCode(@Body() request: VerifyCodeRequest): Promise<VerifyCodeResponse> {
     const { email, code } = request;
 
-    const verifyToken = await this.service.verifyCode(email, code);
+    const verifyToken = await this.authService.verifyCode(email, code);
 
     return { verifyToken };
   }

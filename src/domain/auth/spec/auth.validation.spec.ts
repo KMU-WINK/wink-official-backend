@@ -5,7 +5,7 @@ import { RegisterRequest } from '../dto/request/RegisterRequest';
 import { SendCodeRequest } from '../dto/request/SendCodeRequest';
 import { VerifyCodeRequest } from '../dto/request/VerifyCodeRequest';
 
-describe('Auth Request DTO 검증 테스트', () => {
+describe('Auth Validation Test', () => {
   let validator: Validator;
 
   beforeAll(async () => {

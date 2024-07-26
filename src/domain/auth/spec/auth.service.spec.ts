@@ -1,13 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-
-import * as bcrypt from 'bcrypt';
+import { mockAuth } from './mock/auth.mock';
 
 import { AuthService } from '../auth.service';
 
-import { MemberRepository } from '../../member/member.repository';
-import { NodeMail } from '../../../utils/mail/NodeMail';
-import { RedisRepository } from '../../../utils/redis/RedisRepository';
+import * as bcrypt from 'bcrypt';
 
 import { Member } from '../../member/member.schema';
 
@@ -18,78 +13,19 @@ import { AlreadyRegisteredByStudentIdException } from '../exception/AlreadyRegis
 import { InvalidVerifyTokenException } from '../exception/InvalidVerifyTokenException';
 import { InvalidVerifyCodeException } from '../exception/InvalidVerifyCodeException';
 
-describe('Auth Service 테스트', () => {
-  let service: AuthService;
+describe('Auth Service Test', () => {
+  let authService: AuthService;
 
-  let memoryMemberRepository: Member[] = [];
-  let memoryRedisRepository: Record<string, string> = {};
+  let memoryMemberRepository: Member[];
+  let memoryRedisRepository: Record<string, string>;
 
-  beforeAll(async () => {
-    const mockConfigService = {
-      get: (key: string) => {
-        switch (key) {
-          case 'jwt.secret':
-            return 'test';
-          case 'jwt.expiresIn':
-            return '1h';
-        }
-      },
-    };
+  beforeEach(async () => {
+    const mock = await mockAuth();
 
-    const mockMemberRepository = {
-      existsByEmail: (email: string) =>
-        memoryMemberRepository.find((member) => member.email === email),
-      existsByStudentId: (studentId: number) =>
-        memoryMemberRepository.find((member) => member.studentId === studentId),
-      save: (member: Member) => memoryMemberRepository.push(member),
-      raw: () => ({
-        findOne: (condition: Record<string, any>) => ({
-          select: () => ({
-            exec: () => memoryMemberRepository.find((member) => member.email === condition.email),
-          }),
-        }),
-      }),
-    };
+    const { module } = mock;
+    ({ memoryMemberRepository, memoryRedisRepository } = mock);
 
-    const mockNodeMail = {
-      sendMail: jest.fn(),
-    };
-
-    const mockRedisRepository = {
-      setex: (key: string, value: string) => (memoryRedisRepository[key] = value),
-      exists: (key: string) => memoryRedisRepository[key] !== undefined,
-      get: (key: string) => memoryRedisRepository[key],
-      delete: (key: string) => delete memoryRedisRepository[key],
-    };
-
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AuthService,
-        {
-          provide: ConfigService,
-          useValue: mockConfigService,
-        },
-        {
-          provide: MemberRepository,
-          useValue: mockMemberRepository,
-        },
-        {
-          provide: NodeMail,
-          useValue: mockNodeMail,
-        },
-        {
-          provide: RedisRepository,
-          useValue: mockRedisRepository,
-        },
-      ],
-    }).compile();
-
-    service = module.get<AuthService>(AuthService);
-  });
-
-  afterEach(() => {
-    memoryMemberRepository = [];
-    memoryRedisRepository = {};
+    authService = module.get<AuthService>(AuthService);
   });
 
   describe('로그인', () => {
@@ -97,7 +33,7 @@ describe('Auth Service 테스트', () => {
       // Given
 
       // When
-      const result = service.login('not-exists@gmail.com', 'p4sSw0rd!');
+      const result = authService.login('not-exists@gmail.com', 'p4sSw0rd!');
 
       // Then
       await expect(result).rejects.toThrow(MemberNotFoundException);
@@ -122,7 +58,7 @@ describe('Auth Service 테스트', () => {
       });
 
       // When
-      const result = service.login(email, `${password}!`);
+      const result = authService.login(email, `${password}!`);
 
       // Then
       await expect(result).rejects.toThrow(WrongPasswordException);
@@ -147,7 +83,7 @@ describe('Auth Service 테스트', () => {
       });
 
       // When
-      const result = service.login(email, password);
+      const result = authService.login(email, password);
 
       // Then
       await expect(result).resolves.toBeDefined();
@@ -159,7 +95,7 @@ describe('Auth Service 테스트', () => {
       // Given
 
       // When
-      const result = service.register('', 0, '', 'empty-token');
+      const result = authService.register('', 0, '', 'empty-token');
 
       // Then
       await expect(result).rejects.toThrow(InvalidVerifyTokenException);
@@ -184,7 +120,7 @@ describe('Auth Service 테스트', () => {
       memoryRedisRepository[verifyToken] = email;
 
       // When
-      const result = service.register('', 0, password, verifyToken);
+      const result = authService.register('', 0, password, verifyToken);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByEmailException);
@@ -209,7 +145,7 @@ describe('Auth Service 테스트', () => {
       memoryRedisRepository[verifyToken] = email;
 
       // When
-      const result = service.register('', 20240001, password, verifyToken);
+      const result = authService.register('', 20240001, password, verifyToken);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByStudentIdException);
@@ -224,7 +160,7 @@ describe('Auth Service 테스트', () => {
       memoryRedisRepository[verifyToken] = email;
 
       // When
-      const result = service.register('', 20240001, password, verifyToken);
+      const result = authService.register('', 20240001, password, verifyToken);
 
       // Then
       await expect(result).resolves.toBeUndefined();
@@ -249,7 +185,7 @@ describe('Auth Service 테스트', () => {
       });
 
       // When
-      const result = service.sendCode(email);
+      const result = authService.sendCode(email);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByEmailException);
@@ -260,7 +196,7 @@ describe('Auth Service 테스트', () => {
       const email = 'honggildong@gmail.com';
 
       // When
-      const result = service.sendCode(email);
+      const result = authService.sendCode(email);
 
       // Then
       await expect(result).resolves.toBeUndefined();
@@ -277,7 +213,7 @@ describe('Auth Service 테스트', () => {
       memoryRedisRepository[email] = '654321';
 
       // When
-      const result = service.verifyCode(email, code);
+      const result = authService.verifyCode(email, code);
 
       // Then
       await expect(result).rejects.toThrow(InvalidVerifyCodeException);
@@ -291,7 +227,7 @@ describe('Auth Service 테스트', () => {
       memoryRedisRepository[email] = code;
 
       // When
-      const result = service.verifyCode(email, code);
+      const result = authService.verifyCode(email, code);
 
       // Then
       await expect(result).resolves.toBeDefined();

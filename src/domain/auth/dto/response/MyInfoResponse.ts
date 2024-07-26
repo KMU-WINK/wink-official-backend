@@ -1,6 +1,7 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 import { Role } from '../../../member/constant/Role';
 import { MyInfoLinks } from '../../../member/member.schema';
-import { ApiProperty } from '@nestjs/swagger';
 
 export class MyInfoResponse {
   @ApiProperty({

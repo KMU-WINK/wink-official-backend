@@ -1,14 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-
-import * as jwt from 'jsonwebtoken';
+import { mockAuth } from './mock/auth.mock';
 
 import { AuthController } from '../auth.controller';
-import { AuthService } from '../auth.service';
 
-import { MemberRepository } from '../../member/member.repository';
-import { NodeMail } from '../../../utils/mail/NodeMail';
-import { RedisRepository } from '../../../utils/redis/RedisRepository';
+import * as jwt from 'jsonwebtoken';
 
 import { Member } from '../../member/member.schema';
 
@@ -16,79 +10,23 @@ import { SendCodeRequest } from '../dto/request/SendCodeRequest';
 import { VerifyCodeRequest } from '../dto/request/VerifyCodeRequest';
 import { RegisterRequest } from '../dto/request/RegisterRequest';
 
-describe('Auth 통합 테스트', () => {
-  let controller: AuthController;
+describe('Auth Integrated Test', () => {
+  let authController: AuthController;
 
-  let memoryMemberRepository: Member[] = [];
-  let memoryRedisRepository: Record<string, string> = {};
+  let memoryMemberRepository: Member[];
+  let memoryRedisRepository: Record<string, string>;
 
   beforeAll(async () => {
-    const mockConfigService = {
-      get: (key: string) => {
-        switch (key) {
-          case 'jwt.secret':
-            return 'test';
-          case 'jwt.expiresIn':
-            return '1h';
-        }
-      },
-    };
+    const {
+      module,
+      memoryMemberRepository: memoryMemberRepository1,
+      memoryRedisRepository: memoryRedisRepository1,
+    } = await mockAuth();
 
-    const mockMemberRepository = {
-      existsByEmail: (email: string) =>
-        memoryMemberRepository.find((member) => member.email === email),
-      existsByStudentId: (studentId: number) =>
-        memoryMemberRepository.find((member) => member.studentId === studentId),
-      save: (member: Member) => memoryMemberRepository.push(member),
-      raw: () => ({
-        findOne: (condition: Record<string, any>) => ({
-          select: () => ({
-            exec: () => memoryMemberRepository.find((member) => member.email === condition.email),
-          }),
-        }),
-      }),
-    };
+    authController = module.get<AuthController>(AuthController);
 
-    const mockNodeMail = {
-      sendMail: jest.fn(),
-    };
-
-    const mockRedisRepository = {
-      setex: (key: string, value: string) => (memoryRedisRepository[key] = value),
-      exists: (key: string) => memoryRedisRepository[key] !== undefined,
-      get: (key: string) => memoryRedisRepository[key],
-      delete: (key: string) => delete memoryRedisRepository[key],
-    };
-
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [AuthController],
-      providers: [
-        AuthService,
-        {
-          provide: ConfigService,
-          useValue: mockConfigService,
-        },
-        {
-          provide: MemberRepository,
-          useValue: mockMemberRepository,
-        },
-        {
-          provide: NodeMail,
-          useValue: mockNodeMail,
-        },
-        {
-          provide: RedisRepository,
-          useValue: mockRedisRepository,
-        },
-      ],
-    }).compile();
-
-    controller = module.get<AuthController>(AuthController);
-  });
-
-  afterAll(() => {
-    memoryMemberRepository = [];
-    memoryRedisRepository = {};
+    memoryMemberRepository = memoryMemberRepository1;
+    memoryRedisRepository = memoryRedisRepository1;
   });
 
   describe('통합 테스트', () => {
@@ -107,7 +45,7 @@ describe('Auth 통합 테스트', () => {
       };
 
       // When
-      await controller.sendCode(request);
+      await authController.sendCode(request);
 
       // Then
       expect(memoryRedisRepository[email]).toBeDefined();
@@ -118,7 +56,7 @@ describe('Auth 통합 테스트', () => {
       const request: VerifyCodeRequest = { email, code: memoryRedisRepository[email] };
 
       // When
-      const response = await controller.verifyCode(request);
+      const response = await authController.verifyCode(request);
       verifyToken = response.verifyToken;
 
       // Then
@@ -131,7 +69,7 @@ describe('Auth 통합 테스트', () => {
       const request: RegisterRequest = { name, studentId, password, verifyToken };
 
       // When
-      await controller.register(request);
+      await authController.register(request);
 
       // Then
       expect(memoryRedisRepository[email]).toBeUndefined();
@@ -142,7 +80,7 @@ describe('Auth 통합 테스트', () => {
       const request = { email, password };
 
       // When
-      const response = await controller.login(request);
+      const response = await authController.login(request);
       token = response.token;
 
       // Then
