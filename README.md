@@ -75,14 +75,10 @@ yarn start
 
 ## Run Locally with Docker
 
-Build the Docker image or pull the Docker image from Docker Hub
+Build the Docker image 
 
 ```bash
 docker build -t ioloolo/wink-official-backend:latest .
-```
-
-```bash
-docker pull ioloolo/wink-official-backend:latest
 ```
 
 Run the Docker container
@@ -109,6 +105,12 @@ docker run \
 ```
 
 ## Run Locally with Docker Compose
+
+Build the Docker image
+
+```bash
+docker build -t ioloolo/wink-official-backend:latest .
+```
 
 Create a configuration file
 
