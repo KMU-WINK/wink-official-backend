@@ -18,5 +18,5 @@ smtp:
   password: ${SMTP_PASSWORD:=''}
 
 jwt:
-    secret: ${JWT_SECRET:=secret}
-    expiresIn: ${JWT_EXPIRES_IN:=14d}
+  secret: ${JWT_SECRET:=secret}
+  expiresIn: ${JWT_EXPIRES_IN:=14d}
