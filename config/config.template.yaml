@@ -1,14 +1,14 @@
 redis:
-  host: ${REDIS_HOST:=redis}
+  host: ${REDIS_HOST:=localhost}
   port: ${REDIS_PORT:=6379}
 
 mongo:
-  host: ${MONGO_HOST:=mongo}
+  host: ${MONGO_HOST:=localhost}
   port: ${MONGO_PORT:=27017}
   username: ${MONGO_USERNAME:=''}
   password: ${MONGO_PASSWORD:=''}
   authSource: ${MONGO_AUTH_SOURCE:=''}
-  database: ${MONGO_DATABASE:=test}
+  database: ${MONGO_DATABASE:=wink}
 
 smtp:
   host: ${SMTP_HOST:=smtp.gmail.com}
