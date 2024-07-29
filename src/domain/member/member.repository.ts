@@ -7,7 +7,7 @@ import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class MemberRepository {
-  constructor(@InjectModel(Member.name) private memberModel: Model<Member>) {}
+  constructor(@InjectModel(Member.name) private readonly memberModel: Model<Member>) {}
 
   async save(Member: Partial<Member>): Promise<Member> {
     return await this.memberModel.create(Member);
