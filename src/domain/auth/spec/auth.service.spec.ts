@@ -19,13 +19,20 @@ describe('Auth Service Test', () => {
   let memoryMemberRepository: Member[];
   let memoryRedisRepository: Record<string, string>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const mock = await mockAuth();
 
     const { module } = mock;
     ({ memoryMemberRepository, memoryRedisRepository } = mock);
 
     authService = module.get<AuthService>(AuthService);
+  });
+
+  afterEach(() => {
+    memoryMemberRepository.splice(0, memoryMemberRepository.length);
+    Object.keys(memoryRedisRepository).forEach((key) => {
+      delete memoryRedisRepository[key];
+    });
   });
 
   describe('로그인', () => {

@@ -81,13 +81,8 @@ const mockRedisRepository = (memory: Record<string, string>) => ({
     memory[key] = value;
   }),
 
-  ttl: jest.fn().mockImplementation(async (key: string, value: string, seconds: number) => {
+  ttl: jest.fn().mockImplementation(async (key: string, value: string) => {
     memory[key] = value;
-    setTimeout(() => {
-      if (key in memory) {
-        delete memory[key];
-      }
-    }, seconds * 1000);
   }),
 
   delete: jest.fn().mockImplementation(async (key: string) => {
