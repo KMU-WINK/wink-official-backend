@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
 
 import { MemberRepository } from '../member/member.repository';
 import { NodeMail } from '../../utils/mail/NodeMail';
@@ -19,18 +18,12 @@ import { EmailTemplate } from './util/EmailTemplate';
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret: string;
-  private readonly jwtExpiresIn: string;
-
   constructor(
-    private readonly configService: ConfigService,
     private readonly memberRepository: MemberRepository,
     private readonly redisRepository: RedisRepository,
     private readonly nodeMail: NodeMail,
-  ) {
-    this.jwtSecret = this.configService.getOrThrow<string>('jwt.secret');
-    this.jwtExpiresIn = this.configService.getOrThrow<string>('jwt.expiresIn');
-  }
+    private readonly jwtService: JwtService,
+  ) {}
 
   async login(email: string, password: string): Promise<string> {
     if (!(await this.memberRepository.existsByEmail(email))) {
@@ -43,7 +36,7 @@ export class AuthService {
       throw new WrongPasswordException();
     }
 
-    return jwt.sign({ id: member['_id'] }, this.jwtSecret, { expiresIn: this.jwtExpiresIn });
+    return this.jwtService.signAsync({ id: member['_id'] });
   }
 
   async register(

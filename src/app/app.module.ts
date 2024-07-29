@@ -1,15 +1,16 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
 
 import { AuthModule } from '../domain/auth/auth.module';
 import { MemberModule } from '../domain/member/member.module';
 import { ActivityModule } from '../domain/activity/activity.module';
 
 import { RequestLoggingMiddleware } from '../utils/logger/RequestLoggingMiddleware';
-import { AuthMiddleware } from '../domain/auth/auth.middleware';
 
 import { MongooseConfigService } from '../utils/mongo/MongooseConfigService';
+import { JwtConfigService } from '../utils/jwt/JwtConfigService';
 import configuration from '../utils/config/configuration';
 
 @Module({
@@ -18,6 +19,11 @@ import configuration from '../utils/config/configuration';
 
     MongooseModule.forRootAsync({
       useClass: MongooseConfigService,
+    }),
+
+    JwtModule.registerAsync({
+      global: true,
+      useClass: JwtConfigService,
     }),
 
     AuthModule,
