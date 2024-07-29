@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 import { Member } from '../../../member/member.schema';
 
@@ -14,10 +14,15 @@ export const mockAuth = async () => {
   const memoryRedisRepository: Record<string, string> = {};
 
   const module = await Test.createTestingModule({
+    imports: [
+      JwtModule.register({
+        secret: 'jwt_secret_for_test',
+        signOptions: { expiresIn: '1h' },
+      }),
+    ],
     controllers: [AuthController],
     providers: [
       AuthService,
-      { provide: ConfigService, useValue: mockConfigService() },
       { provide: MemberRepository, useValue: mockMemberRepository(memoryMemberRepository) },
       { provide: RedisRepository, useValue: mockRedisRepository(memoryRedisRepository) },
       { provide: NodeMail, useValue: mockNodeMail() },
@@ -30,19 +35,6 @@ export const mockAuth = async () => {
     memoryRedisRepository,
   };
 };
-
-const mockConfigService = () => ({
-  getOrThrow: jest.fn((key: string) => {
-    switch (key) {
-      case 'jwt.secret':
-        return 'jwt_secret_for_test';
-      case 'jwt.expiresIn':
-        return '1h';
-      default:
-        throw new Error(`Unknown key: ${key}`);
-    }
-  }),
-});
 
 const mockMemberRepository = (memory: Member[]) => ({
   save: jest.fn(async (member: Partial<Member>) => {
