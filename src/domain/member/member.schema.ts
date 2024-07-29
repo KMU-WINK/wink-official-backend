@@ -36,7 +36,7 @@ export class Member {
   @Prop({ type: Object, default: DEFAULT_LINKS })
   link: MyInfoLinks;
 
-  @Prop({ default: Role.WAITING })
+  @Prop({ type: String, enum: Role, default: Role.WAITING })
   role: Role;
 
   @Prop({ default: false })
