@@ -1,9 +1,8 @@
-import { Body, Controller, Get, HttpCode, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
-import { ReqMember } from './auth.middleware';
+import { AuthAnyAccount, ReqMember } from './auth.guard';
 
 import { Member } from '../member/member.schema';
 
@@ -116,9 +115,8 @@ export class AuthController {
 
   @Get('/me')
   @HttpCode(200)
-  @UseGuards(AuthGuard)
+  @AuthAnyAccount()
   @ApiOperation({ summary: '인증 토큰으로 정보 조회' })
-  @ApiBearerAuth()
   @ApiCustomResponse({ type: MyInfoResponse, status: 200 })
   async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponse> {
     const memberDoc = member['_doc'];

@@ -35,6 +35,5 @@ import configuration from '../utils/config/configuration';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(RequestLoggingMiddleware).forRoutes('*');
-    consumer.apply(AuthMiddleware).forRoutes('*');
   }
 }

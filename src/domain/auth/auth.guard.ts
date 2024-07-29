@@ -1,35 +1,109 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-
-import * as jwt from 'jsonwebtoken';
+import { Reflector } from '@nestjs/core';
+import {
+  applyDecorators,
+  CanActivate,
+  createParamDecorator,
+  ExecutionContext,
+  Injectable,
+  SetMetadata,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtService } from '@nestjs/jwt';
 
 import { MemberRepository } from '../member/member.repository';
 
+import { Role } from '../member/constant/Role';
+
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private readonly jwtSecret: string;
-
   constructor(
-    private configService: ConfigService,
-    private memberRepository: MemberRepository,
-  ) {
-    this.jwtSecret = this.configService.getOrThrow<string>('jwt.secret');
-  }
+    private readonly memberRepository: MemberRepository,
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+
+    const token = this.extractAuthToken(request);
+    if (!token) {
+      throw new UnauthorizedException();
+    }
+
+    let decoded: Record<string, any>;
+    try {
+      decoded = await this.jwtService.verifyAsync(token as string);
+    } catch {
+      throw new UnauthorizedException();
+    }
+
+    if (!decoded?.id) {
+      throw new UnauthorizedException();
+    }
+
+    const member = await this.memberRepository.findById(decoded.id);
+    request.member = member;
+    if (!member) {
+      throw new UnauthorizedException();
+    }
+
+    const roles = this.reflector.get<Role[]>('roles', context.getHandler());
+    if (roles.length > 0 && !roles.includes(member.role)) {
+      throw new UnauthorizedException();
+    }
+
+    return true;
+  }
+
+  private extractAuthToken(request: Request): string | boolean {
     const authorization = request.headers['authorization'];
 
     if (authorization && authorization.startsWith('Bearer ')) {
-      const token = authorization.slice(7);
-
-      if (jwt.verify(token, this.jwtSecret)) {
-        const id = jwt.decode(authorization.slice(7))['id'];
-
-        return await this.memberRepository.existsById(id);
-      }
+      return authorization.slice(7);
     }
 
     return false;
   }
 }
+
+export const ReqMember = createParamDecorator((data: any, ctx: ExecutionContext) => {
+  const request = ctx.switchToHttp().getRequest();
+
+  return request.member;
+});
+
+export const AuthAnyAccount = () =>
+  applyDecorators(
+    SetMetadata(
+      'roles',
+      Object.keys(Role).map((key) => Role[key as keyof typeof Role]),
+    ),
+    UseGuards(AuthGuard),
+    ApiBearerAuth(),
+  );
+
+export const AuthMemberAccount = () =>
+  applyDecorators(
+    SetMetadata(
+      'roles',
+      Object.keys(Role)
+        .map((key) => Role[key as keyof typeof Role])
+        .filter((role) => role !== Role.WAITING),
+    ),
+    UseGuards(AuthGuard),
+    ApiBearerAuth,
+  );
+
+export const AuthAdminAccount = () =>
+  applyDecorators(
+    SetMetadata(
+      'roles',
+      Object.keys(Role)
+        .map((key) => Role[key as keyof typeof Role])
+        .filter((role) => role !== Role.WAITING && role !== Role.MEMBER),
+    ),
+    UseGuards(AuthGuard),
+    ApiBearerAuth,
+  );
