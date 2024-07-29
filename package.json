@@ -44,6 +44,8 @@
     "@nestjs/cli": "^10.4.2",
     "@nestjs/schematics": "^10.1.2",
     "@nestjs/testing": "^10.3.10",
+    "@swc/cli": "^0.4.0",
+    "@swc/core": "^1.7.3",
     "@types/bcrypt": "^5.0.2",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/eslint__js": "^8.42.3",
