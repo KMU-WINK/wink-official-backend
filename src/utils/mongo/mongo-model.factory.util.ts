@@ -2,7 +2,7 @@ import { AsyncModelFactory } from '@nestjs/mongoose';
 
 import { Schema } from 'mongoose';
 
-export class MongoModel {
+export class MongoModelFactory {
   static generate(name: string, schema: Schema<any>): AsyncModelFactory {
     return {
       name,

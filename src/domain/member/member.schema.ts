@@ -1,9 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { HydratedDocument } from 'mongoose';
 import { Role } from './constant/Role';
-
-export type MemberDocument = HydratedDocument<Member>;
 
 export type MyInfoLinks = Record<'github' | 'instagram' | 'blog', string>;
 

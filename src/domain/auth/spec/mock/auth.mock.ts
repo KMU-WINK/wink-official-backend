@@ -1,13 +1,12 @@
 import { Test } from '@nestjs/testing';
 import { JwtModule } from '@nestjs/jwt';
 
-import { Member } from '../../../member/member.schema';
-
 import { AuthController } from '../../auth.controller';
 import { AuthService } from '../../auth.service';
+
+import { Member } from '../../../member/member.schema';
 import { MemberRepository } from '../../../member/member.repository';
-import { RedisRepository } from '../../../../utils/redis/RedisRepository';
-import { NodeMail } from '../../../../utils/mail/NodeMail';
+import { MailService, RedisRepository } from '../../../../utils';
 
 export const mockAuth = async () => {
   const memoryMemberRepository: Member[] = [];
@@ -25,7 +24,7 @@ export const mockAuth = async () => {
       AuthService,
       { provide: MemberRepository, useValue: mockMemberRepository(memoryMemberRepository) },
       { provide: RedisRepository, useValue: mockRedisRepository(memoryRedisRepository) },
-      { provide: NodeMail, useValue: mockNodeMail() },
+      { provide: MailService, useValue: mockNodeMail() },
     ],
   }).compile();
 

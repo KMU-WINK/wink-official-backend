@@ -2,16 +2,18 @@ import { mockAuth } from './mock/auth.mock';
 
 import { AuthService } from '../auth.service';
 
-import * as bcrypt from 'bcrypt';
-
 import { Member } from '../../member/member.schema';
 
-import { MemberNotFoundException } from '../exception/MemberNotFoundException';
-import { WrongPasswordException } from '../exception/WrongPasswordException';
-import { AlreadyRegisteredByEmailException } from '../exception/AlreadyRegisteredByEmailException';
-import { AlreadyRegisteredByStudentIdException } from '../exception/AlreadyRegisteredByStudentIdException';
-import { InvalidVerifyTokenException } from '../exception/InvalidVerifyTokenException';
-import { InvalidVerifyCodeException } from '../exception/InvalidVerifyCodeException';
+import {
+  AlreadyRegisteredByEmailException,
+  AlreadyRegisteredByStudentIdException,
+  InvalidVerifyCodeException,
+  InvalidVerifyTokenException,
+  MemberNotFoundException,
+  WrongPasswordException,
+} from '../exception';
+
+import * as bcrypt from 'bcrypt';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;

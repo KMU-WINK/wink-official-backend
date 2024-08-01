@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { IsNumber, Length, Matches, Max, Min } from 'class-validator';
 
-export class RegisterRequest {
+export class RegisterRequestDto {
   @Length(2, 10, { message: '이름은 2글자 이상 10글자 이하로 입력해주세요.' })
   @ApiProperty({
     description: '이름',

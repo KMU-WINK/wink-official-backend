@@ -6,23 +6,26 @@ import { AuthAnyAccount, ReqMember } from './auth.guard';
 
 import { Member } from '../member/member.schema';
 
-import { LoginRequest } from './dto/request/LoginRequest';
-import { LoginResponse } from './dto/response/LoginResponse';
-import { RegisterRequest } from './dto/request/RegisterRequest';
-import { SendCodeRequest } from './dto/request/SendCodeRequest';
-import { VerifyCodeRequest } from './dto/request/VerifyCodeRequest';
-import { VerifyCodeResponse } from './dto/response/VerifyCodeResponse';
-import { MyInfoResponse } from './dto/response/MyInfoResponse';
+import {
+  LoginRequestDto,
+  LoginResponseDto,
+  MyInfoResponseDto,
+  RegisterRequestDto,
+  SendCodeRequestDto,
+  VerifyCodeRequestDto,
+  VerifyCodeResponseDto,
+} from './dto';
 
-import { ApiCustomResponse } from '../../utils/swagger/ApiCustomResponse.decorator';
-import { ApiCustomErrorResponseDecorator } from '../../utils/swagger/ApiCustomErrorResponse.decorator';
+import {
+  AlreadyRegisteredByEmailException,
+  AlreadyRegisteredByStudentIdException,
+  InvalidVerifyCodeException,
+  InvalidVerifyTokenException,
+  MemberNotFoundException,
+  WrongPasswordException,
+} from './exception';
 
-import { MemberNotFoundException } from './exception/MemberNotFoundException';
-import { WrongPasswordException } from './exception/WrongPasswordException';
-import { InvalidVerifyTokenException } from './exception/InvalidVerifyTokenException';
-import { AlreadyRegisteredByEmailException } from './exception/AlreadyRegisteredByEmailException';
-import { AlreadyRegisteredByStudentIdException } from './exception/AlreadyRegisteredByStudentIdException';
-import { InvalidVerifyCodeException } from './exception/InvalidVerifyCodeException';
+import { ApiCustomErrorResponseDecorator, ApiCustomResponse } from '../../utils';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -32,8 +35,8 @@ export class AuthController {
   @Post()
   @HttpCode(200)
   @ApiOperation({ summary: '로그인' })
-  @ApiProperty({ type: LoginRequest })
-  @ApiCustomResponse({ type: LoginResponse, status: 200 })
+  @ApiProperty({ type: LoginRequestDto })
+  @ApiCustomResponse({ type: LoginResponseDto, status: 200 })
   @ApiCustomErrorResponseDecorator([
     {
       description: '회원을 찾을 수 없음',
@@ -44,7 +47,7 @@ export class AuthController {
       error: WrongPasswordException,
     },
   ])
-  async login(@Body() request: LoginRequest): Promise<LoginResponse> {
+  async login(@Body() request: LoginRequestDto): Promise<LoginResponseDto> {
     const { email, password } = request;
 
     const token = await this.authService.login(email, password);
@@ -55,7 +58,7 @@ export class AuthController {
   @Put()
   @HttpCode(201)
   @ApiOperation({ summary: '회원가입' })
-  @ApiProperty({ type: RegisterRequest })
+  @ApiProperty({ type: RegisterRequestDto })
   @ApiCustomResponse({ status: 201 })
   @ApiCustomErrorResponseDecorator([
     {
@@ -71,7 +74,7 @@ export class AuthController {
       error: AlreadyRegisteredByStudentIdException,
     },
   ])
-  async register(@Body() request: RegisterRequest): Promise<void> {
+  async register(@Body() request: RegisterRequestDto): Promise<void> {
     const { name, studentId, password, verifyToken } = request;
 
     await this.authService.register(name, studentId, password, verifyToken);
@@ -80,7 +83,7 @@ export class AuthController {
   @Get('/code')
   @HttpCode(201)
   @ApiOperation({ summary: '인증코드 전송' })
-  @ApiProperty({ type: SendCodeRequest })
+  @ApiProperty({ type: SendCodeRequestDto })
   @ApiCustomResponse({ status: 201 })
   @ApiCustomErrorResponseDecorator([
     {
@@ -88,7 +91,7 @@ export class AuthController {
       error: AlreadyRegisteredByEmailException,
     },
   ])
-  async sendCode(@Body() request: SendCodeRequest): Promise<void> {
+  async sendCode(@Body() request: SendCodeRequestDto): Promise<void> {
     const { email } = request;
 
     await this.authService.sendCode(email);
@@ -97,15 +100,15 @@ export class AuthController {
   @Post('/code')
   @HttpCode(200)
   @ApiOperation({ summary: '인증 토큰 발급' })
-  @ApiProperty({ type: VerifyCodeRequest })
-  @ApiCustomResponse({ type: VerifyCodeResponse, status: 200 })
+  @ApiProperty({ type: VerifyCodeRequestDto })
+  @ApiCustomResponse({ type: VerifyCodeResponseDto, status: 200 })
   @ApiCustomErrorResponseDecorator([
     {
       description: '잘못된 인증 코드',
       error: InvalidVerifyCodeException,
     },
   ])
-  async verifyCode(@Body() request: VerifyCodeRequest): Promise<VerifyCodeResponse> {
+  async verifyCode(@Body() request: VerifyCodeRequestDto): Promise<VerifyCodeResponseDto> {
     const { email, code } = request;
 
     const verifyToken = await this.authService.verifyCode(email, code);
@@ -117,8 +120,8 @@ export class AuthController {
   @HttpCode(200)
   @AuthAnyAccount()
   @ApiOperation({ summary: '인증 토큰으로 정보 조회' })
-  @ApiCustomResponse({ type: MyInfoResponse, status: 200 })
-  async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponse> {
+  @ApiCustomResponse({ type: MyInfoResponseDto, status: 200 })
+  async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponseDto> {
     const memberDoc = member['_doc'];
     const memberId = member['_id'];
 

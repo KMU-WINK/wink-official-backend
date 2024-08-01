@@ -1,23 +1,15 @@
 import { applyDecorators, HttpStatus, Type } from '@nestjs/common';
-import { ApiExtraModels, ApiProperty, ApiResponse, getSchemaPath } from '@nestjs/swagger';
+import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
-export class ApiCustomResponseDto {
-  @ApiProperty({ type: Boolean, description: '오류 여부', default: false })
-  error: boolean;
-
-  @ApiProperty({
-    type: 'object',
-    description: '응답 데이터',
-  })
-  data: any;
-}
-
-class EmptyResponse {}
+import { ApiCustomResponseDto } from '../dto';
 
 interface ApiCustomResponseOptions {
   type?: Type<any>;
   status: HttpStatus;
 }
+
+class EmptyResponse {}
+
 export const ApiCustomResponse = (options: ApiCustomResponseOptions) => {
   options.type ??= EmptyResponse;
 

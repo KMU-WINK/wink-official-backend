@@ -2,13 +2,11 @@ import { mockAuth } from './mock/auth.mock';
 
 import { AuthController } from '../auth.controller';
 
-import * as jwt from 'jsonwebtoken';
-
 import { Member } from '../../member/member.schema';
 
-import { SendCodeRequest } from '../dto/request/SendCodeRequest';
-import { VerifyCodeRequest } from '../dto/request/VerifyCodeRequest';
-import { RegisterRequest } from '../dto/request/RegisterRequest';
+import { RegisterRequestDto, SendCodeRequestDto, VerifyCodeRequestDto } from '../dto';
+
+import * as jwt from 'jsonwebtoken';
 
 describe('Auth Integrated Test', () => {
   let authController: AuthController;
@@ -41,7 +39,7 @@ describe('Auth Integrated Test', () => {
 
     it('인증코드 전송', async () => {
       // Given
-      const request: SendCodeRequest = {
+      const request: SendCodeRequestDto = {
         email,
       };
 
@@ -58,7 +56,7 @@ describe('Auth Integrated Test', () => {
 
     it('인증 토큰 발급', async () => {
       // Given
-      const request: VerifyCodeRequest = { email, code: verifyCode };
+      const request: VerifyCodeRequestDto = { email, code: verifyCode };
 
       // When
       const result = authController.verifyCode(request);
@@ -74,7 +72,7 @@ describe('Auth Integrated Test', () => {
 
     it('회원가입', async () => {
       // Given
-      const request: RegisterRequest = { name, studentId, password, verifyToken };
+      const request: RegisterRequestDto = { name, studentId, password, verifyToken };
 
       // When
       const result = authController.register(request);

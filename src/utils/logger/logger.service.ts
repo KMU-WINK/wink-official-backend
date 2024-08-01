@@ -23,7 +23,7 @@ const dailyOptions = (level: string) => {
   };
 };
 
-export const WinstonLogger = WinstonModule.createLogger({
+export const LoggerService = WinstonModule.createLogger({
   transports: [
     new winston.transports.Console({
       level: 'http',

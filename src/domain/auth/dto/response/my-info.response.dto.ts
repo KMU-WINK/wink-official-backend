@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../../../member/constant/Role';
 import { MyInfoLinks } from '../../../member/member.schema';
 
-export class MyInfoResponse {
+export class MyInfoResponseDto {
   @ApiProperty({
     description: '유저 아이디',
     example: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',

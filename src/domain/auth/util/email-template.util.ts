@@ -1,4 +1,4 @@
-export class EmailTemplate {
+export class EmailTemplateUtil {
   static verifyCode(email: string, verificationCode: string): string {
     return verifyCodeTemplate
       .replace('{email}', email)

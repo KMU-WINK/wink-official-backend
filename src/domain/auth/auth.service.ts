@@ -1,27 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
+import { MemberRepository } from '../member/member.repository';
+
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
-import { MemberRepository } from '../member/member.repository';
-import { NodeMail } from '../../utils/mail/NodeMail';
-import { RedisRepository } from '../../utils/redis/RedisRepository';
+import {
+  AlreadyRegisteredByEmailException,
+  AlreadyRegisteredByStudentIdException,
+  InvalidVerifyCodeException,
+  InvalidVerifyTokenException,
+  MemberNotFoundException,
+  WrongPasswordException,
+} from './exception';
 
-import { InvalidVerifyCodeException } from './exception/InvalidVerifyCodeException';
-import { InvalidVerifyTokenException } from './exception/InvalidVerifyTokenException';
-import { AlreadyRegisteredByEmailException } from './exception/AlreadyRegisteredByEmailException';
-import { AlreadyRegisteredByStudentIdException } from './exception/AlreadyRegisteredByStudentIdException';
-import { MemberNotFoundException } from './exception/MemberNotFoundException';
-import { WrongPasswordException } from './exception/WrongPasswordException';
-import { EmailTemplate } from './util/EmailTemplate';
+import { EmailTemplateUtil } from './util';
+import { RedisRepository, MailService } from '../../utils';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly memberRepository: MemberRepository,
     private readonly redisRepository: RedisRepository,
-    private readonly nodeMail: NodeMail,
+    private readonly nodeMail: MailService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -81,7 +83,7 @@ export class AuthService {
     await this.nodeMail.sendMail(
       email,
       '[WINK] 회원가입 인증코드',
-      EmailTemplate.verifyCode(email, code),
+      EmailTemplateUtil.verifyCode(email, code),
     );
   }
 

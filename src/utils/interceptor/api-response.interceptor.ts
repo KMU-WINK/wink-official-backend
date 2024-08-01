@@ -6,11 +6,12 @@ import {
   Logger,
   NestInterceptor,
 } from '@nestjs/common';
+
 import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable()
-export class ResponseInterceptor implements NestInterceptor {
-  private readonly logger = new Logger('ResponseInterceptor');
+export class ApiResponseInterceptor implements NestInterceptor {
+  private readonly logger = new Logger(ApiResponseInterceptor.name);
 
   intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(

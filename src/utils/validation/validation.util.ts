@@ -1,10 +1,10 @@
 import { ArgumentMetadata, HttpException, ValidationPipe } from '@nestjs/common';
 
-export class Validator {
+export class Validation {
   private readonly validator: ValidationPipe;
 
   constructor() {
-    this.validator = Validator.getValidationPipe();
+    this.validator = Validation.getValidationPipe();
   }
 
   static getValidationPipe(): ValidationPipe {

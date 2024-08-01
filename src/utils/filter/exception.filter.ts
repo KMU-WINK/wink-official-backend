@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 
 @Catch(HttpException)
-export class HttpExceptionResponseFilter implements ExceptionFilter {
+export class DefaultExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
@@ -17,11 +17,11 @@ export class HttpExceptionResponseFilter implements ExceptionFilter {
 }
 
 @Catch(NotFoundException)
-export class NotFoundExceptionResponseFilter implements ExceptionFilter {
+export class NotFoundExceptionFilter implements ExceptionFilter {
   catch(exception: NotFoundException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
-    response.status(404).json({ error: true, content: 'Page not found' });
+    response.status(404).json({ error: true, content: 'API Endpoint not found.' });
   }
 }

@@ -9,8 +9,8 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 import { MemberRepository } from '../member/member.repository';
 
