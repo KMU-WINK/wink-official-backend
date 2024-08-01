@@ -7,12 +7,14 @@ import { Model, ObjectId } from 'mongoose';
 
 @Injectable()
 export class MemberRepository {
-  constructor(@InjectModel(Member.name) private memberModel: Model<Member>) {}
+  constructor(@InjectModel(Member.name) private readonly memberModel: Model<Member>) {}
 
+  // Create
   async save(Member: Partial<Member>): Promise<Member> {
     return await this.memberModel.create(Member);
   }
 
+  // Read
   async findById(id: string | ObjectId): Promise<Member> {
     return await this.memberModel.findById(id).exec();
   }
@@ -21,10 +23,7 @@ export class MemberRepository {
     return await this.memberModel.findOne({ email }).select('+password').exec();
   }
 
-  async existsById(id: string | ObjectId): Promise<boolean> {
-    return !!(await this.memberModel.exists({ _id: id }).exec());
-  }
-
+  // Exists
   async existsByEmail(email: string): Promise<boolean> {
     return !!(await this.memberModel.exists({ email }).exec());
   }

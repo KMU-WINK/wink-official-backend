@@ -1,28 +1,29 @@
-import { Validator } from '../../../utils/validator/Validator';
-
-import { LoginRequest } from '../dto/request/LoginRequest';
-import { RegisterRequest } from '../dto/request/RegisterRequest';
-import { SendCodeRequest } from '../dto/request/SendCodeRequest';
-import { VerifyCodeRequest } from '../dto/request/VerifyCodeRequest';
+import { Validation } from '../../../utils';
+import {
+  LoginRequestDto,
+  RegisterRequestDto,
+  SendCodeRequestDto,
+  VerifyCodeRequestDto,
+} from '../dto';
 
 describe('Auth Validation Test', () => {
-  let validator: Validator;
+  let validation: Validation;
 
   beforeAll(async () => {
-    validator = new Validator();
+    validation = new Validation();
   });
 
   describe('로그인', () => {
     describe('이메일', () => {
       it('이메일이 주어지지 않았을 때', async () => {
         // Given
-        const body: LoginRequest = {
+        const body: LoginRequestDto = {
           email: null,
           password: 'p4sSw0rd!',
         };
 
         // When
-        const result = validator.validateBody(body, LoginRequest);
+        const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
@@ -30,13 +31,13 @@ describe('Auth Validation Test', () => {
 
       it('이메일 형식이 올바르지 않을 때', async () => {
         // Given
-        const body: LoginRequest = {
+        const body: LoginRequestDto = {
           email: 'invalidEmail',
           password: 'p4sSw0rd!',
         };
 
         // When
-        const result = validator.validateBody(body, LoginRequest);
+        const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
@@ -46,13 +47,13 @@ describe('Auth Validation Test', () => {
     describe('비밀번호', () => {
       it('비밀번호가 주어지지 않았을 때', async () => {
         // Given
-        const body: LoginRequest = {
+        const body: LoginRequestDto = {
           email: 'test@gmail.com',
           password: null,
         };
 
         // When
-        const result = validator.validateBody(body, LoginRequest);
+        const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('비밀번호는 필수 입력 값입니다.');
@@ -60,13 +61,13 @@ describe('Auth Validation Test', () => {
 
       it('비밀번호가 빈 문자열일 때', async () => {
         // Given
-        const body: LoginRequest = {
+        const body: LoginRequestDto = {
           email: 'honggildong@gmail.com',
           password: '',
         };
 
         // When
-        const result = validator.validateBody(body, LoginRequest);
+        const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('비밀번호는 필수 입력 값입니다.');
@@ -75,13 +76,13 @@ describe('Auth Validation Test', () => {
 
     it('모든 입력이 유효할 때', async () => {
       // Given
-      const body: LoginRequest = {
+      const body: LoginRequestDto = {
         email: 'honggildong@gmail.com',
         password: 'p4sSw0rd!',
       };
 
       // When
-      const result = validator.validateBody(body, LoginRequest);
+      const result = validation.validateBody(body, LoginRequestDto);
 
       // Then
       await expect(result).resolves.toBeDefined();
@@ -92,7 +93,7 @@ describe('Auth Validation Test', () => {
     describe('이름', () => {
       it('이름이 주어지지 않았을 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: null,
           studentId: 2024_0001,
           password: 'p4sSw0rd!',
@@ -100,7 +101,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이름은 2글자 이상 10글자 이하로 입력해주세요.');
@@ -108,7 +109,7 @@ describe('Auth Validation Test', () => {
 
       it('이름이 짧을 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍',
           studentId: 2024_0001,
           password: 'p4sSw0rd!',
@@ -116,7 +117,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이름은 2글자 이상 10글자 이하로 입력해주세요.');
@@ -124,7 +125,7 @@ describe('Auth Validation Test', () => {
 
       it('이름이 길 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동홍길동홍길동홍길동',
           studentId: 2024_0001,
           password: 'p4sSw0rd!',
@@ -132,7 +133,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이름은 2글자 이상 10글자 이하로 입력해주세요.');
@@ -142,7 +143,7 @@ describe('Auth Validation Test', () => {
     describe('학번', () => {
       it('학번이 주어지지 않았을 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: null,
           password: 'p4sSw0rd!',
@@ -150,7 +151,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('올바른 학번이 아닙니다.');
@@ -158,7 +159,7 @@ describe('Auth Validation Test', () => {
 
       it('학번이 짧을 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_001,
           password: 'p4sSw0rd!',
@@ -166,7 +167,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('올바른 학번이 아닙니다.');
@@ -174,7 +175,7 @@ describe('Auth Validation Test', () => {
 
       it('학번이 길 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0000_1,
           password: 'p4sSw0rd!',
@@ -182,7 +183,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('올바른 학번이 아닙니다.');
@@ -192,7 +193,7 @@ describe('Auth Validation Test', () => {
     describe('비밀번호', () => {
       it('비밀번호가 주어지지 않았을 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0001,
           password: null,
@@ -200,7 +201,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow(
@@ -210,7 +211,7 @@ describe('Auth Validation Test', () => {
 
       it('비밀번호가 빈 문자열일 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0001,
           password: '',
@@ -218,7 +219,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow(
@@ -228,7 +229,7 @@ describe('Auth Validation Test', () => {
 
       it('비밀번호가 짧을 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0001,
           password: 'aaaa',
@@ -236,7 +237,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow(
@@ -246,7 +247,7 @@ describe('Auth Validation Test', () => {
 
       it('비밀번호가 길 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0001,
           password: 'aaaaaaaaaaaaaaaaaaaaaaaaz',
@@ -254,7 +255,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow(
@@ -264,7 +265,7 @@ describe('Auth Validation Test', () => {
 
       it('비밀번호가 영어만 있을 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0001,
           password: 'aaaaaaaa',
@@ -272,7 +273,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow(
@@ -284,7 +285,7 @@ describe('Auth Validation Test', () => {
     describe('인증 토큰', () => {
       it('인증 토큰이 주어지지 않았을 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0001,
           password: 'p4sSw0rd!',
@@ -292,7 +293,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('올바른 인증 토큰이 아닙니다.');
@@ -300,7 +301,7 @@ describe('Auth Validation Test', () => {
 
       it('인증 토큰이 빈 문자열일 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0001,
           password: 'p4sSw0rd!',
@@ -308,7 +309,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('올바른 인증 토큰이 아닙니다.');
@@ -316,7 +317,7 @@ describe('Auth Validation Test', () => {
 
       it('인증 토큰이 UUID v4 형태가 아닐 때', async () => {
         // Given
-        const body: RegisterRequest = {
+        const body: RegisterRequestDto = {
           name: '홍길동',
           studentId: 2024_0001,
           password: 'p4sSw0rd!',
@@ -324,7 +325,7 @@ describe('Auth Validation Test', () => {
         };
 
         // When
-        const result = validator.validateBody(body, RegisterRequest);
+        const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('올바른 인증 토큰이 아닙니다.');
@@ -333,7 +334,7 @@ describe('Auth Validation Test', () => {
 
     it('모든 입력이 유효할 때', async () => {
       // Given
-      const body: RegisterRequest = {
+      const body: RegisterRequestDto = {
         name: '홍길동',
         studentId: 2024_0001,
         password: 'p4sSw0rd!',
@@ -341,7 +342,7 @@ describe('Auth Validation Test', () => {
       };
 
       // When
-      const result = validator.validateBody(body, RegisterRequest);
+      const result = validation.validateBody(body, RegisterRequestDto);
 
       // Then
       await expect(result).resolves.toBeDefined();
@@ -352,12 +353,12 @@ describe('Auth Validation Test', () => {
     describe('이메일', () => {
       it('이메일이 주어지지 않았을 때', async () => {
         // Given
-        const body: SendCodeRequest = {
+        const body: SendCodeRequestDto = {
           email: null,
         };
 
         // When
-        const result = validator.validateBody(body, SendCodeRequest);
+        const result = validation.validateBody(body, SendCodeRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
@@ -365,12 +366,12 @@ describe('Auth Validation Test', () => {
 
       it('이메일 형식이 올바르지 않을 때', async () => {
         // Given
-        const body: SendCodeRequest = {
+        const body: SendCodeRequestDto = {
           email: 'invalidEmail',
         };
 
         // When
-        const result = validator.validateBody(body, SendCodeRequest);
+        const result = validation.validateBody(body, SendCodeRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
@@ -379,12 +380,12 @@ describe('Auth Validation Test', () => {
 
     it('모든 입력이 유효할 때', async () => {
       // Given
-      const body: SendCodeRequest = {
+      const body: SendCodeRequestDto = {
         email: 'honggildong@gmail.com',
       };
 
       // When
-      const result = validator.validateBody(body, SendCodeRequest);
+      const result = validation.validateBody(body, SendCodeRequestDto);
 
       // Then
       await expect(result).resolves.toBeDefined();
@@ -395,13 +396,13 @@ describe('Auth Validation Test', () => {
     describe('이메일', () => {
       it('이메일이 주어지지 않았을 때', async () => {
         // Given
-        const body: VerifyCodeRequest = {
+        const body: VerifyCodeRequestDto = {
           email: null,
           code: '123456',
         };
 
         // When
-        const result = validator.validateBody(body, VerifyCodeRequest);
+        const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
@@ -409,13 +410,13 @@ describe('Auth Validation Test', () => {
 
       it('이메일 형식이 올바르지 않을 때', async () => {
         // Given
-        const body: VerifyCodeRequest = {
+        const body: VerifyCodeRequestDto = {
           email: 'invalidEmail',
           code: '123456',
         };
 
         // When
-        const result = validator.validateBody(body, VerifyCodeRequest);
+        const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
@@ -425,13 +426,13 @@ describe('Auth Validation Test', () => {
     describe('인증코드', () => {
       it('인증코드가 주어지지 않았을 때', async () => {
         // Given
-        const body: VerifyCodeRequest = {
+        const body: VerifyCodeRequestDto = {
           email: 'honggildong@gmail.com',
           code: null,
         };
 
         // When
-        const result = validator.validateBody(body, VerifyCodeRequest);
+        const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
         await expect(result).rejects.toThrow();
@@ -439,13 +440,13 @@ describe('Auth Validation Test', () => {
 
       it('인증코드에 문자가 들어갔을 때', async () => {
         // Given
-        const body: VerifyCodeRequest = {
+        const body: VerifyCodeRequestDto = {
           email: 'honggildong@gmail.com',
           code: 'abcdef',
         };
 
         // When
-        const result = validator.validateBody(body, VerifyCodeRequest);
+        const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('올바른 인증코드가 아닙니다.');
@@ -453,13 +454,13 @@ describe('Auth Validation Test', () => {
 
       it('인증코드가 짧을 때', async () => {
         // Given
-        const body: VerifyCodeRequest = {
+        const body: VerifyCodeRequestDto = {
           email: 'honggildong@gmail.com',
           code: '12345',
         };
 
         // When
-        const result = validator.validateBody(body, VerifyCodeRequest);
+        const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('인증코드는 6자리 숫자로 입력해주세요.');
@@ -467,13 +468,13 @@ describe('Auth Validation Test', () => {
 
       it('인증코드가 길 때', async () => {
         // Given
-        const body: VerifyCodeRequest = {
+        const body: VerifyCodeRequestDto = {
           email: 'honggildong@gmail.com',
           code: '1234567',
         };
 
         // When
-        const result = validator.validateBody(body, VerifyCodeRequest);
+        const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('인증코드는 6자리 숫자로 입력해주세요.');
@@ -482,13 +483,13 @@ describe('Auth Validation Test', () => {
 
     it('모든 입력이 유효할 때', async () => {
       // Given
-      const body: VerifyCodeRequest = {
+      const body: VerifyCodeRequestDto = {
         email: 'honggildong@gmail.com',
         code: '123456',
       };
 
       // When
-      const result = validator.validateBody(body, VerifyCodeRequest);
+      const result = validation.validateBody(body, VerifyCodeRequestDto);
 
       // Then
       await expect(result).resolves.toBeDefined();

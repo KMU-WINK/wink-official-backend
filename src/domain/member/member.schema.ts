@@ -1,9 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { HydratedDocument } from 'mongoose';
 import { Role } from './constant/Role';
-
-export type MemberDocument = HydratedDocument<Member>;
 
 export type MyInfoLinks = Record<'github' | 'instagram' | 'blog', string>;
 
@@ -36,7 +33,7 @@ export class Member {
   @Prop({ type: Object, default: DEFAULT_LINKS })
   link: MyInfoLinks;
 
-  @Prop({ default: Role.WAITING })
+  @Prop({ type: String, enum: Role, default: Role.WAITING })
   role: Role;
 
   @Prop({ default: false })

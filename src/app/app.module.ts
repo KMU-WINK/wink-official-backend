@@ -1,34 +1,63 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
 
 import { AuthModule } from '../domain/auth/auth.module';
 import { MemberModule } from '../domain/member/member.module';
 import { ActivityModule } from '../domain/activity/activity.module';
 
-import { RequestLoggingMiddleware } from '../utils/logger/RequestLoggingMiddleware';
-import { AuthMiddleware } from '../domain/auth/auth.middleware';
-
-import { MongooseConfigService } from '../utils/mongo/MongooseConfigService';
-import configuration from '../utils/config/configuration';
+import {
+  AppConfig,
+  JwtConfig,
+  MongoConfig,
+  Validation,
+  ApiResponseInterceptor,
+  DefaultExceptionFilter,
+  NotFoundExceptionFilter,
+  LoggerMiddleware,
+} from '../utils';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
+    ConfigModule.forRoot({ load: [AppConfig], isGlobal: true }),
 
     MongooseModule.forRootAsync({
-      useClass: MongooseConfigService,
+      useClass: MongoConfig,
+    }),
+
+    JwtModule.registerAsync({
+      global: true,
+      useClass: JwtConfig,
     }),
 
     AuthModule,
     MemberModule,
     ActivityModule,
   ],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: Validation.getValidationPipe(),
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ApiResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: DefaultExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: NotFoundExceptionFilter,
+    },
+  ],
   controllers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RequestLoggingMiddleware).forRoutes('*');
-    consumer.apply(AuthMiddleware).forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

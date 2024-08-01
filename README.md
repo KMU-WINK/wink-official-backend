@@ -1,6 +1,6 @@
-# Wink Official Backend
+![Logo](https://avatars.githubusercontent.com/u/69004745?s=100)
 
-![Logo](https://avatars.githubusercontent.com/u/69004745?s=300)
+# Wink Official Backend
 
 ## Tech Stack
 
@@ -22,14 +22,17 @@
 
 **CI/CD:**
 - ![github actions](https://img.shields.io/badge/github%20actions-2088FF?style=for-the-badge&logo=github%20actions&logoColor=white)
+
+
 ## Related
 [Wink Official Frontend](https://github.com/kmu-wink/wink-official-frontend)
+
+[Wink Official Deploy](https://github.com/kmu-wink/wink-official-deploy)
 
 
 ## Documentation
 
-[API Server (develop)](http://43.202.208.79/)
-[API Documentation (develop)](http://43.202.208.79/swagger)
+[Develop server](http://43.202.208.79/)
 
 
 ## Run Locally
@@ -72,31 +75,67 @@ yarn start
 
 ## Run Locally with Docker
 
-Build the Docker image or pull the Docker image from Docker Hub
+Build the Docker image 
 
 ```bash
-docker build -t wink-backend .
-```
-
-```bash
-docker pull ioloolo/wink-official-backend:latest
+docker build -t ioloolo/wink-official-backend:latest .
 ```
 
 Run the Docker container
 
 ```bash
-docker run --name wink-backend \
+docker run \
+           --name (CONTAINER_NAME) \
+           
            -e REDIS_HOST=(REDIS_HOST) -e REDIS_PORT=(REDIS_PORT) \
+           
            -e MONGO_HOST=(MONGO_HOST) -e MONGO_PORT=(MONGO_PORT) \
            -e MONGO_USERNAME=(MONGO_USERNAME) -e MONGO_PASSWORD=(MONGO_PASSWORD) \
            -e MONGO_AUTH_SOURCE=(MONGO_AUTH_SOURCE) -e MONGO_DATABASE=(MONGO_DATABASE) \
+           
            -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
            -e SMTP_USERNAME=(SMTP_USER) -e SMTP_PASSWORD=(SMTP_PASS) \
            -e SMTP_SECURE=(SMTP_SECURE) -e \
+           
            -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
+           
            -p 8080:8080 \
-           -v /path/to/logs:/app/logs \
-           -d wink-backend
+           -v /path/to/logs:/app/logs -d \
+           ioloolo/wink-official-backend:latest
+```
+
+## Run Locally with Docker Compose
+
+Build the Docker image
+
+```bash
+docker build -t ioloolo/wink-official-backend:latest .
+```
+
+Create a configuration file
+
+```bash
+mkdir -p ./deploy/config
+touch ./deploy/config/config.yaml
+```
+
+Edit the configuration file
+    
+```bash
+vim ./deploy/config/config.yaml
+```
+```yaml
+REDIS_HOST: "redis"
+MONGO_HOST: "mongo"
+SMTP_USERNAME: ""
+SMTP_PASSWORD: ""
+JWT_SECRET: ""
+```
+
+Run the Docker container
+
+```bash
+docker compose up -d
 ```
 
 ## Running Tests
