@@ -1,36 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+
+import { MemberRepository } from '../member/member.repository';
 
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
 
-import { MemberRepository } from '../member/member.repository';
-import { NodeMail } from '../../utils/mail/NodeMail';
-import { RedisRepository } from '../../utils/redis/RedisRepository';
+import {
+  AlreadyRegisteredByEmailException,
+  AlreadyRegisteredByStudentIdException,
+  InvalidVerifyCodeException,
+  InvalidVerifyTokenException,
+  MemberNotFoundException,
+  WrongPasswordException,
+} from './exception';
 
-import { InvalidVerifyCodeException } from './exception/InvalidVerifyCodeException';
-import { InvalidVerifyTokenException } from './exception/InvalidVerifyTokenException';
-import { AlreadyRegisteredByEmailException } from './exception/AlreadyRegisteredByEmailException';
-import { AlreadyRegisteredByStudentIdException } from './exception/AlreadyRegisteredByStudentIdException';
-import { MemberNotFoundException } from './exception/MemberNotFoundException';
-import { WrongPasswordException } from './exception/WrongPasswordException';
-import { EmailTemplate } from './util/EmailTemplate';
+import { EmailTemplateUtil } from './util';
+import { RedisRepository, MailService } from '../../utils';
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret: string;
-  private readonly jwtExpiresIn: string;
-
   constructor(
-    private readonly configService: ConfigService,
     private readonly memberRepository: MemberRepository,
     private readonly redisRepository: RedisRepository,
-    private readonly nodeMail: NodeMail,
-  ) {
-    this.jwtSecret = this.configService.getOrThrow<string>('jwt.secret');
-    this.jwtExpiresIn = this.configService.getOrThrow<string>('jwt.expiresIn');
-  }
+    private readonly nodeMail: MailService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async login(email: string, password: string): Promise<string> {
     if (!(await this.memberRepository.existsByEmail(email))) {
@@ -43,7 +38,7 @@ export class AuthService {
       throw new WrongPasswordException();
     }
 
-    return jwt.sign({ id: member['_id'] }, this.jwtSecret, { expiresIn: this.jwtExpiresIn });
+    return this.jwtService.signAsync({ id: member['_id'] });
   }
 
   async register(
@@ -88,7 +83,7 @@ export class AuthService {
     await this.nodeMail.sendMail(
       email,
       '[WINK] 회원가입 인증코드',
-      EmailTemplate.verifyCode(email, code),
+      EmailTemplateUtil.verifyCode(email, code),
     );
   }
 
