@@ -36,8 +36,6 @@ jest.config.mjs
 lint-staged.config.js
 pretter.config.js
 
-docker-compose.yml
-
 LICENSE
 README.md
 CONTRIBUTING.md

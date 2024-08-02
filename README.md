@@ -101,40 +101,6 @@ docker run \
            ioloolo/wink-official-backend:latest
 ```
 
-## Run Locally with Docker Compose
-
-Build the Docker image
-
-```bash
-docker build -t ioloolo/wink-official-backend:latest .
-```
-
-Create a configuration file
-
-```bash
-mkdir -p ./deploy/config
-touch ./deploy/config/config.yaml
-```
-
-Edit the configuration file
-    
-```bash
-vim ./deploy/config/config.yaml
-```
-```yaml
-REDIS_HOST: "redis"
-MONGO_HOST: "mongo"
-SMTP_USERNAME: ""
-SMTP_PASSWORD: ""
-JWT_SECRET: ""
-```
-
-Run the Docker container
-
-```bash
-docker compose up -d
-```
-
 ## Running Tests
 
 To run tests, run the following command
