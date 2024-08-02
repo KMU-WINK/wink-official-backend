@@ -108,6 +108,6 @@ jobs:
 
             git pull origin develop
 
-            docker compose pull
-            docker compose down
-            docker compose up -d
+            docker compose -f docker-compose-develop.yaml pull
+            docker compose -f docker-compose-develop.yaml down
+            docker compose -f docker-compose-develop.yaml up -d
