@@ -1,5 +1,5 @@
 name: Build
-run-name: Build on ${{ github.event.workflow_run.head_branch }}
+run-name: Build on ${{ github.event.workflow_run.output.branch }}
 
 on:
   workflow_run:
@@ -12,13 +12,13 @@ on:
       - develop
 
 concurrency:
-  group: build-${{ github.event.workflow_run.head_branch }}
+  group: build-${{ github.event.workflow_run.output.branch }}
   cancel-in-progress: true
 
 jobs:
   build-master:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.head_branch == 'master'
+    if: github.event.workflow_run.output.branch == 'master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
 
   build-develop:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.head_branch == 'develop'
+    if: github.event.workflow_run.output.branch == 'develop'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -69,3 +69,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=ioloolo/wink-official-backend:buildcache-develop
           cache-to: type=registry,ref=ioloolo/wink-official-backend:buildcache-develop,mode=max
+
+  set-output:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set output
+        run: echo ::set-output name=branch::${{ github.event.workflow_run.output.branch }}
