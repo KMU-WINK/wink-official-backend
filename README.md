@@ -27,9 +27,13 @@
 ## Related
 [Wink Official Frontend](https://github.com/kmu-wink/wink-official-frontend)
 
+[Wink Official Deploy](https://github.com/kmu-wink/wink-official-deploy)
+
 ## Documentation
 
-[Develop server](http://43.202.208.79:8080/)
+[API Document (Master)](https://wink.kookmin.ac.kr/api/swagger)
+
+[API Document (Develop)](http://43.202.208.79/api/swagger)
 
 
 ## Run Locally
