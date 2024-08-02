@@ -22,6 +22,7 @@ jobs:
         run: |
           git clone --branch ${{ github.ref_name }} https://github.com/kmu-wink/wink-official-deploy.git deploy
           cd deploy
+          git checkout ${{ github.ref_name }}
           git submodule update --remote backend
 
       - name: Commit and push changes
