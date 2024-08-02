@@ -21,12 +21,10 @@ jobs:
 
       - name: Update
         run: |
-          git clone --branch ${{ github.ref_name }} https://github.com/kmu-wink/wink-official-deploy.git deploy
+          git clone --branch ${{ github.ref_name }} git@github.com:kmu-wink/wink-official-deploy.git deploy
           cd deploy
           git submodule update --init
           git submodule update --remote backend
           git add backend
           git commit -m "update: backend (from ${{ github.sha }})"
           git push origin ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
