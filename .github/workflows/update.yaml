@@ -23,6 +23,7 @@ jobs:
         run: |
           git clone --branch ${{ github.ref_name }} https://github.com/kmu-wink/wink-official-deploy.git deploy
           cd deploy
+          git submodule update --init
           git submodule update --remote backend
           git add backend
           git commit -m "update: backend (from ${{ github.sha }})"
