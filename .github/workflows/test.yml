@@ -1,5 +1,5 @@
 name: Test
-run-name: Test on ${{ github.ref }} (${{ github.sha }})
+run-name: Test on ${{ github.ref_name }}
 
 on:
   push: {}
