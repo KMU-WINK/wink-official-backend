@@ -1,5 +1,5 @@
-name: Build
-run-name: Build on ${{ github.event.workflow_run.output.branch }}
+name: Build and Deploy
+run-name: Build and Deploy on ${{ github.event.workflow_run.head_branch }}
 
 on:
   workflow_run:
@@ -12,13 +12,13 @@ on:
       - develop
 
 concurrency:
-  group: build-${{ github.event.workflow_run.output.branch }}
+  group: build-and-deploy-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: true
 
 jobs:
   build-master:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.output.branch == 'master'
+    if: github.event.workflow_run.head_branch == 'master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
 
   build-develop:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.output.branch == 'develop'
+    if: github.event.workflow_run.head_branch == 'develop'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -70,8 +70,44 @@ jobs:
           cache-from: type=registry,ref=ioloolo/wink-official-backend:buildcache-develop
           cache-to: type=registry,ref=ioloolo/wink-official-backend:buildcache-develop,mode=max
 
-  set-output:
+  deploy-master:
     runs-on: ubuntu-latest
+    needs: [build-master]
+    if: github.event.workflow_run.head_branch == 'master'
     steps:
-      - name: Set output
-        run: echo ::set-output name=branch::${{ github.event.workflow_run.output.branch }}
+      - name: Not yet implemented
+        run: echo "Not yet implemented"
+
+  deploy-develop:
+    runs-on: ubuntu-latest
+    needs: [build-develop]
+    if: github.event.workflow_run.head_branch == 'develop'
+    steps:
+      - name: Deploy to develop server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_DEVELOP_HOST }}
+          username: ${{ secrets.SSH_DEVELOP_USERNAME }}
+          key: ${{ secrets.SSH_DEVELOP_KEY }}
+          script: |
+            if [ ! -d "wink-official-backend" ]; then
+              echo "Error: wink-official-backend 폴더가 없습니다."
+              exit 1
+            fi
+
+            if [ ! -d "deploy/config" ]; then
+              echo "Error: deploy/config 폴더가 없습니다."
+              exit 1
+            fi
+
+            cd wink-official-backend
+
+            if [ "$(git branch --show-current)" != "develop" ]; then
+              git checkout develop
+            fi
+
+            git pull origin develop
+
+            docker compose pull
+            docker compose down
+            docker compose up -d

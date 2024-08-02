@@ -26,9 +26,3 @@ jobs:
 
       - name: Run tests
         run: yarn test
-
-  set-output:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set output
-        run: echo ::set-output name=branch::${{ github.ref_name }}
