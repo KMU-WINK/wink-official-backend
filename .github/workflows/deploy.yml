@@ -1,5 +1,5 @@
 name: Deploy
-run-name: Deploy on ${{ github.event.workflow_run.head_branch }}
+run-name: Deploy on ${{ github.event.workflow_run.output.branch }}
 
 on:
   workflow_run:
@@ -12,20 +12,20 @@ on:
       - develop
 
 concurrency:
-  group: deploy-${{ github.event.workflow_run.head_branch }}
+  group: deploy-${{ github.event.workflow_run.output.branch }}
   cancel-in-progress: true
 
 jobs:
   deploy-master:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.head_branch == 'master'
+    if: github.event.workflow_run.output.branch == 'master'
     steps:
       - name: Not yet implemented
         run: echo "Not yet implemented"
 
   deploy-develop:
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.head_branch == 'develop'
+    if: github.event.workflow_run.output.branch == 'develop'
     steps:
       - name: Deploy to develop server
         uses: appleboy/ssh-action@v1.0.3
