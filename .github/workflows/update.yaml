@@ -1,4 +1,5 @@
 name: Update Deploy Repository
+run-name: Update on ${{ github.ref_name }}
 
 on:
   push:
@@ -18,16 +19,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Checkout deploy repository
+      - name: Update
         run: |
           git clone --branch ${{ github.ref_name }} https://github.com/kmu-wink/wink-official-deploy.git deploy
           cd deploy
-          git checkout ${{ github.ref_name }}
           git submodule update --remote backend
-
-      - name: Commit and push changes
-        run: |
-          cd deploy
           git add backend
           git commit -m "update: backend (from ${{ github.sha }})"
           git push origin ${{ github.ref_name }}
