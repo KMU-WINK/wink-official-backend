@@ -34,7 +34,7 @@ jobs:
         with:
           push: true
           tags: ioloolo/wink-official-backend:latest
-          context: https://github.com/kmu-wink/wink-official-backend.git#master .
+          context: https://github.com/kmu-wink/wink-official-backend.git#master
           platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=ioloolo/wink-official-backend:buildcache
           cache-to: type=registry,ref=ioloolo/wink-official-backend:buildcache,mode=max
@@ -57,7 +57,7 @@ jobs:
         with:
           push: true
           tags: ioloolo/wink-official-backend:develop
-          context: https://github.com/kmu-wink/wink-official-backend.git#develop .
+          context: https://github.com/kmu-wink/wink-official-backend.git#develop
           platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=ioloolo/wink-official-backend:buildcache-develop
           cache-to: type=registry,ref=ioloolo/wink-official-backend:buildcache-develop,mode=max
