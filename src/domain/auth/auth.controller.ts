@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Put, UnauthorizedException } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -121,6 +121,12 @@ export class AuthController {
   @AuthAnyAccount()
   @ApiOperation({ summary: '인증 토큰으로 정보 조회' })
   @ApiCustomResponse({ type: MyInfoResponseDto, status: 200 })
+  @ApiCustomErrorResponse([
+    {
+      description: '인증되지 않은 사용자',
+      error: UnauthorizedException,
+    },
+  ])
   async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponseDto> {
     const memberDoc = member['_doc'];
     const memberId = member['_id'];
