@@ -7,7 +7,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 export class S3Provider {
   private readonly s3Client: S3Client;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(configService: ConfigService) {
     this.s3Client = new S3Client({
       region: configService.getOrThrow<string>('s3.region'),
       credentials: {
