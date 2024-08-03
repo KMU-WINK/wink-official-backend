@@ -1,5 +1,5 @@
 name: Update Deploy Repository
-run-name: Update on ${{ github.ref_name }}
+run-name: Update on ${{ github.event.workflow_run.head_branch }}
 
 on:
   workflow_run:
@@ -29,12 +29,13 @@ jobs:
 
       - name: Clone Repository
         run: |
-          git clone --branch ${{ github.ref_name }} git@github.com:kmu-wink/wink-official-deploy.git deploy
+          git clone --branch ${{ github.event.workflow_run.head_branch }} git@github.com:kmu-wink/wink-official-deploy.git deploy
           
       - name: Update Submodule
         run: |
           cd deploy
+          git submodule update --init
           git submodule update --remote backend
           git add backend
           git commit -m "update: backend (from ${{ github.sha }})"
-          git push origin ${{ github.ref_name }}
+          git push origin ${{ github.event.workflow_run.head_branch }}
