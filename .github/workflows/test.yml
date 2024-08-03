@@ -5,7 +5,7 @@ on:
   push: {}
 
 concurrency:
-  group: test-${{github.ref_name}}-${{ github.sha }}
+  group: test-${{ github.ref_name }}-${{ github.sha }}
   cancel-in-progress: true
 
 jobs:
