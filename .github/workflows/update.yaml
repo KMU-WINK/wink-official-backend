@@ -18,28 +18,31 @@ concurrency:
 jobs:
   update-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          repository: kmu-wink/wink-official-deploy
-          ref: ${{ github.event.workflow_run.head_branch }}
-          submodules: recursive
-          ssh-key: ${{ github.secrets.SSH_GITHUB_KEY }}
-        
       - name: Set up Git
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Set up Github SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_GITHUB_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Checkout code
+        run: |
+          git clone --branch ${{ github.event.workflow_run.head_branch }} --recursive git@github.com:kmu-wink/wink-official-deploy.git deploy
 
       - name: Update Submodule
         run: |
+          cd deploy
           git submodule update --remote backend
-          
+
       - name: Commit and Push
         run: |
+          cd deploy
           git add backend
           git commit -m "update: backend"
-          git push origin ${{ github.event.workflow_run.head_branch }}
+          git push -f origin ${{ github.event.workflow_run.head_branch }}
