@@ -1,5 +1,5 @@
-name: Update Deploy Repository
-run-name: Update on ${{ github.event.workflow_run.head_branch }}
+name: Update to Deploy Repository
+run-name: Update to Deploy Repository (${{ github.event.workflow_run.head_branch }})
 
 on:
   workflow_run:
@@ -10,6 +10,10 @@ on:
     branches:
       - master
       - develop
+
+concurrency:
+  group: update-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
 
 jobs:
   update-deploy:
