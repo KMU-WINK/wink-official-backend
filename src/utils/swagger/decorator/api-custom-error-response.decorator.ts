@@ -8,7 +8,7 @@ interface ApiCustomErrorResponseOptions {
   error: Type<HttpException>;
 }
 
-export const ApiCustomErrorResponseDecorator = (options: ApiCustomErrorResponseOptions[]) => {
+export const ApiCustomErrorResponse = (options: ApiCustomErrorResponseOptions[]) => {
   const errors = new Map<number, [string, HttpException][]>();
 
   options.forEach((option) => {
