@@ -18,7 +18,7 @@
 **Convention:**
 - ![eslint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
 - ![prettier](https://img.shields.io/badge/prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=white)
-- ![husky](https://img.shields.io/badge/husky-5D4F85?style=for-the-badge&logoColor=white
+- ![husky](https://img.shields.io/badge/husky-5D4F85?style=for-the-badge&logoColor=white)
 
 
 ## Related
