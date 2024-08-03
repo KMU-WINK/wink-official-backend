@@ -1,9 +1,11 @@
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MulterModuleOptions, MulterOptionsFactory } from '@nestjs/platform-express';
+
 import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
 import * as multerS3 from 'multer-s3';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+
 import { S3Provider } from '../s3/s3.provider';
 
 @Injectable()
