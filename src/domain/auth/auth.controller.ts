@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Put, UnauthorizedException } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -25,9 +25,9 @@ import {
   WrongPasswordException,
 } from './exception';
 
-import { ApiCustomErrorResponseDecorator, ApiCustomResponse } from '../../utils';
+import { ApiCustomErrorResponse, ApiCustomResponse } from '../../utils';
 
-@Controller('auth')
+@Controller('/auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -37,7 +37,7 @@ export class AuthController {
   @ApiOperation({ summary: '로그인' })
   @ApiProperty({ type: LoginRequestDto })
   @ApiCustomResponse({ type: LoginResponseDto, status: 200 })
-  @ApiCustomErrorResponseDecorator([
+  @ApiCustomErrorResponse([
     {
       description: '회원을 찾을 수 없음',
       error: MemberNotFoundException,
@@ -60,7 +60,7 @@ export class AuthController {
   @ApiOperation({ summary: '회원가입' })
   @ApiProperty({ type: RegisterRequestDto })
   @ApiCustomResponse({ status: 201 })
-  @ApiCustomErrorResponseDecorator([
+  @ApiCustomErrorResponse([
     {
       description: '이메일 인증 토큰이 잘못됨',
       error: InvalidVerifyTokenException,
@@ -85,7 +85,7 @@ export class AuthController {
   @ApiOperation({ summary: '인증코드 전송' })
   @ApiProperty({ type: SendCodeRequestDto })
   @ApiCustomResponse({ status: 201 })
-  @ApiCustomErrorResponseDecorator([
+  @ApiCustomErrorResponse([
     {
       description: '이미 가입된 이메일',
       error: AlreadyRegisteredByEmailException,
@@ -102,7 +102,7 @@ export class AuthController {
   @ApiOperation({ summary: '인증 토큰 발급' })
   @ApiProperty({ type: VerifyCodeRequestDto })
   @ApiCustomResponse({ type: VerifyCodeResponseDto, status: 200 })
-  @ApiCustomErrorResponseDecorator([
+  @ApiCustomErrorResponse([
     {
       description: '잘못된 인증 코드',
       error: InvalidVerifyCodeException,
@@ -121,6 +121,12 @@ export class AuthController {
   @AuthAnyAccount()
   @ApiOperation({ summary: '인증 토큰으로 정보 조회' })
   @ApiCustomResponse({ type: MyInfoResponseDto, status: 200 })
+  @ApiCustomErrorResponse([
+    {
+      description: '인증되지 않은 사용자',
+      error: UnauthorizedException,
+    },
+  ])
   async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponseDto> {
     const memberDoc = member['_doc'];
     const memberId = member['_id'];
