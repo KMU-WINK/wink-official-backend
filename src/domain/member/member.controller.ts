@@ -12,7 +12,6 @@ import { ApiConsumes, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger
 
 import { Member } from './member.schema';
 import { MemberService } from './member.service';
-
 import {
   GetMembersResponseDto,
   UpdateMyAvatarRequestDto,

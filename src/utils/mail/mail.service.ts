@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import * as nodemailer from 'nodemailer';
+
 import {
   approveAccountTemplate,
   refuseAccountTemplate,
@@ -8,10 +10,8 @@ import {
   verifyCodeTemplate,
 } from './template';
 
-import * as nodemailer from 'nodemailer';
-
 interface EmailTemplateResponse {
-  send: (email: string) => Promise<void>;
+  send: (email: string) => void;
 }
 
 @Injectable()
@@ -44,8 +44,8 @@ export class MailService {
     const html = verifyCodeTemplate.replace('{email}', email).replace('{code}', code);
 
     return {
-      send: async (email: string) => {
-        await this.send(email, subject, html);
+      send: (email: string) => {
+        this.send(email, subject, html).then((_) => _);
       },
     };
   }
@@ -55,8 +55,8 @@ export class MailService {
     const html = registerCompleteTemplate.replace('{name}', name);
 
     return {
-      send: async (email: string) => {
-        await this.send(email, subject, html);
+      send: (email: string) => {
+        this.send(email, subject, html).then((_) => _);
       },
     };
   }
@@ -66,8 +66,8 @@ export class MailService {
     const html = approveAccountTemplate.replace('{name}', name);
 
     return {
-      send: async (email: string) => {
-        await this.send(email, subject, html);
+      send: (email: string) => {
+        this.send(email, subject, html).then((_) => _);
       },
     };
   }
@@ -77,8 +77,8 @@ export class MailService {
     const html = refuseAccountTemplate.replace('{name}', name);
 
     return {
-      send: async (email: string) => {
-        await this.send(email, subject, html);
+      send: (email: string) => {
+        this.send(email, subject, html).then((_) => _);
       },
     };
   }

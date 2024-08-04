@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { MemberRepository } from '../member/member.repository';
-
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
+
+import { MemberRepository } from '../member/member.repository';
 
 import {
   AlreadyRegisteredByEmailException,
@@ -67,7 +67,7 @@ export class AuthService {
 
     await this.redisRepository.delete(verifyToken);
 
-    await this.mailService.registerComplete({ name }).send(email);
+    this.mailService.registerComplete({ name }).send(email);
   }
 
   async sendCode(email: string): Promise<void> {
@@ -81,7 +81,7 @@ export class AuthService {
 
     await this.redisRepository.ttl(email, code, 60 * 10);
 
-    await this.mailService.verifyCode({ email, code }).send(email);
+    this.mailService.verifyCode({ email, code }).send(email);
   }
 
   async verifyCode(email: string, code: string): Promise<string> {

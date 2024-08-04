@@ -1,5 +1,5 @@
 import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
@@ -16,7 +16,6 @@ import {
   ApiResponseInterceptor,
   DefaultExceptionFilter,
   NotFoundExceptionFilter,
-  LoggerMiddleware,
 } from '../utils';
 
 @Module({
@@ -56,8 +55,4 @@ import {
   ],
   controllers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

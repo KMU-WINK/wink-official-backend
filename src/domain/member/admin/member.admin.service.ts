@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { MemberRepository } from '../member.repository';
-
-import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
-
-import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
-
 import { Role } from '../constant/Role';
+import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
+import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
 import { MailService } from '../../../utils';
 
@@ -40,7 +37,7 @@ export class MemberAdminService {
 
     await this.memberRepository.updateRoleById(memberId, Role.MEMBER);
 
-    await this.mailService.approveAccount({ name }).send(email);
+    this.mailService.approveAccount({ name }).send(email);
   }
 
   async refuseWaitingMember(memberId: string): Promise<void> {
@@ -52,7 +49,7 @@ export class MemberAdminService {
 
     await this.memberRepository.deleteById(memberId);
 
-    await this.mailService.refuseAccount({ name }).send(email);
+    this.mailService.refuseAccount({ name }).send(email);
   }
 
   async getMembers(): Promise<EachGetMembersForAdminResponseDto[]> {

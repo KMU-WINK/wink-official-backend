@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { MyInfoLinks } from '../../member.schema';
 import { Role } from '../../constant/Role';
 

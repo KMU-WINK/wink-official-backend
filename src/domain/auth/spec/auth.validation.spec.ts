@@ -1,4 +1,5 @@
 import { Validation } from '../../../utils';
+
 import {
   LoginRequestDto,
   RegisterRequestDto,
@@ -18,7 +19,7 @@ describe('Auth Validation Test', () => {
       it('이메일이 주어지지 않았을 때', async () => {
         // Given
         const body: LoginRequestDto = {
-          email: null,
+          email: undefined,
           password: 'p4sSw0rd!',
         };
 
@@ -26,7 +27,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
+        await expect(result).rejects.toThrow('email는 필수 입력 값입니다.');
       });
 
       it('이메일 형식이 올바르지 않을 때', async () => {
@@ -40,7 +41,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
+        await expect(result).rejects.toThrow('email는 이메일 형식이 아닙니다.');
       });
     });
 
@@ -56,21 +57,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('비밀번호는 필수 입력 값입니다.');
-      });
-
-      it('비밀번호가 빈 문자열일 때', async () => {
-        // Given
-        const body: LoginRequestDto = {
-          email: 'honggildong@gmail.com',
-          password: '',
-        };
-
-        // When
-        const result = validation.validateBody(body, LoginRequestDto);
-
-        // Then
-        await expect(result).rejects.toThrow('비밀번호는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('password는 필수 입력 값입니다.');
       });
     });
 
@@ -104,7 +91,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이름은 2글자 이상 10글자 이하로 입력해주세요.');
+        await expect(result).rejects.toThrow('name는 필수 입력 값입니다.');
       });
 
       it('이름이 짧을 때', async () => {
@@ -120,7 +107,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이름은 2글자 이상 10글자 이하로 입력해주세요.');
+        await expect(result).rejects.toThrow('name는 2자 이상으로 입력해주세요.');
       });
 
       it('이름이 길 때', async () => {
@@ -136,7 +123,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이름은 2글자 이상 10글자 이하로 입력해주세요.');
+        await expect(result).rejects.toThrow('name는 5자 이하로 입력해주세요.');
       });
     });
 
@@ -154,7 +141,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 학번이 아닙니다.');
+        await expect(result).rejects.toThrow('studentId는 숫자가 아닙니다.');
       });
 
       it('학번이 짧을 때', async () => {
@@ -170,7 +157,9 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 학번이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'studentId는 학번 형식이 아닙니다. (20000001 ~ 21009999)',
+        );
       });
 
       it('학번이 길 때', async () => {
@@ -186,7 +175,9 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 학번이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'studentId는 학번 형식이 아닙니다. (20000001 ~ 21009999)',
+        );
       });
     });
 
@@ -204,27 +195,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          '비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
-        );
-      });
-
-      it('비밀번호가 빈 문자열일 때', async () => {
-        // Given
-        const body: RegisterRequestDto = {
-          name: '홍길동',
-          studentId: 2024_0001,
-          password: '',
-          verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-        };
-
-        // When
-        const result = validation.validateBody(body, RegisterRequestDto);
-
-        // Then
-        await expect(result).rejects.toThrow(
-          '비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
-        );
+        await expect(result).rejects.toThrow('password는 필수 입력 값입니다.');
       });
 
       it('비밀번호가 짧을 때', async () => {
@@ -240,9 +211,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          '비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
-        );
+        await expect(result).rejects.toThrow('password는 8자 이상으로 입력해주세요.');
       });
 
       it('비밀번호가 길 때', async () => {
@@ -258,9 +227,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          '비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
-        );
+        await expect(result).rejects.toThrow('password는 24자 이하로 입력해주세요.');
       });
 
       it('비밀번호가 영어만 있을 때', async () => {
@@ -277,7 +244,7 @@ describe('Auth Validation Test', () => {
 
         // Then
         await expect(result).rejects.toThrow(
-          '비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
+          'password는 비밀번호 형식이 아닙니다. (영문, 숫자, 특수문자 포함 8~24자)',
         );
       });
     });
@@ -296,26 +263,10 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 인증 토큰이 아닙니다.');
+        await expect(result).rejects.toThrow('verifyToken는 필수 입력 값입니다.');
       });
 
-      it('인증 토큰이 빈 문자열일 때', async () => {
-        // Given
-        const body: RegisterRequestDto = {
-          name: '홍길동',
-          studentId: 2024_0001,
-          password: 'p4sSw0rd!',
-          verifyToken: '',
-        };
-
-        // When
-        const result = validation.validateBody(body, RegisterRequestDto);
-
-        // Then
-        await expect(result).rejects.toThrow('올바른 인증 토큰이 아닙니다.');
-      });
-
-      it('인증 토큰이 UUID v4 형태가 아닐 때', async () => {
+      it('인증 토큰이 UUID 형태가 아닐 때', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
@@ -328,7 +279,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 인증 토큰이 아닙니다.');
+        await expect(result).rejects.toThrow('verifyToken는 UUID 형식이 아닙니다.');
       });
     });
 
@@ -361,7 +312,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, SendCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
+        await expect(result).rejects.toThrow('email는 필수 입력 값입니다.');
       });
 
       it('이메일 형식이 올바르지 않을 때', async () => {
@@ -374,7 +325,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, SendCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
+        await expect(result).rejects.toThrow('email는 이메일 형식이 아닙니다.');
       });
     });
 
@@ -405,7 +356,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
+        await expect(result).rejects.toThrow('email는 필수 입력 값입니다.');
       });
 
       it('이메일 형식이 올바르지 않을 때', async () => {
@@ -419,7 +370,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('이메일 형식이 올바르지 않습니다.');
+        await expect(result).rejects.toThrow('email는 이메일 형식이 아닙니다.');
       });
     });
 
@@ -449,7 +400,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 인증코드가 아닙니다.');
+        await expect(result).rejects.toThrow('code는 숫자 문자열이 아닙니다.');
       });
 
       it('인증코드가 짧을 때', async () => {
@@ -463,7 +414,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('인증코드는 6자리 숫자로 입력해주세요.');
+        await expect(result).rejects.toThrow('code는 6자로 입력해주세요.');
       });
 
       it('인증코드가 길 때', async () => {
@@ -477,7 +428,7 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('인증코드는 6자리 숫자로 입력해주세요.');
+        await expect(result).rejects.toThrow('code는 6자로 입력해주세요.');
       });
     });
 

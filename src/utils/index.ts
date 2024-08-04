@@ -16,8 +16,8 @@ export * from './logger/logger.service';
 // Mail
 export * from './mail/mail.service';
 
-// Middleware
-export * from './middleware/logger.middleware';
+// Mock
+export * from './mock';
 
 // Module
 export * from './module/mail.module';
@@ -40,3 +40,4 @@ export * from './swagger/swagger-init.util';
 
 // Validation
 export * from './validation/validation.util';
+export * as CustomValidation from './validation/custom';
