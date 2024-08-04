@@ -24,8 +24,8 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: undefined,
-          github: 'honggildong',
-          instagram: 'honggildong',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com/honggildong',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -40,8 +40,8 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다. 반갑습니다. 만나서 반가워요. 잘 부탁드립니다.',
-          github: 'honggildong',
-          instagram: 'honggildong',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com/honggildong',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -53,13 +53,13 @@ describe('Member Validation Test', () => {
       });
     });
 
-    describe('Github 아이디', () => {
+    describe('Github URL', () => {
       it('Github ID가 주어지지 않았을 때', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
           github: undefined,
-          instagram: 'honggildong',
+          instagram: 'https://instagram.com/honggildong',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -74,8 +74,8 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'honggildong-',
-          instagram: 'honggildong',
+          github: 'https://github.com/honggildong-',
+          instagram: 'https://instagram.com/honggildong',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -83,15 +83,17 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('github는 Github 아이디 형식이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'github는 Github URL 형식이 아닙니다. (https://github.com/{username})',
+        );
       });
 
       it('Github ID가 잘못 입력되었을 때 (2)', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'hong@gildong',
-          instagram: 'honggildong',
+          github: 'https://github.com.error/honggildong',
+          instagram: 'https://instagram.com/honggildong',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -99,15 +101,18 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('github는 Github 아이디 형식이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'github는 Github URL 형식이 아닙니다. (https://github.com/{username})',
+        );
       });
 
       it('Github ID가 잘못 입력되었을 때 (3)', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'mygithubidishonggildongbutitsverylongbecauseitismorethan38characters',
-          instagram: 'honggildong',
+          github:
+            'https://github.com/mygithubidishonggildongbutitsverylongbecauseitismorethan38characters',
+          instagram: 'https://instagram.com/honggildong',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -115,16 +120,18 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('github는 Github 아이디 형식이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'github는 Github URL 형식이 아닙니다. (https://github.com/{username})',
+        );
       });
     });
 
-    describe('Instagram 아아디', () => {
+    describe('Instagram URL', () => {
       it('Instagram ID가 주어지지 않았을 때', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'honggildong',
+          github: 'https://github.com/honggildong',
           instagram: undefined,
           blog: 'https://honggildong.tistory.com',
         };
@@ -140,8 +147,8 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'honggildong',
-          instagram: 'hong..gildong',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com/hong..gildong',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -149,15 +156,17 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('instagram는 Instagram 아이디 형식이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'instagram는 Instagram URL 형식이 아닙니다. (https://instagram.com/{username})',
+        );
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (2)', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'honggildong',
-          instagram: 'honggildong.',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com/honggildong.',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -165,15 +174,18 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('instagram는 Instagram 아이디 형식이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'instagram는 Instagram URL 형식이 아닙니다. (https://instagram.com/{username})',
+        );
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (3)', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'honggildong',
-          instagram: 'thisisverylonginstagramidbecauseitismorethan30characters',
+          github: 'https://github.com/honggildong',
+          instagram:
+            'https://instagram.com.fake/thisisverylonginstagramidbecauseitismorethan30characters',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -181,14 +193,16 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('instagram는 Instagram 아이디 형식이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'instagram는 Instagram URL 형식이 아닙니다. (https://instagram.com/{username})',
+        );
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (4)', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'honggildong',
+          github: 'https://github.com/honggildong',
           instagram: '.honggildong',
           blog: 'https://honggildong.tistory.com',
         };
@@ -197,7 +211,9 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('instagram는 Instagram 아이디 형식이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          'instagram는 Instagram URL 형식이 아닙니다. (https://instagram.com/{username})',
+        );
       });
     });
 
@@ -206,8 +222,8 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'honggildong',
-          instagram: 'honggildong',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com/honggildong',
           blog: undefined,
         };
 
@@ -222,8 +238,8 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'honggildong',
-          instagram: 'honggildong',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com/honggildong',
           blog: 'itsnoturl',
         };
 
@@ -239,8 +255,8 @@ describe('Member Validation Test', () => {
       // Given
       const body: UpdateMyInfoRequestDto = {
         description: '안녕하세요. 홍길동입니다.',
-        github: 'honggildong',
-        instagram: 'honggildong',
+        github: 'https://github.com/honggildong',
+        instagram: 'https://instagram.com/honggildong',
         blog: 'https://honggildong.tistory.com',
       };
 

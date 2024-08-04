@@ -1,7 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-
-import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import * as bcrypt from 'bcrypt';
 
 import { Member } from './member.schema';
@@ -11,19 +8,14 @@ import { Role } from './constant/Role';
 
 import { WrongPasswordException } from '../auth/exception';
 
-import { S3Provider } from '../../utils';
+import { S3Service } from '../../utils';
 
 @Injectable()
 export class MemberService {
-  private readonly s3Client: S3Client;
-
   constructor(
-    private readonly configService: ConfigService,
     private readonly memberRepository: MemberRepository,
-    s3Provider: S3Provider,
-  ) {
-    this.s3Client = s3Provider.getS3Client();
-  }
+    private readonly s3Service: S3Service,
+  ) {}
 
   async getMembers(): Promise<EachGetMembersResponseDto[]> {
     const members = await this.memberRepository.findAll();
@@ -73,17 +65,17 @@ export class MemberService {
     await this.memberRepository.updatePassword(id, hash);
   }
 
-  async updateMyAvatar(member: Member, file: Express.MulterS3.File): Promise<string> {
+  async updateMyAvatar(member: Member, file: Express.Multer.File): Promise<string> {
     const id = member['_id'];
     const original = member.avatar;
 
-    const avatar = file.location;
+    const avatar = await this.s3Service.upload(file, 'avatars');
     await this.memberRepository.updateAvatar(id, avatar);
 
     if (original) {
-      const bucket = this.configService.getOrThrow<string>('s3.bucket');
-      const key = original.split('/').slice(-1)[0];
-      await this.s3Client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+      const key = this.s3Service.extractKey(original);
+
+      await this.s3Service.delete(key);
     }
 
     return avatar;

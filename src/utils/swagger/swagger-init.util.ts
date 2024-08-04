@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export const swaggerInit = (app: INestApplication): void => {
   SwaggerModule.setup(
-    'swagger',
+    '/api/swagger',
     app,
     SwaggerModule.createDocument(
       app,

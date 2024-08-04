@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import * as nodemailer from 'nodemailer';
@@ -16,6 +16,8 @@ interface EmailTemplateResponse {
 
 @Injectable()
 export class MailService {
+  private readonly logger: Logger = new Logger(MailService.name);
+
   private readonly transporter: nodemailer.Transporter;
 
   constructor(private readonly configService: ConfigService) {
@@ -32,11 +34,13 @@ export class MailService {
 
   async send(to: string, subject: string, html: string): Promise<void> {
     await this.transporter.sendMail({
-      from: this.configService.getOrThrow<string>('smtp.username'),
+      from: `WINK <${this.configService.getOrThrow<string>('smtp.username')}>`,
       to,
       subject,
       html,
     });
+
+    this.logger.log(`Send to ${to} with subject: ${subject}`);
   }
 
   verifyCode({ email, code }: { email: string; code: string }): EmailTemplateResponse {
