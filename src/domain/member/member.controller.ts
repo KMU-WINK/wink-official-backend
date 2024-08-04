@@ -27,6 +27,7 @@ import {
   PermissionException,
 } from '../auth/exception';
 
+import { AvatarFilter } from './util';
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../utils';
 
 @Controller('/member')
@@ -101,7 +102,7 @@ export class MemberController {
   @Patch('/me/avatar')
   @HttpCode(200)
   @AuthMemberAccount()
-  @UseInterceptors(FileInterceptor('avatar'))
+  @UseInterceptors(FileInterceptor('avatar', { fileFilter: AvatarFilter }))
   @ApiOperation({ summary: '내 프로필 사진 수정' })
   @ApiConsumes('multipart/form-data')
   @ApiProperty({ type: UpdateMyAvatarRequestDto })
@@ -118,7 +119,7 @@ export class MemberController {
   ])
   async updateMyAvatar(
     @ReqMember() member: Member,
-    @UploadedFile() file: Express.MulterS3.File,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<UpdateMyAvatarResponseDto> {
     const avatar = await this.memberService.updateMyAvatar(member, file);
 

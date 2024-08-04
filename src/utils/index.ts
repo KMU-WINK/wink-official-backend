@@ -2,7 +2,6 @@
 export * from './config/app.config';
 export * from './config/jwt.config';
 export * from './config/mongo.config';
-export * from './config/multer.config';
 
 // Filter
 export * from './filter/exception.filter';
@@ -31,7 +30,7 @@ export * from './mongo/mongo-model.factory.util';
 export * from './redis/redis.repository';
 
 // S3
-export * from './s3/s3.provider';
+export * from './s3/s3.service';
 
 // Swagger
 export * from './swagger/decorator';
