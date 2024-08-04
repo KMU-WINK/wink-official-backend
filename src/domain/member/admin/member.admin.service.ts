@@ -5,10 +5,14 @@ import { MemberRepository } from '../member.repository';
 import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
 
 import { Role } from '../constant/Role';
+import { MailService } from '../../../utils';
 
 @Injectable()
 export class MemberAdminService {
-  constructor(private readonly memberRepository: MemberRepository) {}
+  constructor(
+    private readonly memberRepository: MemberRepository,
+    private readonly mailService: MailService,
+  ) {}
 
   async getWaitingMembers(): Promise<EachGetWaitingMembersResponseDto[]> {
     const members = await this.memberRepository.findAll();
@@ -26,10 +30,16 @@ export class MemberAdminService {
 
   async approveWaitingMember(memberId: string): Promise<void> {
     await this.memberRepository.updateRoleById(memberId, Role.MEMBER);
+
+    const { name, email } = await this.memberRepository.findById(memberId);
+    await this.mailService.approveAccount({ name }).send(email);
   }
 
   async refuseWaitingMember(memberId: string): Promise<void> {
     await this.memberRepository.deleteById(memberId);
+
+    const { name, email } = await this.memberRepository.findById(memberId);
+    await this.mailService.refuseAccount({ name }).send(email);
   }
 
   async getMembers(): Promise<EachGetMembersForAdminResponseDto[]> {

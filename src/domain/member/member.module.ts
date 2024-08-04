@@ -10,7 +10,7 @@ import { MemberAdminService } from './admin/member.admin.service';
 import { Member, MemberSchema } from './member.schema';
 import { MemberRepository } from './member.repository';
 
-import { MongoModelFactory, MulterConfig, S3Module } from '../../utils';
+import { MailModule, MongoModelFactory, MulterConfig, S3Module } from '../../utils';
 
 @Module({
   imports: [
@@ -22,6 +22,8 @@ import { MongoModelFactory, MulterConfig, S3Module } from '../../utils';
     }),
 
     S3Module,
+
+    MailModule,
   ],
   controllers: [MemberController, MemberAdminController],
   providers: [MemberService, MemberAdminService, MemberRepository],

@@ -15,14 +15,14 @@ import {
   WrongPasswordException,
 } from './exception';
 
-import { RedisRepository, MailService, EmailTemplate } from '../../utils';
+import { RedisRepository, MailService } from '../../utils';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly memberRepository: MemberRepository,
     private readonly redisRepository: RedisRepository,
-    private readonly nodeMail: MailService,
+    private readonly mailService: MailService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -66,6 +66,8 @@ export class AuthService {
     await this.memberRepository.save({ name, studentId, email, password: hash });
 
     await this.redisRepository.delete(verifyToken);
+
+    await this.mailService.registerComplete({ name }).send(email);
   }
 
   async sendCode(email: string): Promise<void> {
@@ -79,11 +81,7 @@ export class AuthService {
 
     await this.redisRepository.ttl(email, code, 60 * 10);
 
-    await this.nodeMail.sendMail(
-      email,
-      '[WINK] 회원가입 인증코드',
-      EmailTemplate.verifyCode(email, code),
-    );
+    await this.mailService.verifyCode({ email, code }).send(email);
   }
 
   async verifyCode(email: string, code: string): Promise<string> {
