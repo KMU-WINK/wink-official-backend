@@ -16,9 +16,6 @@ export * from './logger/logger.service';
 // Mail
 export * from './mail/mail.service';
 
-// Middleware
-export * from './middleware/logger.middleware';
-
 // Module
 export * from './module/mail.module';
 export * from './module/redis.module';
