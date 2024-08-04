@@ -32,6 +32,8 @@ import { MongoModelFactory, MulterConfig, S3Module } from '../../utils';
       useClass: MulterConfig,
       imports: [S3Module],
     }),
+
+    S3Module,
   ],
   controllers: [MemberController, MemberAdminController],
   providers: [MemberService, MemberAdminService, MemberRepository],
