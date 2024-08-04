@@ -76,7 +76,7 @@ yarn start
 Build the Docker image 
 
 ```bash
-docker build -t ioloolo/wink-official-backend:latest .
+docker build -t wink-official-backend:local .
 ```
 
 Run the Docker container
@@ -93,13 +93,14 @@ docker run \
            
            -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
            -e SMTP_USERNAME=(SMTP_USER) -e SMTP_PASSWORD=(SMTP_PASS) \
-           -e SMTP_SECURE=(SMTP_SECURE) -e \
+           -e SMTP_SECURE=(SMTP_SECURE) \
+           
+           -e S3_REGION=(S3_REGION) -e S3_BUCKET=(S3_BUCKET) \
+           -e S3_ACCESS_KEY=(S3_ACCESS_KEY) -e S3_SECRET_KEY=(S3_SECRET_KEY) \
            
            -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
            
-           -p 8080:8080 \
-           -v /path/to/logs:/app/logs -d \
-           ioloolo/wink-official-backend:latest
+           -p 8080:8080 -d wink-official-backend:local
 ```
 
 ## Running Tests
