@@ -82,9 +82,11 @@ export class MemberService {
     const avatar = file.location;
     await this.memberRepository.updateAvatar(id, avatar);
 
-    const bucket = this.configService.getOrThrow<string>('s3.bucket');
-    const key = original.split('/').slice(-1)[0];
-    await this.s3Client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+    if (original) {
+      const bucket = this.configService.getOrThrow<string>('s3.bucket');
+      const key = original.split('/').slice(-1)[0];
+      await this.s3Client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+    }
 
     return avatar;
   }
