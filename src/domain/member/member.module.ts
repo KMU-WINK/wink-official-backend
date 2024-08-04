@@ -3,8 +3,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 
 import { MemberController } from './member.controller';
-import { MemberAdminController } from './member.admin.controller';
+import { MemberAdminController } from './admin/member.admin.controller';
 import { MemberService } from './member.service';
+import { MemberAdminService } from './admin/member.admin.service';
 
 import { Member, MemberSchema } from './member.schema';
 import { MemberRepository } from './member.repository';
@@ -33,7 +34,7 @@ import { MongoModelFactory, MulterConfig, S3Module } from '../../utils';
     }),
   ],
   controllers: [MemberController, MemberAdminController],
-  providers: [MemberService, MemberRepository],
+  providers: [MemberService, MemberAdminService, MemberRepository],
   exports: [MemberRepository],
 })
 export class MemberModule {}
