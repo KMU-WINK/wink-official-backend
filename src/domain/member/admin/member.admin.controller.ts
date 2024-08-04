@@ -81,7 +81,7 @@ export class MemberAdminController {
   @Delete('/waiting')
   @HttpCode(200)
   @AuthAdminAccount()
-  @ApiOperation({ summary: '회원가입 거절' })
+  @ApiOperation({ summary: '회원가입 거부' })
   @ApiProperty({ type: RefuseWaitingMemberRequestDto })
   @ApiCustomResponse({ status: 200 })
   @ApiCustomErrorResponse([
