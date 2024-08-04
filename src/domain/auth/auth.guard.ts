@@ -4,6 +4,7 @@ import {
   CanActivate,
   createParamDecorator,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   SetMetadata,
   UnauthorizedException,
@@ -51,7 +52,7 @@ export class AuthGuard implements CanActivate {
 
     const roles = this.reflector.get<Role[]>('roles', context.getHandler());
     if (roles.length > 0 && !roles.includes(member.role)) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     return true;
