@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { MemberRepository } from '../member.repository';
 import { Role } from '../constant/Role';
@@ -9,6 +9,8 @@ import { MailService } from '../../../utils';
 
 @Injectable()
 export class MemberAdminService {
+  private readonly logger: Logger = new Logger(MemberAdminService.name);
+
   constructor(
     private readonly memberRepository: MemberRepository,
     private readonly mailService: MailService,
@@ -37,6 +39,8 @@ export class MemberAdminService {
 
     await this.memberRepository.updateRoleById(memberId, Role.MEMBER);
 
+    this.logger.log(`Approve member: ${name} (${email})`);
+
     this.mailService.approveAccount({ name }).send(email);
   }
 
@@ -48,6 +52,8 @@ export class MemberAdminService {
     }
 
     await this.memberRepository.deleteById(memberId);
+
+    this.logger.log(`Refuse member: ${name} (${email})`);
 
     this.mailService.refuseAccount({ name }).send(email);
   }
@@ -79,6 +85,8 @@ export class MemberAdminService {
       throw new NotApprovedMemberException();
     }
 
+    this.logger.log(`Update role: ${memberId} to ${role}`);
+
     await this.memberRepository.updateRoleById(memberId, role);
   }
 
@@ -88,6 +96,8 @@ export class MemberAdminService {
     if (_role === Role.WAITING) {
       throw new NotApprovedMemberException();
     }
+
+    this.logger.log(`Update fee: ${memberId} to ${fee}`);
 
     await this.memberRepository.updateFeeById(memberId, fee);
   }

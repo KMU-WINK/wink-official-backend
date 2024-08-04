@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { v4 as uuid } from 'uuid';
@@ -13,6 +13,8 @@ import {
 
 @Injectable()
 export class S3Service {
+  private readonly logger: Logger = new Logger(S3Service.name);
+
   private readonly s3Client: S3Client;
 
   constructor(private readonly configService: ConfigService) {
@@ -38,6 +40,8 @@ export class S3Service {
       }),
     );
 
+    this.logger.log(`Upload file: ${key}`);
+
     return `https://${this.configService.getOrThrow<string>('s3.bucket')}.s3.${this.configService.getOrThrow<string>('s3.region')}.amazonaws.com/${key}`;
   }
 
@@ -48,6 +52,8 @@ export class S3Service {
         Bucket: this.configService.getOrThrow<string>('s3.bucket'),
       }),
     );
+
+    this.logger.log(`Delete file: ${key}`);
   }
 
   extractKey(url: string) {
