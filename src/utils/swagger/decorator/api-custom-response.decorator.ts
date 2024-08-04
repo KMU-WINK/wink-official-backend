@@ -27,7 +27,7 @@ export const ApiCustomResponse = (options: ApiCustomResponseOptions) => {
               },
               {
                 properties: {
-                  data: { $ref: getSchemaPath(options.type) },
+                  content: { $ref: getSchemaPath(options.type) },
                 },
               },
             ],

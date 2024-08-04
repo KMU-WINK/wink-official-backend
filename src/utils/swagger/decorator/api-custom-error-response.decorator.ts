@@ -37,7 +37,7 @@ export const ApiCustomErrorResponse = (options: ApiCustomErrorResponseOptions[])
                 {
                   value: {
                     error: true,
-                    data: error.getResponse(),
+                    content: error.getResponse(),
                   },
                   summary: description,
                 },

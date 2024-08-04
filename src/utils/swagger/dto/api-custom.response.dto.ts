@@ -8,5 +8,5 @@ export class ApiCustomResponseDto {
     type: 'object',
     description: '응답 데이터',
   })
-  data: any;
+  content: any;
 }
