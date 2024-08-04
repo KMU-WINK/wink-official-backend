@@ -5,7 +5,7 @@ import { Member } from './member.schema';
 
 import { Role } from './constant/Role';
 
-import { Model, ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class MemberRepository {
@@ -75,7 +75,7 @@ export class MemberRepository {
   }
 
   // Delete
-  async deleteById(id: string | ObjectId): Promise<void> {
+  async deleteById(id: string): Promise<void> {
     await this.memberModel.deleteOne({ _id: id }).exec();
   }
 
