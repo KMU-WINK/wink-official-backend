@@ -48,7 +48,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('20자 이내로 입력해주세요.');
+        await expect(result).rejects.toThrow('description는 20자 이하로 입력해주세요.');
       });
     });
 
@@ -82,7 +82,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 Github 아이디가 아닙니다.');
+        await expect(result).rejects.toThrow('github는 Github 아이디 형식이 아닙니다.');
       });
 
       it('Github ID가 잘못 입력되었을 때 (2)', async () => {
@@ -98,7 +98,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 Github 아이디가 아닙니다.');
+        await expect(result).rejects.toThrow('github는 Github 아이디 형식이 아닙니다.');
       });
 
       it('Github ID가 잘못 입력되었을 때 (3)', async () => {
@@ -114,7 +114,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 Github 아이디가 아닙니다.');
+        await expect(result).rejects.toThrow('github는 Github 아이디 형식이 아닙니다.');
       });
     });
 
@@ -148,7 +148,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 Instagram 아이디가 아닙니다.');
+        await expect(result).rejects.toThrow('instagram는 Instagram 아이디 형식이 아닙니다.');
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (2)', async () => {
@@ -164,7 +164,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 Instagram 아이디가 아닙니다.');
+        await expect(result).rejects.toThrow('instagram는 Instagram 아이디 형식이 아닙니다.');
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (3)', async () => {
@@ -180,7 +180,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 Instagram 아이디가 아닙니다.');
+        await expect(result).rejects.toThrow('instagram는 Instagram 아이디 형식이 아닙니다.');
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (4)', async () => {
@@ -196,7 +196,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 Instagram 아이디가 아닙니다.');
+        await expect(result).rejects.toThrow('instagram는 Instagram 아이디 형식이 아닙니다.');
       });
     });
 
@@ -230,7 +230,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 URL이 아닙니다.');
+        await expect(result).rejects.toThrow('blog는 URL 형식이 아닙니다.');
       });
     });
 
@@ -264,7 +264,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('비밀번호는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('password는 필수 입력 값입니다.');
       });
     });
 
@@ -280,25 +280,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          '새 비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
-        );
-      });
-
-      it('비밀번호가 빈 문자열일 때', async () => {
-        // Given
-        const body: UpdateMyPasswordRequestDto = {
-          password: 'p4ssw0rd!',
-          newPassword: '',
-        };
-
-        // When
-        const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
-
-        // Then
-        await expect(result).rejects.toThrow(
-          '새 비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
-        );
+        await expect(result).rejects.toThrow('newPassword는 필수 입력 값입니다.');
       });
 
       it('비밀번호가 짧을 때', async () => {
@@ -312,9 +294,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          '새 비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
-        );
+        await expect(result).rejects.toThrow('newPassword는 8자 이상으로 입력해주세요.');
       });
 
       it('비밀번호가 길 때', async () => {
@@ -328,9 +308,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          '새 비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
-        );
+        await expect(result).rejects.toThrow('newPassword는 24자 이하로 입력해주세요.');
       });
 
       it('비밀번호가 영어만 있을 때', async () => {
@@ -345,7 +323,7 @@ describe('Member Validation Test', () => {
 
         // Then
         await expect(result).rejects.toThrow(
-          '새 비밀번호는 8글자 이상 24글자 이하의 영어 대소문자와 숫자로 입력해주세요.',
+          'newPassword는 비밀번호 형식이 아닙니다. (영문, 숫자, 특수문자 포함 8~24자)',
         );
       });
     });
@@ -377,7 +355,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, ApproveWaitingMemberRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 멤버 ID가 아닙니다.');
+        await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
       });
 
       it('올바른 멤버 ID가 아닐 때', async () => {
@@ -390,7 +368,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, ApproveWaitingMemberRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 멤버 ID가 아닙니다.');
+        await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
       });
     });
 
@@ -420,7 +398,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, RefuseWaitingMemberRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 멤버 ID가 아닙니다.');
+        await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
       });
 
       it('올바른 멤버 ID가 아닐 때', async () => {
@@ -433,7 +411,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, RefuseWaitingMemberRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 멤버 ID가 아닙니다.');
+        await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
       });
     });
 
@@ -464,7 +442,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 멤버 ID가 아닙니다.');
+        await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
       });
 
       it('올바른 멤버 ID가 아닐 때', async () => {
@@ -478,7 +456,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 멤버 ID가 아닙니다.');
+        await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
       });
     });
 
@@ -494,7 +472,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 역할이 아닙니다.');
+        await expect(result).rejects.toThrow('role는 필수 입력 값입니다.');
       });
 
       it('올바른 역할이 아닐 때', async () => {
@@ -508,7 +486,9 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 역할이 아닙니다.');
+        await expect(result).rejects.toThrow(
+          `role는 올바른 값이 아닙니다. (${Object.values(Role).join(', ')})`,
+        );
       });
     });
 
@@ -540,7 +520,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberFeeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 멤버 ID가 아닙니다.');
+        await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
       });
 
       it('올바른 멤버 ID가 아닐 때', async () => {
@@ -554,7 +534,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberFeeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 멤버 ID가 아닙니다.');
+        await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
       });
     });
 
@@ -570,7 +550,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberFeeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('올바른 회비 납부 여부가 아닙니다.');
+        await expect(result).rejects.toThrow('fee는 필수 입력 값입니다.');
       });
     });
 

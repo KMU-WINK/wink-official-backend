@@ -37,3 +37,4 @@ export * from './swagger/swagger-init.util';
 
 // Validation
 export * from './validation/validation.util';
+export * as CustomValidation from './validation/custom';
