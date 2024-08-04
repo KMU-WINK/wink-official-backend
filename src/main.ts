@@ -9,6 +9,8 @@ import { LoggerService, swaggerInit } from './utils';
     logger: LoggerService,
   });
 
+  app.setGlobalPrefix('/api');
+
   swaggerInit(app);
 
   await app.listen(8080);
