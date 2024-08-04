@@ -8,7 +8,7 @@ export class MyInfoResponseDto {
     description: '유저 아이디',
     example: '1a2b3c4d5e6f7g8h9i0j1k2l',
   })
-  userId: string;
+  memberId: string;
 
   @ApiProperty({
     description: '이름',

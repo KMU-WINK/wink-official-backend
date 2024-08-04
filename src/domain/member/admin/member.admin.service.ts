@@ -4,7 +4,10 @@ import { MemberRepository } from '../member.repository';
 
 import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
 
+import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
+
 import { Role } from '../constant/Role';
+
 import { MailService } from '../../../utils';
 
 @Injectable()
@@ -29,42 +32,66 @@ export class MemberAdminService {
   }
 
   async approveWaitingMember(memberId: string): Promise<void> {
+    const { name, email, role } = await this.memberRepository.findById(memberId);
+
+    if (role !== Role.WAITING) {
+      throw new NotWaitingMemberException();
+    }
+
     await this.memberRepository.updateRoleById(memberId, Role.MEMBER);
 
-    const { name, email } = await this.memberRepository.findById(memberId);
     await this.mailService.approveAccount({ name }).send(email);
   }
 
   async refuseWaitingMember(memberId: string): Promise<void> {
+    const { name, email, role } = await this.memberRepository.findById(memberId);
+
+    if (role !== Role.WAITING) {
+      throw new NotWaitingMemberException();
+    }
+
     await this.memberRepository.deleteById(memberId);
 
-    const { name, email } = await this.memberRepository.findById(memberId);
     await this.mailService.refuseAccount({ name }).send(email);
   }
 
   async getMembers(): Promise<EachGetMembersForAdminResponseDto[]> {
     const members = await this.memberRepository.findAll();
 
-    return members.map(
-      (member) =>
-        ({
-          userId: member['_id'],
-          name: member.name,
-          avatar: member.avatar,
-          description: member.description,
-          link: member.link,
-          role: member.role,
-          studentId: member.studentId,
-          fee: member.fee,
-        }) as EachGetMembersForAdminResponseDto,
-    ) as EachGetMembersForAdminResponseDto[];
+    return members
+      .filter((member) => member.role !== Role.WAITING)
+      .map(
+        (member) =>
+          ({
+            memberId: member['_id'],
+            name: member.name,
+            avatar: member.avatar,
+            description: member.description,
+            link: member.link,
+            role: member.role,
+            studentId: member.studentId,
+            fee: member.fee,
+          }) as EachGetMembersForAdminResponseDto,
+      ) as EachGetMembersForAdminResponseDto[];
   }
 
-  async updateRole(userId: string, role: Role): Promise<void> {
-    await this.memberRepository.updateRoleById(userId, role);
+  async updateRole(memberId: string, role: Role): Promise<void> {
+    const { role: _role } = await this.memberRepository.findById(memberId);
+
+    if (_role === Role.WAITING) {
+      throw new NotApprovedMemberException();
+    }
+
+    await this.memberRepository.updateRoleById(memberId, role);
   }
 
-  async updateFee(userId: string, fee: boolean): Promise<void> {
-    await this.memberRepository.updateFeeById(userId, fee);
+  async updateFee(memberId: string, fee: boolean): Promise<void> {
+    const { role: _role } = await this.memberRepository.findById(memberId);
+
+    if (_role === Role.WAITING) {
+      throw new NotApprovedMemberException();
+    }
+
+    await this.memberRepository.updateFeeById(memberId, fee);
   }
 }

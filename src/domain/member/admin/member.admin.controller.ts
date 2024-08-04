@@ -21,6 +21,8 @@ import {
   UpdateMemberRoleRequestDto,
 } from '../dto';
 
+import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
+
 import { AuthAdminAccount } from '../../auth/auth.guard';
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../utils';
 
@@ -65,11 +67,15 @@ export class MemberAdminController {
       description: '권한이 없는 사용자',
       error: ForbiddenException,
     },
+    {
+      description: '대기 중인 회원이 아님',
+      error: NotWaitingMemberException,
+    },
   ])
   async approveWaitingMember(@Body() request: ApproveWaitingMemberRequestDto): Promise<void> {
-    const { userId } = request;
+    const { memberId } = request;
 
-    await this.memberAdminService.approveWaitingMember(userId);
+    await this.memberAdminService.approveWaitingMember(memberId);
   }
 
   @Delete('/waiting')
@@ -87,11 +93,15 @@ export class MemberAdminController {
       description: '권한이 없는 사용자',
       error: ForbiddenException,
     },
+    {
+      description: '대기 중인 회원이 아님',
+      error: NotWaitingMemberException,
+    },
   ])
   async refuseWaitingMember(@Body() request: RefuseWaitingMemberRequestDto): Promise<void> {
-    const { userId } = request;
+    const { memberId } = request;
 
-    await this.memberAdminService.refuseWaitingMember(userId);
+    await this.memberAdminService.refuseWaitingMember(memberId);
   }
 
   @Get()
@@ -130,11 +140,15 @@ export class MemberAdminController {
       description: '권한이 없는 사용자',
       error: ForbiddenException,
     },
+    {
+      description: '승인되지 않은 회원',
+      error: NotApprovedMemberException,
+    },
   ])
   async updateMemberRole(@Body() request: UpdateMemberRoleRequestDto): Promise<void> {
-    const { userId, role } = request;
+    const { memberId, role } = request;
 
-    await this.memberAdminService.updateRole(userId, role);
+    await this.memberAdminService.updateRole(memberId, role);
   }
 
   @Patch('/fee')
@@ -152,10 +166,14 @@ export class MemberAdminController {
       description: '권한이 없는 사용자',
       error: ForbiddenException,
     },
+    {
+      description: '승인되지 않은 회원',
+      error: NotApprovedMemberException,
+    },
   ])
   async updateMemberFee(@Body() request: UpdateMemberFeeRequestDto): Promise<void> {
-    const { userId, fee } = request;
+    const { memberId, fee } = request;
 
-    await this.memberAdminService.updateFee(userId, fee);
+    await this.memberAdminService.updateFee(memberId, fee);
   }
 }

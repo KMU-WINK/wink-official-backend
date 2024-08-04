@@ -10,6 +10,8 @@ import { EachGetMembersResponseDto } from './dto';
 import { Member } from './member.schema';
 import { MemberRepository } from './member.repository';
 
+import { Role } from './constant/Role';
+
 import { WrongPasswordException } from '../auth/exception';
 import { S3Provider } from '../../utils';
 
@@ -28,17 +30,19 @@ export class MemberService {
   async getMembers(): Promise<EachGetMembersResponseDto[]> {
     const members = await this.memberRepository.findAll();
 
-    return members.map(
-      (member) =>
-        ({
-          userId: member['_id'],
-          name: member.name,
-          avatar: member.avatar,
-          description: member.description,
-          link: member.link,
-          role: member.role,
-        }) as EachGetMembersResponseDto,
-    ) as EachGetMembersResponseDto[];
+    return members
+      .filter((member) => member.role !== Role.WAITING)
+      .map(
+        (member) =>
+          ({
+            memberId: member['_id'],
+            name: member.name,
+            avatar: member.avatar,
+            description: member.description,
+            link: member.link,
+            role: member.role,
+          }) as EachGetMembersResponseDto,
+      ) as EachGetMembersResponseDto[];
   }
 
   async updateMyInfo(

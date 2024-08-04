@@ -134,6 +134,6 @@ export class AuthController {
     delete memberDoc['_id'];
     delete memberDoc['__v'];
 
-    return { userId: memberId, ...memberDoc };
+    return { memberId: memberId, ...memberDoc };
   }
 }

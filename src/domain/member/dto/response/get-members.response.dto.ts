@@ -4,10 +4,10 @@ import { Role } from '../../constant/Role';
 
 export class EachGetMembersResponseDto {
   @ApiProperty({
-    description: '유저 ID',
+    description: '멤버 ID',
     example: '1a2b3c4d5e6f7g8h9i0j1k2l',
   })
-  userId: string;
+  memberId: string;
 
   @ApiProperty({
     description: '이름',
