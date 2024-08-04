@@ -12,18 +12,18 @@ export class UpdateMyInfoRequestDto {
   description?: string;
 
   @ApiProperty({
-    description: 'Github 아이디',
-    example: 'honggildong',
+    description: 'Github URL',
+    example: 'https://github.com/honggildong',
   })
-  @CustomValidation.IsGithubUsername()
+  @CustomValidation.IsGithubUrl()
   @CustomValidation.CanEmpty()
   github?: string;
 
   @ApiProperty({
-    description: 'Instagram 아이디',
-    example: 'honggildong',
+    description: 'Instagram URL',
+    example: 'https://www.instagram.com/honggildong',
   })
-  @CustomValidation.IsInstagramUsername()
+  @CustomValidation.IsInstagramUrl()
   @CustomValidation.CanEmpty()
   instagram?: string;
 
