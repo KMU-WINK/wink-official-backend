@@ -5,7 +5,7 @@ import { MyInfoLinks } from '../../../member/member.schema';
 
 export class MyInfoResponseDto {
   @ApiProperty({
-    description: '유저 아이디',
+    description: '멤버 아이디',
     example: '1a2b3c4d5e6f7g8h9i0j1k2l',
   })
   memberId: string;
@@ -23,8 +23,9 @@ export class MyInfoResponseDto {
   studentId: number;
 
   @ApiProperty({
-    description: '유저 아이콘 URL',
-    example: 'https://example.com/avatar.png',
+    description: '아이콘 URL',
+    example:
+      'https://kmu-wink.s3.ap-northeast-2.amazonaws.com/avatar/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.png',
   })
   avatar?: string;
 

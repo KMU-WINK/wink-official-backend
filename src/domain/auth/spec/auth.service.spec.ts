@@ -38,7 +38,7 @@ describe('Auth Service Test', () => {
   });
 
   describe('로그인', () => {
-    it('존재하지 않는 유저일 때', async () => {
+    it('존재하지 않는 멤버일 때', async () => {
       // Given
 
       // When
