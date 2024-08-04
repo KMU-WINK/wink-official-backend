@@ -1,8 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
-
 export const swaggerInit = (app: INestApplication): void => {
   SwaggerModule.setup(
     'swagger',
@@ -17,7 +15,6 @@ export const swaggerInit = (app: INestApplication): void => {
         .build(),
     ),
     {
-      customCss: new SwaggerTheme().getBuffer(SwaggerThemeNameEnum.DARK),
       swaggerOptions: { defaultModelsExpandDepth: -1 },
     },
   );
