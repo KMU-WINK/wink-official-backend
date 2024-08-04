@@ -6,7 +6,7 @@ import { MyInfoLinks } from '../../../member/member.schema';
 export class MyInfoResponseDto {
   @ApiProperty({
     description: '멤버 아이디',
-    example: '1a2b3c4d5e6f7g8h9i0j1k2l',
+    example: '1a2b3c4d5e6f7a8b9c0d1e2f',
   })
   memberId: string;
 
