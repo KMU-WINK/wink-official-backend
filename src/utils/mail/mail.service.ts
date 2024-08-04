@@ -34,7 +34,7 @@ export class MailService {
 
   async send(to: string, subject: string, html: string): Promise<void> {
     await this.transporter.sendMail({
-      from: this.configService.getOrThrow<string>('smtp.username'),
+      from: `WINK <${this.configService.getOrThrow<string>('smtp.username')}>`,
       to,
       subject,
       html,
