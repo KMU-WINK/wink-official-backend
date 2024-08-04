@@ -102,7 +102,7 @@ export class MemberController {
   @HttpCode(200)
   @AuthMemberAccount()
   @UseInterceptors(FileInterceptor('avatar'))
-  @ApiOperation({ summary: '내 아바타 수정' })
+  @ApiOperation({ summary: '내 프로필 사진 수정' })
   @ApiConsumes('multipart/form-data')
   @ApiProperty({ type: UpdateMyAvatarRequestDto })
   @ApiCustomResponse({ type: UpdateMyAvatarResponseDto, status: 200 })
