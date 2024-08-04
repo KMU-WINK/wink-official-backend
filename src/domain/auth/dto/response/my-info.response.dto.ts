@@ -5,10 +5,10 @@ import { MyInfoLinks } from '../../../member/member.schema';
 
 export class MyInfoResponseDto {
   @ApiProperty({
-    description: '유저 아이디',
-    example: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+    description: '멤버 아이디',
+    example: '1a2b3c4d5e6f7a8b9c0d1e2f',
   })
-  userId: string;
+  memberId: string;
 
   @ApiProperty({
     description: '이름',
@@ -23,8 +23,9 @@ export class MyInfoResponseDto {
   studentId: number;
 
   @ApiProperty({
-    description: '유저 아이콘 URL',
-    example: 'https://example.com/avatar.png',
+    description: '아이콘 URL',
+    example:
+      'https://kmu-wink.s3.ap-northeast-2.amazonaws.com/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.jpeg',
   })
   avatar?: string;
 

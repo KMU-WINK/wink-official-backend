@@ -6,7 +6,6 @@ import {
   ExecutionContext,
   Injectable,
   SetMetadata,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -15,6 +14,8 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { MemberRepository } from '../member/member.repository';
 
 import { Role } from '../member/constant/Role';
+
+import { UnauthorizedException, PermissionException } from './exception';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -51,7 +52,7 @@ export class AuthGuard implements CanActivate {
 
     const roles = this.reflector.get<Role[]>('roles', context.getHandler());
     if (roles.length > 0 && !roles.includes(member.role)) {
-      throw new UnauthorizedException();
+      throw new PermissionException();
     }
 
     return true;
@@ -93,7 +94,7 @@ export const AuthMemberAccount = () =>
         .filter((role) => role !== Role.WAITING),
     ),
     UseGuards(AuthGuard),
-    ApiBearerAuth,
+    ApiBearerAuth(),
   );
 
 export const AuthAdminAccount = () =>
@@ -105,5 +106,5 @@ export const AuthAdminAccount = () =>
         .filter((role) => role !== Role.WAITING && role !== Role.MEMBER),
     ),
     UseGuards(AuthGuard),
-    ApiBearerAuth,
+    ApiBearerAuth(),
   );

@@ -7,10 +7,10 @@ import Redis from 'ioredis';
 export class RedisRepository {
   private readonly redisClient: Redis;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(configService: ConfigService) {
     this.redisClient = new Redis(
-      this.configService.getOrThrow<number>('redis.port'),
-      this.configService.getOrThrow<string>('redis.host'),
+      configService.getOrThrow<number>('redis.port'),
+      configService.getOrThrow<string>('redis.host'),
     );
   }
 

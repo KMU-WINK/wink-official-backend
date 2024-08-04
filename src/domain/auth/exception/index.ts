@@ -6,3 +6,6 @@ export * from './invalid-verify-token.exception';
 
 export * from './member-not-found.exception';
 export * from './wrong-password.exception';
+
+export * from './unauthorized.exception';
+export * from './permission.exception';
