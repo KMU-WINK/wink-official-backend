@@ -24,7 +24,7 @@ export const mockAuth = async () => {
       AuthService,
       { provide: MemberRepository, useValue: mockMemberRepository(memoryMemberRepository) },
       { provide: RedisRepository, useValue: mockRedisRepository(memoryRedisRepository) },
-      { provide: MailService, useValue: mockNodeMail() },
+      { provide: MailService, useValue: mockMailService() },
     ],
   }).compile();
 
@@ -85,6 +85,18 @@ const mockRedisRepository = (memory: Record<string, string>) => ({
   }),
 });
 
-const mockNodeMail = () => ({
-  sendMail: jest.fn(async () => {}),
+const mockMailService = () => ({
+  send: jest.fn(async () => {}),
+  verifyCode: jest.fn(() => ({
+    send: jest.fn(async () => {}),
+  })),
+  registerComplete: jest.fn(() => ({
+    send: jest.fn(async () => {}),
+  })),
+  approveAccount: jest.fn(() => ({
+    send: jest.fn(async () => {}),
+  })),
+  refuseAccount: jest.fn(() => ({
+    send: jest.fn(async () => {}),
+  })),
 });
