@@ -15,8 +15,7 @@ import {
   WrongPasswordException,
 } from './exception';
 
-import { EmailTemplateUtil } from './util';
-import { RedisRepository, MailService } from '../../utils';
+import { RedisRepository, MailService, EmailTemplate } from '../../utils';
 
 @Injectable()
 export class AuthService {
@@ -83,7 +82,7 @@ export class AuthService {
     await this.nodeMail.sendMail(
       email,
       '[WINK] 회원가입 인증코드',
-      EmailTemplateUtil.verifyCode(email, code),
+      EmailTemplate.verifyCode(email, code),
     );
   }
 

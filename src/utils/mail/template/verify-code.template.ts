@@ -1,12 +1,4 @@
-export class EmailTemplateUtil {
-  static verifyCode(email: string, verificationCode: string): string {
-    return verifyCodeTemplate
-      .replace('{email}', email)
-      .replace('{verification_code}', verificationCode);
-  }
-}
-
-const verifyCodeTemplate: string = `
+export const verifyCodeTemplate: string = `
 <!DOCTYPE html>
 <html>
 <head>

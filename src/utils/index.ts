@@ -15,6 +15,7 @@ export * from './logger/logger.service';
 
 // Mail
 export * from './mail/mail.service';
+export * from './mail/email-template.util';
 
 // Middleware
 export * from './middleware/logger.middleware';
