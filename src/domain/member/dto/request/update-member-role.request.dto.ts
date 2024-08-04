@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { CustomValidation } from '../../../../utils';
-
 import { Role } from '../../constant/Role';
+
+import { CustomValidation } from '../../../../utils';
 
 export class UpdateMemberRoleRequestDto {
   @ApiProperty({

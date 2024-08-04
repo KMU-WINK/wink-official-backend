@@ -1,5 +1,7 @@
 import { mockAuth } from './mock/auth.mock';
 
+import * as bcrypt from 'bcrypt';
+
 import { AuthService } from '../auth.service';
 
 import { Member } from '../../member/member.schema';
@@ -12,8 +14,6 @@ import {
   MemberNotFoundException,
   WrongPasswordException,
 } from '../exception';
-
-import * as bcrypt from 'bcrypt';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;

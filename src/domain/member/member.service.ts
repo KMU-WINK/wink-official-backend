@@ -2,17 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
-
 import * as bcrypt from 'bcrypt';
-
-import { EachGetMembersResponseDto } from './dto';
 
 import { Member } from './member.schema';
 import { MemberRepository } from './member.repository';
-
+import { EachGetMembersResponseDto } from './dto';
 import { Role } from './constant/Role';
 
 import { WrongPasswordException } from '../auth/exception';
+
 import { S3Provider } from '../../utils';
 
 @Injectable()

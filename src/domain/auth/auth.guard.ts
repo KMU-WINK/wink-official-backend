@@ -11,11 +11,10 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-import { MemberRepository } from '../member/member.repository';
+import { UnauthorizedException, PermissionException } from './exception';
 
 import { Role } from '../member/constant/Role';
-
-import { UnauthorizedException, PermissionException } from './exception';
+import { MemberRepository } from '../member/member.repository';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

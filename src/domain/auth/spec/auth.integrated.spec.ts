@@ -1,12 +1,11 @@
 import { mockAuth } from './mock/auth.mock';
 
+import * as jwt from 'jsonwebtoken';
+
 import { AuthController } from '../auth.controller';
-
-import { Member } from '../../member/member.schema';
-
 import { RegisterRequestDto, SendCodeRequestDto, VerifyCodeRequestDto } from '../dto';
 
-import * as jwt from 'jsonwebtoken';
+import { Member } from '../../member/member.schema';
 
 describe('Auth Integrated Test', () => {
   let authController: AuthController;

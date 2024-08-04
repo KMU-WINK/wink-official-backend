@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import * as nodemailer from 'nodemailer';
+
 import {
   approveAccountTemplate,
   refuseAccountTemplate,
   registerCompleteTemplate,
   verifyCodeTemplate,
 } from './template';
-
-import * as nodemailer from 'nodemailer';
 
 interface EmailTemplateResponse {
   send: (email: string) => void;

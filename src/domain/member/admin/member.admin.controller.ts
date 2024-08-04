@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, HttpCode, Patch } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { MemberAdminService } from './member.admin.service';
-
 import {
   ApproveWaitingMemberRequestDto,
   GetMembersForAdminResponseDto,
@@ -11,11 +10,11 @@ import {
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
 } from '../dto';
-
-import { UnauthorizedException, PermissionException } from '../../auth/exception';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
 import { AuthAdminAccount } from '../../auth/auth.guard';
+import { UnauthorizedException, PermissionException } from '../../auth/exception';
+
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../utils';
 
 @Controller('/admin/member')

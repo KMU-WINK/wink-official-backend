@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
 import { MemberRepository } from '../member.repository';
-
-import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
-
-import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
-
 import { Role } from '../constant/Role';
+import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
+import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
 import { MailService } from '../../../utils';
 

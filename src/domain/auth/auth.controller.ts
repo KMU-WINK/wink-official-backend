@@ -3,9 +3,6 @@ import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { AuthAnyAccount, ReqMember } from './auth.guard';
-
-import { Member } from '../member/member.schema';
-
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -15,6 +12,8 @@ import {
   VerifyCodeRequestDto,
   VerifyCodeResponseDto,
 } from './dto';
+
+import { Member } from '../member/member.schema';
 
 import {
   AlreadyRegisteredByEmailException,

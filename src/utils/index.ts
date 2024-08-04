@@ -16,6 +16,9 @@ export * from './logger/logger.service';
 // Mail
 export * from './mail/mail.service';
 
+// Mock
+export * from './mock';
+
 // Module
 export * from './module/mail.module';
 export * from './module/redis.module';

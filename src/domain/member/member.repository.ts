@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Member } from './member.schema';
-
-import { Role } from './constant/Role';
-
 import { Model } from 'mongoose';
+
+import { Member } from './member.schema';
+import { Role } from './constant/Role';
 
 @Injectable()
 export class MemberRepository {

@@ -6,9 +6,14 @@ import { AuthService } from '../../auth.service';
 
 import { Member } from '../../../member/member.schema';
 import { MemberRepository } from '../../../member/member.repository';
-import { MailService, RedisRepository } from '../../../../utils';
 
-import { mockMailService, mockMemberRepository, mockRedisRepository } from '../../../../utils/mock';
+import {
+  MailService,
+  mockMailService,
+  mockMemberRepository,
+  mockRedisRepository,
+  RedisRepository,
+} from '../../../../utils';
 
 export const mockAuth = async () => {
   const memoryMemberRepository: Member[] = [];
