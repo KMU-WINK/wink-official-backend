@@ -94,7 +94,7 @@ export const AuthMemberAccount = () =>
         .filter((role) => role !== Role.WAITING),
     ),
     UseGuards(AuthGuard),
-    ApiBearerAuth,
+    ApiBearerAuth(),
   );
 
 export const AuthAdminAccount = () =>
@@ -106,5 +106,5 @@ export const AuthAdminAccount = () =>
         .filter((role) => role !== Role.WAITING && role !== Role.MEMBER),
     ),
     UseGuards(AuthGuard),
-    ApiBearerAuth,
+    ApiBearerAuth(),
   );
