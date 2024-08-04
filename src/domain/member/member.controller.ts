@@ -1,11 +1,9 @@
 import {
   Body,
   Controller,
-  ForbiddenException,
   Get,
   HttpCode,
   Patch,
-  UnauthorizedException,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -24,7 +22,11 @@ import {
 } from './dto';
 
 import { AuthMemberAccount, ReqMember } from '../auth/auth.guard';
-import { WrongPasswordException } from '../auth/exception';
+import {
+  WrongPasswordException,
+  UnauthorizedException,
+  PermissionException,
+} from '../auth/exception';
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../utils';
 
@@ -56,7 +58,7 @@ export class MemberController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
   ])
   async updateMyInfo(
@@ -81,7 +83,7 @@ export class MemberController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
     {
       description: '기존 비밀번호가 틀림',
@@ -112,7 +114,7 @@ export class MemberController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
   ])
   async updateMyAvatar(

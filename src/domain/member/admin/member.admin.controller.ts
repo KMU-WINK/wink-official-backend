@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  ForbiddenException,
-  Get,
-  HttpCode,
-  Patch,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Patch } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { MemberAdminService } from './member.admin.service';
@@ -21,6 +12,7 @@ import {
   UpdateMemberRoleRequestDto,
 } from '../dto';
 
+import { UnauthorizedException, PermissionException } from '../../auth/exception';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
 import { AuthAdminAccount } from '../../auth/auth.guard';
@@ -43,7 +35,7 @@ export class MemberAdminController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
   ])
   async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
@@ -65,7 +57,7 @@ export class MemberAdminController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
     {
       description: '대기 중인 회원이 아님',
@@ -91,7 +83,7 @@ export class MemberAdminController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
     {
       description: '대기 중인 회원이 아님',
@@ -116,7 +108,7 @@ export class MemberAdminController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
   ])
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
@@ -138,7 +130,7 @@ export class MemberAdminController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
     {
       description: '승인되지 않은 회원',
@@ -164,7 +156,7 @@ export class MemberAdminController {
     },
     {
       description: '권한이 없는 사용자',
-      error: ForbiddenException,
+      error: PermissionException,
     },
     {
       description: '승인되지 않은 회원',

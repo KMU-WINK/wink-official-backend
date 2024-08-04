@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Put, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -22,6 +22,7 @@ import {
   InvalidVerifyCodeException,
   InvalidVerifyTokenException,
   MemberNotFoundException,
+  UnauthorizedException,
   WrongPasswordException,
 } from './exception';
 
