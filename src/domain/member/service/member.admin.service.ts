@@ -59,12 +59,18 @@ export class MemberAdminService {
 
     return members
       .filter((member) => member.approved)
-      .map((member) => member['_doc'])
       .map(
-        ({ _id: memberId, ...rest }) =>
+        ({ _id: memberId, name, studentId, email, avatar, description, link, role, fee }) =>
           ({
             memberId,
-            ...rest,
+            name,
+            studentId,
+            email,
+            avatar,
+            description,
+            link,
+            role,
+            fee,
           }) as EachGetMembersForAdminResponseDto,
       ) as EachGetMembersForAdminResponseDto[];
   }
