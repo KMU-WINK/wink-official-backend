@@ -64,6 +64,7 @@ describe('Auth Service Test', () => {
         name: '',
         role: undefined,
         studentId: 0,
+        approved: undefined,
       });
 
       // When
@@ -89,6 +90,7 @@ describe('Auth Service Test', () => {
         name: '',
         role: undefined,
         studentId: 0,
+        approved: true,
       });
 
       // When
@@ -124,6 +126,7 @@ describe('Auth Service Test', () => {
         name: '',
         role: undefined,
         studentId: 0,
+        approved: undefined,
       });
 
       memoryRedisRepository[verifyToken] = email;
@@ -149,6 +152,7 @@ describe('Auth Service Test', () => {
         name: '',
         role: undefined,
         studentId: 20240001,
+        approved: undefined,
       });
 
       memoryRedisRepository[verifyToken] = email;
@@ -191,6 +195,7 @@ describe('Auth Service Test', () => {
         name: '',
         role: undefined,
         studentId: 20240001,
+        approved: undefined,
       });
 
       // When

@@ -85,12 +85,24 @@ describe('Auth Integrated Test', () => {
       expect(memoryMemberRepository[0].email).toBe(email);
     });
 
-    it('로그인', async () => {
+    it('로그인 (승인 X)', async () => {
       // Given
       const request = { email, password };
 
       // When
       const result = authController.login(request);
+
+      // Then
+      await expect(result).rejects.toThrow('이 계정은 승인된 계정이 아닙니다.');
+    });
+
+    it('로그인 (승인 O)', async () => {
+      // Given
+      const request = { email, password };
+
+      // When
+      const result = authController.login(request);
+      memoryMemberRepository[0].approved = true;
 
       // Then
       await expect(result).resolves.toBeDefined();
