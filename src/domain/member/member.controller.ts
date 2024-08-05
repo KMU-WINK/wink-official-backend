@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Patch,
+  Put,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -45,7 +46,7 @@ export class MemberController {
     return { members };
   }
 
-  @Patch('/me/info')
+  @Put('/me/info')
   @HttpCode(200)
   @AuthMemberAccount()
   @ApiOperation({ summary: '내 정보 수정' })

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Patch } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { MemberAdminService } from './member.admin.service';
@@ -43,7 +43,7 @@ export class MemberAdminController {
     return { members };
   }
 
-  @Patch('/waiting')
+  @Post('/waiting/approve')
   @HttpCode(200)
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 승인' })
@@ -69,7 +69,7 @@ export class MemberAdminController {
     await this.memberAdminService.approveWaitingMember(memberId);
   }
 
-  @Delete('/waiting')
+  @Post('/waiting/reject')
   @HttpCode(200)
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 거부' })

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -32,7 +32,7 @@ import { ApiCustomErrorResponse, ApiCustomResponse } from '../../utils';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('/login')
   @HttpCode(200)
   @ApiOperation({ summary: '로그인' })
   @ApiProperty({ type: LoginRequestDto })
@@ -55,7 +55,7 @@ export class AuthController {
     return { token };
   }
 
-  @Put()
+  @Post('/register')
   @HttpCode(201)
   @ApiOperation({ summary: '회원가입' })
   @ApiProperty({ type: RegisterRequestDto })
@@ -80,7 +80,7 @@ export class AuthController {
     await this.authService.register(name, studentId, password, verifyToken);
   }
 
-  @Get('/code')
+  @Post('/register/code')
   @HttpCode(201)
   @ApiOperation({ summary: '인증코드 전송' })
   @ApiProperty({ type: SendCodeRequestDto })
@@ -97,7 +97,7 @@ export class AuthController {
     await this.authService.sendCode(email);
   }
 
-  @Post('/code')
+  @Post('/register/code/verify')
   @HttpCode(200)
   @ApiOperation({ summary: '인증 토큰 발급' })
   @ApiProperty({ type: VerifyCodeRequestDto })
