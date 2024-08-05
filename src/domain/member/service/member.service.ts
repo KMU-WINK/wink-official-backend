@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+
 import * as bcrypt from 'bcrypt';
 
 import { Member } from '../schema';
