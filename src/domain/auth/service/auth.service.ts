@@ -107,9 +107,33 @@ export class AuthService {
     return verifyToken;
   }
 
-  myInfo(member: Member): Omit<Member, '_id'> & { memberId: string } {
-    const { _id: memberId, ...rest } = member['_doc'];
+  myInfo(member: Member): Omit<Member, '_id' | 'password' | 'approved'> & { memberId: string } {
+    const {
+      _id: memberId,
+      createdAt,
+      updatedAt,
+      name,
+      studentId,
+      email,
+      avatar,
+      description,
+      link,
+      role,
+      fee,
+    } = member;
 
-    return { memberId, ...rest };
+    return {
+      memberId,
+      createdAt,
+      updatedAt,
+      name,
+      studentId,
+      email,
+      avatar,
+      description,
+      link,
+      role,
+      fee,
+    };
   }
 }
