@@ -1,5 +1,4 @@
-import { AvatarInvalidMimeException } from '../../exception';
-import { AvatarTooLargeException } from '../../exception/avatar-too-large.exception';
+import { AvatarInvalidMimeException, AvatarTooLargeException } from '../../exception';
 
 const AVATAR_MIME_TYPES = ['image/jpeg', 'image/png'];
 const AVATAR_MAX_SIZE = 1024 * 1024 * 2;

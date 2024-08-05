@@ -5,7 +5,8 @@ import { AuthService } from './auth.service';
 
 import { MemberModule } from '../member/member.module';
 
-import { RedisModule, MailModule } from '../../utils';
+import { RedisModule } from '../../common/redis';
+import { MailModule } from '../../common/utils/mail';
 
 @Module({
   imports: [MemberModule, RedisModule, MailModule],

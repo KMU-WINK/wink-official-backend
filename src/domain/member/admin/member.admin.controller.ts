@@ -15,7 +15,7 @@ import { NotApprovedMemberException, NotWaitingMemberException } from '../except
 import { AuthAdminAccount } from '../../auth/auth.guard';
 import { UnauthorizedException, PermissionException } from '../../auth/exception';
 
-import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../utils';
+import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
 
 @Controller('/admin/member')
 @ApiTags('[Admin] Member')

@@ -8,9 +8,13 @@ import { MemberService } from './member.service';
 import { Member, MemberSchema } from './member.schema';
 import { MemberRepository } from './member.repository';
 
-import { MailModule, MongoModelFactory, S3Module } from '../../utils';
+import { MongoModelFactory } from '../../common/mongo';
+import { S3Module } from '../../common/s3';
+import { MailModule } from '../../common/utils/mail';
 
 @Module({
+  controllers: [MemberController, MemberAdminController],
+  exports: [MemberRepository],
   imports: [
     MongooseModule.forFeatureAsync([MongoModelFactory.generate(Member.name, MemberSchema)]),
 
@@ -18,8 +22,6 @@ import { MailModule, MongoModelFactory, S3Module } from '../../utils';
 
     MailModule,
   ],
-  controllers: [MemberController, MemberAdminController],
   providers: [MemberService, MemberAdminService, MemberRepository],
-  exports: [MemberRepository],
 })
 export class MemberModule {}

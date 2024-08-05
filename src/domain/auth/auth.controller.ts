@@ -26,7 +26,7 @@ import {
   WrongPasswordException,
 } from './exception';
 
-import { ApiCustomErrorResponse, ApiCustomResponse } from '../../utils';
+import { ApiCustomErrorResponse, ApiCustomResponse } from '../../common/utils/swagger';
 
 @Controller('/auth')
 @ApiTags('Auth')

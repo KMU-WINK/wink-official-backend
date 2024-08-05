@@ -24,8 +24,9 @@ import {
 import { AuthAccount, ReqMember } from '../auth/auth.guard';
 import { WrongPasswordException, UnauthorizedException } from '../auth/exception';
 
-import { AvatarFilter } from './util';
-import { ApiCustomErrorResponse, ApiCustomResponse } from '../../utils';
+import { AvatarFilter } from './util/multer';
+
+import { ApiCustomErrorResponse, ApiCustomResponse } from '../../common/utils/swagger';
 
 @Controller('/member')
 @ApiTags('Member')

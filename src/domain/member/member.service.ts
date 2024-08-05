@@ -7,7 +7,7 @@ import { EachGetMembersResponseDto } from './dto';
 
 import { WrongPasswordException } from '../auth/exception';
 
-import { S3Service } from '../../utils';
+import { S3Service } from '../../common/s3';
 
 @Injectable()
 export class MemberService {

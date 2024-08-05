@@ -17,7 +17,7 @@ export class MemberRepository {
 
   // Read
   async findAll(): Promise<Member[]> {
-    return await this.memberModel.find().exec();
+    return this.memberModel.find().exec();
   }
 
   async findById(id: string): Promise<Member> {

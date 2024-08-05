@@ -17,7 +17,8 @@ import {
   WrongPasswordException,
 } from './exception';
 
-import { RedisRepository, MailService } from '../../utils';
+import { RedisRepository } from '../../common/redis';
+import { MailService } from '../../common/utils/mail';
 
 @Injectable()
 export class AuthService {

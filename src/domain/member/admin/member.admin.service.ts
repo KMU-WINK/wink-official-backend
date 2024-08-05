@@ -5,7 +5,7 @@ import { Role } from '../constant/Role';
 import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
-import { MailService } from '../../../utils';
+import { MailService } from '../../../common/utils/mail';
 
 @Injectable()
 export class MemberAdminService {
