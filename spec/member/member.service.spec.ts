@@ -4,9 +4,11 @@ import { MemberService } from '../../src/domain/member/service';
 import { generateMember, generateMembers } from './fake-members.mock';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
+import { S3Service } from '../../src/common/s3';
 
 describe('Member Service Test', () => {
   let memberService: MemberService;
+  let s3AvatarService: S3Service;
 
   let memoryMemberRepository: Member[];
 
@@ -17,9 +19,11 @@ describe('Member Service Test', () => {
     ({ memoryMemberRepository } = mock);
 
     memberService = module.get<MemberService>(MemberService);
+    s3AvatarService = module.get<S3Service>(`${S3Service}-avatar`);
   });
 
   afterEach(() => {
+    jest.clearAllMocks();
     memoryMemberRepository.splice(0, memoryMemberRepository.length);
   });
 
@@ -169,11 +173,15 @@ describe('Member Service Test', () => {
   });
 
   describe('내 프로필 사진 수정', () => {
-    it('프로필 사진 수정', async () => {
+    it('프로필 사진 수정 (기존 X)', async () => {
       // Given
       const fileName = uuid();
+      const fileUrl = `https://s3.amazonaws.com/${fileName}`;
 
       const member = generateMember();
+      member.avatar = null;
+
+      memoryMemberRepository.push(member);
 
       // When
       const result = memberService.updateMyAvatar(member, {
@@ -181,7 +189,32 @@ describe('Member Service Test', () => {
       } as Express.Multer.File);
 
       // Then
-      await expect(result).resolves.toBe(`https://s3.amazonaws.com/${fileName}`);
+      await expect(result).resolves.toBe(fileUrl);
+      expect(memoryMemberRepository[0].avatar).toBe(fileUrl);
+      expect(s3AvatarService.deleteFromUrl).not.toHaveBeenCalled();
+    });
+
+    it('프로필 사진 수정', async () => {
+      // Given
+      const fileName = uuid();
+      const fileUrl = `https://s3.amazonaws.com/${fileName}`;
+
+      const previousFileUrl = `https://s3.amazonaws.com/${uuid()}`;
+
+      const member = generateMember();
+      member.avatar = previousFileUrl;
+
+      memoryMemberRepository.push(member);
+
+      // When
+      const result = memberService.updateMyAvatar(member, {
+        originalname: fileName,
+      } as Express.Multer.File);
+
+      // Then
+      await expect(result).resolves.toBe(fileUrl);
+      expect(memoryMemberRepository[0].avatar).toBe(fileUrl);
+      expect(s3AvatarService.deleteFromUrl).toHaveBeenCalledWith(previousFileUrl);
     });
   });
 });
