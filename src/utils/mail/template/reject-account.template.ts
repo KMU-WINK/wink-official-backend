@@ -1,4 +1,4 @@
-export const refuseAccountTemplate: string = `
+export const rejectAccountTemplate: string = `
 <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; font-family: Arial, sans-serif;">
   <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #dddddd;">
     <img src="https://avatars.githubusercontent.com/u/69004745" alt="Logo" style="max-width: 150px;">

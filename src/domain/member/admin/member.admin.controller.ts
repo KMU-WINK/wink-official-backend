@@ -6,7 +6,7 @@ import {
   ApproveWaitingMemberRequestDto,
   GetMembersForAdminResponseDto,
   GetWaitingMembersResponseDto,
-  RefuseWaitingMemberRequestDto,
+  RejectWaitingMemberRequestDto,
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
 } from '../dto';
@@ -73,7 +73,7 @@ export class MemberAdminController {
   @HttpCode(200)
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 거부' })
-  @ApiProperty({ type: RefuseWaitingMemberRequestDto })
+  @ApiProperty({ type: RejectWaitingMemberRequestDto })
   @ApiCustomResponse({ status: 200 })
   @ApiCustomErrorResponse([
     {
@@ -89,10 +89,10 @@ export class MemberAdminController {
       error: NotWaitingMemberException,
     },
   ])
-  async refuseWaitingMember(@Body() request: RefuseWaitingMemberRequestDto): Promise<void> {
+  async rejectWaitingMember(@Body() request: RejectWaitingMemberRequestDto): Promise<void> {
     const { memberId } = request;
 
-    await this.memberAdminService.refuseWaitingMember(memberId);
+    await this.memberAdminService.rejectWaitingMember(memberId);
   }
 
   @Get()

@@ -2,7 +2,7 @@ import { Validation } from '../../../utils';
 
 import {
   ApproveWaitingMemberRequestDto,
-  RefuseWaitingMemberRequestDto,
+  RejectWaitingMemberRequestDto,
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
   UpdateMyInfoRequestDto,
@@ -407,12 +407,12 @@ describe('Member Validation Test', () => {
     describe('멤버 ID', () => {
       it('멤버 ID가 주어지지 않았을 때', async () => {
         // Given
-        const body: RefuseWaitingMemberRequestDto = {
+        const body: RejectWaitingMemberRequestDto = {
           memberId: undefined,
         };
 
         // When
-        const result = validation.validateBody(body, RefuseWaitingMemberRequestDto);
+        const result = validation.validateBody(body, RejectWaitingMemberRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
@@ -420,12 +420,12 @@ describe('Member Validation Test', () => {
 
       it('올바른 멤버 ID가 아닐 때', async () => {
         // Given
-        const body: RefuseWaitingMemberRequestDto = {
+        const body: RejectWaitingMemberRequestDto = {
           memberId: 'notvalidmemberid',
         };
 
         // When
-        const result = validation.validateBody(body, RefuseWaitingMemberRequestDto);
+        const result = validation.validateBody(body, RejectWaitingMemberRequestDto);
 
         // Then
         await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
@@ -434,12 +434,12 @@ describe('Member Validation Test', () => {
 
     it('모든 입력이 유효할 때', async () => {
       // Given
-      const body: RefuseWaitingMemberRequestDto = {
+      const body: RejectWaitingMemberRequestDto = {
         memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
       };
 
       // When
-      const result = validation.validateBody(body, RefuseWaitingMemberRequestDto);
+      const result = validation.validateBody(body, RejectWaitingMemberRequestDto);
 
       // Then
       await expect(result).resolves.toBeDefined();

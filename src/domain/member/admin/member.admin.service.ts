@@ -44,7 +44,7 @@ export class MemberAdminService {
     this.mailService.approveAccount({ name }).send(email);
   }
 
-  async refuseWaitingMember(memberId: string): Promise<void> {
+  async rejectWaitingMember(memberId: string): Promise<void> {
     const { name, email, role } = await this.memberRepository.findById(memberId);
 
     if (role !== Role.WAITING) {
@@ -53,9 +53,9 @@ export class MemberAdminService {
 
     await this.memberRepository.deleteById(memberId);
 
-    this.logger.log(`Refuse member: ${name} (${email})`);
+    this.logger.log(`Reject member: ${name} (${email})`);
 
-    this.mailService.refuseAccount({ name }).send(email);
+    this.mailService.rejectAccount({ name }).send(email);
   }
 
   async getMembers(): Promise<EachGetMembersForAdminResponseDto[]> {

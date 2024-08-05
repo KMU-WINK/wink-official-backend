@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { CustomValidation } from '../../../../utils';
 
-export class RefuseWaitingMemberRequestDto {
+export class RejectWaitingMemberRequestDto {
   @ApiProperty({
     description: '멤버 ID',
     example: '1a2b3c4d5e6f7a8b9c0d1e2f',

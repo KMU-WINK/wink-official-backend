@@ -5,7 +5,7 @@ import * as nodemailer from 'nodemailer';
 
 import {
   approveAccountTemplate,
-  refuseAccountTemplate,
+  rejectAccountTemplate,
   registerCompleteTemplate,
   verifyCodeTemplate,
 } from './template';
@@ -76,9 +76,9 @@ export class MailService {
     };
   }
 
-  refuseAccount({ name }: { name: string }): EmailTemplateResponse {
+  rejectAccount({ name }: { name: string }): EmailTemplateResponse {
     const subject = '[WINK] 계정 승인 거부';
-    const html = refuseAccountTemplate.replace('{name}', name);
+    const html = rejectAccountTemplate.replace('{name}', name);
 
     return {
       send: (email: string) => {
