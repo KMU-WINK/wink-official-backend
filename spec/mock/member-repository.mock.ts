@@ -44,28 +44,14 @@ export const mockMemberRepository = (memory: Member[]) => ({
     }
   }),
 
-  updateGithub: jest.fn(async (id: string, github: string) => {
-    const member = memory.find((member) => member._id === id);
-    if (member) {
-      member.link.github = github ? `https://github.com/${github}` : null;
-    }
-  }),
-
-  updateGithubUrl: jest.fn(async (id: string, githubUrl: string) => {
+  updateGithub: jest.fn(async (id: string, githubUrl: string) => {
     const member = memory.find((member) => member._id === id);
     if (member) {
       member.link.github = githubUrl;
     }
   }),
 
-  updateInstagram: jest.fn(async (id: string, instagram: string) => {
-    const member = memory.find((member) => member._id === id);
-    if (member) {
-      member.link.instagram = instagram ? `https://www.instagram.com/${instagram}` : null;
-    }
-  }),
-
-  updateInstagramUrl: jest.fn(async (id: string, instagramUrl: string) => {
+  updateInstagram: jest.fn(async (id: string, instagramUrl: string) => {
     const member = memory.find((member) => member._id === id);
     if (member) {
       member.link.instagram = instagramUrl;
