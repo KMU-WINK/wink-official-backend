@@ -9,5 +9,6 @@
     "experimentalDecorators": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true
   }
 }

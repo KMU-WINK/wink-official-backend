@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import * as nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer';
 
 import { Member } from '../../domain/member/member.schema';
 

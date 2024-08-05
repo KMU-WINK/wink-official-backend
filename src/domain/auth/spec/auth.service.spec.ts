@@ -1,6 +1,6 @@
 import { mockAuth } from './mock/auth.mock';
 
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 import { AuthService } from '../auth.service';
 
