@@ -331,7 +331,7 @@ describe('Auth Validation Test', () => {
       it('이메일 형식 국민대학교 메일이 아닐 때', async () => {
         // Given
         const body: SendCodeRequestDto = {
-          email: 'honggildong@kookmin.ac.kr',
+          email: 'honggildong@gmail.com',
         };
 
         // When
