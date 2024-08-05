@@ -41,7 +41,7 @@ describe('Auth Service Test', () => {
       // Given
 
       // When
-      const result = authService.login('not-exists@gmail.com', 'p4sSw0rd!');
+      const result = authService.login('not-exists@kookmin.ac.kr', 'p4sSw0rd!');
 
       // Then
       await expect(result).rejects.toThrow(MemberNotFoundException);
@@ -49,7 +49,7 @@ describe('Auth Service Test', () => {
 
     it('잘못된 비밀번호일 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
 
       const salt = await bcrypt.genSalt(10);
@@ -78,7 +78,7 @@ describe('Auth Service Test', () => {
 
     it('올바른 정보가 주어졌을 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
 
       const salt = await bcrypt.genSalt(10);
@@ -119,7 +119,7 @@ describe('Auth Service Test', () => {
 
     it('이미 가입된 이메일일 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
       const verifyToken = 'verify-token';
 
@@ -148,7 +148,7 @@ describe('Auth Service Test', () => {
 
     it('이미 가입된 학번일 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
       const verifyToken = 'verify-token';
 
@@ -177,7 +177,7 @@ describe('Auth Service Test', () => {
 
     it('올바른 정보가 주어졌을 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
       const verifyToken = 'verify-token';
 
@@ -196,7 +196,7 @@ describe('Auth Service Test', () => {
   describe('인증코드 전송', () => {
     it('이미 가입된 이메일일 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
 
       memoryMemberRepository.push({
         _id: undefined,
@@ -221,7 +221,7 @@ describe('Auth Service Test', () => {
 
     it('올바른 정보가 주어졌을 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
 
       // When
       const result = authService.sendCode(email);
@@ -235,7 +235,7 @@ describe('Auth Service Test', () => {
   describe('인증 토큰 발급', () => {
     it('인증코드가 일치하지 않을 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
       const code = '123456';
 
       memoryRedisRepository[email] = '654321';
@@ -249,7 +249,7 @@ describe('Auth Service Test', () => {
 
     it('올바른 정보가 주어졌을 때', async () => {
       // Given
-      const email = 'honggildong@gmail.com';
+      const email = 'honggildong@kookmin.ac.kr';
       const code = '123456';
 
       memoryRedisRepository[email] = code;

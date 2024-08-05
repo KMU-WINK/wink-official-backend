@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsEmail, NotEmpty } from '../../../../common/utils/validation';
+import { IsEmail, IsKookminEmail, NotEmpty } from '../../../../common/utils/validation';
 
 export class SendCodeRequestDto {
   @ApiProperty({
@@ -9,5 +9,6 @@ export class SendCodeRequestDto {
   })
   @NotEmpty()
   @IsEmail()
+  @IsKookminEmail()
   email: string;
 }

@@ -33,7 +33,7 @@ describe('Auth Integrated Test', () => {
   describe('Integrated Test', () => {
     const name = '홍길동';
     const studentId = 2024_0001;
-    const email = 'honggildong@gmail.com';
+    const email = 'honggildong@kookmin.ac.kr';
     const password = 'p4sSw0rd!';
 
     let verifyCode: string;

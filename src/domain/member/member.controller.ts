@@ -20,6 +20,7 @@ import {
   UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
 } from './dto';
+import { AvatarInvalidMimeException, AvatarTooLargeException } from './exception';
 
 import { AuthAccount, ReqMember } from '../auth/auth.guard';
 import { WrongPasswordException, UnauthorizedException } from '../auth/exception';
@@ -101,6 +102,14 @@ export class MemberController {
     {
       description: '인증되지 않은 사용자',
       error: UnauthorizedException,
+    },
+    {
+      description: '잘못된 파일 형식 (이미지 파일이 아님. jpg, jpeg, png만 허용)',
+      error: AvatarInvalidMimeException,
+    },
+    {
+      description: '파일 크기가 너무 큼',
+      error: AvatarTooLargeException,
     },
   ])
   async updateMyAvatar(

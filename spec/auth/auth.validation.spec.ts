@@ -49,7 +49,7 @@ describe('Auth Validation Test', () => {
       it('비밀번호가 주어지지 않았을 때', async () => {
         // Given
         const body: LoginRequestDto = {
-          email: 'test@gmail.com',
+          email: 'test@kookmin.ac.kr',
           password: null,
         };
 
@@ -64,7 +64,7 @@ describe('Auth Validation Test', () => {
     it('모든 입력이 유효할 때', async () => {
       // Given
       const body: LoginRequestDto = {
-        email: 'honggildong@gmail.com',
+        email: 'honggildong@kookmin.ac.kr',
         password: 'p4sSw0rd!',
       };
 
@@ -327,12 +327,25 @@ describe('Auth Validation Test', () => {
         // Then
         await expect(result).rejects.toThrow('email는 이메일 형식이 아닙니다.');
       });
+
+      it('이메일 형식 국민대학교 메일이 아닐 때', async () => {
+        // Given
+        const body: SendCodeRequestDto = {
+          email: 'honggildong@kookmin.ac.kr',
+        };
+
+        // When
+        const result = validation.validateBody(body, SendCodeRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('email는 국민대학교 이메일 형식이 아닙니다.');
+      });
     });
 
     it('모든 입력이 유효할 때', async () => {
       // Given
       const body: SendCodeRequestDto = {
-        email: 'honggildong@gmail.com',
+        email: 'honggildong@kookmin.ac.kr',
       };
 
       // When
@@ -378,7 +391,7 @@ describe('Auth Validation Test', () => {
       it('인증코드가 주어지지 않았을 때', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
-          email: 'honggildong@gmail.com',
+          email: 'honggildong@kookmin.ac.kr',
           code: null,
         };
 
@@ -392,7 +405,7 @@ describe('Auth Validation Test', () => {
       it('인증코드에 문자가 들어갔을 때', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
-          email: 'honggildong@gmail.com',
+          email: 'honggildong@kookmin.ac.kr',
           code: 'abcdef',
         };
 
@@ -406,7 +419,7 @@ describe('Auth Validation Test', () => {
       it('인증코드가 짧을 때', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
-          email: 'honggildong@gmail.com',
+          email: 'honggildong@kookmin.ac.kr',
           code: '12345',
         };
 
@@ -420,7 +433,7 @@ describe('Auth Validation Test', () => {
       it('인증코드가 길 때', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
-          email: 'honggildong@gmail.com',
+          email: 'honggildong@kookmin.ac.kr',
           code: '1234567',
         };
 
@@ -435,7 +448,7 @@ describe('Auth Validation Test', () => {
     it('모든 입력이 유효할 때', async () => {
       // Given
       const body: VerifyCodeRequestDto = {
-        email: 'honggildong@gmail.com',
+        email: 'honggildong@oo.com',
         code: '123456',
       };
 

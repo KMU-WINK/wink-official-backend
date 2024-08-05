@@ -5,7 +5,7 @@ import { IsEmail, NotEmpty } from '../../../../common/utils/validation';
 export class LoginRequestDto {
   @ApiProperty({
     description: '이메일',
-    example: 'test@gmail.com',
+    example: 'test@kookmin.ac.kr',
   })
   @NotEmpty()
   @IsEmail()
