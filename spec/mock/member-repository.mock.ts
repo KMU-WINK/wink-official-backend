@@ -86,6 +86,13 @@ export const mockMemberRepository = (memory: Member[]) => ({
     }
   }),
 
+  updateApprovedById: jest.fn(async (id: string, approved: boolean) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.approved = approved;
+    }
+  }),
+
   // Delete
   deleteById: jest.fn(async (id: string) => {
     const index = memory.findIndex((member) => member._id === id);

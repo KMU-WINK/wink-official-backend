@@ -6,10 +6,10 @@ export const mockMailService = () => ({
   registerComplete: jest.fn(() => ({
     send: jest.fn(async () => {}),
   })),
-  approve: jest.fn(() => ({
+  approveAccount: jest.fn(() => ({
     send: jest.fn(async () => {}),
   })),
-  reject: jest.fn(() => ({
+  rejectAccount: jest.fn(() => ({
     send: jest.fn(async () => {}),
   })),
 });
