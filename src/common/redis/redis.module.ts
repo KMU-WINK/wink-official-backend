@@ -1,9 +1,20 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 
 import { RedisRepository } from './redis.repository';
 
-@Module({
-  providers: [RedisRepository],
-  exports: [RedisRepository],
-})
-export class RedisModule {}
+@Module({})
+export class RedisModule {
+  static register(group: string): DynamicModule {
+    return {
+      module: RedisModule,
+      providers: [
+        {
+          provide: 'GROUP',
+          useValue: group,
+        },
+        RedisRepository,
+      ],
+      exports: [RedisRepository],
+    };
+  }
+}

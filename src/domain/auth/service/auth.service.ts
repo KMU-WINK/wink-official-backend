@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { v4 as uuid } from 'uuid';
@@ -24,7 +24,8 @@ import { MailService } from '../../../common/utils/mail';
 export class AuthService {
   constructor(
     private readonly memberRepository: MemberRepository,
-    private readonly redisRepository: RedisRepository,
+    @Inject(`${RedisRepository.name}-code`) private readonly redisCodeRepository: RedisRepository,
+    @Inject(`${RedisRepository.name}-token`) private readonly redisTokenRepository: RedisRepository,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
   ) {}
@@ -53,11 +54,11 @@ export class AuthService {
     password: string,
     verifyToken: string,
   ): Promise<void> {
-    if (!(await this.redisRepository.exists(verifyToken))) {
+    if (!(await this.redisTokenRepository.exists(verifyToken))) {
       throw new InvalidVerifyTokenException();
     }
 
-    const email = await this.redisRepository.get(verifyToken);
+    const email = await this.redisTokenRepository.get(verifyToken);
 
     if (await this.memberRepository.existsByEmail(email)) {
       throw new AlreadyRegisteredByEmailException();
@@ -72,7 +73,7 @@ export class AuthService {
 
     await this.memberRepository.save({ name, studentId, email, password: hash });
 
-    await this.redisRepository.delete(verifyToken);
+    await this.redisTokenRepository.delete(verifyToken);
 
     this.mailService.registerComplete({ name }).send(email);
   }
@@ -86,22 +87,22 @@ export class AuthService {
       .toString()
       .padStart(6, '0');
 
-    await this.redisRepository.ttl(email, code, 60 * 10);
+    await this.redisCodeRepository.ttl(email, code, 60 * 10);
 
     this.mailService.verifyCode({ email, code }).send(email);
   }
 
   async verifyCode(email: string, code: string): Promise<string> {
-    const storedCode = await this.redisRepository.get(email);
+    const storedCode = await this.redisCodeRepository.get(email);
 
     if (storedCode !== code) {
       throw new InvalidVerifyCodeException();
     }
 
-    await this.redisRepository.delete(email);
+    await this.redisCodeRepository.delete(email);
 
     const verifyToken = uuid();
-    await this.redisRepository.ttl(verifyToken, email, 60 * 60);
+    await this.redisTokenRepository.ttl(verifyToken, email, 60 * 60);
 
     return verifyToken;
   }
