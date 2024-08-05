@@ -15,19 +15,16 @@ describe('Auth Integrated Test', () => {
   let authController: AuthController;
 
   let memoryMemberRepository: Member[];
-  let memoryRedisRepository: Record<string, string>;
+  let memoryRedisCodeRepository: Record<string, string>;
+  let memoryRedisTokenRepository: Record<string, string>;
 
   beforeAll(async () => {
-    const {
-      module,
-      memoryMemberRepository: memoryMemberRepository1,
-      memoryRedisRepository: memoryRedisRepository1,
-    } = await mockAuth();
+    const mock = await mockAuth();
+
+    const { module } = mock;
+    ({ memoryMemberRepository, memoryRedisCodeRepository, memoryRedisTokenRepository } = mock);
 
     authController = module.get<AuthController>(AuthController);
-
-    memoryMemberRepository = memoryMemberRepository1;
-    memoryRedisRepository = memoryRedisRepository1;
   });
 
   describe('Integrated Test', () => {
@@ -51,7 +48,7 @@ describe('Auth Integrated Test', () => {
 
       // Then
       await expect(result).resolves.toBeUndefined();
-      verifyCode = memoryRedisRepository[email];
+      verifyCode = memoryRedisCodeRepository[email];
 
       // Then
       expect(verifyCode).toBeDefined();
@@ -70,7 +67,7 @@ describe('Auth Integrated Test', () => {
 
       // Then
       expect(verifyToken).toBeDefined();
-      expect(memoryRedisRepository[email]).toBeUndefined();
+      expect(memoryRedisCodeRepository[email]).toBeUndefined();
     });
 
     it('회원가입', async () => {
@@ -84,7 +81,7 @@ describe('Auth Integrated Test', () => {
       await expect(result).resolves.toBeUndefined();
 
       // Then
-      expect(memoryRedisRepository[verifyToken]).toBeUndefined();
+      expect(memoryRedisTokenRepository[verifyToken]).toBeUndefined();
       expect(memoryMemberRepository).toHaveLength(1);
       expect(memoryMemberRepository[0].email).toBe(email);
     });
