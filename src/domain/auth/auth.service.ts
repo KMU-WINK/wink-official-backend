@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { v4 as uuid } from 'uuid';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 import { MemberRepository } from '../member/member.repository';
 import { Member } from '../member/member.schema';

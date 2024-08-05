@@ -12,9 +12,9 @@ const DEFAULT_LINKS: MyInfoLinks = {
 
 @Schema()
 export class Member {
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  readonly _id: string;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
 
   @Prop({ required: true })
   name: string;

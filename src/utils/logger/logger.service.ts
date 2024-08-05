@@ -1,6 +1,6 @@
 import { utilities, WinstonModule } from 'nest-winston';
 
-import winston from 'winston';
+import * as winston from 'winston';
 
 import 'winston-daily-rotate-file';
 

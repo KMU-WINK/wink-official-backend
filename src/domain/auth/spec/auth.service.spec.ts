@@ -1,6 +1,6 @@
 import { mockAuth } from './mock/auth.mock';
 
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 import { AuthService } from '../auth.service';
 
@@ -54,11 +54,14 @@ describe('Auth Service Test', () => {
       const password = 'p4sSw0rd!';
 
       const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(password, salt);
+      const hashPassword = await bcrypt.hash(password, salt);
 
       memoryMemberRepository.push({
+        _id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
         email,
-        password: hash,
+        password: hashPassword,
         fee: false,
         link: undefined,
         name: '',
@@ -83,6 +86,9 @@ describe('Auth Service Test', () => {
       const hash = await bcrypt.hash(password, salt);
 
       memoryMemberRepository.push({
+        _id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
         email,
         password: hash,
         fee: false,
@@ -119,6 +125,9 @@ describe('Auth Service Test', () => {
       const verifyToken = 'verify-token';
 
       memoryMemberRepository.push({
+        _id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
         email,
         password,
         fee: false,
@@ -145,6 +154,9 @@ describe('Auth Service Test', () => {
       const verifyToken = 'verify-token';
 
       memoryMemberRepository.push({
+        _id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
         email: `other_${email}`,
         password: '',
         fee: false,
@@ -188,6 +200,9 @@ describe('Auth Service Test', () => {
       const email = 'honggildong@gmail.com';
 
       memoryMemberRepository.push({
+        _id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
         email: email,
         password: '',
         fee: false,

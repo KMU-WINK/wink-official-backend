@@ -5,7 +5,10 @@ import { Role } from '../../domain/member/constant/Role';
 export const mockMemberRepository = (memory: Member[]) => ({
   // Create
   save: jest.fn(async (member: Partial<Member>) => {
-    member._id = memory.length.toString();
+    Object.assign(member, {
+      _id: member['_id'],
+      ...member,
+    });
     memory.push(member as Member);
     return member as Member;
   }),

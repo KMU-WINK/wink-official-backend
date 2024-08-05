@@ -1,6 +1,6 @@
 import { mockAuth } from './mock/auth.mock';
 
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 import { AuthController } from '../auth.controller';
 import { RegisterRequestDto, SendCodeRequestDto, VerifyCodeRequestDto } from '../dto';
