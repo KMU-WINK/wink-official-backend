@@ -6,6 +6,7 @@ import { extname } from 'path';
 
 import {
   DeleteObjectCommand,
+  ListObjectsV2Command,
   ObjectCannedACL,
   PutObjectCommand,
   S3Client,
@@ -76,6 +77,17 @@ export class S3Service {
     );
 
     this.logger.log(`Delete file: ${_key}`);
+  }
+
+  async getFiles(): Promise<string[]> {
+    const { Contents } = await this.s3Client.send(
+      new ListObjectsV2Command({
+        Prefix: this.directory,
+        Bucket: this.configService.getOrThrow<string>('s3.bucket'),
+      }),
+    );
+
+    return Contents.map((content) => content.Key);
   }
 
   sub(directory: string): S3Service {
