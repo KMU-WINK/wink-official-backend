@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Role } from '../../constant/Role';
+import { Role } from '../../constant';
 
 import { IsEnum, IsObjectId, NotEmpty } from '../../../../common/utils/validation';
 

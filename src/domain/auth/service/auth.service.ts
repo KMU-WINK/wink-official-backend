@@ -4,10 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
-import { MemberRepository } from '../member/member.repository';
-import { Member } from '../member/member.schema';
-import { NotApprovedMemberException } from '../member/exception';
-
 import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
@@ -15,10 +11,14 @@ import {
   InvalidVerifyTokenException,
   MemberNotFoundException,
   WrongPasswordException,
-} from './exception';
+} from '../exception';
 
-import { RedisRepository } from '../../common/redis';
-import { MailService } from '../../common/utils/mail';
+import { MemberRepository } from '../../member/repository';
+import { Member } from '../../member/schema';
+import { NotApprovedMemberException } from '../../member/exception';
+
+import { RedisRepository } from '../../../common/redis';
+import { MailService } from '../../../common/utils/mail';
 
 @Injectable()
 export class AuthService {

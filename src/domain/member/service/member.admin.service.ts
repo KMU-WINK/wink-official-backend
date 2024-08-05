@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { MemberRepository } from '../member.repository';
-import { Role } from '../constant/Role';
+import { MemberRepository } from '../repository';
+import { Role } from '../constant';
 import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 

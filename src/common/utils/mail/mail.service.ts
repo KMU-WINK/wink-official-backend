@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import * as nodemailer from 'nodemailer';
 
-import { Member } from '../../../domain/member/member.schema';
+import { Member } from '../../../domain/member/schema';
 
 import {
   approveAccountTemplate,

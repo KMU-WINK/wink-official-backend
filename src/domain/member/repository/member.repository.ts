@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Model } from 'mongoose';
 
-import { Member } from './member.schema';
-import { Role } from './constant/Role';
+import { Role } from '../constant';
+import { Member } from '../schema';
 
 @Injectable()
 export class MemberRepository {
@@ -21,15 +21,15 @@ export class MemberRepository {
   }
 
   async findById(id: string): Promise<Member> {
-    return await this.memberModel.findById(id).exec();
+    return this.memberModel.findById(id).exec();
   }
 
   async findByIdWithPassword(id: string): Promise<Member> {
-    return await this.memberModel.findOne({ _id: id }).select('+password').exec();
+    return this.memberModel.findOne({ _id: id }).select('+password').exec();
   }
 
   async findByEmailWithPassword(email: string): Promise<Member> {
-    return await this.memberModel.findOne({ email }).select('+password').exec();
+    return this.memberModel.findOne({ email }).select('+password').exec();
   }
 
   // Update

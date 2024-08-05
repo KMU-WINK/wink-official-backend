@@ -11,23 +11,23 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { Member } from './member.schema';
-import { MemberService } from './member.service';
+import { Member } from '../schema';
+import { MemberService } from '../service';
 import {
   GetMembersResponseDto,
   UpdateMyAvatarRequestDto,
   UpdateMyAvatarResponseDto,
   UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
-} from './dto';
-import { AvatarInvalidMimeException, AvatarTooLargeException } from './exception';
+} from '../dto';
+import { AvatarInvalidMimeException, AvatarTooLargeException } from '../exception';
 
-import { AuthAccount, ReqMember } from '../auth/auth.guard';
-import { WrongPasswordException, UnauthorizedException } from '../auth/exception';
+import { AuthAccount, ReqMember } from '../../auth/guard';
+import { WrongPasswordException, UnauthorizedException } from '../../auth/exception';
 
-import { AvatarFilter } from './util/multer';
+import { AvatarFilter } from '../util/multer';
 
-import { ApiCustomErrorResponse, ApiCustomResponse } from '../../common/utils/swagger';
+import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
 
 @Controller('/member')
 @ApiTags('Member')

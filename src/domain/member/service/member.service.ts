@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
-import { Member } from './member.schema';
-import { MemberRepository } from './member.repository';
-import { EachGetMembersResponseDto } from './dto';
+import { Member } from '../schema';
+import { MemberRepository } from '../repository';
+import { EachGetMembersResponseDto } from '../dto';
 
-import { WrongPasswordException } from '../auth/exception';
+import { WrongPasswordException } from '../../auth/exception';
 
-import { S3Service } from '../../common/s3';
+import { S3Service } from '../../../common/s3';
 
 @Injectable()
 export class MemberService {

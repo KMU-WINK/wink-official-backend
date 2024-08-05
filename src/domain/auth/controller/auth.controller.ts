@@ -1,8 +1,8 @@
 import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { AuthService } from './auth.service';
-import { AuthAccount, ReqMember } from './auth.guard';
+import { AuthService } from '../service';
+import { AuthAccount, ReqMember } from '../guard';
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -11,11 +11,7 @@ import {
   SendCodeRequestDto,
   VerifyCodeRequestDto,
   VerifyCodeResponseDto,
-} from './dto';
-
-import { Member } from '../member/member.schema';
-import { NotApprovedMemberException } from '../member/exception';
-
+} from '../dto';
 import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
@@ -24,9 +20,12 @@ import {
   MemberNotFoundException,
   UnauthorizedException,
   WrongPasswordException,
-} from './exception';
+} from '../exception';
 
-import { ApiCustomErrorResponse, ApiCustomResponse } from '../../common/utils/swagger';
+import { Member } from '../../member/schema';
+import { NotApprovedMemberException } from '../../member/exception';
+
+import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
 
 @Controller('/auth')
 @ApiTags('Auth')
