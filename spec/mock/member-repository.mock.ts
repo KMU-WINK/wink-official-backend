@@ -1,5 +1,5 @@
-import { Role } from '../../src/domain/member/constant/Role';
-import { Member } from '../../src/domain/member/member.schema';
+import { Role } from '../../src/domain/member/constant';
+import { Member } from '../../src/domain/member/schema';
 
 export const mockMemberRepository = (memory: Member[]) => ({
   // Create

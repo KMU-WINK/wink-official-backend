@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { MemberAdminController } from './admin/member.admin.controller';
-import { MemberAdminService } from './admin/member.admin.service';
-import { MemberController } from './member.controller';
-import { MemberService } from './member.service';
-import { Member, MemberSchema } from './member.schema';
-import { MemberRepository } from './member.repository';
+import { MemberAdminController, MemberController } from './controller';
+import { MemberAdminService, MemberService } from './service';
+import { MemberRepository } from './repository';
+import { Member, MemberSchema } from './schema';
 
 import { MongoModelFactory } from '../../common/mongo';
 import { S3Module } from '../../common/s3';

@@ -1,6 +1,6 @@
 import { Validation } from '../../src/common/utils/validation';
 
-import { Role } from '../../src/domain/member/constant/Role';
+import { Role } from '../../src/domain/member/constant';
 
 import {
   ApproveWaitingMemberRequestDto,

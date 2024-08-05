@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { MemberAdminService } from './member.admin.service';
+import { MemberAdminService } from '../service';
 import {
   ApproveWaitingMemberRequestDto,
   GetMembersForAdminResponseDto,
@@ -12,7 +12,7 @@ import {
 } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
-import { AuthAdminAccount } from '../../auth/auth.guard';
+import { AuthAdminAccount } from '../../auth/guard';
 import { UnauthorizedException, PermissionException } from '../../auth/exception';
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';

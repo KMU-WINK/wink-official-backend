@@ -2,7 +2,7 @@ import { mockAuth } from './auth.mock';
 
 import * as bcrypt from 'bcrypt';
 
-import { AuthService } from '../../src/domain/auth/auth.service';
+import { AuthService } from '../../src/domain/auth/service';
 import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
@@ -12,7 +12,7 @@ import {
   WrongPasswordException,
 } from '../../src/domain/auth/exception';
 
-import { Member } from '../../src/domain/member/member.schema';
+import { Member } from '../../src/domain/member/schema';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;

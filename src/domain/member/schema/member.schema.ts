@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Role } from './constant/Role';
+import { Role } from '../constant';
 
 export type MyInfoLinks = Record<'github' | 'instagram' | 'blog', string>;
 
