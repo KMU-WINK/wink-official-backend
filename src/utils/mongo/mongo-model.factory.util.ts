@@ -9,7 +9,11 @@ export class MongoModelFactory {
     return {
       name,
       useFactory: () => {
+        schema.set('timestamps', true);
+        schema.set('versionKey', false);
+
         schema.plugin(auto_populate);
+
         return schema;
       },
     };
