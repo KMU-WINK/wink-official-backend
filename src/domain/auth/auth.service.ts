@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import bcrypt from 'bcrypt';
 
 import { MemberRepository } from '../member/member.repository';
+import { Member } from '../member/member.schema';
 import { NotApprovedMemberException } from '../member/exception';
 
 import {
@@ -102,5 +103,11 @@ export class AuthService {
     await this.redisRepository.ttl(verifyToken, email, 60 * 60);
 
     return verifyToken;
+  }
+
+  myInfo(member: Member): Omit<Member, '_id'> & { memberId: string } {
+    const { _id: memberId, ...rest } = member['_doc'];
+
+    return { memberId, ...rest };
   }
 }

@@ -133,12 +133,6 @@ export class AuthController {
     },
   ])
   async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponseDto> {
-    const memberDoc = member['_doc'];
-    const memberId = member['_id'];
-
-    delete memberDoc['_id'];
-    delete memberDoc['__v'];
-
-    return { memberId: memberId, ...memberDoc };
+    return this.authService.myInfo(member);
   }
 }
