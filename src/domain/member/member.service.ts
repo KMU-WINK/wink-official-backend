@@ -43,10 +43,10 @@ export class MemberService {
   ): Promise<void> {
     const { _id: id } = member;
 
-    await this.memberRepository.updateDescription(id, description);
-    await this.memberRepository.updateGithub(id, github);
-    await this.memberRepository.updateInstagram(id, instagram);
-    await this.memberRepository.updateBlog(id, blog);
+    await this.memberRepository.updateDescription(id, description || null);
+    await this.memberRepository.updateGithub(id, github || null);
+    await this.memberRepository.updateInstagram(id, instagram || null);
+    await this.memberRepository.updateBlog(id, blog || null);
   }
 
   async updateMyPassword(member: Member, password: string, newPassword: string): Promise<void> {

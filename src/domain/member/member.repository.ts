@@ -41,19 +41,11 @@ export class MemberRepository {
     await this.memberModel.updateOne({ _id: id }, { description }).exec();
   }
 
-  async updateGithub(id: string, github: string): Promise<void> {
-    await this.updateGithubUrl(id, github ? `https://github.com/${github}` : null);
-  }
-
-  async updateGithubUrl(id: string, githubUrl: string): Promise<void> {
+  async updateGithub(id: string, githubUrl: string): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.github': githubUrl }).exec();
   }
 
-  async updateInstagram(id: string, instagram: string): Promise<void> {
-    await this.updateInstagramUrl(id, instagram ? `https://www.instagram.com/${instagram}` : null);
-  }
-
-  async updateInstagramUrl(id: string, instagramUrl: string): Promise<void> {
+  async updateInstagram(id: string, instagramUrl: string): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.instagram': instagramUrl }).exec();
   }
 
