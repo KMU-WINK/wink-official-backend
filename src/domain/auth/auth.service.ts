@@ -43,7 +43,7 @@ export class AuthService {
       throw new NotApprovedMemberException();
     }
 
-    return this.jwtService.signAsync({ id: member['_id'] });
+    return this.jwtService.signAsync({ id: member._id });
   }
 
   async register(

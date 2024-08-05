@@ -109,7 +109,7 @@ describe('Auth Integrated Test', () => {
       token = (await result).token;
 
       // Then
-      expect(jwt.decode(token)['id']).toBe(memoryMemberRepository[0]['_id']);
+      expect(jwt.decode(token)['id']).toBe(memoryMemberRepository[0]._id);
     });
   });
 });

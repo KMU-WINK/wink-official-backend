@@ -41,7 +41,7 @@ export class MemberService {
     instagram?: string,
     blog?: string,
   ): Promise<void> {
-    const id = member['_id'];
+    const { _id: id } = member;
 
     await this.memberRepository.updateDescription(id, description);
     await this.memberRepository.updateGithub(id, github);
@@ -50,7 +50,7 @@ export class MemberService {
   }
 
   async updateMyPassword(member: Member, password: string, newPassword: string): Promise<void> {
-    const id = member['_id'];
+    const { _id: id } = member;
 
     const fullMember = await this.memberRepository.findByIdWithPassword(id);
 
@@ -65,8 +65,7 @@ export class MemberService {
   }
 
   async updateMyAvatar(member: Member, file: Express.Multer.File): Promise<string> {
-    const id = member['_id'];
-    const original = member.avatar;
+    const { _id: id, avatar: original } = member;
 
     const avatar = await this.s3Service.upload(file, 'avatars');
     await this.memberRepository.updateAvatar(id, avatar);
