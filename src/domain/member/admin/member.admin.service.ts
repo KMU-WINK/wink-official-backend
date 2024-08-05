@@ -20,7 +20,7 @@ export class MemberAdminService {
     const members = await this.memberRepository.findAll();
 
     return members
-      .filter((member) => member.role == Role.WAITING)
+      .filter((member) => !member.approved)
       .map(
         (member) =>
           ({
@@ -31,13 +31,13 @@ export class MemberAdminService {
   }
 
   async approveWaitingMember(memberId: string): Promise<void> {
-    const { name, email, role } = await this.memberRepository.findById(memberId);
+    const { name, email, approved } = await this.memberRepository.findById(memberId);
 
-    if (role !== Role.WAITING) {
+    if (approved) {
       throw new NotWaitingMemberException();
     }
 
-    await this.memberRepository.updateRoleById(memberId, Role.MEMBER);
+    await this.memberRepository.updateApprovedById(memberId, true);
 
     this.logger.log(`Approve member: ${name} (${email})`);
 
@@ -45,9 +45,9 @@ export class MemberAdminService {
   }
 
   async rejectWaitingMember(memberId: string): Promise<void> {
-    const { name, email, role } = await this.memberRepository.findById(memberId);
+    const { name, email, approved } = await this.memberRepository.findById(memberId);
 
-    if (role !== Role.WAITING) {
+    if (approved) {
       throw new NotWaitingMemberException();
     }
 
@@ -62,7 +62,7 @@ export class MemberAdminService {
     const members = await this.memberRepository.findAll();
 
     return members
-      .filter((member) => member.role !== Role.WAITING)
+      .filter((member) => member.approved)
       .map(
         (member) =>
           ({
@@ -79,9 +79,9 @@ export class MemberAdminService {
   }
 
   async updateRole(memberId: string, role: Role): Promise<void> {
-    const { role: _role } = await this.memberRepository.findById(memberId);
+    const { approved } = await this.memberRepository.findById(memberId);
 
-    if (_role === Role.WAITING) {
+    if (!approved) {
       throw new NotApprovedMemberException();
     }
 
@@ -91,9 +91,9 @@ export class MemberAdminService {
   }
 
   async updateFee(memberId: string, fee: boolean): Promise<void> {
-    const { role: _role } = await this.memberRepository.findById(memberId);
+    const { approved } = await this.memberRepository.findById(memberId);
 
-    if (_role === Role.WAITING) {
+    if (!approved) {
       throw new NotApprovedMemberException();
     }
 

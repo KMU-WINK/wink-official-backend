@@ -73,6 +73,10 @@ export class MemberRepository {
     await this.memberModel.updateOne({ _id: id }, { fee }).exec();
   }
 
+  async updateApprovedById(id: string, approved: boolean): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { approved }).exec();
+  }
+
   // Delete
   async deleteById(id: string): Promise<void> {
     await this.memberModel.deleteOne({ _id: id }).exec();

@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 
 import * as nodemailer from 'nodemailer';
 
+import { Member } from '../../domain/member/member.schema';
+
 import {
   approveAccountTemplate,
   rejectAccountTemplate,
@@ -43,7 +45,7 @@ export class MailService {
     this.logger.log(`Send to ${to} with subject: ${subject}`);
   }
 
-  verifyCode({ email, code }: { email: string; code: string }): EmailTemplateResponse {
+  verifyCode({ email, code }: Pick<Member, 'email'> & { code: string }): EmailTemplateResponse {
     const subject = '[WINK] 회원가입 인증코드';
     const html = verifyCodeTemplate.replace('{email}', email).replace('{code}', code);
 
@@ -54,7 +56,7 @@ export class MailService {
     };
   }
 
-  registerComplete({ name }: { name: string }): EmailTemplateResponse {
+  registerComplete({ name }: Pick<Member, 'name'>): EmailTemplateResponse {
     const subject = '[WINK] 회원가입 완료';
     const html = registerCompleteTemplate.replace('{name}', name);
 
@@ -65,7 +67,7 @@ export class MailService {
     };
   }
 
-  approveAccount({ name }: { name: string }): EmailTemplateResponse {
+  approveAccount({ name }: Pick<Member, 'name'>): EmailTemplateResponse {
     const subject = '[WINK] 계정 승인 완료';
     const html = approveAccountTemplate.replace('{name}', name);
 
@@ -76,7 +78,7 @@ export class MailService {
     };
   }
 
-  rejectAccount({ name }: { name: string }): EmailTemplateResponse {
+  rejectAccount({ name }: Pick<Member, 'name'>): EmailTemplateResponse {
     const subject = '[WINK] 계정 승인 거부';
     const html = rejectAccountTemplate.replace('{name}', name);
 

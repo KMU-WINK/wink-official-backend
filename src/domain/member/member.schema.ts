@@ -33,11 +33,14 @@ export class Member {
   @Prop({ type: Object, default: DEFAULT_LINKS })
   link: MyInfoLinks;
 
-  @Prop({ type: String, enum: Role, default: Role.WAITING })
+  @Prop({ type: String, enum: Role, default: null })
   role: Role;
 
   @Prop({ default: false })
   fee: boolean;
+
+  @Prop({ default: false })
+  approved: boolean;
 }
 
 export const MemberSchema = SchemaFactory.createForClass(Member);

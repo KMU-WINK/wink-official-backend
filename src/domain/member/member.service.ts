@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 import { Member } from './member.schema';
 import { MemberRepository } from './member.repository';
 import { EachGetMembersResponseDto } from './dto';
-import { Role } from './constant/Role';
 
 import { WrongPasswordException } from '../auth/exception';
 
@@ -21,7 +20,7 @@ export class MemberService {
     const members = await this.memberRepository.findAll();
 
     return members
-      .filter((member) => member.role !== Role.WAITING)
+      .filter((member) => member.approved)
       .map(
         (member) =>
           ({

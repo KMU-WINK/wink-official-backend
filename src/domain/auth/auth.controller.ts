@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { AuthAnyAccount, ReqMember } from './auth.guard';
+import { AuthAccount, ReqMember } from './auth.guard';
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -14,6 +14,7 @@ import {
 } from './dto';
 
 import { Member } from '../member/member.schema';
+import { NotApprovedMemberException } from '../member/exception';
 
 import {
   AlreadyRegisteredByEmailException,
@@ -73,6 +74,10 @@ export class AuthController {
       description: '이미 가입된 학번',
       error: AlreadyRegisteredByStudentIdException,
     },
+    {
+      description: '승인되지 않은 계정',
+      error: NotApprovedMemberException,
+    },
   ])
   async register(@Body() request: RegisterRequestDto): Promise<void> {
     const { name, studentId, password, verifyToken } = request;
@@ -118,7 +123,7 @@ export class AuthController {
 
   @Get('/me')
   @HttpCode(200)
-  @AuthAnyAccount()
+  @AuthAccount()
   @ApiOperation({ summary: '인증 토큰으로 정보 조회' })
   @ApiCustomResponse({ type: MyInfoResponseDto, status: 200 })
   @ApiCustomErrorResponse([

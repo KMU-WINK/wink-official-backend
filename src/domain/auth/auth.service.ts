@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
 import { MemberRepository } from '../member/member.repository';
+import { NotApprovedMemberException } from '../member/exception';
 
 import {
   AlreadyRegisteredByEmailException,
@@ -35,6 +36,10 @@ export class AuthService {
 
     if (!(await bcrypt.compare(password, member.password))) {
       throw new WrongPasswordException();
+    }
+
+    if (!member.approved) {
+      throw new NotApprovedMemberException();
     }
 
     return this.jwtService.signAsync({ id: member['_id'] });

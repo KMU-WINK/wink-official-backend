@@ -21,12 +21,8 @@ import {
   UpdateMyPasswordRequestDto,
 } from './dto';
 
-import { AuthMemberAccount, ReqMember } from '../auth/auth.guard';
-import {
-  WrongPasswordException,
-  UnauthorizedException,
-  PermissionException,
-} from '../auth/exception';
+import { AuthAccount, ReqMember } from '../auth/auth.guard';
+import { WrongPasswordException, UnauthorizedException } from '../auth/exception';
 
 import { AvatarFilter } from './util';
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../utils';
@@ -48,7 +44,7 @@ export class MemberController {
 
   @Put('/me/info')
   @HttpCode(200)
-  @AuthMemberAccount()
+  @AuthAccount()
   @ApiOperation({ summary: '내 정보 수정' })
   @ApiProperty({ type: UpdateMyInfoRequestDto })
   @ApiCustomResponse({ status: 200 })
@@ -56,10 +52,6 @@ export class MemberController {
     {
       description: '인증되지 않은 사용자',
       error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
     },
   ])
   async updateMyInfo(
@@ -73,7 +65,7 @@ export class MemberController {
 
   @Patch('/me/password')
   @HttpCode(200)
-  @AuthMemberAccount()
+  @AuthAccount()
   @ApiOperation({ summary: '내 비밀번호 수정' })
   @ApiProperty({ type: UpdateMyPasswordRequestDto })
   @ApiCustomResponse({ status: 200 })
@@ -81,10 +73,6 @@ export class MemberController {
     {
       description: '인증되지 않은 사용자',
       error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
     },
     {
       description: '기존 비밀번호가 틀림',
@@ -102,7 +90,7 @@ export class MemberController {
 
   @Patch('/me/avatar')
   @HttpCode(200)
-  @AuthMemberAccount()
+  @AuthAccount()
   @UseInterceptors(FileInterceptor('avatar', { fileFilter: AvatarFilter }))
   @ApiOperation({ summary: '내 프로필 사진 수정' })
   @ApiConsumes('multipart/form-data')
@@ -112,10 +100,6 @@ export class MemberController {
     {
       description: '인증되지 않은 사용자',
       error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
     },
   ])
   async updateMyAvatar(

@@ -1,7 +1,7 @@
 import { registerDecorator } from 'class-validator';
 
 const PASSWORD_REGEXP =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,24}$/;
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\x20-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E])[A-Za-z\d\x20-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]{8,24}$/;
 
 export const IsPasswordFormat = () => (object: NonNullable<unknown>, propertyName: string) => {
   registerDecorator({
