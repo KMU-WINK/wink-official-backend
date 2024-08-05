@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { v4 as uuid } from 'uuid';
@@ -13,11 +13,16 @@ import {
 
 @Injectable()
 export class S3Service {
-  private readonly logger: Logger = new Logger(S3Service.name);
+  private readonly logger: Logger;
 
   private readonly s3Client: S3Client;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject('DIRECTORY') private readonly directory: string,
+  ) {
+    this.logger = new Logger(`S3Service-${directory}`);
+
     this.s3Client = new S3Client({
       region: configService.getOrThrow<string>('s3.region'),
       credentials: {
@@ -27,12 +32,14 @@ export class S3Service {
     });
   }
 
-  async upload(file: Express.Multer.File, directory: string) {
-    const key = `${directory}/${uuid()}${extname(file.originalname)}`;
+  async upload(file: Express.Multer.File) {
+    let _key = `${this.directory}/${uuid()}${extname(file.originalname)}`;
+    _key = _key.replace(/ /g, '_');
+    _key = _key.replace(/\/\//g, '/');
 
     await this.s3Client.send(
       new PutObjectCommand({
-        Key: key,
+        Key: _key,
         Body: file.buffer,
         Bucket: this.configService.getOrThrow<string>('s3.bucket'),
         ContentType: file.mimetype,
@@ -40,23 +47,38 @@ export class S3Service {
       }),
     );
 
-    this.logger.log(`Upload file: ${key}`);
+    this.logger.log(`Upload file: ${_key}`);
 
-    return `https://${this.configService.getOrThrow<string>('s3.bucket')}.s3.${this.configService.getOrThrow<string>('s3.region')}.amazonaws.com/${key}`;
+    return `https://${this.configService.getOrThrow<string>('s3.bucket')}.s3.${this.configService.getOrThrow<string>('s3.region')}.amazonaws.com/${_key}`;
   }
 
   async delete(key: string) {
+    const _key = `${this.directory}/${key}`;
+
     await this.s3Client.send(
       new DeleteObjectCommand({
-        Key: key,
+        Key: _key,
         Bucket: this.configService.getOrThrow<string>('s3.bucket'),
       }),
     );
 
-    this.logger.log(`Delete file: ${key}`);
+    this.logger.log(`Delete file: ${_key}`);
   }
 
-  extractKey(url: string) {
-    return url.split('.com/')[1];
+  async deleteFromUrl(url: string) {
+    const _key = url.split(`.com/`)[1];
+
+    await this.s3Client.send(
+      new DeleteObjectCommand({
+        Key: _key,
+        Bucket: this.configService.getOrThrow<string>('s3.bucket'),
+      }),
+    );
+
+    this.logger.log(`Delete file: ${_key}`);
+  }
+
+  sub(directory: string): S3Service {
+    return new S3Service(this.configService, `${this.directory}/${directory}`);
   }
 }

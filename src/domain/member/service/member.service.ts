@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { Member } from '../schema';
@@ -13,7 +13,7 @@ import { S3Service } from '../../../common/s3';
 export class MemberService {
   constructor(
     private readonly memberRepository: MemberRepository,
-    private readonly s3Service: S3Service,
+    @Inject(`${S3Service}-avatar`) private readonly s3AvatarService: S3Service,
   ) {}
 
   async getMembers(): Promise<EachGetMembersResponseDto[]> {
@@ -67,13 +67,11 @@ export class MemberService {
   async updateMyAvatar(member: Member, file: Express.Multer.File): Promise<string> {
     const { _id: id, avatar: original } = member;
 
-    const avatar = await this.s3Service.upload(file, 'avatars');
+    const avatar = await this.s3AvatarService.upload(file);
     await this.memberRepository.updateAvatar(id, avatar);
 
     if (original) {
-      const key = this.s3Service.extractKey(original);
-
-      await this.s3Service.delete(key);
+      await this.s3AvatarService.deleteFromUrl(original);
     }
 
     return avatar;

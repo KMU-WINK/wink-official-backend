@@ -7,19 +7,28 @@ import { MemberRepository } from './repository';
 import { Member, MemberSchema } from './schema';
 
 import { MongoModelFactory } from '../../common/mongo';
-import { S3Module } from '../../common/s3';
+import { S3Module, S3Service } from '../../common/s3';
 import { MailModule } from '../../common/utils/mail';
 
 @Module({
-  controllers: [MemberController, MemberAdminController],
-  exports: [MemberRepository],
   imports: [
     MongooseModule.forFeatureAsync([MongoModelFactory.generate(Member.name, MemberSchema)]),
 
-    S3Module,
+    S3Module.register('member'),
 
     MailModule,
   ],
-  providers: [MemberService, MemberAdminService, MemberRepository],
+  controllers: [MemberController, MemberAdminController],
+  providers: [
+    MemberService,
+    MemberAdminService,
+    MemberRepository,
+    {
+      provide: `${S3Service}-avatar`,
+      useFactory: (s3Service: S3Service) => s3Service.sub('avatar'),
+      inject: [S3Service],
+    },
+  ],
+  exports: [MemberRepository],
 })
 export class MemberModule {}
