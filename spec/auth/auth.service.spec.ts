@@ -14,8 +14,11 @@ import {
 
 import { Member } from '../../src/domain/member/schema';
 
+import { MailService } from '../../src/common/utils/mail';
+
 describe('Auth Service Test', () => {
   let authService: AuthService;
+  let mailService: MailService;
 
   let memoryMemberRepository: Member[];
   let memoryRedisCodeRepository: Record<string, string>;
@@ -28,9 +31,11 @@ describe('Auth Service Test', () => {
     ({ memoryMemberRepository, memoryRedisCodeRepository, memoryRedisTokenRepository } = mock);
 
     authService = module.get<AuthService>(AuthService);
+    mailService = module.get<MailService>(MailService);
   });
 
   afterEach(() => {
+    jest.clearAllMocks();
     memoryMemberRepository.splice(0, memoryMemberRepository.length);
     Object.keys(memoryRedisCodeRepository).forEach((key) => {
       delete memoryRedisCodeRepository[key];
@@ -181,6 +186,7 @@ describe('Auth Service Test', () => {
 
     it('올바른 정보가 주어졌을 때', async () => {
       // Given
+      const name = '홍길동';
       const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
       const verifyToken = 'verify-token';
@@ -188,12 +194,13 @@ describe('Auth Service Test', () => {
       memoryRedisTokenRepository[verifyToken] = email;
 
       // When
-      const result = authService.register('', 20240001, password, verifyToken);
+      const result = authService.register(name, 20240001, password, verifyToken);
 
       // Then
       await expect(result).resolves.toBeUndefined();
       expect(memoryMemberRepository).toHaveLength(1);
       expect(memoryMemberRepository[0].email).toBe(email);
+      expect(mailService.registerComplete).toHaveBeenCalledWith({ name });
     });
   });
 
@@ -233,6 +240,10 @@ describe('Auth Service Test', () => {
       // Then
       await expect(result).resolves.toBeUndefined();
       expect(memoryRedisCodeRepository[email]).toBeDefined();
+      expect(mailService.verifyCode).toHaveBeenCalledWith({
+        email,
+        code: memoryRedisCodeRepository[email],
+      });
     });
   });
 
