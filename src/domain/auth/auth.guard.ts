@@ -15,6 +15,7 @@ import { UnauthorizedException, PermissionException } from './exception';
 
 import { Role } from '../member/constant/Role';
 import { MemberRepository } from '../member/member.repository';
+import { NotApprovedMemberException } from '../member/exception';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -49,6 +50,10 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
+    if (!member.approved) {
+      throw new NotApprovedMemberException();
+    }
+
     const roles = this.reflector.get<Role[]>('roles', context.getHandler());
     if (roles.length > 0 && !roles.includes(member.role)) {
       throw new PermissionException();
@@ -74,23 +79,11 @@ export const ReqMember = createParamDecorator((data: any, ctx: ExecutionContext)
   return request.member;
 });
 
-export const AuthAnyAccount = () =>
+export const AuthAccount = () =>
   applyDecorators(
     SetMetadata(
       'roles',
       Object.keys(Role).map((key) => Role[key as keyof typeof Role]),
-    ),
-    UseGuards(AuthGuard),
-    ApiBearerAuth(),
-  );
-
-export const AuthMemberAccount = () =>
-  applyDecorators(
-    SetMetadata(
-      'roles',
-      Object.keys(Role)
-        .map((key) => Role[key as keyof typeof Role])
-        .filter((role) => role !== Role.WAITING),
     ),
     UseGuards(AuthGuard),
     ApiBearerAuth(),
@@ -102,7 +95,7 @@ export const AuthAdminAccount = () =>
       'roles',
       Object.keys(Role)
         .map((key) => Role[key as keyof typeof Role])
-        .filter((role) => role !== Role.WAITING && role !== Role.MEMBER),
+        .filter((role) => role !== Role.MEMBER),
     ),
     UseGuards(AuthGuard),
     ApiBearerAuth(),

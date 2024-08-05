@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Patch } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { MemberAdminService } from './member.admin.service';
@@ -6,7 +6,7 @@ import {
   ApproveWaitingMemberRequestDto,
   GetMembersForAdminResponseDto,
   GetWaitingMembersResponseDto,
-  RefuseWaitingMemberRequestDto,
+  RejectWaitingMemberRequestDto,
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
 } from '../dto';
@@ -15,7 +15,7 @@ import { NotApprovedMemberException, NotWaitingMemberException } from '../except
 import { AuthAdminAccount } from '../../auth/auth.guard';
 import { UnauthorizedException, PermissionException } from '../../auth/exception';
 
-import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../utils';
+import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
 
 @Controller('/admin/member')
 @ApiTags('[Admin] Member')
@@ -43,7 +43,7 @@ export class MemberAdminController {
     return { members };
   }
 
-  @Patch('/waiting')
+  @Post('/waiting/approve')
   @HttpCode(200)
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 승인' })
@@ -69,11 +69,11 @@ export class MemberAdminController {
     await this.memberAdminService.approveWaitingMember(memberId);
   }
 
-  @Delete('/waiting')
+  @Post('/waiting/reject')
   @HttpCode(200)
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 거부' })
-  @ApiProperty({ type: RefuseWaitingMemberRequestDto })
+  @ApiProperty({ type: RejectWaitingMemberRequestDto })
   @ApiCustomResponse({ status: 200 })
   @ApiCustomErrorResponse([
     {
@@ -89,10 +89,10 @@ export class MemberAdminController {
       error: NotWaitingMemberException,
     },
   ])
-  async refuseWaitingMember(@Body() request: RefuseWaitingMemberRequestDto): Promise<void> {
+  async rejectWaitingMember(@Body() request: RejectWaitingMemberRequestDto): Promise<void> {
     const { memberId } = request;
 
-    await this.memberAdminService.refuseWaitingMember(memberId);
+    await this.memberAdminService.rejectWaitingMember(memberId);
   }
 
   @Get()

@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { CustomValidation } from '../../../../utils';
+import { IsEmail, IsKookminEmail, NotEmpty } from '../../../../common/utils/validation';
 
 export class SendCodeRequestDto {
   @ApiProperty({
     description: '이메일',
     example: 'honggildong@kookmin.ac.kr',
   })
-  @CustomValidation.NotEmpty()
-  @CustomValidation.IsEmail()
+  @NotEmpty()
+  @IsEmail()
+  @IsKookminEmail()
   email: string;
 }

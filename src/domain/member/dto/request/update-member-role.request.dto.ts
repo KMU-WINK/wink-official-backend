@@ -2,14 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { Role } from '../../constant/Role';
 
-import { CustomValidation } from '../../../../utils';
+import { IsEnum, IsObjectId, NotEmpty } from '../../../../common/utils/validation';
 
 export class UpdateMemberRoleRequestDto {
   @ApiProperty({
     description: '멤버 ID',
     example: '1a2b3c4d5e6f7a8b9c0d1e2f',
   })
-  @CustomValidation.IsObjectId()
+  @IsObjectId()
   memberId: string;
 
   @ApiProperty({
@@ -17,7 +17,7 @@ export class UpdateMemberRoleRequestDto {
     enum: Role,
     example: Role.MEMBER,
   })
-  @CustomValidation.NotEmpty()
-  @CustomValidation.IsEnum(Role)
+  @NotEmpty()
+  @IsEnum(Role)
   role: Role;
 }

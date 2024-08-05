@@ -17,7 +17,7 @@ export class MemberRepository {
 
   // Read
   async findAll(): Promise<Member[]> {
-    return await this.memberModel.find().exec();
+    return this.memberModel.find().exec();
   }
 
   async findById(id: string): Promise<Member> {
@@ -41,19 +41,11 @@ export class MemberRepository {
     await this.memberModel.updateOne({ _id: id }, { description }).exec();
   }
 
-  async updateGithub(id: string, github: string): Promise<void> {
-    await this.updateGithubUrl(id, github ? `https://github.com/${github}` : null);
-  }
-
-  async updateGithubUrl(id: string, githubUrl: string): Promise<void> {
+  async updateGithub(id: string, githubUrl: string): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.github': githubUrl }).exec();
   }
 
-  async updateInstagram(id: string, instagram: string): Promise<void> {
-    await this.updateInstagramUrl(id, instagram ? `https://www.instagram.com/${instagram}` : null);
-  }
-
-  async updateInstagramUrl(id: string, instagramUrl: string): Promise<void> {
+  async updateInstagram(id: string, instagramUrl: string): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.instagram': instagramUrl }).exec();
   }
 
@@ -71,6 +63,10 @@ export class MemberRepository {
 
   async updateFeeById(id: string, fee: boolean): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { fee }).exec();
+  }
+
+  async updateApprovedById(id: string, approved: boolean): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { approved }).exec();
   }
 
   // Delete

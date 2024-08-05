@@ -5,6 +5,8 @@ import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
 import { MemberRepository } from '../member/member.repository';
+import { Member } from '../member/member.schema';
+import { NotApprovedMemberException } from '../member/exception';
 
 import {
   AlreadyRegisteredByEmailException,
@@ -15,7 +17,8 @@ import {
   WrongPasswordException,
 } from './exception';
 
-import { RedisRepository, MailService } from '../../utils';
+import { RedisRepository } from '../../common/redis';
+import { MailService } from '../../common/utils/mail';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +40,11 @@ export class AuthService {
       throw new WrongPasswordException();
     }
 
-    return this.jwtService.signAsync({ id: member['_id'] });
+    if (!member.approved) {
+      throw new NotApprovedMemberException();
+    }
+
+    return this.jwtService.signAsync({ id: member._id });
   }
 
   async register(
@@ -97,5 +104,11 @@ export class AuthService {
     await this.redisRepository.ttl(verifyToken, email, 60 * 60);
 
     return verifyToken;
+  }
+
+  myInfo(member: Member): Omit<Member, '_id'> & { memberId: string } {
+    const { _id: memberId, ...rest } = member['_doc'];
+
+    return { memberId, ...rest };
   }
 }

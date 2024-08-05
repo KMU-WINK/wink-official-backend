@@ -5,7 +5,7 @@ import { Role } from '../constant/Role';
 import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
-import { MailService } from '../../../utils';
+import { MailService } from '../../../common/utils/mail';
 
 @Injectable()
 export class MemberAdminService {
@@ -20,68 +20,59 @@ export class MemberAdminService {
     const members = await this.memberRepository.findAll();
 
     return members
-      .filter((member) => member.role == Role.WAITING)
+      .filter((member) => !member.approved)
       .map(
-        (member) =>
-          ({
-            name: member.name,
-            studentId: member.studentId,
-          }) as EachGetWaitingMembersResponseDto,
+        ({ name, studentId }) => ({ name, studentId }) as EachGetWaitingMembersResponseDto,
       ) as EachGetWaitingMembersResponseDto[];
   }
 
   async approveWaitingMember(memberId: string): Promise<void> {
-    const { name, email, role } = await this.memberRepository.findById(memberId);
+    const { name, email, approved } = await this.memberRepository.findById(memberId);
 
-    if (role !== Role.WAITING) {
+    if (approved) {
       throw new NotWaitingMemberException();
     }
 
-    await this.memberRepository.updateRoleById(memberId, Role.MEMBER);
+    await this.memberRepository.updateApprovedById(memberId, true);
 
     this.logger.log(`Approve member: ${name} (${email})`);
 
     this.mailService.approveAccount({ name }).send(email);
   }
 
-  async refuseWaitingMember(memberId: string): Promise<void> {
-    const { name, email, role } = await this.memberRepository.findById(memberId);
+  async rejectWaitingMember(memberId: string): Promise<void> {
+    const { name, email, approved } = await this.memberRepository.findById(memberId);
 
-    if (role !== Role.WAITING) {
+    if (approved) {
       throw new NotWaitingMemberException();
     }
 
     await this.memberRepository.deleteById(memberId);
 
-    this.logger.log(`Refuse member: ${name} (${email})`);
+    this.logger.log(`Reject member: ${name} (${email})`);
 
-    this.mailService.refuseAccount({ name }).send(email);
+    this.mailService.rejectAccount({ name }).send(email);
   }
 
   async getMembers(): Promise<EachGetMembersForAdminResponseDto[]> {
     const members = await this.memberRepository.findAll();
 
     return members
-      .filter((member) => member.role !== Role.WAITING)
+      .filter((member) => member.approved)
+      .map((member) => member['_doc'])
       .map(
-        (member) =>
+        ({ _id: memberId, ...rest }) =>
           ({
-            memberId: member['_id'],
-            name: member.name,
-            avatar: member.avatar,
-            description: member.description,
-            link: member.link,
-            role: member.role,
-            studentId: member.studentId,
-            fee: member.fee,
+            memberId,
+            ...rest,
           }) as EachGetMembersForAdminResponseDto,
       ) as EachGetMembersForAdminResponseDto[];
   }
 
   async updateRole(memberId: string, role: Role): Promise<void> {
-    const { role: _role } = await this.memberRepository.findById(memberId);
+    const { approved } = await this.memberRepository.findById(memberId);
 
-    if (_role === Role.WAITING) {
+    if (!approved) {
       throw new NotApprovedMemberException();
     }
 
@@ -91,9 +82,9 @@ export class MemberAdminService {
   }
 
   async updateFee(memberId: string, fee: boolean): Promise<void> {
-    const { role: _role } = await this.memberRepository.findById(memberId);
+    const { approved } = await this.memberRepository.findById(memberId);
 
-    if (_role === Role.WAITING) {
+    if (!approved) {
       throw new NotApprovedMemberException();
     }
 

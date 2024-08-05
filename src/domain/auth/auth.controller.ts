@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
-import { AuthAnyAccount, ReqMember } from './auth.guard';
+import { AuthAccount, ReqMember } from './auth.guard';
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -14,6 +14,7 @@ import {
 } from './dto';
 
 import { Member } from '../member/member.schema';
+import { NotApprovedMemberException } from '../member/exception';
 
 import {
   AlreadyRegisteredByEmailException,
@@ -25,14 +26,14 @@ import {
   WrongPasswordException,
 } from './exception';
 
-import { ApiCustomErrorResponse, ApiCustomResponse } from '../../utils';
+import { ApiCustomErrorResponse, ApiCustomResponse } from '../../common/utils/swagger';
 
 @Controller('/auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('/login')
   @HttpCode(200)
   @ApiOperation({ summary: '로그인' })
   @ApiProperty({ type: LoginRequestDto })
@@ -55,7 +56,7 @@ export class AuthController {
     return { token };
   }
 
-  @Put()
+  @Post('/register')
   @HttpCode(201)
   @ApiOperation({ summary: '회원가입' })
   @ApiProperty({ type: RegisterRequestDto })
@@ -73,6 +74,10 @@ export class AuthController {
       description: '이미 가입된 학번',
       error: AlreadyRegisteredByStudentIdException,
     },
+    {
+      description: '승인되지 않은 계정',
+      error: NotApprovedMemberException,
+    },
   ])
   async register(@Body() request: RegisterRequestDto): Promise<void> {
     const { name, studentId, password, verifyToken } = request;
@@ -80,7 +85,7 @@ export class AuthController {
     await this.authService.register(name, studentId, password, verifyToken);
   }
 
-  @Get('/code')
+  @Post('/register/code')
   @HttpCode(201)
   @ApiOperation({ summary: '인증코드 전송' })
   @ApiProperty({ type: SendCodeRequestDto })
@@ -97,7 +102,7 @@ export class AuthController {
     await this.authService.sendCode(email);
   }
 
-  @Post('/code')
+  @Post('/register/code/verify')
   @HttpCode(200)
   @ApiOperation({ summary: '인증 토큰 발급' })
   @ApiProperty({ type: VerifyCodeRequestDto })
@@ -118,7 +123,7 @@ export class AuthController {
 
   @Get('/me')
   @HttpCode(200)
-  @AuthAnyAccount()
+  @AuthAccount()
   @ApiOperation({ summary: '인증 토큰으로 정보 조회' })
   @ApiCustomResponse({ type: MyInfoResponseDto, status: 200 })
   @ApiCustomErrorResponse([
@@ -128,12 +133,6 @@ export class AuthController {
     },
   ])
   async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponseDto> {
-    const memberDoc = member['_doc'];
-    const memberId = member['_id'];
-
-    delete memberDoc['_id'];
-    delete memberDoc['__v'];
-
-    return { memberId: memberId, ...memberDoc };
+    return this.authService.myInfo(member);
   }
 }

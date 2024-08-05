@@ -4,11 +4,10 @@ import * as bcrypt from 'bcrypt';
 import { Member } from './member.schema';
 import { MemberRepository } from './member.repository';
 import { EachGetMembersResponseDto } from './dto';
-import { Role } from './constant/Role';
 
 import { WrongPasswordException } from '../auth/exception';
 
-import { S3Service } from '../../utils';
+import { S3Service } from '../../common/s3';
 
 @Injectable()
 export class MemberService {
@@ -21,16 +20,16 @@ export class MemberService {
     const members = await this.memberRepository.findAll();
 
     return members
-      .filter((member) => member.role !== Role.WAITING)
+      .filter((member) => member.approved)
       .map(
-        (member) =>
+        ({ _id: memberId, name, avatar, description, link, role }) =>
           ({
-            memberId: member['_id'],
-            name: member.name,
-            avatar: member.avatar,
-            description: member.description,
-            link: member.link,
-            role: member.role,
+            memberId,
+            name,
+            avatar,
+            description,
+            link,
+            role,
           }) as EachGetMembersResponseDto,
       ) as EachGetMembersResponseDto[];
   }
@@ -42,16 +41,16 @@ export class MemberService {
     instagram?: string,
     blog?: string,
   ): Promise<void> {
-    const id = member['_id'];
+    const { _id: id } = member;
 
-    await this.memberRepository.updateDescription(id, description);
-    await this.memberRepository.updateGithub(id, github);
-    await this.memberRepository.updateInstagram(id, instagram);
-    await this.memberRepository.updateBlog(id, blog);
+    await this.memberRepository.updateDescription(id, description || null);
+    await this.memberRepository.updateGithub(id, github || null);
+    await this.memberRepository.updateInstagram(id, instagram || null);
+    await this.memberRepository.updateBlog(id, blog || null);
   }
 
   async updateMyPassword(member: Member, password: string, newPassword: string): Promise<void> {
-    const id = member['_id'];
+    const { _id: id } = member;
 
     const fullMember = await this.memberRepository.findByIdWithPassword(id);
 
@@ -66,8 +65,7 @@ export class MemberService {
   }
 
   async updateMyAvatar(member: Member, file: Express.Multer.File): Promise<string> {
-    const id = member['_id'];
-    const original = member.avatar;
+    const { _id: id, avatar: original } = member;
 
     const avatar = await this.s3Service.upload(file, 'avatars');
     await this.memberRepository.updateAvatar(id, avatar);

@@ -3,5 +3,4 @@ export enum Role {
   VICE_PRESIDENT = 'VICE_PRESIDENT',
   EXECUTIVE = 'EXECUTIVE',
   MEMBER = 'MEMBER',
-  WAITING = 'WAITING',
 }
