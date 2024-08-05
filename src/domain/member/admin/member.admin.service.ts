@@ -22,11 +22,7 @@ export class MemberAdminService {
     return members
       .filter((member) => !member.approved)
       .map(
-        (member) =>
-          ({
-            name: member.name,
-            studentId: member.studentId,
-          }) as EachGetWaitingMembersResponseDto,
+        ({ name, studentId }) => ({ name, studentId }) as EachGetWaitingMembersResponseDto,
       ) as EachGetWaitingMembersResponseDto[];
   }
 
@@ -63,17 +59,12 @@ export class MemberAdminService {
 
     return members
       .filter((member) => member.approved)
+      .map((member) => member['_doc'])
       .map(
-        (member) =>
+        ({ _id: memberId, ...rest }) =>
           ({
-            memberId: member['_id'],
-            name: member.name,
-            avatar: member.avatar,
-            description: member.description,
-            link: member.link,
-            role: member.role,
-            studentId: member.studentId,
-            fee: member.fee,
+            memberId,
+            ...rest,
           }) as EachGetMembersForAdminResponseDto,
       ) as EachGetMembersForAdminResponseDto[];
   }

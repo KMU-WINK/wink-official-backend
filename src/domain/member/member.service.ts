@@ -22,14 +22,14 @@ export class MemberService {
     return members
       .filter((member) => member.approved)
       .map(
-        (member) =>
+        ({ _id: memberId, name, avatar, description, link, role }) =>
           ({
-            memberId: member['_id'],
-            name: member.name,
-            avatar: member.avatar,
-            description: member.description,
-            link: member.link,
-            role: member.role,
+            memberId,
+            name,
+            avatar,
+            description,
+            link,
+            role,
           }) as EachGetMembersResponseDto,
       ) as EachGetMembersResponseDto[];
   }
