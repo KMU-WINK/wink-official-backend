@@ -11,8 +11,11 @@ import {
 
 import { Member } from '../../src/domain/member/schema';
 
+import { MailService } from '../../src/common/utils/mail';
+
 describe('Auth Integrated Test', () => {
   let authController: AuthController;
+  let mailService: MailService;
 
   let memoryMemberRepository: Member[];
   let memoryRedisCodeRepository: Record<string, string>;
@@ -25,6 +28,11 @@ describe('Auth Integrated Test', () => {
     ({ memoryMemberRepository, memoryRedisCodeRepository, memoryRedisTokenRepository } = mock);
 
     authController = module.get<AuthController>(AuthController);
+    mailService = module.get<MailService>(MailService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('Integrated Test', () => {
@@ -52,6 +60,7 @@ describe('Auth Integrated Test', () => {
 
       // Then
       expect(verifyCode).toBeDefined();
+      expect(mailService.verifyCode).toHaveBeenCalledWith({ email, code: verifyCode });
     });
 
     it('인증 토큰 발급', async () => {
@@ -84,6 +93,7 @@ describe('Auth Integrated Test', () => {
       expect(memoryRedisTokenRepository[verifyToken]).toBeUndefined();
       expect(memoryMemberRepository).toHaveLength(1);
       expect(memoryMemberRepository[0].email).toBe(email);
+      expect(mailService.registerComplete).toHaveBeenCalledWith({ name });
     });
 
     it('로그인 (승인 X)', async () => {
