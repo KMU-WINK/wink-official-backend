@@ -1,6 +1,7 @@
 import { mockAuth } from './auth.mock';
 
 import * as bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
 
 import { AuthService } from '../../src/domain/auth/service';
 import {
@@ -15,6 +16,7 @@ import {
 import { Member } from '../../src/domain/member/schema';
 
 import { MailService } from '../../src/common/utils/mail';
+import { Role } from '../../src/domain/member/constant';
 
 describe('Auth Service Test', () => {
   let authService: AuthService;
@@ -274,6 +276,49 @@ describe('Auth Service Test', () => {
 
       // Then
       await expect(result).resolves.toBeDefined();
+    });
+  });
+
+  describe('내 정보 조회', () => {
+    it('내 정보 조회', async () => {
+      // Given
+      const member: Member = {
+        _id: uuid(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        name: uuid(),
+        studentId: 20240001,
+        email: uuid(),
+        password: uuid(),
+        avatar: uuid(),
+        description: uuid(),
+        link: {
+          github: uuid(),
+          instagram: uuid(),
+          blog: uuid(),
+        },
+        role: Role.MEMBER,
+        fee: true,
+        approved: true,
+      };
+
+      // When
+      const result = authService.myInfo(member);
+
+      // Then
+      expect(result).toMatchObject({
+        memberId: member._id,
+        createdAt: member.createdAt,
+        updatedAt: member.updatedAt,
+        name: member.name,
+        studentId: member.studentId,
+        email: member.email,
+        avatar: member.avatar,
+        description: member.description,
+        link: member.link,
+        role: member.role,
+        fee: member.fee,
+      });
     });
   });
 });
