@@ -18,21 +18,25 @@ describe('Auth Service Test', () => {
   let authService: AuthService;
 
   let memoryMemberRepository: Member[];
-  let memoryRedisRepository: Record<string, string>;
+  let memoryRedisCodeRepository: Record<string, string>;
+  let memoryRedisTokenRepository: Record<string, string>;
 
   beforeAll(async () => {
     const mock = await mockAuth();
 
     const { module } = mock;
-    ({ memoryMemberRepository, memoryRedisRepository } = mock);
+    ({ memoryMemberRepository, memoryRedisCodeRepository, memoryRedisTokenRepository } = mock);
 
     authService = module.get<AuthService>(AuthService);
   });
 
   afterEach(() => {
     memoryMemberRepository.splice(0, memoryMemberRepository.length);
-    Object.keys(memoryRedisRepository).forEach((key) => {
-      delete memoryRedisRepository[key];
+    Object.keys(memoryRedisCodeRepository).forEach((key) => {
+      delete memoryRedisCodeRepository[key];
+    });
+    Object.keys(memoryRedisTokenRepository).forEach((key) => {
+      delete memoryRedisTokenRepository[key];
     });
   });
 
@@ -137,7 +141,7 @@ describe('Auth Service Test', () => {
         approved: undefined,
       });
 
-      memoryRedisRepository[verifyToken] = email;
+      memoryRedisTokenRepository[verifyToken] = email;
 
       // When
       const result = authService.register('', 0, password, verifyToken);
@@ -166,7 +170,7 @@ describe('Auth Service Test', () => {
         approved: undefined,
       });
 
-      memoryRedisRepository[verifyToken] = email;
+      memoryRedisTokenRepository[verifyToken] = email;
 
       // When
       const result = authService.register('', 20240001, password, verifyToken);
@@ -181,7 +185,7 @@ describe('Auth Service Test', () => {
       const password = 'p4sSw0rd!';
       const verifyToken = 'verify-token';
 
-      memoryRedisRepository[verifyToken] = email;
+      memoryRedisTokenRepository[verifyToken] = email;
 
       // When
       const result = authService.register('', 20240001, password, verifyToken);
@@ -228,7 +232,7 @@ describe('Auth Service Test', () => {
 
       // Then
       await expect(result).resolves.toBeUndefined();
-      expect(memoryRedisRepository[email]).toBeDefined();
+      expect(memoryRedisCodeRepository[email]).toBeDefined();
     });
   });
 
@@ -238,7 +242,7 @@ describe('Auth Service Test', () => {
       const email = 'honggildong@kookmin.ac.kr';
       const code = '123456';
 
-      memoryRedisRepository[email] = '654321';
+      memoryRedisCodeRepository[email] = '654321';
 
       // When
       const result = authService.verifyCode(email, code);
@@ -252,7 +256,7 @@ describe('Auth Service Test', () => {
       const email = 'honggildong@kookmin.ac.kr';
       const code = '123456';
 
-      memoryRedisRepository[email] = code;
+      memoryRedisCodeRepository[email] = code;
 
       // When
       const result = authService.verifyCode(email, code);

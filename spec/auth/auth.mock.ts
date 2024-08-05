@@ -14,7 +14,8 @@ import { MailService } from '../../src/common/utils/mail';
 
 export const mockAuth = async () => {
   const memoryMemberRepository: Member[] = [];
-  const memoryRedisRepository: Record<string, string> = {};
+  const memoryRedisCodeRepository: Record<string, string> = {};
+  const memoryRedisTokenRepository: Record<string, string> = {};
 
   const module = await Test.createTestingModule({
     imports: [
@@ -27,14 +28,22 @@ export const mockAuth = async () => {
     providers: [
       AuthService,
       { provide: MemberRepository, useValue: mockMemberRepository(memoryMemberRepository) },
-      { provide: RedisRepository, useValue: mockRedisRepository(memoryRedisRepository) },
       { provide: MailService, useValue: mockMailService() },
+      {
+        provide: `${RedisRepository.name}-code`,
+        useValue: mockRedisRepository(memoryRedisCodeRepository),
+      },
+      {
+        provide: `${RedisRepository.name}-token`,
+        useValue: mockRedisRepository(memoryRedisTokenRepository),
+      },
     ],
   }).compile();
 
   return {
     module,
     memoryMemberRepository,
-    memoryRedisRepository,
+    memoryRedisCodeRepository,
+    memoryRedisTokenRepository,
   };
 };
