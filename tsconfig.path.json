@@ -25,7 +25,7 @@
       "@wink/activity/*": ["domain/activity/*"],
 
       // Test
-      "@wink/test-mock": ["../test/mock"],
+      "@wink/test-mock": ["../test/mock"]
     }
-  },
+  }
 }
