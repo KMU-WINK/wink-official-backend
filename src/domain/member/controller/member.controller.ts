@@ -53,7 +53,7 @@ export class MemberController {
     @ReqMember() member: Member,
     @Body() request: UpdateMyInfoRequestDto,
   ): Promise<void> {
-    return await this.memberService.updateMyInfo(member, request);
+    return this.memberService.updateMyInfo(member, request);
   }
 
   @Patch('/me/password')
@@ -73,7 +73,7 @@ export class MemberController {
     @ReqMember() member: Member,
     @Body() request: UpdateMyPasswordRequestDto,
   ): Promise<void> {
-    return await this.memberService.updateMyPassword(member, request);
+    return this.memberService.updateMyPassword(member, request);
   }
 
   @Patch('/me/avatar')
@@ -89,7 +89,7 @@ export class MemberController {
     @ReqMember() member: Member,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<UpdateMyAvatarResponseDto> {
-    return await this.memberService.updateMyAvatar(member, file);
+    return this.memberService.updateMyAvatar(member, file);
   }
 
   @Delete('/me/avatar')

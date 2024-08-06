@@ -28,7 +28,7 @@ export class MemberAdminController {
   @ApiCustomResponse({ type: GetWaitingMembersResponseDto, status: 201 })
   @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
-    return await this.memberAdminService.getWaitingMembers();
+    return this.memberAdminService.getWaitingMembers();
   }
 
   @Post('/waiting/approve')
@@ -45,7 +45,7 @@ export class MemberAdminController {
     },
   ])
   async approveWaitingMember(@Body() request: ApproveWaitingMemberRequestDto): Promise<void> {
-    return await this.memberAdminService.approveWaitingMember(request);
+    return this.memberAdminService.approveWaitingMember(request);
   }
 
   @Post('/waiting/reject')
@@ -62,7 +62,7 @@ export class MemberAdminController {
     },
   ])
   async rejectWaitingMember(@Body() request: RejectWaitingMemberRequestDto): Promise<void> {
-    return await this.memberAdminService.rejectWaitingMember(request);
+    return this.memberAdminService.rejectWaitingMember(request);
   }
 
   @Get()
@@ -72,7 +72,7 @@ export class MemberAdminController {
   @ApiCustomResponse({ type: GetMembersForAdminResponseDto, status: 201 })
   @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
-    return await this.memberAdminService.getMembers();
+    return this.memberAdminService.getMembers();
   }
 
   @Patch('/role')
@@ -89,7 +89,7 @@ export class MemberAdminController {
     },
   ])
   async updateMemberRole(@Body() request: UpdateMemberRoleRequestDto): Promise<void> {
-    return await this.memberAdminService.updateRole(request);
+    return this.memberAdminService.updateRole(request);
   }
 
   @Patch('/fee')
@@ -106,6 +106,6 @@ export class MemberAdminController {
     },
   ])
   async updateMemberFee(@Body() request: UpdateMemberFeeRequestDto): Promise<void> {
-    return await this.memberAdminService.updateFee(request);
+    return this.memberAdminService.updateFee(request);
   }
 }
