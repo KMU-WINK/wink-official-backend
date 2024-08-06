@@ -1,4 +1,4 @@
-import { Member } from '../../../../../domain/member/schema';
+import { Member } from '@wink/member/schema';
 
 export class UpdateMyInfoEvent {
   public static readonly EVENT_NAME = 'member.updateMyInfo';

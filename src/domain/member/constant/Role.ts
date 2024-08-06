@@ -10,26 +10,25 @@ export enum Role {
   MEMBER = 'MEMBER',
 }
 
-const roleHierarchy: { [key: number]: Role[] } = {
-  1: [Role.PRESIDENT],
-  2: [Role.VICE_PRESIDENT],
-  3: [Role.TREASURY_HEAD, Role.PUBLIC_RELATIONS_HEAD, Role.PLANNING_HEAD],
-  4: [Role.TREASURY_ASSISTANT, Role.PUBLIC_RELATIONS_ASSISTANT, Role.PLANNING_ASSISTANT],
-  5: [Role.MEMBER],
-};
+const roleHierarchy: { [key: string]: number } = {
+  [Role.PRESIDENT]: 1,
 
-const findRoleIndex = (role: Role): number => {
-  for (const key in roleHierarchy) {
-    if (roleHierarchy[key].includes(role)) {
-      return parseInt(key);
-    }
-  }
-  return -1;
+  [Role.VICE_PRESIDENT]: 2,
+
+  [Role.TREASURY_HEAD]: 3,
+  [Role.PUBLIC_RELATIONS_HEAD]: 3,
+  [Role.PLANNING_HEAD]: 3,
+
+  [Role.TREASURY_ASSISTANT]: 4,
+  [Role.PUBLIC_RELATIONS_ASSISTANT]: 4,
+  [Role.PLANNING_ASSISTANT]: 4,
+
+  [Role.MEMBER]: 5,
 };
 
 export const canChangeRole = (myRole: Role, targetRole: Role): boolean => {
-  const myRoleIndex = findRoleIndex(myRole);
-  const targetRoleIndex = findRoleIndex(targetRole);
+  const myRoleIndex = roleHierarchy[myRole];
+  const targetRoleIndex = roleHierarchy[targetRole];
 
   return myRoleIndex < targetRoleIndex;
 };

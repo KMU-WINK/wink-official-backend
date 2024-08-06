@@ -1,4 +1,4 @@
 export * from './mail.module';
-export * from './mail.service';
 
+export * from './service';
 export * from './template';

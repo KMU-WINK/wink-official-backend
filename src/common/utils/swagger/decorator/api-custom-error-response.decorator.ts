@@ -1,7 +1,7 @@
 import { applyDecorators, HttpException, HttpStatus, Type } from '@nestjs/common';
 import { ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
-import { ApiCustomResponseDto } from '../dto';
+import { ApiCustomResponseDto } from '@wink/swagger';
 
 interface ApiCustomExceptionOption {
   swagger: string;

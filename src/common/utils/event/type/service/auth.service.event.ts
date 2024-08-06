@@ -1,4 +1,4 @@
-import { Member } from '../../../../../domain/member/schema';
+import { Member } from '@wink/member/schema';
 
 export class LoginEvent {
   public static readonly EVENT_NAME = 'auth.login';

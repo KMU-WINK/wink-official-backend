@@ -13,7 +13,7 @@ import {
   SendCodeRequestDto,
   VerifyCodeRequestDto,
   VerifyCodeResponseDto,
-} from '../dto';
+} from '@wink/auth/dto';
 import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
@@ -21,24 +21,15 @@ import {
   InvalidVerifyTokenException,
   MemberNotFoundException,
   WrongPasswordException,
-} from '../exception';
+} from '@wink/auth/exception';
 
-import { MemberRepository } from '../../member/repository';
-import { Member, transferMember } from '../../member/schema';
-import { NotApprovedMemberException } from '../../member/exception';
+import { MemberRepository } from '@wink/member/repository';
+import { Member, transferMember } from '@wink/member/schema';
+import { NotApprovedMemberException } from '@wink/member/exception';
 
-import { RedisService } from '../../../common/redis';
-import {
-  MailService,
-  RegisterCompleteTemplate,
-  VerifyCodeTemplate,
-} from '../../../common/utils/mail';
-import {
-  LoginEvent,
-  RegisterEvent,
-  SendCodeEvent,
-  VerifyCodeEvent,
-} from '../../../common/utils/event';
+import { RedisService } from '@wink/redis';
+import { MailService, RegisterCompleteTemplate, VerifyCodeTemplate } from '@wink/mail';
+import { LoginEvent, RegisterEvent, SendCodeEvent, VerifyCodeEvent } from '@wink/event';
 
 @Injectable()
 export class AuthService {

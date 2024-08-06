@@ -1,7 +1,7 @@
 import { applyDecorators, HttpStatus, Type } from '@nestjs/common';
 import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
-import { ApiCustomResponseDto } from '../dto';
+import { ApiCustomResponseDto } from '@wink/swagger';
 
 interface ApiCustomResponseOptions {
   type?: Type<unknown>;

@@ -1,16 +1,6 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2023",
-    "outDir": "./dist",
-    "baseUrl": "./src",
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "strictFunctionTypes": true
-  }
+  "extends": [
+    "./tsconfig.general.json",
+    "./tsconfig.path.json",
+  ]
 }

@@ -1,4 +1,4 @@
-import { EmailTemplateBase } from '../../../mail';
+import { EmailTemplateBase } from '@wink/mail';
 
 export class MailSendEvent {
   public static readonly EVENT_NAME = 'mail.send';

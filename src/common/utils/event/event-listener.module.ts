@@ -4,14 +4,11 @@ import {
   AuthServiceEventListener,
   MemberAdminServiceEventListener,
   MemberServiceEventListener,
-} from './service';
-
-import {
   MailEventListener,
   RedisServiceEventListener,
   S3ServiceEventListener,
   SchedulerEventListener,
-} from './util';
+} from './listener';
 
 @Module({
   providers: [

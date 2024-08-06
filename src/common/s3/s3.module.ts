@@ -1,6 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { S3Service } from './s3.service';
+import { S3Service } from './service';
 
 @Module({})
 export class S3Module {

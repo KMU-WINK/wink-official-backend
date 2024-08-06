@@ -1,10 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import {
-  CommonValidation,
-  TypeValidation,
-  StringValidation,
-} from '../../../../common/utils/validation';
+import { CommonValidation, TypeValidation, StringValidation } from '@wink/validation';
 
 export class LoginRequestDto {
   @ApiProperty({

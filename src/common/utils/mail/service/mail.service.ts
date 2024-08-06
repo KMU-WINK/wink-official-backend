@@ -4,9 +4,9 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import * as nodemailer from 'nodemailer';
 
-import { EmailTemplateBase } from './template';
+import { EmailTemplateBase } from '@wink/mail';
 
-import { MailSendEvent, MailTemplateSendEvent } from '../event';
+import { MailSendEvent, MailTemplateSendEvent } from '@wink/event';
 
 @Injectable()
 export class MailService {

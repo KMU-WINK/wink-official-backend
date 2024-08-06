@@ -1,5 +1,5 @@
-import { Member } from '../../../../../domain/member/schema';
-import { Role } from '../../../../../domain/member/constant';
+import { Member } from '@wink/member/schema';
+import { Role } from '@wink/member/constant';
 
 export class ApproveWaitingMemberEvent {
   public static readonly EVENT_NAME = 'member.admin.approve_waiting_member';

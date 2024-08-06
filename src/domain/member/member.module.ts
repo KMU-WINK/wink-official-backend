@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { MemberAdminController, MemberController } from './controller';
-import { MemberAdminService, MemberService } from './service';
-import { MemberRepository } from './repository';
-import { Member, MemberSchema } from './schema';
+import { MemberAdminController, MemberController } from '@wink/member/controller';
+import { MemberAdminService, MemberService } from '@wink/member/service';
+import { MemberRepository } from '@wink/member/repository';
+import { Member, MemberSchema } from '@wink/member/schema';
 
-import { PurgeUnusedAvatarJob } from './util/scheduler';
+import { PurgeUnusedAvatarJob } from '@wink/member/util/scheduler';
 
-import { MongoModelFactory } from '../../common/mongo';
-import { S3Module, S3Service } from '../../common/s3';
-import { MailModule } from '../../common/utils/mail';
+import { MongoModelFactory } from '@wink/mongo';
+import { S3Module, S3Service } from '@wink/s3';
+import { MailModule } from '@wink/mail';
 
 @Module({
   imports: [

@@ -1,4 +1,4 @@
-import { EmailTemplateBase } from './email-template.base';
+import { EmailTemplateBase } from '@wink/mail';
 
 export class RejectAccountTemplate implements EmailTemplateBase {
   constructor(private readonly name: string) {}
