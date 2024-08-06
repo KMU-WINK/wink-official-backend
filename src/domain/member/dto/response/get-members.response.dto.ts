@@ -11,6 +11,18 @@ export class EachGetMembersResponseDto {
   memberId!: string;
 
   @ApiProperty({
+    description: '계정 생성일',
+    example: '2024-01-01T00:00:00.000Z',
+  })
+  createdAt!: Date;
+
+  @ApiProperty({
+    description: '계정 수정일',
+    example: '2024-01-01T00:00:00.000Z',
+  })
+  updatedAt!: Date;
+
+  @ApiProperty({
     description: '이름',
     example: '홍길동',
   })
@@ -48,6 +60,12 @@ export class EachGetMembersResponseDto {
 }
 
 export class EachGetMembersForAdminResponseDto extends EachGetMembersResponseDto {
+  @ApiProperty({
+    description: '이메일',
+    example: 'honggildong@kookmin.ac.kr',
+  })
+  email!: string;
+
   @ApiProperty({
     description: '학번',
     example: '20240001',

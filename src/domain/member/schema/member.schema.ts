@@ -54,3 +54,20 @@ export class Member {
 }
 
 export const MemberSchema: MongooseSchema<Member> = SchemaFactory.createForClass(Member);
+
+export const transferMember = <T>(member: Member, excludeFields: (keyof Member)[] = []): T => {
+  const _member: Member = '_doc' in member ? <Member>member._doc : member;
+  const document = { ..._member };
+
+  const memberId = document._id;
+
+  excludeFields.push('_id');
+  excludeFields.forEach((field) => {
+    delete document[field];
+  });
+
+  return <T>{
+    memberId,
+    ...document,
+  };
+};

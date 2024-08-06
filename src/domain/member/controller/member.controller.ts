@@ -40,7 +40,6 @@ export class MemberController {
   @ApiOperation({ summary: '부원 목록' })
   @ApiCustomResponse({ type: GetMembersResponseDto, status: HttpStatus.OK })
   async getMembers(): Promise<GetMembersResponseDto> {
-    throw new Error('test');
     return this.memberService.getMembers();
   }
 

@@ -23,7 +23,7 @@ import {
 } from '../exception';
 
 import { MemberRepository } from '../../member/repository';
-import { Member } from '../../member/schema';
+import { Member, transferMember } from '../../member/schema';
 import { NotApprovedMemberException } from '../../member/exception';
 
 import { RedisRepository } from '../../../common/redis';
@@ -122,32 +122,6 @@ export class AuthService {
   }
 
   myInfo(member: Member): MyInfoResponseDto {
-    const {
-      _id: memberId,
-      createdAt,
-      updatedAt,
-      name,
-      studentId,
-      email,
-      avatar,
-      description,
-      link,
-      role,
-      fee,
-    } = member;
-
-    return {
-      memberId,
-      createdAt,
-      updatedAt,
-      name,
-      studentId,
-      email,
-      avatar,
-      description,
-      link,
-      role,
-      fee,
-    };
+    return <MyInfoResponseDto>transferMember(member, ['approved']);
   }
 }

@@ -18,7 +18,7 @@ import {
   MailService,
   RejectAccountTemplate,
 } from '../../../common/utils/mail';
-import { Member } from '../schema';
+import { Member, transferMember } from '../schema';
 import { MemberNotFoundException } from '../../auth/exception';
 
 @Injectable()
@@ -77,20 +77,9 @@ export class MemberAdminService {
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
     const members = (await this.memberRepository.findAll())
       .filter((member) => member.approved)
-      .map(
-        ({ _id: memberId, name, studentId, email, avatar, description, link, role, fee }) =>
-          <EachGetMembersForAdminResponseDto>{
-            memberId,
-            name,
-            studentId,
-            email,
-            avatar,
-            description,
-            link,
-            role,
-            fee,
-          },
-      );
+      .map((member) => {
+        return <EachGetMembersForAdminResponseDto>transferMember(member, ['approved']);
+      });
 
     return { members };
   }
