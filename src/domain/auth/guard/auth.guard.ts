@@ -11,7 +11,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-import { UnauthorizedException, PermissionException } from '../exception';
+import { PermissionException, UnauthorizedException } from '../exception';
 
 import { Role } from '../../member/constant';
 import { MemberRepository } from '../../member/repository';
@@ -89,17 +89,6 @@ export const AuthAccount = () =>
     ApiBearerAuth(),
   );
 
-export const AuthAccountException = [
-  {
-    description: '멤버를 찾을 수 없음',
-    error: UnauthorizedException,
-  },
-  {
-    description: '멤버가 승인되지 않음',
-    error: NotApprovedMemberException,
-  },
-];
-
 export const AuthAdminAccount = () =>
   applyDecorators(
     SetMetadata(
@@ -112,17 +101,10 @@ export const AuthAdminAccount = () =>
     ApiBearerAuth(),
   );
 
+export const AuthAccountException = [UnauthorizedException, NotApprovedMemberException];
+
 export const AuthAdminAccountException = [
-  {
-    description: '멤버를 찾을 수 없음',
-    error: UnauthorizedException,
-  },
-  {
-    description: '멤버가 승인되지 않음',
-    error: NotApprovedMemberException,
-  },
-  {
-    description: '권한이 없음',
-    error: PermissionException,
-  },
+  UnauthorizedException,
+  NotApprovedMemberException,
+  PermissionException,
 ];

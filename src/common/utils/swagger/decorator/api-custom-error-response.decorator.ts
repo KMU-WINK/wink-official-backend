@@ -1,29 +1,45 @@
-import { applyDecorators, HttpException, Type } from '@nestjs/common';
+import { applyDecorators, HttpException, HttpStatus, Type } from '@nestjs/common';
 import { ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 import { ApiCustomResponseDto } from '../dto';
 
-interface ApiCustomErrorResponseOptions {
-  description: string;
-  error: Type<HttpException>;
+interface ApiCustomExceptionOption {
+  swagger: string;
+  message: string;
+  code: HttpStatus;
 }
 
-export const ApiCustomErrorResponse = (options: ApiCustomErrorResponseOptions[]) => {
-  const errors = new Map<number, [string, HttpException][]>();
+export class ApiException extends HttpException {
+  private readonly description: string;
 
-  options.forEach((option) => {
-    const error = new option.error();
-    errors.has(error.getStatus());
+  constructor({ swagger, message, code }: ApiCustomExceptionOption) {
+    super(message, code);
 
-    if (!errors.has(error.getStatus())) {
-      errors.set(error.getStatus(), []);
-    }
+    this.description = swagger;
+  }
 
-    errors.get(error.getStatus())!.push([option.description, error]);
-  });
+  getDescription(): string {
+    return this.description;
+  }
+}
+
+export const ApiCustomErrorResponse = (errors: Type<ApiException>[]) => {
+  const ERROR_MAP = new Map<number, [string, ApiException][]>();
+
+  errors
+    .map((error) => new error())
+    .forEach((error) => {
+      ERROR_MAP.has(error.getStatus());
+
+      if (!ERROR_MAP.has(error.getStatus())) {
+        ERROR_MAP.set(error.getStatus(), []);
+      }
+
+      ERROR_MAP.get(error.getStatus())!.push([error.getDescription(), error]);
+    });
 
   return applyDecorators(
-    ...Array.from(errors.entries()).map(([status, errors]) =>
+    ...Array.from(ERROR_MAP.entries()).map(([status, errors]) =>
       ApiResponse({
         status,
         content: {

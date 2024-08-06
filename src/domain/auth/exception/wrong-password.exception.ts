@@ -1,7 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-export class WrongPasswordException extends HttpException {
+import { ApiException } from '../../../common/utils/swagger';
+
+export class WrongPasswordException extends ApiException {
   constructor() {
-    super('잘못된 비밀번호입니다.', 400);
+    super({
+      swagger: '비밀번호가 틀렸을 때',
+      message: '잘못된 비밀번호입니다.',
+      code: HttpStatus.UNAUTHORIZED,
+    });
   }
 }

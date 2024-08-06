@@ -62,13 +62,7 @@ export class MemberController {
   @ApiOperation({ summary: '내 비밀번호 수정' })
   @ApiProperty({ type: UpdateMyPasswordRequestDto })
   @ApiCustomResponse({ status: 200 })
-  @ApiCustomErrorResponse([
-    ...AuthAccountException,
-    {
-      description: '기존 비밀번호가 틀림',
-      error: WrongPasswordException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAccountException, WrongPasswordException])
   async updateMyPassword(
     @ReqMember() member: Member,
     @Body() request: UpdateMyPasswordRequestDto,

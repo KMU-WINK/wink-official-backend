@@ -37,13 +37,7 @@ export class MemberAdminController {
   @ApiOperation({ summary: '회원가입 승인' })
   @ApiProperty({ type: ApproveWaitingMemberRequestDto })
   @ApiCustomResponse({ status: 200 })
-  @ApiCustomErrorResponse([
-    ...AuthAdminAccountException,
-    {
-      description: '멤버가 이미 승인됨',
-      error: NotWaitingMemberException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAdminAccountException, NotWaitingMemberException])
   async approveWaitingMember(@Body() request: ApproveWaitingMemberRequestDto): Promise<void> {
     return this.memberAdminService.approveWaitingMember(request);
   }
@@ -54,13 +48,7 @@ export class MemberAdminController {
   @ApiOperation({ summary: '회원가입 거부' })
   @ApiProperty({ type: RejectWaitingMemberRequestDto })
   @ApiCustomResponse({ status: 200 })
-  @ApiCustomErrorResponse([
-    ...AuthAdminAccountException,
-    {
-      description: '멤버가 이미 승인됨',
-      error: NotWaitingMemberException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAdminAccountException, NotWaitingMemberException])
   async rejectWaitingMember(@Body() request: RejectWaitingMemberRequestDto): Promise<void> {
     return this.memberAdminService.rejectWaitingMember(request);
   }
@@ -81,13 +69,7 @@ export class MemberAdminController {
   @ApiOperation({ summary: '부원 권한 수정' })
   @ApiProperty({ type: UpdateMemberRoleRequestDto })
   @ApiCustomResponse({ status: 201 })
-  @ApiCustomErrorResponse([
-    ...AuthAdminAccountException,
-    {
-      description: '멤버가 승인되지 않음',
-      error: NotApprovedMemberException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAdminAccountException, NotApprovedMemberException])
   async updateMemberRole(@Body() request: UpdateMemberRoleRequestDto): Promise<void> {
     return this.memberAdminService.updateRole(request);
   }
@@ -98,13 +80,7 @@ export class MemberAdminController {
   @ApiOperation({ summary: '부원 회비 납부 여부 수정' })
   @ApiProperty({ type: UpdateMemberFeeRequestDto })
   @ApiCustomResponse({ status: 201 })
-  @ApiCustomErrorResponse([
-    ...AuthAdminAccountException,
-    {
-      description: '멤버가 승인되지 않음',
-      error: NotApprovedMemberException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAdminAccountException, NotApprovedMemberException])
   async updateMemberFee(@Body() request: UpdateMemberFeeRequestDto): Promise<void> {
     return this.memberAdminService.updateFee(request);
   }

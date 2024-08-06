@@ -37,18 +37,9 @@ export class AuthController {
   @ApiProperty({ type: LoginRequestDto })
   @ApiCustomResponse({ type: LoginResponseDto, status: 200 })
   @ApiCustomErrorResponse([
-    {
-      description: '회원을 찾을 수 없음',
-      error: MemberNotFoundException,
-    },
-    {
-      description: '비밀번호가 틀림',
-      error: WrongPasswordException,
-    },
-    {
-      description: '계정이 승인되지 않음',
-      error: NotApprovedMemberException,
-    },
+    MemberNotFoundException,
+    WrongPasswordException,
+    NotApprovedMemberException,
   ])
   async login(@Body() request: LoginRequestDto): Promise<LoginResponseDto> {
     return this.authService.login(request);
@@ -58,7 +49,7 @@ export class AuthController {
   @HttpCode(201)
   @ApiOperation({ summary: '회원가입' })
   @ApiProperty({ type: RegisterRequestDto })
-  @ApiCustomResponse({ status: 201 })
+  @ApiCustomResponse({ status: HttpStatus.CREATED })
   @ApiCustomErrorResponse([
     {
       description: '이메일 인증 토큰이 잘못됨',
@@ -78,7 +69,7 @@ export class AuthController {
   }
 
   @Post('/register/code')
-  @HttpCode(201)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: '인증코드 전송' })
   @ApiProperty({ type: SendCodeRequestDto })
   @ApiCustomResponse({ status: 201 })
@@ -93,7 +84,7 @@ export class AuthController {
   }
 
   @Post('/register/code/verify')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '인증 토큰 발급' })
   @ApiProperty({ type: VerifyCodeRequestDto })
   @ApiCustomResponse({ type: VerifyCodeResponseDto, status: 200 })

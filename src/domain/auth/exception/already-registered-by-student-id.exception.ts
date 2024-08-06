@@ -1,7 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-export class AlreadyRegisteredByStudentIdException extends HttpException {
+import { ApiException } from '../../../common/utils/swagger';
+
+export class AlreadyRegisteredByStudentIdException extends ApiException {
   constructor() {
-    super('이미 가입된 학번입니다.', 409);
+    super({
+      swagger: '이미 가입된 학번일 때',
+      message: '이미 가입된 학번입니다.',
+      code: HttpStatus.CONFLICT,
+    });
   }
 }

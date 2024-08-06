@@ -1,7 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-export class PermissionException extends HttpException {
+import { ApiException } from '../../../common/utils/swagger';
+
+export class PermissionException extends ApiException {
   constructor() {
-    super('권한이 없습니다.', 403);
+    super({
+      swagger: '권한이 없을 때',
+      message: '권한이 없습니다.',
+      code: HttpStatus.FORBIDDEN,
+    });
   }
 }

@@ -1,7 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-export class NotApprovedMemberException extends HttpException {
+import { ApiException } from '../../../common/utils/swagger';
+
+export class NotApprovedMemberException extends ApiException {
   constructor() {
-    super('이 계정은 승인된 계정이 아닙니다.', 400);
+    super({
+      swagger: '승인되지 않은 계정일 때',
+      message: '승인되지 않은 계정입니다.',
+      code: HttpStatus.BAD_REQUEST,
+    });
   }
 }

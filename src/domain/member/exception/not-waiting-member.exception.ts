@@ -1,7 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-export class NotWaitingMemberException extends HttpException {
+import { ApiException } from '../../../common/utils/swagger';
+
+export class NotWaitingMemberException extends ApiException {
   constructor() {
-    super('이 계정은 대기 중인 계정이 아닙니다.', 400);
+    super({
+      swagger: '이미 승인된 계정일 때',
+      message: '이미 승인된 계정입니다.',
+      code: HttpStatus.BAD_REQUEST,
+    });
   }
 }
