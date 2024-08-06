@@ -10,8 +10,8 @@
     "start:prod": "node dist/main",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint \"src/**/*.ts\" --fix"
+    "format": "prettier --write \"{src,spec}/**/*.ts\"",
+    "lint": "eslint \"{src,spec}/**/*.ts\" --fix"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.623.0",
