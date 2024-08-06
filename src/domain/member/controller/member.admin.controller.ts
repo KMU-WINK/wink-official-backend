@@ -12,8 +12,7 @@ import {
 } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
-import { AuthAdminAccount } from '../../auth/guard';
-import { UnauthorizedException, PermissionException } from '../../auth/exception';
+import { AuthAdminAccount, AuthAdminAccountException } from '../../auth/guard';
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
 
@@ -27,16 +26,7 @@ export class MemberAdminController {
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 승인 대기 목록' })
   @ApiCustomResponse({ type: GetWaitingMembersResponseDto, status: 201 })
-  @ApiCustomErrorResponse([
-    {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
     const members = await this.memberAdminService.getWaitingMembers();
 
@@ -50,16 +40,9 @@ export class MemberAdminController {
   @ApiProperty({ type: ApproveWaitingMemberRequestDto })
   @ApiCustomResponse({ status: 200 })
   @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
     {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
-    },
-    {
-      description: '대기 중인 회원이 아님',
+      description: '멤버가 이미 승인됨',
       error: NotWaitingMemberException,
     },
   ])
@@ -76,16 +59,9 @@ export class MemberAdminController {
   @ApiProperty({ type: RejectWaitingMemberRequestDto })
   @ApiCustomResponse({ status: 200 })
   @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
     {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
-    },
-    {
-      description: '대기 중인 회원이 아님',
+      description: '멤버가 이미 승인됨',
       error: NotWaitingMemberException,
     },
   ])
@@ -100,16 +76,7 @@ export class MemberAdminController {
   @AuthAdminAccount()
   @ApiOperation({ summary: '부원 목록' })
   @ApiCustomResponse({ type: GetMembersForAdminResponseDto, status: 201 })
-  @ApiCustomErrorResponse([
-    {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
     const members = await this.memberAdminService.getMembers();
 
@@ -123,16 +90,9 @@ export class MemberAdminController {
   @ApiProperty({ type: UpdateMemberRoleRequestDto })
   @ApiCustomResponse({ status: 201 })
   @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
     {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
-    },
-    {
-      description: '승인되지 않은 회원',
+      description: '멤버가 승인되지 않음',
       error: NotApprovedMemberException,
     },
   ])
@@ -149,16 +109,9 @@ export class MemberAdminController {
   @ApiProperty({ type: UpdateMemberFeeRequestDto })
   @ApiCustomResponse({ status: 201 })
   @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
     {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-    {
-      description: '권한이 없는 사용자',
-      error: PermissionException,
-    },
-    {
-      description: '승인되지 않은 회원',
+      description: '멤버가 승인되지 않음',
       error: NotApprovedMemberException,
     },
   ])

@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from '../service';
-import { AuthAccount, ReqMember } from '../guard';
+import { AuthAccount, AuthAccountException, ReqMember } from '../guard';
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -18,7 +18,6 @@ import {
   InvalidVerifyCodeException,
   InvalidVerifyTokenException,
   MemberNotFoundException,
-  UnauthorizedException,
   WrongPasswordException,
 } from '../exception';
 
@@ -46,6 +45,10 @@ export class AuthController {
       description: '비밀번호가 틀림',
       error: WrongPasswordException,
     },
+    {
+      description: '계정이 승인되지 않음',
+      error: NotApprovedMemberException,
+    },
   ])
   async login(@Body() request: LoginRequestDto): Promise<LoginResponseDto> {
     const { email, password } = request;
@@ -72,10 +75,6 @@ export class AuthController {
     {
       description: '이미 가입된 학번',
       error: AlreadyRegisteredByStudentIdException,
-    },
-    {
-      description: '승인되지 않은 계정',
-      error: NotApprovedMemberException,
     },
   ])
   async register(@Body() request: RegisterRequestDto): Promise<void> {
@@ -125,12 +124,7 @@ export class AuthController {
   @AuthAccount()
   @ApiOperation({ summary: '인증 토큰으로 정보 조회' })
   @ApiCustomResponse({ type: MyInfoResponseDto, status: 200 })
-  @ApiCustomErrorResponse([
-    {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAccountException])
   async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponseDto> {
     return <MyInfoResponseDto>this.authService.myInfo(member);
   }
