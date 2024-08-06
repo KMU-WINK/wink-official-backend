@@ -26,10 +26,9 @@ export class PurgeUnusedAvatarJob {
     const usedAvatars = (await this.memberRepository.findAll())
       .map((member) => member.avatar)
       .filter((avatar) => avatar)
-      .map((avatar) => avatar.split('.com/')[1])
-      .map((key) => key.split('/').pop());
+      .map((avatar) => this.s3AvatarService.extractKeyFromUrl(avatar));
 
-    const savedAvatars = (await this.s3AvatarService.getFiles()).map((key) => key.split('/').pop());
+    const savedAvatars = await this.s3AvatarService.getKeys();
 
     const unusedAvatars = savedAvatars.filter((a) => !usedAvatars.includes(a));
 
