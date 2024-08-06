@@ -4,7 +4,7 @@ import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 import { ApiCustomResponseDto } from '../dto';
 
 interface ApiCustomResponseOptions {
-  type?: Type<any>;
+  type?: Type<unknown>;
   status: HttpStatus;
 }
 

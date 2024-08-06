@@ -8,19 +8,19 @@ export class MyInfoResponseDto {
     description: '멤버 아이디',
     example: '1a2b3c4d5e6f7a8b9c0d1e2f',
   })
-  memberId: string;
+  memberId!: string;
 
   @ApiProperty({
     description: '이름',
     example: '홍길동',
   })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     description: '학번',
-    example: 20240001,
+    example: '20240001',
   })
-  studentId: number;
+  studentId!: string;
 
   @ApiProperty({
     description: '아이콘 URL',
@@ -44,18 +44,18 @@ export class MyInfoResponseDto {
       blog: 'https://hongildong.tistory.com/',
     },
   })
-  link: MyInfoLinks;
+  link!: MyInfoLinks;
 
   @ApiProperty({
     description: '역할',
     enum: Role,
     example: Role.MEMBER,
   })
-  role: Role;
+  role!: Role;
 
   @ApiProperty({
     description: '회비 납부 여부',
     example: true,
   })
-  fee: boolean;
+  fee!: boolean;
 }

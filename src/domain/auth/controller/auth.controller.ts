@@ -132,6 +132,6 @@ export class AuthController {
     },
   ])
   async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponseDto> {
-    return this.authService.myInfo(member);
+    return <MyInfoResponseDto>this.authService.myInfo(member);
   }
 }

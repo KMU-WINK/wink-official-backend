@@ -1,5 +1,7 @@
 import { ArgumentMetadata, HttpException, ValidationPipe } from '@nestjs/common';
 
+type ContraintsType = { [type: string]: string };
+
 export class Validation {
   private readonly validator: ValidationPipe;
 
@@ -11,12 +13,12 @@ export class Validation {
     return new ValidationPipe({
       whitelist: true,
       exceptionFactory: (errors) => {
-        return new HttpException(Object.entries(errors[0].constraints)[0][1], 400);
+        return new HttpException(Object.entries(<ContraintsType>errors[0].constraints)[0][1], 400);
       },
     });
   }
 
-  async validateBody<T>(body: T, metatype: new () => T): Promise<any> {
+  async validateBody<T>(body: T, metatype: new () => T): Promise<unknown> {
     const metadata: ArgumentMetadata = {
       type: 'body',
       metatype,

@@ -18,6 +18,26 @@ import { Member } from '../../src/domain/member/schema';
 import { MailService } from '../../src/common/utils/mail';
 import { Role } from '../../src/domain/member/constant';
 
+const createNullMember = (): Member => ({
+  _id: '',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  name: '',
+  studentId: '',
+  email: '',
+  password: '',
+  avatar: null,
+  description: null,
+  link: {
+    github: null,
+    instagram: null,
+    blog: null,
+  },
+  fee: false,
+  role: null,
+  approved: true,
+});
+
 describe('Auth Service Test', () => {
   let authService: AuthService;
   let mailService: MailService;
@@ -67,17 +87,23 @@ describe('Auth Service Test', () => {
       const hashPassword = await bcrypt.hash(password, salt);
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
+        _id: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        name: '',
+        studentId: '',
         email,
         password: hashPassword,
+        avatar: null,
+        description: null,
+        link: {
+          github: null,
+          instagram: null,
+          blog: null,
+        },
         fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 0,
-        approved: undefined,
+        role: null,
+        approved: true,
       });
 
       // When
@@ -96,17 +122,9 @@ describe('Auth Service Test', () => {
       const hash = await bcrypt.hash(password, salt);
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
+        ...createNullMember(),
         email,
         password: hash,
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 0,
-        approved: true,
       });
 
       // When
@@ -122,7 +140,7 @@ describe('Auth Service Test', () => {
       // Given
 
       // When
-      const result = authService.register('', 0, '', 'empty-token');
+      const result = authService.register('', '', '', 'empty-token');
 
       // Then
       await expect(result).rejects.toThrow(InvalidVerifyTokenException);
@@ -135,23 +153,14 @@ describe('Auth Service Test', () => {
       const verifyToken = 'verify-token';
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
+        ...createNullMember(),
         email,
-        password,
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 0,
-        approved: undefined,
       });
 
       memoryRedisTokenRepository[verifyToken] = email;
 
       // When
-      const result = authService.register('', 0, password, verifyToken);
+      const result = authService.register('', '', password, verifyToken);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByEmailException);
@@ -159,28 +168,20 @@ describe('Auth Service Test', () => {
 
     it('이미 가입된 학번일 때', async () => {
       // Given
+      const studentId = '20240001';
       const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
       const verifyToken = 'verify-token';
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
-        email: `other_${email}`,
-        password: '',
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 20240001,
-        approved: undefined,
+        ...createNullMember(),
+        studentId,
       });
 
       memoryRedisTokenRepository[verifyToken] = email;
 
       // When
-      const result = authService.register('', 20240001, password, verifyToken);
+      const result = authService.register('', studentId, password, verifyToken);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByStudentIdException);
@@ -196,7 +197,7 @@ describe('Auth Service Test', () => {
       memoryRedisTokenRepository[verifyToken] = email;
 
       // When
-      const result = authService.register(name, 20240001, password, verifyToken);
+      const result = authService.register(name, '20240001', password, verifyToken);
 
       // Then
       await expect(result).resolves.toBeUndefined();
@@ -212,17 +213,8 @@ describe('Auth Service Test', () => {
       const email = 'honggildong@kookmin.ac.kr';
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
-        email: email,
-        password: '',
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 20240001,
-        approved: undefined,
+        ...createNullMember(),
+        email,
       });
 
       // When
@@ -287,7 +279,7 @@ describe('Auth Service Test', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         name: uuid(),
-        studentId: 20240001,
+        studentId: '20240001',
         email: uuid(),
         password: uuid(),
         avatar: uuid(),

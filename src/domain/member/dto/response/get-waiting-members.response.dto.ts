@@ -5,13 +5,13 @@ export class EachGetWaitingMembersResponseDto {
     description: '이름',
     example: '홍길동',
   })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     description: '학번',
-    example: 20240001,
+    example: '20240001',
   })
-  studentId: number;
+  studentId!: string;
 }
 
 export class GetWaitingMembersResponseDto {
@@ -19,5 +19,5 @@ export class GetWaitingMembersResponseDto {
     description: '회원가입 승인 대기 목록',
     type: [EachGetWaitingMembersResponseDto],
   })
-  members: EachGetWaitingMembersResponseDto[];
+  members!: EachGetWaitingMembersResponseDto[];
 }

@@ -30,7 +30,9 @@ export function generateMember(): Member {
     createdAt: randomDate(new Date(now.getFullYear(), 0, 1), now),
     updatedAt: randomDate(new Date(now.getFullYear(), 0, 1), now),
     name: name,
-    studentId: 20240000 + Math.floor(Math.random() * 10000),
+    studentId: `${2024}${Math.floor(Math.random() * 10000)
+      .toString()
+      .padStart(4, '0')}`,
     email: `${name.toLowerCase()}@kookmin.ac.kr`,
     password: randomString(10),
     avatar: bool() ? `https://avatar.com/${name}.png` : null,

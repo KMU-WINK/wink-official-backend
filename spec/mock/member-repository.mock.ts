@@ -106,7 +106,7 @@ export const mockMemberRepository = (memory: Member[]) => ({
     return memory.some((member) => member.email === email);
   }),
 
-  existsByStudentId: jest.fn(async (studentId: number) => {
+  existsByStudentId: jest.fn(async (studentId: string) => {
     return memory.some((member) => member.studentId === studentId);
   }),
 });
