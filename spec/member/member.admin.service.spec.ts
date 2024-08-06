@@ -72,7 +72,7 @@ describe('MemberAdminService', () => {
     MEMBER.approved = false;
 
     const PARAM: ApproveWaitingMemberRequestDto = {
-      toId: MEMBER._id,
+      memberId: MEMBER._id,
     };
 
     it('NotWaitingMemberException', async () => {
@@ -111,7 +111,7 @@ describe('MemberAdminService', () => {
     MEMBER.approved = false;
 
     const PARAM: RejectWaitingMemberRequestDto = {
-      toId: MEMBER._id,
+      memberId: MEMBER._id,
     };
 
     it('NotWaitingMemberException', async () => {
@@ -182,7 +182,7 @@ describe('MemberAdminService', () => {
     TARGET.role = Role.MEMBER;
 
     const PARAM: UpdateMemberRoleRequestDto = {
-      toId: TARGET._id,
+      memberId: TARGET._id,
       role: Role.PRESIDENT,
     };
 
@@ -253,7 +253,7 @@ describe('MemberAdminService', () => {
     TARGET.fee = false;
 
     const PARAM: UpdateMemberFeeRequestDto = {
-      toId: TARGET._id,
+      memberId: TARGET._id,
       fee: true,
     };
 

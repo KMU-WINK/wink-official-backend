@@ -9,16 +9,16 @@ export class RedisServiceEventListener {
 
   @OnEvent(RedisSetEvent.EVENT_NAME)
   onSet({ key, value }: RedisSetEvent) {
-    this.logger.log(`RedisSetEvent: { key: ${key}, value: ${value} }`);
+    this.logger.log(`Set key ${key} with value ${value}`);
   }
 
   @OnEvent(RedisSetTtlEvent.EVENT_NAME)
   onSetTtl({ key, value, seconds }: RedisSetTtlEvent) {
-    this.logger.log(`RedisSetTtlEvent: { key: ${key}, value: ${value}, seconds: ${seconds} }`);
+    this.logger.log(`Set key ${key} with value ${value} and ttl ${seconds} seconds`);
   }
 
   @OnEvent(RedisDeleteEvent.EVENT_NAME)
   onDelete({ key }: RedisDeleteEvent) {
-    this.logger.log(`RedisDeleteEvent: { key: ${key} }`);
+    this.logger.log(`Delete key ${key}`);
   }
 }

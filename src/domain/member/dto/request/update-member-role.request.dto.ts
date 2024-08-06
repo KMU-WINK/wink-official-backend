@@ -16,7 +16,7 @@ export class UpdateMemberRoleRequestDto {
   @CommonValidation.IsNotEmpty()
   @TypeValidation.IsString()
   @StringValidation.IsMongoId()
-  toId!: string;
+  memberId!: string;
 
   @ApiProperty({
     description: '역할',

@@ -10,17 +10,17 @@ export class AuthServiceEventListener {
   @OnEvent(RegisterEvent.EVENT_NAME)
   onRegister({ member }: RegisterEvent) {
     this.logger.log(
-      `RegisterEvent: { name: ${member.name}, email: ${member.email}, studentId: ${member.studentId}, id: ${member._id} }`,
+      `Register user. (name: ${member.name}, email: ${member.email}, id: ${member._id})`,
     );
   }
 
   @OnEvent(SendCodeEvent.EVENT_NAME)
   onSendCode({ email, code }: SendCodeEvent) {
-    this.logger.log(`SendCodeEvent: { email: ${email}, code: ${code} }`);
+    this.logger.log(`Send code to ${email} (code: ${code})`);
   }
 
   @OnEvent(VerifyCodeEvent.EVENT_NAME)
   onVerifyCode({ email, token }: VerifyCodeEvent) {
-    this.logger.log(`VerifyCodeEvent: { email: ${email}, token: ${token} }`);
+    this.logger.log(`Verify code from ${email} (token: ${token})`);
   }
 }

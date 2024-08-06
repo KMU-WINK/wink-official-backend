@@ -72,7 +72,10 @@ export class S3Service {
       }),
     );
 
-    return files!.map((files) => files.Key).map((key) => key!.substring(this.directory.length + 1));
+    return (files || [])
+      .map((files) => files.Key)
+      .filter((key) => key !== undefined)
+      .map((key) => key.substring(this.directory.length + 1));
   }
 
   extractKeyFromUrl(url: string): string {

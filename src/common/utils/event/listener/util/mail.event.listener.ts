@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
-import { MailSendEvent, MailTemplateSendEvent } from '../../type';
+import { MailSendEvent } from '../../type';
 
 @Injectable()
 export class MailEventListener {
@@ -9,13 +9,6 @@ export class MailEventListener {
 
   @OnEvent(MailSendEvent.EVENT_NAME)
   onSend({ to, subject }: MailSendEvent) {
-    this.logger.log(`MailSendEvent: { to: ${to}, subject: ${subject} }`);
-  }
-
-  @OnEvent(MailTemplateSendEvent.EVENT_NAME)
-  onTemplateSend({ to, template }: MailTemplateSendEvent) {
-    this.logger.log(
-      `MailTemplateSendEvent: { to: ${to}, subject: ${template.subject()}, template: ${template.constructor.name} }`,
-    );
+    this.logger.log(`Send mail to ${to} with subject ${subject}`);
   }
 }

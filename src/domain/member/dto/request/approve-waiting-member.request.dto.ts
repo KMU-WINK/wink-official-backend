@@ -14,5 +14,5 @@ export class ApproveWaitingMemberRequestDto {
   @CommonValidation.IsNotEmpty()
   @TypeValidation.IsString()
   @StringValidation.IsMongoId()
-  toId!: string;
+  memberId!: string;
 }

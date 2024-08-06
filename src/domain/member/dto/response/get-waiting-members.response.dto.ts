@@ -2,6 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class EachGetWaitingMembersResponseDto {
   @ApiProperty({
+    description: '멤버 ID',
+    example: '1a2b3c4d5e6f7a8b9c0d1e2f',
+  })
+  memberId!: string;
+
+  @ApiProperty({
     description: '이름',
     example: '홍길동',
   })

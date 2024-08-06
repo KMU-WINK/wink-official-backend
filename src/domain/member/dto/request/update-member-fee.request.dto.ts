@@ -14,7 +14,7 @@ export class UpdateMemberFeeRequestDto {
   @CommonValidation.IsNotEmpty()
   @TypeValidation.IsString()
   @StringValidation.IsMongoId()
-  toId!: string;
+  memberId!: string;
 
   @ApiProperty({
     description: '회비 납부 여부',

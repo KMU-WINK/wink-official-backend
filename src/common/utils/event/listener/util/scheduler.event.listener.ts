@@ -8,7 +8,7 @@ export class SchedulerEventListener {
   private readonly logger = new Logger(SchedulerEventListener.name);
 
   @OnEvent(PurgeUnusedAvatarEvent.EVENT_NAME)
-  onSet({ keys }: PurgeUnusedAvatarEvent) {
-    this.logger.log(`PurgeUnusedAvatarEvent: { size: ${keys.length}, keys: ${keys} }`);
+  onPurgeUnusedAvatar({ keys }: PurgeUnusedAvatarEvent) {
+    this.logger.log(`Purge unused ${keys.length} avatars. (${keys.join(', ')})`);
   }
 }

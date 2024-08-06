@@ -63,7 +63,8 @@ export class AuthGuard implements CanActivate {
   }
 
   private extractAuthToken(request: Request): string | boolean {
-    const authorization = request.headers.get('authorization');
+    // @ts-expect-error: Request type does not have headers
+    const authorization = request.headers['authorization'];
 
     if (authorization?.startsWith('Bearer ')) {
       return authorization.slice(7);
