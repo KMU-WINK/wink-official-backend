@@ -28,9 +28,7 @@ export class MemberAdminController {
   @ApiCustomResponse({ type: GetWaitingMembersResponseDto, status: 201 })
   @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
-    const members = await this.memberAdminService.getWaitingMembers();
-
-    return { members };
+    return await this.memberAdminService.getWaitingMembers();
   }
 
   @Post('/waiting/approve')
@@ -47,9 +45,7 @@ export class MemberAdminController {
     },
   ])
   async approveWaitingMember(@Body() request: ApproveWaitingMemberRequestDto): Promise<void> {
-    const { memberId } = request;
-
-    await this.memberAdminService.approveWaitingMember(memberId);
+    return await this.memberAdminService.approveWaitingMember(request);
   }
 
   @Post('/waiting/reject')
@@ -66,9 +62,7 @@ export class MemberAdminController {
     },
   ])
   async rejectWaitingMember(@Body() request: RejectWaitingMemberRequestDto): Promise<void> {
-    const { memberId } = request;
-
-    await this.memberAdminService.rejectWaitingMember(memberId);
+    return await this.memberAdminService.rejectWaitingMember(request);
   }
 
   @Get()
@@ -78,9 +72,7 @@ export class MemberAdminController {
   @ApiCustomResponse({ type: GetMembersForAdminResponseDto, status: 201 })
   @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
-    const members = await this.memberAdminService.getMembers();
-
-    return { members };
+    return await this.memberAdminService.getMembers();
   }
 
   @Patch('/role')
@@ -97,9 +89,7 @@ export class MemberAdminController {
     },
   ])
   async updateMemberRole(@Body() request: UpdateMemberRoleRequestDto): Promise<void> {
-    const { memberId, role } = request;
-
-    await this.memberAdminService.updateRole(memberId, role);
+    return await this.memberAdminService.updateRole(request);
   }
 
   @Patch('/fee')
@@ -116,8 +106,6 @@ export class MemberAdminController {
     },
   ])
   async updateMemberFee(@Body() request: UpdateMemberFeeRequestDto): Promise<void> {
-    const { memberId, fee } = request;
-
-    await this.memberAdminService.updateFee(memberId, fee);
+    return await this.memberAdminService.updateFee(request);
   }
 }
