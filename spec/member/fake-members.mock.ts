@@ -3,11 +3,11 @@ import { v4 as uuid } from 'uuid';
 import { Member } from '../../src/domain/member/schema';
 import { Role } from '../../src/domain/member/constant';
 
-function randomDate(start: Date, end: Date): Date {
+const randomDate = (start: Date, end: Date): Date => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-}
+};
 
-function randomString(length: number): string {
+const randomString = (length: number): string => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   let result = '';
   const charactersLength = characters.length;
@@ -15,11 +15,11 @@ function randomString(length: number): string {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
-}
+};
 
-function bool(): boolean {
+const bool = (): boolean => {
   return Math.random() >= 0.5;
-}
+};
 
 export const createNullMember = (): Member => ({
   _id: '',
@@ -41,7 +41,7 @@ export const createNullMember = (): Member => ({
   approved: true,
 });
 
-export function createRandomMember(): Member {
+export const createRandomMember = (): Member => {
   const name = randomString(10);
   const now = new Date();
 
@@ -66,12 +66,12 @@ export function createRandomMember(): Member {
     fee: bool(),
     approved: bool(),
   };
-}
+};
 
-export function createRandomMembers(count: number): Member[] {
+export const createRandomMembers = (count: number): Member[] => {
   const objects: Member[] = [];
   for (let i = 0; i < count; i++) {
     objects.push(createRandomMember());
   }
   return objects;
-}
+};

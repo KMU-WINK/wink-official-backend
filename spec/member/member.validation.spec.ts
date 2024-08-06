@@ -645,7 +645,7 @@ describe('MemberValidation', () => {
 
         // Then
         await expect(result).rejects.toThrow(
-          `role은(는) PRESIDENT, VICE_PRESIDENT, EXECUTIVE, MEMBER 중 하나여야 합니다.`,
+          `role은(는) ${Object.values(Role).join(', ')} 중 하나여야 합니다.`,
         );
       });
     });

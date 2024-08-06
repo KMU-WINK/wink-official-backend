@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
+import { canChangeRole } from '../constant';
+import { Member, transferMember } from '../schema';
 import { MemberRepository } from '../repository';
 import {
   ApproveWaitingMemberRequestDto,
@@ -13,13 +15,13 @@ import {
 } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
+import { MemberNotFoundException, SuperRoleException } from '../../auth/exception';
+
 import {
   ApproveAccountTemplate,
   MailService,
   RejectAccountTemplate,
 } from '../../../common/utils/mail';
-import { Member, transferMember } from '../schema';
-import { MemberNotFoundException } from '../../auth/exception';
 
 @Injectable()
 export class MemberAdminService {
@@ -84,34 +86,48 @@ export class MemberAdminService {
     return { members };
   }
 
-  async updateRole({ memberId, role }: UpdateMemberRoleRequestDto): Promise<void> {
+  async updateRole(
+    { _id, name, role: myRole }: Member,
+    { memberId, role }: UpdateMemberRoleRequestDto,
+  ): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
 
-    const { approved } = <Member>await this.memberRepository.findById(memberId);
+    const { approved, role: targetRole } = <Member>await this.memberRepository.findById(memberId);
 
     if (!approved) {
       throw new NotApprovedMemberException();
     }
 
-    this.logger.log(`Update role: ${memberId} to ${role}`);
+    if (!canChangeRole(myRole!, targetRole!)) {
+      throw new SuperRoleException();
+    }
+
+    this.logger.log(`Update role: ${memberId} to ${role} by ${name} (${_id})`);
 
     await this.memberRepository.updateRoleById(memberId, role);
   }
 
-  async updateFee({ memberId, fee }: UpdateMemberFeeRequestDto): Promise<void> {
+  async updateFee(
+    { _id, name, role: myRole }: Member,
+    { memberId, fee }: UpdateMemberFeeRequestDto,
+  ): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
 
-    const { approved } = <Member>await this.memberRepository.findById(memberId);
+    const { approved, role: targetRole } = <Member>await this.memberRepository.findById(memberId);
 
     if (!approved) {
       throw new NotApprovedMemberException();
     }
 
-    this.logger.log(`Update fee: ${memberId} to ${fee}`);
+    if (!canChangeRole(myRole!, targetRole!)) {
+      throw new SuperRoleException();
+    }
+
+    this.logger.log(`Update fee: ${memberId} to ${fee} by ${name} (${_id})`);
 
     await this.memberRepository.updateFeeById(memberId, fee);
   }

@@ -26,7 +26,7 @@ export class ApiException extends HttpException {
 export const ApiCustomErrorResponse = (errors: Type<ApiException>[]) => {
   const ERROR_MAP = new Map<number, [string, ApiException][]>();
 
-  errors
+  [...new Set(errors)]
     .map((error) => new error())
     .forEach((error) => {
       ERROR_MAP.has(error.getStatus());

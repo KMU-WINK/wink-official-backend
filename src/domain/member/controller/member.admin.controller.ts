@@ -12,9 +12,11 @@ import {
 } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
-import { AuthAdminAccount, AuthAdminAccountException } from '../../auth/guard';
+import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '../../auth/guard';
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
+import { Member } from '../schema';
+import { SuperRoleException } from '../../auth/exception';
 
 @Controller('/admin/member')
 @ApiTags('[Admin] Member')
@@ -69,9 +71,16 @@ export class MemberAdminController {
   @ApiOperation({ summary: '부원 권한 수정' })
   @ApiProperty({ type: UpdateMemberRoleRequestDto })
   @ApiCustomResponse({ status: HttpStatus.OK })
-  @ApiCustomErrorResponse([...AuthAdminAccountException, NotApprovedMemberException])
-  async updateMemberRole(@Body() request: UpdateMemberRoleRequestDto): Promise<void> {
-    return this.memberAdminService.updateRole(request);
+  @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
+    NotApprovedMemberException,
+    SuperRoleException,
+  ])
+  async updateMemberRole(
+    @ReqMember() member: Member,
+    @Body() request: UpdateMemberRoleRequestDto,
+  ): Promise<void> {
+    return this.memberAdminService.updateRole(member, request);
   }
 
   @Patch('/fee')
@@ -80,8 +89,15 @@ export class MemberAdminController {
   @ApiOperation({ summary: '부원 회비 납부 여부 수정' })
   @ApiProperty({ type: UpdateMemberFeeRequestDto })
   @ApiCustomResponse({ status: HttpStatus.OK })
-  @ApiCustomErrorResponse([...AuthAdminAccountException, NotApprovedMemberException])
-  async updateMemberFee(@Body() request: UpdateMemberFeeRequestDto): Promise<void> {
-    return this.memberAdminService.updateFee(request);
+  @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
+    NotApprovedMemberException,
+    SuperRoleException,
+  ])
+  async updateMemberFee(
+    @ReqMember() member: Member,
+    @Body() request: UpdateMemberFeeRequestDto,
+  ): Promise<void> {
+    return this.memberAdminService.updateFee(member, request);
   }
 }
