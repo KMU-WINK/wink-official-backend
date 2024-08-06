@@ -12,7 +12,7 @@ export class MemberRepository {
 
   // Create
   async save(Member: Partial<Member>): Promise<Member> {
-    return await this.memberModel.create(Member);
+    return this.memberModel.create(Member);
   }
 
   // Read

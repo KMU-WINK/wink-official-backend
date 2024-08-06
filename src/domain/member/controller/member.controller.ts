@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Patch,
   Put,
   UploadedFile,
@@ -35,68 +36,62 @@ export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
   @Get()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '부원 목록' })
-  @ApiCustomResponse({ type: GetMembersResponseDto, status: 201 })
+  @ApiCustomResponse({ type: GetMembersResponseDto, status: HttpStatus.OK })
   async getMembers(): Promise<GetMembersResponseDto> {
     return this.memberService.getMembers();
   }
 
   @Put('/me/info')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 정보 수정' })
   @ApiProperty({ type: UpdateMyInfoRequestDto })
-  @ApiCustomResponse({ status: 200 })
+  @ApiCustomResponse({ status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAccountException])
   async updateMyInfo(
     @ReqMember() member: Member,
     @Body() request: UpdateMyInfoRequestDto,
   ): Promise<void> {
-    return await this.memberService.updateMyInfo(member, request);
+    return this.memberService.updateMyInfo(member, request);
   }
 
   @Patch('/me/password')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 비밀번호 수정' })
   @ApiProperty({ type: UpdateMyPasswordRequestDto })
-  @ApiCustomResponse({ status: 200 })
-  @ApiCustomErrorResponse([
-    ...AuthAccountException,
-    {
-      description: '기존 비밀번호가 틀림',
-      error: WrongPasswordException,
-    },
-  ])
+  @ApiCustomResponse({ status: HttpStatus.OK })
+  @ApiCustomErrorResponse([...AuthAccountException, WrongPasswordException])
   async updateMyPassword(
     @ReqMember() member: Member,
     @Body() request: UpdateMyPasswordRequestDto,
   ): Promise<void> {
-    return await this.memberService.updateMyPassword(member, request);
+    return this.memberService.updateMyPassword(member, request);
   }
 
   @Patch('/me/avatar')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @UseInterceptors(FileInterceptor('avatar', { fileFilter: AvatarFilter }))
   @ApiOperation({ summary: '내 프로필 사진 수정' })
   @ApiConsumes('multipart/form-data')
   @ApiProperty({ type: UpdateMyAvatarRequestDto })
-  @ApiCustomResponse({ type: UpdateMyAvatarResponseDto, status: 200 })
+  @ApiCustomResponse({ type: UpdateMyAvatarResponseDto, status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAccountException, ...AvatarFilterException])
   async updateMyAvatar(
     @ReqMember() member: Member,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<UpdateMyAvatarResponseDto> {
-    return await this.memberService.updateMyAvatar(member, file);
+    return this.memberService.updateMyAvatar(member, file);
   }
 
   @Delete('/me/avatar')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 프로필 사진 삭제' })
-  @ApiCustomResponse({ status: 204 })
+  @ApiCustomResponse({ status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAccountException])
   async deleteMyAvatar(@ReqMember() member: Member): Promise<void> {
     await this.memberService.deleteMyAvatar(member);

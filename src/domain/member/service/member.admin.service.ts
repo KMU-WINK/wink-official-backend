@@ -13,8 +13,12 @@ import {
 } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
-import { MailService } from '../../../common/utils/mail';
-import { Member } from '../schema';
+import {
+  ApproveAccountTemplate,
+  MailService,
+  RejectAccountTemplate,
+} from '../../../common/utils/mail';
+import { Member, transferMember } from '../schema';
 import { MemberNotFoundException } from '../../auth/exception';
 
 @Injectable()
@@ -49,7 +53,7 @@ export class MemberAdminService {
 
     this.logger.log(`Approve member: ${name} (${email})`);
 
-    this.mailService.approveAccount({ name }).send(email);
+    this.mailService.sendTemplate(email, new ApproveAccountTemplate(name)).then((_) => _);
   }
 
   async rejectWaitingMember({ memberId }: RejectWaitingMemberRequestDto): Promise<void> {
@@ -67,26 +71,15 @@ export class MemberAdminService {
 
     this.logger.log(`Reject member: ${name} (${email})`);
 
-    this.mailService.rejectAccount({ name }).send(email);
+    this.mailService.sendTemplate(email, new RejectAccountTemplate(name)).then((_) => _);
   }
 
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
     const members = (await this.memberRepository.findAll())
       .filter((member) => member.approved)
-      .map(
-        ({ _id: memberId, name, studentId, email, avatar, description, link, role, fee }) =>
-          <EachGetMembersForAdminResponseDto>{
-            memberId,
-            name,
-            studentId,
-            email,
-            avatar,
-            description,
-            link,
-            role,
-            fee,
-          },
-      );
+      .map((member) => {
+        return <EachGetMembersForAdminResponseDto>transferMember(member, ['approved']);
+      });
 
     return { members };
   }

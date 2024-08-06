@@ -3,18 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 import * as nodemailer from 'nodemailer';
 
-import { Member } from '../../../domain/member/schema';
-
-import {
-  approveAccountTemplate,
-  rejectAccountTemplate,
-  registerCompleteTemplate,
-  verifyCodeTemplate,
-} from './template';
-
-interface EmailTemplateResponse {
-  send: (email: string) => void;
-}
+import { EmailTemplateBase } from './template';
 
 @Injectable()
 export class MailService {
@@ -45,47 +34,7 @@ export class MailService {
     this.logger.log(`Send to ${to} with subject: ${subject}`);
   }
 
-  verifyCode({ email, code }: Pick<Member, 'email'> & { code: string }): EmailTemplateResponse {
-    const subject = '[WINK] 회원가입 인증코드';
-    const html = verifyCodeTemplate.replace('{email}', email).replace('{code}', code);
-
-    return {
-      send: (email: string) => {
-        this.send(email, subject, html).then((_) => _);
-      },
-    };
-  }
-
-  registerComplete({ name }: Pick<Member, 'name'>): EmailTemplateResponse {
-    const subject = '[WINK] 회원가입 완료';
-    const html = registerCompleteTemplate.replace('{name}', name);
-
-    return {
-      send: (email: string) => {
-        this.send(email, subject, html).then((_) => _);
-      },
-    };
-  }
-
-  approveAccount({ name }: Pick<Member, 'name'>): EmailTemplateResponse {
-    const subject = '[WINK] 계정 승인 완료';
-    const html = approveAccountTemplate.replace('{name}', name);
-
-    return {
-      send: (email: string) => {
-        this.send(email, subject, html).then((_) => _);
-      },
-    };
-  }
-
-  rejectAccount({ name }: Pick<Member, 'name'>): EmailTemplateResponse {
-    const subject = '[WINK] 계정 승인 거부';
-    const html = rejectAccountTemplate.replace('{name}', name);
-
-    return {
-      send: (email: string) => {
-        this.send(email, subject, html).then((_) => _);
-      },
-    };
+  async sendTemplate(to: string, template: EmailTemplateBase): Promise<void> {
+    await this.send(to, template.subject(), template.html());
   }
 }

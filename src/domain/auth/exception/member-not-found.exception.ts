@@ -1,7 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-export class MemberNotFoundException extends HttpException {
+import { ApiException } from '../../../common/utils/swagger';
+
+export class MemberNotFoundException extends ApiException {
   constructor() {
-    super('가입되지 않은 회원입니다.', 404);
+    super({
+      swagger: '멤버를 찾을 수 없을 때',
+      message: '멤버를 찾을 수 없습니다.',
+      code: HttpStatus.NOT_FOUND,
+    });
   }
 }

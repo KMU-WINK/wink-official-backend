@@ -190,7 +190,7 @@ describe('AuthService', () => {
       await expect(result).resolves.toBeUndefined();
       expect(memoryMemberRepository).toHaveLength(1);
       expect(memoryMemberRepository[0].email).toBe(EMAIL);
-      expect(mailService.registerComplete).toHaveBeenCalledWith({ name: NAME });
+      expect(mailService.sendTemplate).toHaveBeenCalled();
     });
   });
 
@@ -224,21 +224,13 @@ describe('AuthService', () => {
       // Then
       await expect(result).resolves.toBeUndefined();
       expect(memoryRedisCodeRepository[EMAIL]).toBeDefined();
-      expect(mailService.verifyCode).toHaveBeenCalledWith({
-        email: EMAIL,
-        code: memoryRedisCodeRepository[EMAIL],
-      });
+      expect(mailService.sendTemplate).toHaveBeenCalled();
     });
   });
 
   describe('verifyCode', () => {
     const EMAIL = 'honggildong@kookmin.ac.kr';
     const CODE = '123456';
-
-    const NULL_MEMBER: Member = {
-      ...createNullMember(),
-      email: EMAIL,
-    };
 
     const PARAMS: VerifyCodeRequestDto = { email: EMAIL, code: CODE };
 

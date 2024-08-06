@@ -1,7 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-export class UnauthorizedException extends HttpException {
+import { ApiException } from '../../../common/utils/swagger';
+
+export class UnauthorizedException extends ApiException {
   constructor() {
-    super('인증되지 않은 사용자입니다.', 401);
+    super({
+      swagger: '로그인 실패했을 때',
+      message: '로그인에 실패했습니다.',
+      code: HttpStatus.UNAUTHORIZED,
+    });
   }
 }

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 import * as bcrypt from 'bcrypt';
 
-import { Member } from '../schema';
+import { Member, transferMember } from '../schema';
 import { MemberRepository } from '../repository';
 import {
   EachGetMembersResponseDto,
@@ -24,19 +24,13 @@ export class MemberService {
   ) {}
 
   async getMembers(): Promise<GetMembersResponseDto> {
+    const execludeFields: (keyof Member)[] = ['email', 'studentId', 'fee', 'approved'];
+
     const members = (await this.memberRepository.findAll())
       .filter((member) => member.approved)
-      .map(
-        ({ _id: memberId, name, avatar, description, link, role }) =>
-          <EachGetMembersResponseDto>{
-            memberId,
-            name,
-            avatar,
-            description,
-            link,
-            role,
-          },
-      );
+      .map((member) => {
+        return <EachGetMembersResponseDto>transferMember(member, execludeFields);
+      });
 
     return { members };
   }

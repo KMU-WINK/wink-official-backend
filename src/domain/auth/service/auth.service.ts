@@ -23,11 +23,15 @@ import {
 } from '../exception';
 
 import { MemberRepository } from '../../member/repository';
-import { Member } from '../../member/schema';
+import { Member, transferMember } from '../../member/schema';
 import { NotApprovedMemberException } from '../../member/exception';
 
 import { RedisRepository } from '../../../common/redis';
-import { MailService } from '../../../common/utils/mail';
+import {
+  MailService,
+  RegisterCompleteTemplate,
+  VerifyCodeTemplate,
+} from '../../../common/utils/mail';
 
 @Injectable()
 export class AuthService {
@@ -85,7 +89,7 @@ export class AuthService {
 
     await this.redisTokenRepository.delete(verifyToken);
 
-    this.mailService.registerComplete({ name }).send(email);
+    this.mailService.sendTemplate(email, new RegisterCompleteTemplate(name)).then((_) => _);
   }
 
   async sendCode({ email }: SendCodeRequestDto): Promise<void> {
@@ -99,7 +103,7 @@ export class AuthService {
 
     await this.redisCodeRepository.ttl(email, code, 60 * 10);
 
-    this.mailService.verifyCode({ email, code }).send(email);
+    this.mailService.sendTemplate(email, new VerifyCodeTemplate(email, code)).then((_) => _);
   }
 
   async verifyCode({ email, code }: VerifyCodeRequestDto): Promise<VerifyCodeResponseDto> {
@@ -118,32 +122,6 @@ export class AuthService {
   }
 
   myInfo(member: Member): MyInfoResponseDto {
-    const {
-      _id: memberId,
-      createdAt,
-      updatedAt,
-      name,
-      studentId,
-      email,
-      avatar,
-      description,
-      link,
-      role,
-      fee,
-    } = member;
-
-    return {
-      memberId,
-      createdAt,
-      updatedAt,
-      name,
-      studentId,
-      email,
-      avatar,
-      description,
-      link,
-      role,
-      fee,
-    };
+    return <MyInfoResponseDto>transferMember(member, ['approved']);
   }
 }

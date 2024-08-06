@@ -1,7 +1,13 @@
-import { HttpException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
-export class InvalidVerifyCodeException extends HttpException {
+import { ApiException } from '../../../common/utils/swagger';
+
+export class InvalidVerifyCodeException extends ApiException {
   constructor() {
-    super('인증코드가 일치하지 않습니다.', 400);
+    super({
+      swagger: '잘못된 인증 코드일 때',
+      message: '올바르지 않은 인증 코드입니다.',
+      code: HttpStatus.BAD_REQUEST,
+    });
   }
 }

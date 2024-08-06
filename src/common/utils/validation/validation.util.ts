@@ -25,6 +25,6 @@ export class Validation {
       data: '',
     };
 
-    return await this.validator.transform(body, metadata);
+    return this.validator.transform(body, metadata);
   }
 }
