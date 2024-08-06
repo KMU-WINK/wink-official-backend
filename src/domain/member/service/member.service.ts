@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import * as bcrypt from 'bcrypt';
+import { WrongPasswordException } from '@wink/auth/exception';
 
-import { Member, transferMember } from '@wink/member/schema';
-import { MemberRepository } from '@wink/member/repository';
 import {
   EachGetMembersResponseDto,
   GetMembersResponseDto,
@@ -12,8 +10,8 @@ import {
   UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
 } from '@wink/member/dto';
-
-import { WrongPasswordException } from '@wink/auth/exception';
+import { MemberRepository } from '@wink/member/repository';
+import { Member, transferMember } from '@wink/member/schema';
 
 import { S3Service } from '@wink/s3';
 import {
@@ -22,6 +20,8 @@ import {
   UpdateMyInfoEvent,
   UpdateMyPasswordEvent,
 } from '@wink/event';
+
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class MemberService {

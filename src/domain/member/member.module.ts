@@ -3,9 +3,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { MemberAdminController, MemberController } from '@wink/member/controller';
 import { MemberAdminService, MemberService } from '@wink/member/service';
-import { MemberRepository } from '@wink/member/repository';
 import { Member, MemberSchema } from '@wink/member/schema';
-
+import { MemberRepository } from '@wink/member/repository';
 import { PurgeUnusedAvatarJob } from '@wink/member/util/scheduler';
 
 import { MongoModelFactory } from '@wink/mongo';

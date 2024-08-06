@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import Redis from 'ioredis';
-
 import { RedisDeleteEvent, RedisSetEvent, RedisSetTtlEvent } from '@wink/event';
+
+import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService {

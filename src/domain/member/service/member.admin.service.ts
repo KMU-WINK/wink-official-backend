@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+import { MemberNotFoundException, SuperRoleException } from '@wink/auth/exception';
+
 import { canChangeRole, Role } from '@wink/member/constant';
-import { Member, transferMember } from '@wink/member/schema';
-import { MemberRepository } from '@wink/member/repository';
 import {
   ApproveWaitingMemberRequestDto,
   EachGetMembersForAdminResponseDto,
@@ -15,16 +15,16 @@ import {
   UpdateMemberRoleRequestDto,
 } from '@wink/member/dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '@wink/member/exception';
+import { MemberRepository } from '@wink/member/repository';
+import { Member, transferMember } from '@wink/member/schema';
 
-import { MemberNotFoundException, SuperRoleException } from '@wink/auth/exception';
-
-import { ApproveAccountTemplate, MailService, RejectAccountTemplate } from '@wink/mail';
 import {
   ApproveWaitingMemberEvent,
   RejectWaitingMemberEvent,
   UpdateFeeEvent,
   UpdateRoleEvent,
 } from '@wink/event';
+import { ApproveAccountTemplate, MailService, RejectAccountTemplate } from '@wink/mail';
 
 @Injectable()
 export class MemberAdminService {

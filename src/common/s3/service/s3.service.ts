@@ -2,9 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { v4 as uuid } from 'uuid';
-import { extname } from 'path';
-
 import {
   DeleteObjectCommand,
   ListObjectsV2Command,
@@ -12,6 +9,9 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
+
+import { v4 as uuid } from 'uuid';
+import { extname } from 'path';
 
 @Injectable()
 export class S3Service {

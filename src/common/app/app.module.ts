@@ -6,16 +6,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
+import { AppConfig, JwtConfig, MongoConfig } from '@wink/config';
+import { DefaultExceptionFilter, NotFoundExceptionFilter } from '@wink/filter';
+import { ApiResponseInterceptor } from '@wink/interceptor';
+
 import { AuthModule } from '@wink/auth/auth.module';
 import { MemberModule } from '@wink/member/member.module';
 import { ActivityModule } from '@wink/activity/activity.module';
 
-import { AppConfig, JwtConfig, MongoConfig } from '@wink/config';
-import { ApiResponseInterceptor } from '@wink/interceptor';
-import { DefaultExceptionFilter, NotFoundExceptionFilter } from '@wink/filter';
-
-import { Validation } from '@wink/validation';
 import { EventListenerModule } from '@wink/event';
+import { Validation } from '@wink/validation';
 
 @Module({
   imports: [

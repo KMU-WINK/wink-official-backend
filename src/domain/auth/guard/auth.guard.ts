@@ -14,8 +14,8 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { PermissionException, UnauthorizedException } from '@wink/auth/exception';
 
 import { Role } from '@wink/member/constant';
-import { MemberRepository } from '@wink/member/repository';
 import { NotApprovedMemberException } from '@wink/member/exception';
+import { MemberRepository } from '@wink/member/repository';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

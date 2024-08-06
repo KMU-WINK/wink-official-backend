@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Schema as MongooseSchema } from 'mongoose';
-
 import { Role } from '@wink/member/constant';
+
+import { Schema as MongooseSchema } from 'mongoose';
 
 export interface MyInfoLinks {
   github: string | null;

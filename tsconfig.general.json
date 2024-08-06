@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES2023",
+    "target": "ES6",
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
