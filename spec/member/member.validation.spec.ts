@@ -11,16 +11,16 @@ import {
   UpdateMyPasswordRequestDto,
 } from '../../src/domain/member/dto';
 
-describe('Member Validation Test', () => {
+describe('MemberValidation', () => {
   let validation: Validation;
 
   beforeAll(async () => {
     validation = new Validation();
   });
 
-  describe('내 정보 수정', () => {
-    describe('한 줄 소개', () => {
-      it('한 줄 소개가 주어지지 않았을 때', async () => {
+  describe('UpdateMyInfoRequestDto', () => {
+    describe('description', () => {
+      it('IsOptional', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           // @ts-expect-error: 테스트 목적
@@ -37,7 +37,24 @@ describe('Member Validation Test', () => {
         await expect(result).resolves.toBeDefined();
       });
 
-      it('한 줄 소개가 길 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: UpdateMyInfoRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          description: 1234,
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com/honggildong',
+          blog: 'https://honggildong.tistory.com',
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMyInfoRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('description은(는) 문자열이어야 합니다.');
+      });
+
+      it('MaxLength', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다. 반갑습니다. 만나서 반가워요. 잘 부탁드립니다.',
@@ -50,12 +67,12 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('description는 20자 이하로 입력해주세요.');
+        await expect(result).rejects.toThrow('description은(는) 20자 이하여야 합니다.');
       });
     });
 
-    describe('Github URL', () => {
-      it('Github ID가 주어지지 않았을 때', async () => {
+    describe('github', () => {
+      it('IsOptional', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
@@ -72,11 +89,12 @@ describe('Member Validation Test', () => {
         await expect(result).resolves.toBeDefined();
       });
 
-      it('Github ID가 잘못 입력되었을 때 (1)', async () => {
+      it('IsString', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
-          github: 'https://github.com/honggildong-',
+          // @ts-expect-error: 테스트 목적
+          github: 1234,
           instagram: 'https://instagram.com/honggildong',
           blog: 'https://honggildong.tistory.com',
         };
@@ -85,10 +103,26 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('github는 Github URL 형식이어야 합니다.');
+        await expect(result).rejects.toThrow('github은(는) 문자열이어야 합니다.');
       });
 
-      it('Github ID가 잘못 입력되었을 때 (2)', async () => {
+      it('IsGithubUrl - Check url', async () => {
+        // Given
+        const body: UpdateMyInfoRequestDto = {
+          description: '안녕하세요. 홍길동입니다.',
+          github: 'honggildong',
+          instagram: 'https://instagram.com/honggildong',
+          blog: 'https://honggildong.tistory.com',
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMyInfoRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('github은(는) Github URL 형식이어야 합니다.');
+      });
+
+      it('IsGithubUrl - Check domain', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
@@ -101,10 +135,26 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('github는 Github URL 형식이어야 합니다.');
+        await expect(result).rejects.toThrow('github은(는) Github URL 형식이어야 합니다.');
       });
 
-      it('Github ID가 잘못 입력되었을 때 (3)', async () => {
+      it('IsGithubUrl - Check username (1)', async () => {
+        // Given
+        const body: UpdateMyInfoRequestDto = {
+          description: '안녕하세요. 홍길동입니다.',
+          github: 'https://github.com/hong_gildong',
+          instagram: 'https://instagram.com/honggildong',
+          blog: 'https://honggildong.tistory.com',
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMyInfoRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('github은(는) Github URL 형식이어야 합니다.');
+      });
+
+      it('IsGithubUrl - Check username (2)', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
@@ -118,12 +168,12 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('github는 Github URL 형식이어야 합니다.');
+        await expect(result).rejects.toThrow('github은(는) Github URL 형식이어야 합니다.');
       });
     });
 
-    describe('Instagram URL', () => {
-      it('Instagram ID가 주어지지 않았을 때', async () => {
+    describe('instagram', () => {
+      it('IsOptional', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
@@ -140,12 +190,13 @@ describe('Member Validation Test', () => {
         await expect(result).resolves.toBeDefined();
       });
 
-      it('Instagram ID가 잘못 입력되었을 때 (1)', async () => {
+      it('IsString', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
           github: 'https://github.com/honggildong',
-          instagram: 'https://instagram.com/hong..gildong',
+          // @ts-expect-error: 테스트 목적
+          instagram: 1234,
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -153,15 +204,15 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('instagram는 Instagram URL 형식이어야 합니다.');
+        await expect(result).rejects.toThrow('instagram은(는) 문자열이어야 합니다.');
       });
 
-      it('Instagram ID가 잘못 입력되었을 때 (2)', async () => {
+      it('IsInstagramUrl - Check url', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
           github: 'https://github.com/honggildong',
-          instagram: 'https://instagram.com/honggildong.',
+          instagram: 'honggildong',
           blog: 'https://honggildong.tistory.com',
         };
 
@@ -169,10 +220,42 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('instagram는 Instagram URL 형식이어야 합니다.');
+        await expect(result).rejects.toThrow('instagram은(는) Instagram URL 형식이어야 합니다.');
       });
 
-      it('Instagram ID가 잘못 입력되었을 때 (3)', async () => {
+      it('IsInstagramUrl - Check domain', async () => {
+        // Given
+        const body: UpdateMyInfoRequestDto = {
+          description: '안녕하세요. 홍길동입니다.',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com.error/honggildong.',
+          blog: 'https://honggildong.tistory.com',
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMyInfoRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('instagram은(는) Instagram URL 형식이어야 합니다.');
+      });
+
+      it('IsInstagramUrl - Check username (1)', async () => {
+        // Given
+        const body: UpdateMyInfoRequestDto = {
+          description: '안녕하세요. 홍길동입니다.',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com.fake/hong..gildong',
+          blog: 'https://honggildong.tistory.com',
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMyInfoRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('instagram은(는) Instagram URL 형식이어야 합니다.');
+      });
+
+      it('IsInstagramUrl - Check username (2)', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
@@ -186,28 +269,12 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('instagram는 Instagram URL 형식이어야 합니다.');
-      });
-
-      it('Instagram ID가 잘못 입력되었을 때 (4)', async () => {
-        // Given
-        const body: UpdateMyInfoRequestDto = {
-          description: '안녕하세요. 홍길동입니다.',
-          github: 'https://github.com/honggildong',
-          instagram: '.honggildong',
-          blog: 'https://honggildong.tistory.com',
-        };
-
-        // When
-        const result = validation.validateBody(body, UpdateMyInfoRequestDto);
-
-        // Then
-        await expect(result).rejects.toThrow('instagram는 Instagram URL 형식이어야 합니다.');
+        await expect(result).rejects.toThrow('instagram은(는) Instagram URL 형식이어야 합니다.');
       });
     });
 
-    describe('Blog URL', () => {
-      it('Blog URL이 주어지지 않았을 때', async () => {
+    describe('blog', () => {
+      it('IsOptional', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
@@ -224,7 +291,24 @@ describe('Member Validation Test', () => {
         await expect(result).resolves.toBeDefined();
       });
 
-      it('Blog URL이 URL 형식이 아닐 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: UpdateMyInfoRequestDto = {
+          description: '안녕하세요. 홍길동입니다.',
+          github: 'https://github.com/honggildong',
+          instagram: 'https://instagram.com/honggildong',
+          // @ts-expect-error: 테스트 목적
+          blog: 1234,
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMyInfoRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('blog은(는) 문자열이어야 합니다.');
+      });
+
+      it('IsUrl', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
@@ -237,11 +321,11 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('blog는 URL 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('blog은(는) URL 형식이어야 합니다.');
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: UpdateMyInfoRequestDto = {
         description: '안녕하세요. 홍길동입니다.',
@@ -258,9 +342,9 @@ describe('Member Validation Test', () => {
     });
   });
 
-  describe('내 비밀번호 수정', () => {
-    describe('기존 비밀번호', () => {
-      it('기존 비밀번호가 주어지지 않았을 때', async () => {
+  describe('UpdateMyPasswordRequestDto', () => {
+    describe('password', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: UpdateMyPasswordRequestDto = {
           // @ts-expect-error: 테스트 목적
@@ -272,15 +356,30 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('password는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('password은(는) 빈 값이어서는 안됩니다.');
+      });
+
+      it('IsString', async () => {
+        // Given
+        const body: UpdateMyPasswordRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          password: 1234,
+          newPassword: 'newpassword',
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('password은(는) 문자열이어야 합니다.');
       });
     });
 
-    describe('새 비밀번호', () => {
-      it('새 비밀번호가 주어지지 않았을 때', async () => {
+    describe('newPassword', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: UpdateMyPasswordRequestDto = {
-          password: 'password',
+          password: 'p4ssw0rd!',
           // @ts-expect-error: 테스트 목적
           newPassword: undefined,
         };
@@ -289,10 +388,25 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('newPassword는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('newPassword은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('비밀번호가 짧을 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: UpdateMyPasswordRequestDto = {
+          password: 'p4ssw0rd!',
+          // @ts-expect-error: 테스트 목적
+          newPassword: 1234,
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('newPassword은(는) 문자열이어야 합니다.');
+      });
+
+      it('MinLength', async () => {
         // Given
         const body: UpdateMyPasswordRequestDto = {
           password: 'p4ssw0rd!',
@@ -303,24 +417,10 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('newPassword는 8자 이상으로 입력해주세요.');
+        await expect(result).rejects.toThrow('newPassword은(는) 8자 이상이어야 합니다.');
       });
 
-      it('비밀번호가 길 때', async () => {
-        // Given
-        const body: UpdateMyPasswordRequestDto = {
-          password: 'p4ssw0rd!',
-          newPassword: 'aaaaaaaaaaaaaaaaaaaaaaaaz',
-        };
-
-        // When
-        const result = validation.validateBody(body, UpdateMyPasswordRequestDto);
-
-        // Then
-        await expect(result).rejects.toThrow('newPassword는 24자 이하로 입력해주세요.');
-      });
-
-      it('비밀번호가 영어만 있을 때', async () => {
+      it('IsPassword', async () => {
         // Given
         const body: UpdateMyPasswordRequestDto = {
           password: 'p4ssw0rd!',
@@ -332,12 +432,12 @@ describe('Member Validation Test', () => {
 
         // Then
         await expect(result).rejects.toThrow(
-          'newPassword는 비밀번호 형식이 아닙니다. (영문, 숫자, 특수문자 포함 8~24자)',
+          'newPassword은(는) 비밀번호이어야 합니다. (영문, 숫자, 특수문자 포함)',
         );
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: UpdateMyPasswordRequestDto = {
         password: 'p4ssw0rd!',
@@ -352,9 +452,9 @@ describe('Member Validation Test', () => {
     });
   });
 
-  describe('회원가입 승인 대기 승인', () => {
-    describe('멤버 ID', () => {
-      it('멤버 ID가 주어지지 않았을 때', async () => {
+  describe('ApproveWaitingMemberRequestDto', () => {
+    describe('memberId', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: ApproveWaitingMemberRequestDto = {
           // @ts-expect-error: 테스트 목적
@@ -365,10 +465,24 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, ApproveWaitingMemberRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('memberId은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('올바른 멤버 ID가 아닐 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: ApproveWaitingMemberRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          memberId: 1234,
+        };
+
+        // When
+        const result = validation.validateBody(body, ApproveWaitingMemberRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('memberId은(는) 문자열이어야 합니다.');
+      });
+
+      it('IsMongoId', async () => {
         // Given
         const body: ApproveWaitingMemberRequestDto = {
           memberId: 'notvalidmemberid',
@@ -378,11 +492,11 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, ApproveWaitingMemberRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('memberId은(는) MongoDB ID 형식이어야 합니다.');
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: ApproveWaitingMemberRequestDto = {
         memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
@@ -396,9 +510,9 @@ describe('Member Validation Test', () => {
     });
   });
 
-  describe('회원가입 승인 대기 거부', () => {
-    describe('멤버 ID', () => {
-      it('멤버 ID가 주어지지 않았을 때', async () => {
+  describe('RejectWaitingMemberRequestDto', () => {
+    describe('memberId', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: RejectWaitingMemberRequestDto = {
           // @ts-expect-error: 테스트 목적
@@ -409,10 +523,24 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, RejectWaitingMemberRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('memberId은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('올바른 멤버 ID가 아닐 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: RejectWaitingMemberRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          memberId: 1234,
+        };
+
+        // When
+        const result = validation.validateBody(body, RejectWaitingMemberRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('memberId은(는) 문자열이어야 합니다.');
+      });
+
+      it('IsMongoId', async () => {
         // Given
         const body: RejectWaitingMemberRequestDto = {
           memberId: 'notvalidmemberid',
@@ -422,11 +550,11 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, RejectWaitingMemberRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('memberId은(는) MongoDB ID 형식이어야 합니다.');
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: RejectWaitingMemberRequestDto = {
         memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
@@ -440,9 +568,9 @@ describe('Member Validation Test', () => {
     });
   });
 
-  describe('멤버 역할 변경', () => {
-    describe('멤버 ID', () => {
-      it('멤버 ID가 주어지지 않았을 때', async () => {
+  describe('UpdateMemberRoleRequestDto', () => {
+    describe('memberId', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
           // @ts-expect-error: 테스트 목적
@@ -454,10 +582,25 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('memberId은(는) 빈 값이어서는 안됩니다');
       });
 
-      it('올바른 멤버 ID가 아닐 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: UpdateMemberRoleRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          memberId: undefined,
+          role: Role.MEMBER,
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('memberId은(는) 빈 값이어서는 안됩니다.');
+      });
+
+      it('IsMongoId', async () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
           memberId: 'notvalidmemberid',
@@ -468,12 +611,12 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('memberId은(는) MongoDB ID 형식이어야 합니다.');
       });
     });
 
-    describe('역할', () => {
-      it('역할이 주어지지 않았을 때', async () => {
+    describe('role', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
           memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
@@ -485,13 +628,14 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('role는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('role은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('올바른 역할이 아닐 때', async () => {
+      it('IsEnum', async () => {
         // Given
-        const body: Record<string, unknown> = {
+        const body: UpdateMemberFeeRequestDto = {
           memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+          // @ts-expect-error: 테스트 목적
           role: 'notvalidrole',
         };
 
@@ -501,12 +645,12 @@ describe('Member Validation Test', () => {
 
         // Then
         await expect(result).rejects.toThrow(
-          `role는 올바른 값이 아닙니다. (${Object.values(Role).join(', ')})`,
+          `role은(는) PRESIDENT, VICE_PRESIDENT, EXECUTIVE, MEMBER 중 하나여야 합니다.`,
         );
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: UpdateMemberRoleRequestDto = {
         memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
@@ -521,9 +665,9 @@ describe('Member Validation Test', () => {
     });
   });
 
-  describe('멤버 회비 납부 변경', () => {
-    describe('멤버 ID', () => {
-      it('멤버 ID가 주어지지 않았을 때', async () => {
+  describe('UpdateMemberFeeRequestDto', () => {
+    describe('memberId', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
           // @ts-expect-error: 테스트 목적
@@ -535,10 +679,25 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberFeeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('memberId는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('memberId은(는) 빈 값이어서는 안됩니다');
       });
 
-      it('올바른 멤버 ID가 아닐 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: UpdateMemberFeeRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          memberId: undefined,
+          fee: false,
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMemberFeeRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('memberId은(는) 빈 값이어서는 안됩니다.');
+      });
+
+      it('IsMongoId', async () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
           memberId: 'notvalidmemberid',
@@ -549,12 +708,12 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberFeeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('memberId는 올바른 Object ID 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('memberId은(는) MongoDB ID 형식이어야 합니다.');
       });
     });
 
-    describe('회비 납부 여부', () => {
-      it('회비 납부 여부 주어지지 않았을 때', async () => {
+    describe('fee', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
           memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
@@ -566,11 +725,26 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMemberFeeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('fee는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('fee은(는) 빈 값이어서는 안됩니다.');
+      });
+
+      it('IsBoolean', async () => {
+        // Given
+        const body: UpdateMemberFeeRequestDto = {
+          memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+          // @ts-expect-error: 테스트 목적
+          fee: 1234,
+        };
+
+        // When
+        const result = validation.validateBody(body, UpdateMemberFeeRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('fee은(는) 불 대수이어야 합니다.');
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: UpdateMemberFeeRequestDto = {
         memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',

@@ -7,18 +7,19 @@ import {
   VerifyCodeRequestDto,
 } from '../../src/domain/auth/dto';
 
-describe('Auth Validation Test', () => {
+describe('AuthValidation', () => {
   let validation: Validation;
 
   beforeAll(async () => {
     validation = new Validation();
   });
 
-  describe('로그인', () => {
-    describe('이메일', () => {
-      it('이메일이 주어지지 않았을 때', async () => {
+  describe('LoginRequestDto', () => {
+    describe('email', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: LoginRequestDto = {
+          // @ts-expect-error: 테스트 목적
           email: undefined,
           password: 'p4sSw0rd!',
         };
@@ -27,10 +28,25 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('email는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('email은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('이메일 형식이 올바르지 않을 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: LoginRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          email: 1234,
+          password: 'p4sSw0rd!',
+        };
+
+        // When
+        const result = validation.validateBody(body, LoginRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('email은(는) 문자열이어야 합니다.');
+      });
+
+      it('IsEmail', async () => {
         // Given
         const body: LoginRequestDto = {
           email: 'invalidEmail',
@@ -41,27 +57,43 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('email는 이메일 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('email은(는) 이메일 형식이어야 합니다.');
       });
     });
 
-    describe('비밀번호', () => {
-      it('비밀번호가 주어지지 않았을 때', async () => {
+    describe('password', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: LoginRequestDto = {
           email: 'test@kookmin.ac.kr',
-          password: null,
+          // @ts-expect-error: 테스트 목적
+          password: undefined,
         };
 
         // When
         const result = validation.validateBody(body, LoginRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('password는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('password은(는) 빈 값이어서는 안됩니다.');
+      });
+
+      it('IsString', async () => {
+        // Given
+        const body: LoginRequestDto = {
+          email: 'test@kookmin.ac.kr',
+          // @ts-expect-error: 테스트 목적
+          password: 1234,
+        };
+
+        // When
+        const result = validation.validateBody(body, LoginRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('password은(는) 문자열이어야 합니다.');
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: LoginRequestDto = {
         email: 'honggildong@kookmin.ac.kr',
@@ -76,13 +108,14 @@ describe('Auth Validation Test', () => {
     });
   });
 
-  describe('회원가입', () => {
-    describe('이름', () => {
-      it('이름이 주어지지 않았을 때', async () => {
+  describe('RegisterRequestDto', () => {
+    describe('name', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: RegisterRequestDto = {
-          name: null,
-          studentId: 2024_0001,
+          // @ts-expect-error: 테스트 목적
+          name: undefined,
+          studentId: '20240001',
           password: 'p4sSw0rd!',
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
@@ -91,14 +124,31 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('name는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('name은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('이름이 짧을 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: RegisterRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          name: 1234,
+          studentId: '20240001',
+          password: 'p4sSw0rd!',
+          verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+        };
+
+        // When
+        const result = validation.validateBody(body, RegisterRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('name은(는) 문자열이어야 합니다.');
+      });
+
+      it('MinLength', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍',
-          studentId: 2024_0001,
+          studentId: '20240001',
           password: 'p4sSw0rd!',
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
@@ -107,14 +157,14 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('name는 2자 이상으로 입력해주세요.');
+        await expect(result).rejects.toThrow('name은(는) 2자 이상이어야 합니다.');
       });
 
-      it('이름이 길 때', async () => {
+      it('MaxLength', async () => {
         // Given
         const body: RegisterRequestDto = {
-          name: '홍길동홍길동홍길동홍길동',
-          studentId: 2024_0001,
+          name: '홍홍홍홍홍길동',
+          studentId: '20240001',
           password: 'p4sSw0rd!',
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
@@ -123,16 +173,33 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('name는 5자 이하로 입력해주세요.');
+        await expect(result).rejects.toThrow('name은(는) 5자 이하여야 합니다.');
+      });
+
+      it('IsName', async () => {
+        // Given
+        const body: RegisterRequestDto = {
+          name: 'John',
+          studentId: '20240001',
+          password: 'p4sSw0rd!',
+          verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+        };
+
+        // When
+        const result = validation.validateBody(body, RegisterRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('name은(는) 이름이어야 합니다.');
       });
     });
 
-    describe('학번', () => {
-      it('학번이 주어지지 않았을 때', async () => {
+    describe('studentId', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
-          studentId: null,
+          // @ts-expect-error: 테스트 목적
+          studentId: undefined,
           password: 'p4sSw0rd!',
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
@@ -141,14 +208,15 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('studentId는 숫자가 아닙니다.');
+        await expect(result).rejects.toThrow('studentId은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('학번이 짧을 때', async () => {
+      it('IsString', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
-          studentId: 2024_001,
+          // @ts-expect-error: 테스트 목적
+          studentId: 1234,
           password: 'p4sSw0rd!',
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
@@ -157,16 +225,14 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'studentId는 학번 형식이 아닙니다. (20000001 ~ 21009999)',
-        );
+        await expect(result).rejects.toThrow('studentId은(는) 문자열이어야 합니다.');
       });
 
-      it('학번이 길 때', async () => {
+      it('IsNumberString', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
-          studentId: 2024_0000_1,
+          studentId: 'notNumber',
           password: 'p4sSw0rd!',
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
@@ -175,19 +241,50 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'studentId는 학번 형식이 아닙니다. (20000001 ~ 21009999)',
-        );
+        await expect(result).rejects.toThrow('studentId은(는) 숫자 문자열이어야 합니다.');
+      });
+
+      it('Length', async () => {
+        // Given
+        const body: RegisterRequestDto = {
+          name: '홍길동',
+          studentId: '2024000',
+          password: 'p4sSw0rd!',
+          verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+        };
+
+        // When
+        const result = validation.validateBody(body, RegisterRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('studentId은(는) 8자여야 합니다.');
+      });
+
+      it('IsStudentId', async () => {
+        // Given
+        const body: RegisterRequestDto = {
+          name: '홍길동',
+          studentId: '12345678',
+          password: 'p4sSw0rd!',
+          verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+        };
+
+        // When
+        const result = validation.validateBody(body, RegisterRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('studentId은(는) 학번이어야 합니다.');
       });
     });
 
-    describe('비밀번호', () => {
-      it('비밀번호가 주어지지 않았을 때', async () => {
+    describe('password', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
-          studentId: 2024_0001,
-          password: null,
+          studentId: '20240001',
+          // @ts-expect-error: 테스트 목적
+          password: undefined,
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
 
@@ -195,14 +292,31 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('password는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('password은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('비밀번호가 짧을 때', async () => {
+      it('IsString', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
-          studentId: 2024_0001,
+          studentId: '20240001',
+          // @ts-expect-error: 테스트 목적
+          password: 1234,
+          verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+        };
+
+        // When
+        const result = validation.validateBody(body, RegisterRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('password은(는) 문자열이어야 합니다.');
+      });
+
+      it('MinLength', async () => {
+        // Given
+        const body: RegisterRequestDto = {
+          name: '홍길동',
+          studentId: '20240001',
           password: 'aaaa',
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
@@ -211,30 +325,14 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('password는 8자 이상으로 입력해주세요.');
+        await expect(result).rejects.toThrow('password은(는) 8자 이상이어야 합니다.');
       });
 
-      it('비밀번호가 길 때', async () => {
+      it('IsPassword', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
-          studentId: 2024_0001,
-          password: 'aaaaaaaaaaaaaaaaaaaaaaaaz',
-          verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-        };
-
-        // When
-        const result = validation.validateBody(body, RegisterRequestDto);
-
-        // Then
-        await expect(result).rejects.toThrow('password는 24자 이하로 입력해주세요.');
-      });
-
-      it('비밀번호가 영어만 있을 때', async () => {
-        // Given
-        const body: RegisterRequestDto = {
-          name: '홍길동',
-          studentId: 2024_0001,
+          studentId: '20240001',
           password: 'aaaaaaaa',
           verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
         };
@@ -244,33 +342,34 @@ describe('Auth Validation Test', () => {
 
         // Then
         await expect(result).rejects.toThrow(
-          'password는 비밀번호 형식이 아닙니다. (영문, 숫자, 특수문자 포함 8~24자)',
+          'password은(는) 비밀번호이어야 합니다. (영문, 숫자, 특수문자 포함)',
         );
       });
     });
 
-    describe('인증 토큰', () => {
-      it('인증 토큰이 주어지지 않았을 때', async () => {
+    describe('verifyToken', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
-          studentId: 2024_0001,
+          studentId: '20240001',
           password: 'p4sSw0rd!',
-          verifyToken: null,
+          // @ts-expect-error: 테스트 목적
+          verifyToken: undefined,
         };
 
         // When
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('verifyToken는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('verifyToken은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('인증 토큰이 UUID 형태가 아닐 때', async () => {
+      it('IsUUID', async () => {
         // Given
         const body: RegisterRequestDto = {
           name: '홍길동',
-          studentId: 2024_0001,
+          studentId: '20240001',
           password: 'p4sSw0rd!',
           verifyToken: 'aaaa-bbbb-cccc-dddd-eeee',
         };
@@ -279,15 +378,15 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, RegisterRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('verifyToken는 UUID 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('verifyToken은(는) UUID 형식이어야 합니다.');
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: RegisterRequestDto = {
         name: '홍길동',
-        studentId: 2024_0001,
+        studentId: '20240001',
         password: 'p4sSw0rd!',
         verifyToken: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
       };
@@ -300,22 +399,37 @@ describe('Auth Validation Test', () => {
     });
   });
 
-  describe('인증코드 전송', () => {
-    describe('이메일', () => {
-      it('이메일이 주어지지 않았을 때', async () => {
+  describe('SendCodeRequestDto', () => {
+    describe('email', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: SendCodeRequestDto = {
-          email: null,
+          // @ts-expect-error: 테스트 목적
+          email: undefined,
         };
 
         // When
         const result = validation.validateBody(body, SendCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('email는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('email은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('이메일 형식이 올바르지 않을 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: SendCodeRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          email: 1234,
+        };
+
+        // When
+        const result = validation.validateBody(body, SendCodeRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('email은(는) 문자열이어야 합니다.');
+      });
+
+      it('IsEmail', async () => {
         // Given
         const body: SendCodeRequestDto = {
           email: 'invalidEmail',
@@ -325,10 +439,10 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, SendCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('email는 이메일 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('email은(는) 이메일 형식이어야 합니다.');
       });
 
-      it('이메일 형식 국민대학교 메일이 아닐 때', async () => {
+      it('IsKookminEmail', async () => {
         // Given
         const body: SendCodeRequestDto = {
           email: 'honggildong@gmail.com',
@@ -338,11 +452,11 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, SendCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('email는 국민대학교 이메일 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('email은(는) 국민대학교 이메일 형식이어야 합니다.');
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: SendCodeRequestDto = {
         email: 'honggildong@kookmin.ac.kr',
@@ -356,12 +470,13 @@ describe('Auth Validation Test', () => {
     });
   });
 
-  describe('인증 토큰 발급', () => {
-    describe('이메일', () => {
-      it('이메일이 주어지지 않았을 때', async () => {
+  describe('VerifyCodeRequestDto', () => {
+    describe('email', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
-          email: null,
+          // @ts-expect-error: 테스트 목적
+          email: undefined,
           code: '123456',
         };
 
@@ -369,10 +484,25 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('email는 필수 입력 값입니다.');
+        await expect(result).rejects.toThrow('email은(는) 빈 값이어서는 안됩니다.');
       });
 
-      it('이메일 형식이 올바르지 않을 때', async () => {
+      it('IsString', async () => {
+        // Given
+        const body: VerifyCodeRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          email: 1234,
+          code: '123456',
+        };
+
+        // When
+        const result = validation.validateBody(body, VerifyCodeRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('email은(는) 문자열이어야 합니다.');
+      });
+
+      it('IsEmail', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
           email: 'invalidEmail',
@@ -383,16 +513,17 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('email는 이메일 형식이 아닙니다.');
+        await expect(result).rejects.toThrow('email은(는) 이메일 형식이어야 합니다.');
       });
     });
 
-    describe('인증코드', () => {
-      it('인증코드가 주어지지 않았을 때', async () => {
+    describe('code', () => {
+      it('IsNotEmpty', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
           email: 'honggildong@kookmin.ac.kr',
-          code: null,
+          // @ts-expect-error: 테스트 목적
+          code: undefined,
         };
 
         // When
@@ -402,7 +533,7 @@ describe('Auth Validation Test', () => {
         await expect(result).rejects.toThrow();
       });
 
-      it('인증코드에 문자가 들어갔을 때', async () => {
+      it('IsNumberString', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
           email: 'honggildong@kookmin.ac.kr',
@@ -413,10 +544,10 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('code는 숫자 문자열이 아닙니다.');
+        await expect(result).rejects.toThrow('code은(는) 숫자 문자열이어야 합니다.');
       });
 
-      it('인증코드가 짧을 때', async () => {
+      it('Length', async () => {
         // Given
         const body: VerifyCodeRequestDto = {
           email: 'honggildong@kookmin.ac.kr',
@@ -427,25 +558,11 @@ describe('Auth Validation Test', () => {
         const result = validation.validateBody(body, VerifyCodeRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow('code는 6자로 입력해주세요.');
-      });
-
-      it('인증코드가 길 때', async () => {
-        // Given
-        const body: VerifyCodeRequestDto = {
-          email: 'honggildong@kookmin.ac.kr',
-          code: '1234567',
-        };
-
-        // When
-        const result = validation.validateBody(body, VerifyCodeRequestDto);
-
-        // Then
-        await expect(result).rejects.toThrow('code는 6자로 입력해주세요.');
+        await expect(result).rejects.toThrow('code은(는) 6자여야 합니다.');
       });
     });
 
-    it('모든 입력이 유효할 때', async () => {
+    it('Passed', async () => {
       // Given
       const body: VerifyCodeRequestDto = {
         email: 'honggildong@oo.com',

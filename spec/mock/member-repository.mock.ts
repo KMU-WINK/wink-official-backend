@@ -102,6 +102,10 @@ export const mockMemberRepository = (memory: Member[]) => ({
   }),
 
   // Exists
+  existsById: jest.fn(async (id: string) => {
+    return memory.some((member) => member._id === id);
+  }),
+
   existsByEmail: jest.fn(async (email: string) => {
     return memory.some((member) => member.email === email);
   }),
