@@ -1,17 +1,21 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import * as nodemailer from 'nodemailer';
 
 import { EmailTemplateBase } from './template';
 
+import { MailSendEvent, MailTemplateSendEvent } from '../event';
+
 @Injectable()
 export class MailService {
-  private readonly logger: Logger = new Logger(MailService.name);
-
   private readonly transporter: nodemailer.Transporter;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private eventEmitter: EventEmitter2,
+  ) {
     this.transporter = nodemailer.createTransport({
       host: configService.getOrThrow<string>('smtp.host'),
       port: configService.getOrThrow<number>('smtp.port'),
@@ -31,10 +35,15 @@ export class MailService {
       html,
     });
 
-    this.logger.log(`Send to ${to} with subject: ${subject}`);
+    this.eventEmitter.emit(MailSendEvent.EVENT_NAME, new MailSendEvent(to, subject, html));
   }
 
   async sendTemplate(to: string, template: EmailTemplateBase): Promise<void> {
     await this.send(to, template.subject(), template.html());
+
+    this.eventEmitter.emit(
+      MailTemplateSendEvent.EVENT_NAME,
+      new MailTemplateSendEvent(to, template),
+    );
   }
 }

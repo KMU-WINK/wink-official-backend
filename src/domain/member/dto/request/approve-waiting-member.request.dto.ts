@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import {
   CommonValidation,
-  TypeValidation,
   StringValidation,
+  TypeValidation,
 } from '../../../../common/utils/validation';
 
 export class ApproveWaitingMemberRequestDto {

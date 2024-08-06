@@ -1,6 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { canChangeRole } from '../constant';
+import { canChangeRole, Role } from '../constant';
 import { Member, transferMember } from '../schema';
 import { MemberRepository } from '../repository';
 import {
@@ -22,48 +23,68 @@ import {
   MailService,
   RejectAccountTemplate,
 } from '../../../common/utils/mail';
+import {
+  ApproveWaitingMemberEvent,
+  RejectWaitingMemberEvent,
+  UpdateFeeEvent,
+  UpdateRoleEvent,
+} from '../../../common/utils/event';
 
 @Injectable()
 export class MemberAdminService {
-  private readonly logger: Logger = new Logger(MemberAdminService.name);
-
   constructor(
     private readonly memberRepository: MemberRepository,
     private readonly mailService: MailService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
     const members = (await this.memberRepository.findAll())
       .filter((member) => !member.approved)
-      .map(({ name, studentId }) => <EachGetWaitingMembersResponseDto>{ name, studentId });
+      .map(
+        ({ _id: memberId, name, studentId }) =>
+          <EachGetWaitingMembersResponseDto>{ memberId, name, studentId },
+      );
 
     return { members };
   }
 
-  async approveWaitingMember({ memberId }: ApproveWaitingMemberRequestDto): Promise<void> {
+  async approveWaitingMember(
+    from: Member,
+    { memberId }: ApproveWaitingMemberRequestDto,
+  ): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
 
-    const { name, email, approved } = <Member>await this.memberRepository.findById(memberId);
+    const to = <Member>await this.memberRepository.findById(memberId);
+    const { name, email, approved } = to;
 
     if (approved) {
       throw new NotWaitingMemberException();
     }
 
     await this.memberRepository.updateApprovedById(memberId, true);
-
-    this.logger.log(`Approve member: ${name} (${email})`);
+    await this.memberRepository.updateRoleById(memberId, Role.MEMBER);
 
     this.mailService.sendTemplate(email, new ApproveAccountTemplate(name)).then((_) => _);
+
+    this.eventEmitter.emit(
+      ApproveWaitingMemberEvent.EVENT_NAME,
+      new ApproveWaitingMemberEvent(from, to),
+    );
   }
 
-  async rejectWaitingMember({ memberId }: RejectWaitingMemberRequestDto): Promise<void> {
+  async rejectWaitingMember(
+    from: Member,
+    { memberId }: RejectWaitingMemberRequestDto,
+  ): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
 
-    const { name, email, approved } = <Member>await this.memberRepository.findById(memberId);
+    const to = <Member>await this.memberRepository.findById(memberId);
+    const { name, email, approved } = to;
 
     if (approved) {
       throw new NotWaitingMemberException();
@@ -71,9 +92,12 @@ export class MemberAdminService {
 
     await this.memberRepository.deleteById(memberId);
 
-    this.logger.log(`Reject member: ${name} (${email})`);
-
     this.mailService.sendTemplate(email, new RejectAccountTemplate(name)).then((_) => _);
+
+    this.eventEmitter.emit(
+      RejectWaitingMemberEvent.EVENT_NAME,
+      new RejectWaitingMemberEvent(from, to),
+    );
   }
 
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
@@ -86,49 +110,45 @@ export class MemberAdminService {
     return { members };
   }
 
-  async updateRole(
-    { _id, name, role: myRole }: Member,
-    { memberId, role }: UpdateMemberRoleRequestDto,
-  ): Promise<void> {
+  async updateRole(from: Member, { memberId, role }: UpdateMemberRoleRequestDto): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
 
-    const { approved, role: targetRole } = <Member>await this.memberRepository.findById(memberId);
+    const to = <Member>await this.memberRepository.findById(memberId);
+    const { approved, role: targetRole } = to;
 
     if (!approved) {
       throw new NotApprovedMemberException();
     }
 
-    if (!canChangeRole(myRole!, targetRole!)) {
+    if (!canChangeRole(from.role!, targetRole!)) {
       throw new SuperRoleException();
     }
-
-    this.logger.log(`Update role: ${memberId} to ${role} by ${name} (${_id})`);
 
     await this.memberRepository.updateRoleById(memberId, role);
+
+    this.eventEmitter.emit(UpdateRoleEvent.EVENT_NAME, new UpdateRoleEvent(from, to, role));
   }
 
-  async updateFee(
-    { _id, name, role: myRole }: Member,
-    { memberId, fee }: UpdateMemberFeeRequestDto,
-  ): Promise<void> {
+  async updateFee(from: Member, { memberId, fee }: UpdateMemberFeeRequestDto): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
 
-    const { approved, role: targetRole } = <Member>await this.memberRepository.findById(memberId);
+    const to = <Member>await this.memberRepository.findById(memberId);
+    const { approved, role: targetRole } = to;
 
     if (!approved) {
       throw new NotApprovedMemberException();
     }
 
-    if (!canChangeRole(myRole!, targetRole!)) {
+    if (!canChangeRole(from.role!, targetRole!)) {
       throw new SuperRoleException();
     }
 
-    this.logger.log(`Update fee: ${memberId} to ${fee} by ${name} (${_id})`);
-
     await this.memberRepository.updateFeeById(memberId, fee);
+
+    this.eventEmitter.emit(UpdateFeeEvent.EVENT_NAME, new UpdateFeeEvent(from, to, fee));
   }
 }

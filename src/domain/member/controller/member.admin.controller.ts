@@ -40,8 +40,11 @@ export class MemberAdminController {
   @ApiProperty({ type: ApproveWaitingMemberRequestDto })
   @ApiCustomResponse({ status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAdminAccountException, NotWaitingMemberException])
-  async approveWaitingMember(@Body() request: ApproveWaitingMemberRequestDto): Promise<void> {
-    return this.memberAdminService.approveWaitingMember(request);
+  async approveWaitingMember(
+    @ReqMember() member: Member,
+    @Body() request: ApproveWaitingMemberRequestDto,
+  ): Promise<void> {
+    return this.memberAdminService.approveWaitingMember(member, request);
   }
 
   @Post('/waiting/reject')
@@ -51,8 +54,11 @@ export class MemberAdminController {
   @ApiProperty({ type: RejectWaitingMemberRequestDto })
   @ApiCustomResponse({ status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAdminAccountException, NotWaitingMemberException])
-  async rejectWaitingMember(@Body() request: RejectWaitingMemberRequestDto): Promise<void> {
-    return this.memberAdminService.rejectWaitingMember(request);
+  async rejectWaitingMember(
+    @ReqMember() member: Member,
+    @Body() request: RejectWaitingMemberRequestDto,
+  ): Promise<void> {
+    return this.memberAdminService.rejectWaitingMember(member, request);
   }
 
   @Get()

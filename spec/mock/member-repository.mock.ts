@@ -1,6 +1,7 @@
 import { Role } from '../../src/domain/member/constant';
 import { Member } from '../../src/domain/member/schema';
 
+// noinspection t
 export const mockMemberRepository = (memory: Member[]) => ({
   // Create
   save: jest.fn(async (member: Partial<Member>) => {

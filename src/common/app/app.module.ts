@@ -1,9 +1,10 @@
-import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { AuthModule } from '../../domain/auth/auth.module';
 import { MemberModule } from '../../domain/member/member.module';
@@ -14,6 +15,7 @@ import { ApiResponseInterceptor } from '../interceptor';
 import { DefaultExceptionFilter, NotFoundExceptionFilter } from '../filter';
 
 import { Validation } from '../utils/validation';
+import { EventListenerModule } from '../utils/event';
 
 @Module({
   imports: [
@@ -29,6 +31,9 @@ import { Validation } from '../utils/validation';
     }),
 
     ScheduleModule.forRoot(),
+
+    EventEmitterModule.forRoot(),
+    EventListenerModule,
 
     AuthModule,
     MemberModule,

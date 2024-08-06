@@ -5,7 +5,7 @@ import { AuthService } from './service';
 
 import { MemberModule } from '../member/member.module';
 
-import { RedisModule, RedisRepository } from '../../common/redis';
+import { RedisModule, RedisService } from '../../common/redis';
 import { MailModule } from '../../common/utils/mail';
 
 @Module({
@@ -13,14 +13,14 @@ import { MailModule } from '../../common/utils/mail';
   controllers: [AuthController],
   providers: [
     {
-      provide: `${RedisRepository.name}-code`,
-      useFactory: (repository: RedisRepository) => repository.sub('code'),
-      inject: [RedisRepository],
+      provide: `${RedisService.name}-code`,
+      useFactory: (repository: RedisService) => repository.sub('code'),
+      inject: [RedisService],
     },
     {
-      provide: `${RedisRepository.name}-token`,
-      useFactory: (repository: RedisRepository) => repository.sub('token'),
-      inject: [RedisRepository],
+      provide: `${RedisService.name}-token`,
+      useFactory: (repository: RedisService) => repository.sub('token'),
+      inject: [RedisService],
     },
     AuthService,
   ],

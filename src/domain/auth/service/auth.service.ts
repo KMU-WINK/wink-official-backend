@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
@@ -26,21 +27,28 @@ import { MemberRepository } from '../../member/repository';
 import { Member, transferMember } from '../../member/schema';
 import { NotApprovedMemberException } from '../../member/exception';
 
-import { RedisRepository } from '../../../common/redis';
+import { RedisService } from '../../../common/redis';
 import {
   MailService,
   RegisterCompleteTemplate,
   VerifyCodeTemplate,
 } from '../../../common/utils/mail';
+import {
+  LoginEvent,
+  RegisterEvent,
+  SendCodeEvent,
+  VerifyCodeEvent,
+} from '../../../common/utils/event';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly memberRepository: MemberRepository,
-    @Inject(`${RedisRepository.name}-code`) private readonly redisCodeRepository: RedisRepository,
-    @Inject(`${RedisRepository.name}-token`) private readonly redisTokenRepository: RedisRepository,
+    @Inject(`${RedisService.name}-code`) private readonly redisCodeRepository: RedisService,
+    @Inject(`${RedisService.name}-token`) private readonly redisTokenRepository: RedisService,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async login({ email, password }: LoginRequestDto): Promise<LoginResponseDto> {
@@ -48,11 +56,8 @@ export class AuthService {
       throw new MemberNotFoundException();
     }
 
-    const {
-      _id,
-      password: memberPassword,
-      approved,
-    } = <Member>await this.memberRepository.findByEmailWithPassword(email);
+    const member = <Member>await this.memberRepository.findByEmailWithPassword(email);
+    const { _id, password: memberPassword, approved } = member;
 
     if (!(await bcrypt.compare(password, memberPassword))) {
       throw new WrongPasswordException();
@@ -63,6 +68,8 @@ export class AuthService {
     }
 
     const token = await this.jwtService.signAsync({ id: _id });
+
+    this.eventEmitter.emit(LoginEvent.EVENT_NAME, new LoginEvent(member));
 
     return { token };
   }
@@ -85,11 +92,13 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    await this.memberRepository.save({ name, studentId, email, password: hash });
+    const member = await this.memberRepository.save({ name, studentId, email, password: hash });
 
     await this.redisTokenRepository.delete(verifyToken);
 
     this.mailService.sendTemplate(email, new RegisterCompleteTemplate(name)).then((_) => _);
+
+    this.eventEmitter.emit(RegisterEvent.EVENT_NAME, new RegisterEvent(member));
   }
 
   async sendCode({ email }: SendCodeRequestDto): Promise<void> {
@@ -104,6 +113,8 @@ export class AuthService {
     await this.redisCodeRepository.ttl(email, code, 60 * 10);
 
     this.mailService.sendTemplate(email, new VerifyCodeTemplate(email, code)).then((_) => _);
+
+    this.eventEmitter.emit(SendCodeEvent.EVENT_NAME, new SendCodeEvent(email, code));
   }
 
   async verifyCode({ email, code }: VerifyCodeRequestDto): Promise<VerifyCodeResponseDto> {
@@ -117,6 +128,8 @@ export class AuthService {
 
     const verifyToken = uuid();
     await this.redisTokenRepository.ttl(verifyToken, email, 60 * 60);
+
+    this.eventEmitter.emit(VerifyCodeEvent.EVENT_NAME, new VerifyCodeEvent(email, verifyToken));
 
     return { verifyToken };
   }
