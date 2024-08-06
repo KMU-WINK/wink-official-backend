@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Patch,
   Put,
   UploadedFile,
@@ -35,19 +36,20 @@ export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
   @Get()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '부원 목록' })
-  @ApiCustomResponse({ type: GetMembersResponseDto, status: 201 })
+  @ApiCustomResponse({ type: GetMembersResponseDto, status: HttpStatus.OK })
   async getMembers(): Promise<GetMembersResponseDto> {
+    throw new Error('test');
     return this.memberService.getMembers();
   }
 
   @Put('/me/info')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 정보 수정' })
   @ApiProperty({ type: UpdateMyInfoRequestDto })
-  @ApiCustomResponse({ status: 200 })
+  @ApiCustomResponse({ status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAccountException])
   async updateMyInfo(
     @ReqMember() member: Member,
@@ -57,11 +59,11 @@ export class MemberController {
   }
 
   @Patch('/me/password')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 비밀번호 수정' })
   @ApiProperty({ type: UpdateMyPasswordRequestDto })
-  @ApiCustomResponse({ status: 200 })
+  @ApiCustomResponse({ status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAccountException, WrongPasswordException])
   async updateMyPassword(
     @ReqMember() member: Member,
@@ -71,13 +73,13 @@ export class MemberController {
   }
 
   @Patch('/me/avatar')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @UseInterceptors(FileInterceptor('avatar', { fileFilter: AvatarFilter }))
   @ApiOperation({ summary: '내 프로필 사진 수정' })
   @ApiConsumes('multipart/form-data')
   @ApiProperty({ type: UpdateMyAvatarRequestDto })
-  @ApiCustomResponse({ type: UpdateMyAvatarResponseDto, status: 200 })
+  @ApiCustomResponse({ type: UpdateMyAvatarResponseDto, status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAccountException, ...AvatarFilterException])
   async updateMyAvatar(
     @ReqMember() member: Member,
@@ -87,10 +89,10 @@ export class MemberController {
   }
 
   @Delete('/me/avatar')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 프로필 사진 삭제' })
-  @ApiCustomResponse({ status: 204 })
+  @ApiCustomResponse({ status: HttpStatus.OK })
   @ApiCustomErrorResponse([...AuthAccountException])
   async deleteMyAvatar(@ReqMember() member: Member): Promise<void> {
     await this.memberService.deleteMyAvatar(member);

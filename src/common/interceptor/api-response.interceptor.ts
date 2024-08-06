@@ -2,6 +2,7 @@ import {
   CallHandler,
   ExecutionContext,
   HttpException,
+  HttpStatus,
   Injectable,
   Logger,
   NestInterceptor,
@@ -23,7 +24,12 @@ export class ApiResponseInterceptor implements NestInterceptor {
       catchError((err) => {
         if (!(err instanceof HttpException)) {
           this.logger.error(err);
-          return throwError(() => new HttpException(err.message, 500, { cause: err }));
+          return throwError(
+            () =>
+              new HttpException('서버에서 오류가 발생했습니다.', HttpStatus.INTERNAL_SERVER_ERROR, {
+                cause: err,
+              }),
+          );
         }
 
         return throwError(() => err);

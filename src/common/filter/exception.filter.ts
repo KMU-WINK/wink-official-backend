@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  HttpStatus,
   NotFoundException,
 } from '@nestjs/common';
 
@@ -22,6 +23,6 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
-    response.status(404).json({ error: true, content: 'API Endpoint not found.' });
+    response.status(HttpStatus.NOT_FOUND).json({ error: true, content: 'API Endpoint not found.' });
   }
 }
