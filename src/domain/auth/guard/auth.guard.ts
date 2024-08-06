@@ -89,6 +89,17 @@ export const AuthAccount = () =>
     ApiBearerAuth(),
   );
 
+export const AuthAccountException = [
+  {
+    description: '멤버를 찾을 수 없음',
+    error: UnauthorizedException,
+  },
+  {
+    description: '멤버가 승인되지 않음',
+    error: NotApprovedMemberException,
+  },
+];
+
 export const AuthAdminAccount = () =>
   applyDecorators(
     SetMetadata(
@@ -100,3 +111,18 @@ export const AuthAdminAccount = () =>
     UseGuards(AuthGuard),
     ApiBearerAuth(),
   );
+
+export const AuthAdminAccountException = [
+  {
+    description: '멤버를 찾을 수 없음',
+    error: UnauthorizedException,
+  },
+  {
+    description: '멤버가 승인되지 않음',
+    error: NotApprovedMemberException,
+  },
+  {
+    description: '권한이 없음',
+    error: PermissionException,
+  },
+];

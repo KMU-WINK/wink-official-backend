@@ -21,12 +21,11 @@ import {
   UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
 } from '../dto';
-import { AvatarInvalidMimeException, AvatarTooLargeException } from '../exception';
 
-import { AuthAccount, ReqMember } from '../../auth/guard';
-import { WrongPasswordException, UnauthorizedException } from '../../auth/exception';
+import { AuthAccount, AuthAccountException, ReqMember } from '../../auth/guard';
+import { WrongPasswordException } from '../../auth/exception';
 
-import { AvatarFilter } from '../util/multer';
+import { AvatarFilter, AvatarFilterException } from '../util/multer';
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
 
@@ -51,12 +50,7 @@ export class MemberController {
   @ApiOperation({ summary: '내 정보 수정' })
   @ApiProperty({ type: UpdateMyInfoRequestDto })
   @ApiCustomResponse({ status: 200 })
-  @ApiCustomErrorResponse([
-    {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAccountException])
   async updateMyInfo(
     @ReqMember() member: Member,
     @Body() request: UpdateMyInfoRequestDto,
@@ -73,10 +67,7 @@ export class MemberController {
   @ApiProperty({ type: UpdateMyPasswordRequestDto })
   @ApiCustomResponse({ status: 200 })
   @ApiCustomErrorResponse([
-    {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
+    ...AuthAccountException,
     {
       description: '기존 비밀번호가 틀림',
       error: WrongPasswordException,
@@ -99,20 +90,7 @@ export class MemberController {
   @ApiConsumes('multipart/form-data')
   @ApiProperty({ type: UpdateMyAvatarRequestDto })
   @ApiCustomResponse({ type: UpdateMyAvatarResponseDto, status: 200 })
-  @ApiCustomErrorResponse([
-    {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-    {
-      description: '잘못된 파일 형식 (이미지 파일이 아님. jpg, jpeg, png만 허용)',
-      error: AvatarInvalidMimeException,
-    },
-    {
-      description: '파일 크기가 너무 큼',
-      error: AvatarTooLargeException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAccountException, ...AvatarFilterException])
   async updateMyAvatar(
     @ReqMember() member: Member,
     @UploadedFile() file: Express.Multer.File,
@@ -127,12 +105,7 @@ export class MemberController {
   @AuthAccount()
   @ApiOperation({ summary: '내 프로필 사진 삭제' })
   @ApiCustomResponse({ status: 204 })
-  @ApiCustomErrorResponse([
-    {
-      description: '인증되지 않은 사용자',
-      error: UnauthorizedException,
-    },
-  ])
+  @ApiCustomErrorResponse([...AuthAccountException])
   async deleteMyAvatar(@ReqMember() member: Member): Promise<void> {
     await this.memberService.deleteMyAvatar(member);
   }

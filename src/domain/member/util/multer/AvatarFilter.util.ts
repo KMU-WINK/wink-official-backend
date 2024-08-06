@@ -18,3 +18,14 @@ export const AvatarFilter = (
 
   callback(null, true);
 };
+
+export const AvatarFilterException = [
+  {
+    description: '프로필 사진의 MIME 타입이 잘못됨',
+    error: AvatarInvalidMimeException,
+  },
+  {
+    description: '프로필 사진의 파일 크기가 너무 큼',
+    error: AvatarTooLargeException,
+  },
+];
