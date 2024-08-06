@@ -9,3 +9,4 @@ export * from './wrong-password.exception';
 
 export * from './unauthorized.exception';
 export * from './permission.exception';
+export * from './super-role.exception';

@@ -15,7 +15,7 @@ import {
 } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
-import { MemberNotFoundException, PermissionException } from '../../auth/exception';
+import { MemberNotFoundException, SuperRoleException } from '../../auth/exception';
 
 import {
   ApproveAccountTemplate,
@@ -101,7 +101,7 @@ export class MemberAdminService {
     }
 
     if (!canChangeRole(myRole!, targetRole!)) {
-      throw new PermissionException();
+      throw new SuperRoleException();
     }
 
     this.logger.log(`Update role: ${memberId} to ${role} by ${name} (${_id})`);
@@ -124,7 +124,7 @@ export class MemberAdminService {
     }
 
     if (!canChangeRole(myRole!, targetRole!)) {
-      throw new PermissionException();
+      throw new SuperRoleException();
     }
 
     this.logger.log(`Update fee: ${memberId} to ${fee} by ${name} (${_id})`);

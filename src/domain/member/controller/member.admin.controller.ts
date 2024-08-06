@@ -16,7 +16,7 @@ import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '../../au
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
 import { Member } from '../schema';
-import { PermissionException } from '../../auth/exception';
+import { SuperRoleException } from '../../auth/exception';
 
 @Controller('/admin/member')
 @ApiTags('[Admin] Member')
@@ -74,7 +74,7 @@ export class MemberAdminController {
   @ApiCustomErrorResponse([
     ...AuthAdminAccountException,
     NotApprovedMemberException,
-    PermissionException,
+    SuperRoleException,
   ])
   async updateMemberRole(
     @ReqMember() member: Member,
@@ -92,7 +92,7 @@ export class MemberAdminController {
   @ApiCustomErrorResponse([
     ...AuthAdminAccountException,
     NotApprovedMemberException,
-    PermissionException,
+    SuperRoleException,
   ])
   async updateMemberFee(
     @ReqMember() member: Member,
