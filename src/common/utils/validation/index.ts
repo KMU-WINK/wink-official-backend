@@ -1,2 +1,2 @@
 export * from './validation.util';
-export * from './custom';
+export * from './decorator';

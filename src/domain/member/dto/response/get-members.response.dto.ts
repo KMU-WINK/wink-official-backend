@@ -8,20 +8,20 @@ export class EachGetMembersResponseDto {
     description: '멤버 ID',
     example: '1a2b3c4d5e6f7a8b9c0d1e2f',
   })
-  memberId: string;
+  memberId!: string;
 
   @ApiProperty({
     description: '이름',
     example: '홍길동',
   })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     description: '프로필 사진 URL',
     example:
       'https://kmu-wink.s3.ap-northeast-2.amazonaws.com/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.jpeg',
   })
-  avatar: string;
+  avatar!: string;
 
   @ApiProperty({
     description: '한 줄 소개',
@@ -37,28 +37,28 @@ export class EachGetMembersResponseDto {
       blog: 'https://hongildong.tistory.com',
     },
   })
-  link: MyInfoLinks;
+  link!: MyInfoLinks;
 
   @ApiProperty({
     description: '역할',
     enum: Role,
     example: Role.MEMBER,
   })
-  role: Role;
+  role!: Role;
 }
 
 export class EachGetMembersForAdminResponseDto extends EachGetMembersResponseDto {
   @ApiProperty({
     description: '학번',
-    example: 20240001,
+    example: '20240001',
   })
-  studentId: number;
+  studentId!: string;
 
   @ApiProperty({
     description: '회비 납부 여부',
     example: false,
   })
-  fee: boolean;
+  fee!: boolean;
 }
 
 export class GetMembersResponseDto {
@@ -66,7 +66,7 @@ export class GetMembersResponseDto {
     description: '부원 목록',
     type: [EachGetMembersResponseDto],
   })
-  members: EachGetMembersResponseDto[];
+  members!: EachGetMembersResponseDto[];
 }
 
 export class GetMembersForAdminResponseDto {
@@ -74,5 +74,5 @@ export class GetMembersForAdminResponseDto {
     description: '부원 목록',
     type: [EachGetMembersForAdminResponseDto],
   })
-  members: EachGetMembersForAdminResponseDto[];
+  members!: EachGetMembersForAdminResponseDto[];
 }

@@ -5,5 +5,5 @@ export class VerifyCodeResponseDto {
     description: '인증 토큰',
     example: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
   })
-  verifyToken: string;
+  verifyToken!: string;
 }

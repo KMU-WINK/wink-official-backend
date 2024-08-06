@@ -6,5 +6,5 @@ export class UpdateMyAvatarRequestDto {
     type: 'string',
     format: 'binary',
   })
-  avatar: Express.Multer.File;
+  avatar!: Express.Multer.File;
 }

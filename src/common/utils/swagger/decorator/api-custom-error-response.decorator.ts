@@ -19,7 +19,7 @@ export const ApiCustomErrorResponse = (options: ApiCustomErrorResponseOptions[])
       errors.set(error.getStatus(), []);
     }
 
-    errors.get(error.getStatus()).push([option.description, error]);
+    errors.get(error.getStatus())!.push([option.description, error]);
   });
 
   return applyDecorators(

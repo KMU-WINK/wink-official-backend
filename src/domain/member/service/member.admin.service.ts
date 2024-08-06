@@ -6,6 +6,8 @@ import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } f
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
 import { MailService } from '../../../common/utils/mail';
+import { Member } from '../schema';
+import { MemberNotFoundException } from '../../auth/exception';
 
 @Injectable()
 export class MemberAdminService {
@@ -19,15 +21,19 @@ export class MemberAdminService {
   async getWaitingMembers(): Promise<EachGetWaitingMembersResponseDto[]> {
     const members = await this.memberRepository.findAll();
 
-    return members
-      .filter((member) => !member.approved)
-      .map(
-        ({ name, studentId }) => ({ name, studentId }) as EachGetWaitingMembersResponseDto,
-      ) as EachGetWaitingMembersResponseDto[];
+    return <EachGetWaitingMembersResponseDto[]>(
+      members
+        .filter((member) => !member.approved)
+        .map(({ name, studentId }) => <EachGetWaitingMembersResponseDto>{ name, studentId })
+    );
   }
 
   async approveWaitingMember(memberId: string): Promise<void> {
-    const { name, email, approved } = await this.memberRepository.findById(memberId);
+    if (!(await this.memberRepository.existsById(memberId))) {
+      throw new MemberNotFoundException();
+    }
+
+    const { name, email, approved } = <Member>await this.memberRepository.findById(memberId);
 
     if (approved) {
       throw new NotWaitingMemberException();
@@ -41,7 +47,11 @@ export class MemberAdminService {
   }
 
   async rejectWaitingMember(memberId: string): Promise<void> {
-    const { name, email, approved } = await this.memberRepository.findById(memberId);
+    if (!(await this.memberRepository.existsById(memberId))) {
+      throw new MemberNotFoundException();
+    }
+
+    const { name, email, approved } = <Member>await this.memberRepository.findById(memberId);
 
     if (approved) {
       throw new NotWaitingMemberException();
@@ -57,26 +67,27 @@ export class MemberAdminService {
   async getMembers(): Promise<EachGetMembersForAdminResponseDto[]> {
     const members = await this.memberRepository.findAll();
 
-    return members
+    return <EachGetMembersForAdminResponseDto[]>members
       .filter((member) => member.approved)
-      .map(
-        ({ _id: memberId, name, studentId, email, avatar, description, link, role, fee }) =>
-          ({
-            memberId,
-            name,
-            studentId,
-            email,
-            avatar,
-            description,
-            link,
-            role,
-            fee,
-          }) as EachGetMembersForAdminResponseDto,
-      ) as EachGetMembersForAdminResponseDto[];
+      .map(({ _id: memberId, name, studentId, email, avatar, description, link, role, fee }) => ({
+        memberId,
+        name,
+        studentId,
+        email,
+        avatar,
+        description,
+        link,
+        role,
+        fee,
+      }));
   }
 
   async updateRole(memberId: string, role: Role): Promise<void> {
-    const { approved } = await this.memberRepository.findById(memberId);
+    if (!(await this.memberRepository.existsById(memberId))) {
+      throw new MemberNotFoundException();
+    }
+
+    const { approved } = <Member>await this.memberRepository.findById(memberId);
 
     if (!approved) {
       throw new NotApprovedMemberException();
@@ -88,7 +99,11 @@ export class MemberAdminService {
   }
 
   async updateFee(memberId: string, fee: boolean): Promise<void> {
-    const { approved } = await this.memberRepository.findById(memberId);
+    if (!(await this.memberRepository.existsById(memberId))) {
+      throw new MemberNotFoundException();
+    }
+
+    const { approved } = <Member>await this.memberRepository.findById(memberId);
 
     if (!approved) {
       throw new NotApprovedMemberException();

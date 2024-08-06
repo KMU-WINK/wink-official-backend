@@ -33,7 +33,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    let decoded: Record<string, any>;
+    let decoded: Record<string, unknown>;
     try {
       decoded = await this.jwtService.verifyAsync(token as string);
     } catch {
@@ -44,7 +44,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    const member = await this.memberRepository.findById(decoded.id);
+    const member = await this.memberRepository.findById(<string>decoded.id);
     request.member = member;
     if (!member) {
       throw new UnauthorizedException();
@@ -55,7 +55,7 @@ export class AuthGuard implements CanActivate {
     }
 
     const roles = this.reflector.get<Role[]>('roles', context.getHandler());
-    if (roles.length > 0 && !roles.includes(member.role)) {
+    if (roles.length > 0 && member.role && !roles.includes(member.role)) {
       throw new PermissionException();
     }
 
@@ -63,9 +63,9 @@ export class AuthGuard implements CanActivate {
   }
 
   private extractAuthToken(request: Request): string | boolean {
-    const authorization = request.headers['authorization'];
+    const authorization = request.headers.get('authorization');
 
-    if (authorization && authorization.startsWith('Bearer ')) {
+    if (authorization?.startsWith('Bearer ')) {
       return authorization.slice(7);
     }
 
@@ -73,7 +73,7 @@ export class AuthGuard implements CanActivate {
   }
 }
 
-export const ReqMember = createParamDecorator((data: any, ctx: ExecutionContext) => {
+export const ReqMember = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
   const request = ctx.switchToHttp().getRequest();
 
   return request.member;

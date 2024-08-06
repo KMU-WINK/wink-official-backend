@@ -1,11 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-
 import {
-  CanEmpty,
-  IsGithubUrl,
-  IsInstagramUrl,
-  IsUrl,
-  MaxLength,
+  CommonValidation,
+  StringValidation,
+  TypeValidation,
 } from '../../../../common/utils/validation';
 
 export class UpdateMyInfoRequestDto {
@@ -13,31 +10,35 @@ export class UpdateMyInfoRequestDto {
     description: '한 줄 소개',
     example: '안녕하세요! 저는 개발자입니다.',
   })
-  @MaxLength(20)
-  @CanEmpty()
-  description?: string;
+  @CommonValidation.IsOptional()
+  @TypeValidation.IsString()
+  @StringValidation.MaxLength(20)
+  description!: string | null;
 
   @ApiProperty({
     description: 'Github URL',
     example: 'https://github.com/honggildong',
   })
-  @IsGithubUrl()
-  @CanEmpty()
-  github?: string;
+  @CommonValidation.IsOptional()
+  @TypeValidation.IsString()
+  @StringValidation.IsGithubUrl()
+  github!: string | null;
 
   @ApiProperty({
     description: 'Instagram URL',
     example: 'https://www.instagram.com/honggildong',
   })
-  @IsInstagramUrl()
-  @CanEmpty()
-  instagram?: string;
+  @CommonValidation.IsOptional()
+  @TypeValidation.IsString()
+  @StringValidation.IsInstagramUrl()
+  instagram!: string | null;
 
   @ApiProperty({
     description: '블로그 URL',
     example: 'https://honggildong.tistory.com/',
   })
-  @IsUrl()
-  @CanEmpty()
-  blog?: string;
+  @CommonValidation.IsOptional()
+  @TypeValidation.IsString()
+  @StringValidation.IsUrl()
+  blog!: string | null;
 }

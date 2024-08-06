@@ -23,6 +23,7 @@ describe('Member Validation Test', () => {
       it('한 줄 소개가 주어지지 않았을 때', async () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
+          // @ts-expect-error: 테스트 목적
           description: undefined,
           github: 'https://github.com/honggildong',
           instagram: 'https://instagram.com/honggildong',
@@ -58,6 +59,7 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
+          // @ts-expect-error: 테스트 목적
           github: undefined,
           instagram: 'https://instagram.com/honggildong',
           blog: 'https://honggildong.tistory.com',
@@ -83,9 +85,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'github는 Github URL 형식이 아닙니다. (https://github.com/{username})',
-        );
+        await expect(result).rejects.toThrow('github는 Github URL 형식이어야 합니다.');
       });
 
       it('Github ID가 잘못 입력되었을 때 (2)', async () => {
@@ -101,9 +101,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'github는 Github URL 형식이 아닙니다. (https://github.com/{username})',
-        );
+        await expect(result).rejects.toThrow('github는 Github URL 형식이어야 합니다.');
       });
 
       it('Github ID가 잘못 입력되었을 때 (3)', async () => {
@@ -120,9 +118,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'github는 Github URL 형식이 아닙니다. (https://github.com/{username})',
-        );
+        await expect(result).rejects.toThrow('github는 Github URL 형식이어야 합니다.');
       });
     });
 
@@ -132,6 +128,7 @@ describe('Member Validation Test', () => {
         const body: UpdateMyInfoRequestDto = {
           description: '안녕하세요. 홍길동입니다.',
           github: 'https://github.com/honggildong',
+          // @ts-expect-error: 테스트 목적
           instagram: undefined,
           blog: 'https://honggildong.tistory.com',
         };
@@ -156,9 +153,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'instagram는 Instagram URL 형식이 아닙니다. (https://instagram.com/{username})',
-        );
+        await expect(result).rejects.toThrow('instagram는 Instagram URL 형식이어야 합니다.');
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (2)', async () => {
@@ -174,9 +169,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'instagram는 Instagram URL 형식이 아닙니다. (https://instagram.com/{username})',
-        );
+        await expect(result).rejects.toThrow('instagram는 Instagram URL 형식이어야 합니다.');
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (3)', async () => {
@@ -193,9 +186,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'instagram는 Instagram URL 형식이 아닙니다. (https://instagram.com/{username})',
-        );
+        await expect(result).rejects.toThrow('instagram는 Instagram URL 형식이어야 합니다.');
       });
 
       it('Instagram ID가 잘못 입력되었을 때 (4)', async () => {
@@ -211,9 +202,7 @@ describe('Member Validation Test', () => {
         const result = validation.validateBody(body, UpdateMyInfoRequestDto);
 
         // Then
-        await expect(result).rejects.toThrow(
-          'instagram는 Instagram URL 형식이 아닙니다. (https://instagram.com/{username})',
-        );
+        await expect(result).rejects.toThrow('instagram는 Instagram URL 형식이어야 합니다.');
       });
     });
 
@@ -224,6 +213,7 @@ describe('Member Validation Test', () => {
           description: '안녕하세요. 홍길동입니다.',
           github: 'https://github.com/honggildong',
           instagram: 'https://instagram.com/honggildong',
+          // @ts-expect-error: 테스트 목적
           blog: undefined,
         };
 
@@ -273,6 +263,7 @@ describe('Member Validation Test', () => {
       it('기존 비밀번호가 주어지지 않았을 때', async () => {
         // Given
         const body: UpdateMyPasswordRequestDto = {
+          // @ts-expect-error: 테스트 목적
           password: undefined,
           newPassword: 'newpassword',
         };
@@ -290,6 +281,7 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMyPasswordRequestDto = {
           password: 'password',
+          // @ts-expect-error: 테스트 목적
           newPassword: undefined,
         };
 
@@ -365,6 +357,7 @@ describe('Member Validation Test', () => {
       it('멤버 ID가 주어지지 않았을 때', async () => {
         // Given
         const body: ApproveWaitingMemberRequestDto = {
+          // @ts-expect-error: 테스트 목적
           memberId: undefined,
         };
 
@@ -408,6 +401,7 @@ describe('Member Validation Test', () => {
       it('멤버 ID가 주어지지 않았을 때', async () => {
         // Given
         const body: RejectWaitingMemberRequestDto = {
+          // @ts-expect-error: 테스트 목적
           memberId: undefined,
         };
 
@@ -451,6 +445,7 @@ describe('Member Validation Test', () => {
       it('멤버 ID가 주어지지 않았을 때', async () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
+          // @ts-expect-error: 테스트 목적
           memberId: undefined,
           role: Role.MEMBER,
         };
@@ -482,6 +477,7 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
           memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+          // @ts-expect-error: 테스트 목적
           role: undefined,
         };
 
@@ -494,12 +490,13 @@ describe('Member Validation Test', () => {
 
       it('올바른 역할이 아닐 때', async () => {
         // Given
-        const body: Record<string, any> = {
+        const body: Record<string, unknown> = {
           memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
           role: 'notvalidrole',
         };
 
         // When
+        // @ts-expect-error: 테스트 목적
         const result = validation.validateBody(body, UpdateMemberRoleRequestDto);
 
         // Then
@@ -529,6 +526,7 @@ describe('Member Validation Test', () => {
       it('멤버 ID가 주어지지 않았을 때', async () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
+          // @ts-expect-error: 테스트 목적
           memberId: undefined,
           fee: false,
         };
@@ -560,6 +558,7 @@ describe('Member Validation Test', () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
           memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+          // @ts-expect-error: 테스트 목적
           fee: undefined,
         };
 
