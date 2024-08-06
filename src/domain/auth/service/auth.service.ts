@@ -2,9 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { v4 as uuid } from 'uuid';
-import * as bcrypt from 'bcrypt';
-
 import {
   LoginRequestDto,
   LoginResponseDto,
@@ -13,7 +10,7 @@ import {
   SendCodeRequestDto,
   VerifyCodeRequestDto,
   VerifyCodeResponseDto,
-} from '../dto';
+} from '@wink/auth/dto';
 import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
@@ -21,24 +18,18 @@ import {
   InvalidVerifyTokenException,
   MemberNotFoundException,
   WrongPasswordException,
-} from '../exception';
+} from '@wink/auth/exception';
 
-import { MemberRepository } from '../../member/repository';
-import { Member, transferMember } from '../../member/schema';
-import { NotApprovedMemberException } from '../../member/exception';
+import { NotApprovedMemberException } from '@wink/member/exception';
+import { MemberRepository } from '@wink/member/repository';
+import { Member, transferMember } from '@wink/member/schema';
 
-import { RedisService } from '../../../common/redis';
-import {
-  MailService,
-  RegisterCompleteTemplate,
-  VerifyCodeTemplate,
-} from '../../../common/utils/mail';
-import {
-  LoginEvent,
-  RegisterEvent,
-  SendCodeEvent,
-  VerifyCodeEvent,
-} from '../../../common/utils/event';
+import { RedisService } from '@wink/redis';
+import { LoginEvent, RegisterEvent, SendCodeEvent, VerifyCodeEvent } from '@wink/event';
+import { MailService, RegisterCompleteTemplate, VerifyCodeTemplate } from '@wink/mail';
+
+import { v4 as uuid } from 'uuid';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {

@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 
-import { ApiException } from '../../../common/utils/swagger';
+import { ApiException } from '@wink/swagger';
 
 export class WrongPasswordException extends ApiException {
   constructor() {

@@ -1,8 +1,7 @@
 import { AsyncModelFactory } from '@nestjs/mongoose';
 
 import { Schema } from 'mongoose';
-
-import auto_populate from 'mongoose-autopopulate';
+import AutoPopulate from 'mongoose-autopopulate';
 
 export class MongoModelFactory {
   static generate<T>(name: string, schema: Schema<T>): AsyncModelFactory {
@@ -12,7 +11,7 @@ export class MongoModelFactory {
         schema.set('timestamps', true);
         schema.set('versionKey', false);
 
-        schema.plugin(auto_populate);
+        schema.plugin(AutoPopulate);
 
         return schema;
       },

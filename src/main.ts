@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 
-import { AppModule } from './common/app';
+import { AppModule } from '@wink/app';
 
-import { LoggerService } from './common/utils/logger';
-import { swaggerInit } from './common/utils/swagger';
+import { LoggerService } from '@wink/logger';
+import { swaggerInit } from '@wink/swagger';
 
 (async () => {
   const app = await NestFactory.create(AppModule, {

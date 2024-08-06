@@ -13,22 +13,21 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { Member } from '../schema';
-import { MemberService } from '../service';
+import { WrongPasswordException } from '@wink/auth/exception';
+import { AuthAccount, AuthAccountException, ReqMember } from '@wink/auth/guard';
+
 import {
   GetMembersResponseDto,
   UpdateMyAvatarRequestDto,
   UpdateMyAvatarResponseDto,
   UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
-} from '../dto';
+} from '@wink/member/dto';
+import { MemberService } from '@wink/member/service';
+import { Member } from '@wink/member/schema';
+import { AvatarFilter, AvatarFilterException } from '@wink/member/util/multer';
 
-import { AuthAccount, AuthAccountException, ReqMember } from '../../auth/guard';
-import { WrongPasswordException } from '../../auth/exception';
-
-import { AvatarFilter, AvatarFilterException } from '../util/multer';
-
-import { ApiCustomErrorResponse, ApiCustomResponse } from '../../../common/utils/swagger';
+import { ApiCustomErrorResponse, ApiCustomResponse } from '@wink/swagger';
 
 @Controller('/member')
 @ApiTags('Member')

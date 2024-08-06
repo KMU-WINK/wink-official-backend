@@ -1,6 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { RedisService } from './redis.service';
+import { RedisService } from './service';
 
 @Module({})
 export class RedisModule {

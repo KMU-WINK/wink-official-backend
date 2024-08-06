@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { MyInfoLinks } from '../../schema';
-import { Role } from '../../constant';
+import { Role } from '@wink/member/constant';
+import { MyInfoLinks } from '@wink/member/schema';
 
 export class EachGetMembersResponseDto {
   @ApiProperty({

@@ -1,4 +1,4 @@
-import { AvatarInvalidMimeException, AvatarTooLargeException } from '../../exception';
+import { AvatarInvalidMimeException, AvatarTooLargeException } from '@wink/member/exception';
 
 const AVATAR_MIME_TYPES = ['image/jpeg', 'image/png'];
 const AVATAR_MAX_SIZE = 1024 * 1024 * 2;

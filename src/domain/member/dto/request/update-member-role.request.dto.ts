@@ -1,12 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Role } from '../../constant';
+import { Role } from '@wink/member/constant';
 
-import {
-  CommonValidation,
-  StringValidation,
-  TypeValidation,
-} from '../../../../common/utils/validation';
+import { CommonValidation, StringValidation, TypeValidation } from '@wink/validation';
 
 export class UpdateMemberRoleRequestDto {
   @ApiProperty({

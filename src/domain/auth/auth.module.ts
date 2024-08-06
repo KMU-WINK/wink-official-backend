@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 
-import { AuthController } from './controller';
-import { AuthService } from './service';
+import { AuthController } from '@wink/auth/controller';
+import { AuthService } from '@wink/auth/service';
 
-import { MemberModule } from '../member/member.module';
+import { MemberModule } from '@wink/member/member.module';
 
-import { RedisModule, RedisService } from '../../common/redis';
-import { MailModule } from '../../common/utils/mail';
+import { RedisModule, RedisService } from '@wink/redis';
+import { MailModule } from '@wink/mail';
 
 @Module({
   imports: [MemberModule, MailModule, RedisModule.register('auth')],

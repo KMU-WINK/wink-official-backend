@@ -8,8 +8,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test": "jest --runInBand",
     "format": "prettier --write \"{src,spec}/**/*.ts\"",
     "lint": "eslint \"{src,spec}/**/*.ts\" --fix"
   },

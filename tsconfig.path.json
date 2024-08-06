@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "paths": {
+      // Common
+      "@wink/app": ["common/app"],
+      "@wink/config": ["common/config"],
+      "@wink/filter": ["common/filter"],
+      "@wink/interceptor": ["common/interceptor"],
+      "@wink/mongo": ["common/mongo"],
+      "@wink/redis": ["common/redis"],
+      "@wink/s3": ["common/s3"],
+
+      // Utils
+      "@wink/event": ["common/util/event"],
+      "@wink/logger": ["common/util/logger"],
+      "@wink/mail": ["common/util/mail"],
+      "@wink/swagger": ["common/util/swagger"],
+      "@wink/validation": ["common/util/validation"],
+
+      // Domain
+      "@wink/auth/*": ["domain/auth/*"],
+      "@wink/member/*": ["domain/member/*"],
+      "@wink/activity/*": ["domain/activity/*"],
+
+      // Test
+      "@wink/test-mock": ["../test/mock"],
+    }
+  },
+}
