@@ -6,6 +6,8 @@ import { MemberAdminService, MemberService } from './service';
 import { MemberRepository } from './repository';
 import { Member, MemberSchema } from './schema';
 
+import { PurgeUnusedAvatarJob } from './util/scheduler';
+
 import { MongoModelFactory } from '../../common/mongo';
 import { S3Module, S3Service } from '../../common/s3';
 import { MailModule } from '../../common/utils/mail';
@@ -23,6 +25,7 @@ import { MailModule } from '../../common/utils/mail';
     MemberService,
     MemberAdminService,
     MemberRepository,
+    PurgeUnusedAvatarJob,
     {
       provide: `${S3Service}-avatar`,
       useFactory: (s3Service: S3Service) => s3Service.sub('avatar'),

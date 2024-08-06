@@ -191,7 +191,7 @@ describe('Member Service Test', () => {
       // Then
       await expect(result).resolves.toBe(fileUrl);
       expect(memoryMemberRepository[0].avatar).toBe(fileUrl);
-      expect(s3AvatarService.deleteFromUrl).not.toHaveBeenCalled();
+      expect(s3AvatarService.delete).not.toHaveBeenCalled();
     });
 
     it('프로필 사진 수정', async () => {
@@ -214,7 +214,7 @@ describe('Member Service Test', () => {
       // Then
       await expect(result).resolves.toBe(fileUrl);
       expect(memoryMemberRepository[0].avatar).toBe(fileUrl);
-      expect(s3AvatarService.deleteFromUrl).toHaveBeenCalledWith(previousFileUrl);
+      expect(s3AvatarService.delete).toHaveBeenCalledWith(previousFileUrl);
     });
   });
 });

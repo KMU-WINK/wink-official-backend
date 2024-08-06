@@ -6,6 +6,7 @@ import { extname } from 'path';
 
 import {
   DeleteObjectCommand,
+  ListObjectsV2Command,
   ObjectCannedACL,
   PutObjectCommand,
   S3Client,
@@ -32,7 +33,7 @@ export class S3Service {
     });
   }
 
-  async upload(file: Express.Multer.File) {
+  async upload(file: Express.Multer.File): Promise<string> {
     let _key = `${this.directory}/${uuid()}${extname(file.originalname)}`;
     _key = _key.replace(/ /g, '_');
     _key = _key.replace(/\/\//g, '/');
@@ -52,7 +53,7 @@ export class S3Service {
     return `https://${this.configService.getOrThrow<string>('s3.bucket')}.s3.${this.configService.getOrThrow<string>('s3.region')}.amazonaws.com/${_key}`;
   }
 
-  async delete(key: string) {
+  async delete(key: string): Promise<void> {
     const _key = `${this.directory}/${key}`;
 
     await this.s3Client.send(
@@ -65,17 +66,19 @@ export class S3Service {
     this.logger.log(`Delete file: ${_key}`);
   }
 
-  async deleteFromUrl(url: string) {
-    const _key = url.split(`.com/`)[1];
-
-    await this.s3Client.send(
-      new DeleteObjectCommand({
-        Key: _key,
+  async getKeys(): Promise<string[]> {
+    const { Contents: files } = await this.s3Client.send(
+      new ListObjectsV2Command({
+        Prefix: this.directory,
         Bucket: this.configService.getOrThrow<string>('s3.bucket'),
       }),
     );
 
-    this.logger.log(`Delete file: ${_key}`);
+    return files.map((files) => files.Key).map((key) => key.substring(this.directory.length + 1));
+  }
+
+  extractKeyFromUrl(url: string): string {
+    return url.split(`.com/`)[1].substring(this.directory.length + 1);
   }
 
   sub(directory: string): S3Service {

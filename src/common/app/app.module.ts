@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AuthModule } from '../../domain/auth/auth.module';
 import { MemberModule } from '../../domain/member/member.module';
@@ -26,6 +27,8 @@ import { Validation } from '../utils/validation';
       global: true,
       useClass: JwtConfig,
     }),
+
+    ScheduleModule.forRoot(),
 
     AuthModule,
     MemberModule,

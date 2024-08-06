@@ -72,7 +72,9 @@ export class MemberService {
     await this.memberRepository.updateAvatar(id, avatar);
 
     if (original) {
-      await this.s3AvatarService.deleteFromUrl(original);
+      const key = this.s3AvatarService.extractKeyFromUrl(original);
+
+      await this.s3AvatarService.delete(key);
     }
 
     return avatar;
