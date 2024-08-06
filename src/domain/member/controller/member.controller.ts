@@ -39,9 +39,7 @@ export class MemberController {
   @ApiOperation({ summary: '부원 목록' })
   @ApiCustomResponse({ type: GetMembersResponseDto, status: 201 })
   async getMembers(): Promise<GetMembersResponseDto> {
-    const members = await this.memberService.getMembers();
-
-    return { members };
+    return this.memberService.getMembers();
   }
 
   @Put('/me/info')
@@ -55,9 +53,7 @@ export class MemberController {
     @ReqMember() member: Member,
     @Body() request: UpdateMyInfoRequestDto,
   ): Promise<void> {
-    const { description, github, instagram, blog } = request;
-
-    await this.memberService.updateMyInfo(member, description, github, instagram, blog);
+    return await this.memberService.updateMyInfo(member, request);
   }
 
   @Patch('/me/password')
@@ -77,9 +73,7 @@ export class MemberController {
     @ReqMember() member: Member,
     @Body() request: UpdateMyPasswordRequestDto,
   ): Promise<void> {
-    const { password, newPassword } = request;
-
-    await this.memberService.updateMyPassword(member, password, newPassword);
+    return await this.memberService.updateMyPassword(member, request);
   }
 
   @Patch('/me/avatar')
@@ -95,9 +89,7 @@ export class MemberController {
     @ReqMember() member: Member,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<UpdateMyAvatarResponseDto> {
-    const avatar = await this.memberService.updateMyAvatar(member, file);
-
-    return { avatar };
+    return await this.memberService.updateMyAvatar(member, file);
   }
 
   @Delete('/me/avatar')

@@ -7,6 +7,7 @@ import { Readable } from 'stream';
 
 import { MemberService } from '../../src/domain/member/service';
 import { Member } from '../../src/domain/member/schema';
+import { UpdateMyInfoRequestDto, UpdateMyPasswordRequestDto } from '../../src/domain/member/dto';
 
 import { WrongPasswordException } from '../../src/domain/auth/exception';
 
@@ -34,6 +35,11 @@ describe('MemberService', () => {
   });
 
   describe('getMembers', () => {
+    const MEMBERS: Member[] = createRandomMembers(10).map((member) => ({
+      ...member,
+      approved: true,
+    }));
+
     it('Empty members', async () => {
       // Given
 
@@ -41,36 +47,57 @@ describe('MemberService', () => {
       const result = memberService.getMembers();
 
       // Then
-      await expect(result).resolves.toStrictEqual([]);
+      await expect(result).resolves.toStrictEqual({ members: [] });
     });
 
     it('Has Members', async () => {
       // Given
-      memoryMemberRepository.push(...createRandomMembers(10));
+      memoryMemberRepository.push(...MEMBERS);
 
       // When
       const result = memberService.getMembers();
 
       // Then
-      await expect(result).resolves.toHaveLength(10);
+      await expect(result).resolves.toBeInstanceOf(Object);
     });
   });
 
   describe('updateMyInfo', () => {
+    const DESCRIPTION = '**DESCRIPTION**';
+    const GITHUB = '** GITHUB **';
+    const INSTAGRAM = '** INSTAGRAM **';
+    const BLOG = '** BLOG **';
+
+    const MEMBER: Member = createRandomMember();
+    MEMBER.description = 'DESCRIPTION';
+    MEMBER.link.github = 'GITHUB';
+    MEMBER.link.instagram = 'INSTAGRAM';
+    MEMBER.link.blog = 'BLOG';
+
+    const PARAMS: UpdateMyInfoRequestDto = {
+      description: DESCRIPTION,
+      github: GITHUB,
+      instagram: INSTAGRAM,
+      blog: BLOG,
+    };
+
     it('Change only description', async () => {
       // Given
-      const description = '**DESCRIPTION**';
-
-      const member = createRandomMember();
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyInfo(member, description, null, null, null);
+      const result = memberService.updateMyInfo(member, {
+        ...PARAMS,
+        github: null,
+        instagram: null,
+        blog: null,
+      });
 
       // Then
       await expect(result).resolves.toBeUndefined();
-      expect(memoryMemberRepository[0].description).toBe(description);
+      expect(memoryMemberRepository[0].description).toBe(DESCRIPTION);
       expect(memoryMemberRepository[0].link.github).toBeNull();
       expect(memoryMemberRepository[0].link.instagram).toBeNull();
       expect(memoryMemberRepository[0].link.blog).toBeNull();
@@ -78,99 +105,116 @@ describe('MemberService', () => {
 
     it('Change only github', async () => {
       // Given
-      const github = 'https://github.com/honggildong';
-
-      const member = createRandomMember();
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyInfo(member, null, github, null, null);
+      const result = memberService.updateMyInfo(member, {
+        ...PARAMS,
+        description: null,
+        instagram: null,
+        blog: null,
+      });
 
       // Then
       await expect(result).resolves.toBeUndefined();
       expect(memoryMemberRepository[0].description).toBeNull();
-      expect(memoryMemberRepository[0].link.github).toBe(github);
+      expect(memoryMemberRepository[0].link.github).toBe(GITHUB);
       expect(memoryMemberRepository[0].link.instagram).toBeNull();
       expect(memoryMemberRepository[0].link.blog).toBeNull();
     });
 
     it('Change only instagram', async () => {
       // Given
-      const instagram = 'https://instagram.com/honggildong';
-
-      const member = createRandomMember();
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyInfo(member, null, null, instagram, null);
+      const result = memberService.updateMyInfo(member, {
+        ...PARAMS,
+        description: null,
+        github: null,
+        blog: null,
+      });
 
       // Then
       await expect(result).resolves.toBeUndefined();
       expect(memoryMemberRepository[0].description).toBeNull();
       expect(memoryMemberRepository[0].link.github).toBeNull();
-      expect(memoryMemberRepository[0].link.instagram).toBe(instagram);
+      expect(memoryMemberRepository[0].link.instagram).toBe(INSTAGRAM);
       expect(memoryMemberRepository[0].link.blog).toBeNull();
     });
 
     it('Change only blog', async () => {
       // Given
-      const blog = 'https://honggildong.tistory.com';
-
-      const member = createRandomMember();
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyInfo(member, null, null, null, blog);
+      const result = memberService.updateMyInfo(member, {
+        ...PARAMS,
+        description: null,
+        github: null,
+        instagram: null,
+      });
 
       // Then
       await expect(result).resolves.toBeUndefined();
       expect(memoryMemberRepository[0].description).toBeNull();
       expect(memoryMemberRepository[0].link.github).toBeNull();
       expect(memoryMemberRepository[0].link.instagram).toBeNull();
-      expect(memoryMemberRepository[0].link.blog).toBe(blog);
+      expect(memoryMemberRepository[0].link.blog).toBe(BLOG);
     });
 
     it('Change multiple', async () => {
       // Given
-      const description = '**DESCRIPTION**';
-      const instagram = 'https://instagram.com/honggildong2';
-
-      const member = createRandomMember();
-      member.description = 'DESCRIPTION';
-      member.link.github = 'https://github.com/honggildong';
-      member.link.instagram = 'https://instagram.com/honggildong';
-      member.link.blog = 'https://honggildong.tistory.com';
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyInfo(member, description, null, instagram, null);
+      const result = memberService.updateMyInfo(member, {
+        ...PARAMS,
+        github: null,
+        blog: null,
+      });
 
       // Then
       await expect(result).resolves.toBeUndefined();
-      expect(memoryMemberRepository[0].description).toBe(description);
+      expect(memoryMemberRepository[0].description).toBe(DESCRIPTION);
       expect(memoryMemberRepository[0].link.github).toBeNull();
-      expect(memoryMemberRepository[0].link.instagram).toBe(instagram);
+      expect(memoryMemberRepository[0].link.instagram).toBe(INSTAGRAM);
       expect(memoryMemberRepository[0].link.blog).toBeNull();
     });
   });
 
   describe('updateMyPassword', () => {
+    const PASSWORD = 'p4ssw0rd!';
+    const NEW_PASSWORD = 'n3wp4ssw0rd!';
+
+    const HASH = bcrypt.hashSync(PASSWORD, 10);
+    const MEMBER = createRandomMember();
+    MEMBER.password = HASH;
+
+    const PARAM: UpdateMyPasswordRequestDto = {
+      password: PASSWORD,
+      newPassword: NEW_PASSWORD,
+    };
+
     it('WrongPasswordException', async () => {
       // Given
-      const password = 'p4ssw0rd!';
-      const newPassword = 'n3wp4ssw0rd!';
-
-      const member = createRandomMember();
-      member.password = await bcrypt.hash(password, 10);
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyPassword(member, `${password}!`, newPassword);
+      const result = memberService.updateMyPassword(member, {
+        ...PARAM,
+        password: 'wrong_password',
+      });
 
       // Then
       await expect(result).rejects.toThrow(WrongPasswordException);
@@ -178,20 +222,16 @@ describe('MemberService', () => {
 
     it('Change password', async () => {
       // Given
-      const password = 'p4ssw0rd!';
-      const newPassword = 'n3wp4ssw0rd!';
-
-      const member = createRandomMember();
-      member.password = await bcrypt.hash(password, 10);
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyPassword(member, password, newPassword);
+      const result = memberService.updateMyPassword(member, PARAM);
 
       // Then
       await expect(result).resolves.toBeUndefined();
-      expect(await bcrypt.compare(newPassword, memoryMemberRepository[0].password)).toBeTruthy();
+      expect(await bcrypt.compare(NEW_PASSWORD, memoryMemberRepository[0].password)).toBeTruthy();
     });
   });
 
@@ -223,7 +263,7 @@ describe('MemberService', () => {
       const result = memberService.updateMyAvatar(member, file);
 
       // Then
-      await expect(result).resolves.toBe(fileUrl);
+      await expect(result).resolves.toStrictEqual({ avatar: fileUrl });
       expect(memoryMemberRepository[0].avatar).toBe(fileUrl);
       expect(s3AvatarService.delete).not.toHaveBeenCalled();
     });
@@ -257,7 +297,7 @@ describe('MemberService', () => {
       const result = memberService.updateMyAvatar(member, file);
 
       // Then
-      await expect(result).resolves.toBe(fileUrl);
+      await expect(result).resolves.toStrictEqual({ avatar: fileUrl });
       expect(memoryMemberRepository[0].avatar).toBe(fileUrl);
       expect(s3AvatarService.delete).toHaveBeenCalledWith(previousFileUrl);
     });

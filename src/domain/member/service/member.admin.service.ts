@@ -1,8 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { MemberRepository } from '../repository';
-import { Role } from '../constant';
-import { EachGetMembersForAdminResponseDto, EachGetWaitingMembersResponseDto } from '../dto';
+import {
+  ApproveWaitingMemberRequestDto,
+  EachGetMembersForAdminResponseDto,
+  EachGetWaitingMembersResponseDto,
+  GetMembersForAdminResponseDto,
+  GetWaitingMembersResponseDto,
+  RejectWaitingMemberRequestDto,
+  UpdateMemberFeeRequestDto,
+  UpdateMemberRoleRequestDto,
+} from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
 import { MailService } from '../../../common/utils/mail';
@@ -18,17 +26,15 @@ export class MemberAdminService {
     private readonly mailService: MailService,
   ) {}
 
-  async getWaitingMembers(): Promise<EachGetWaitingMembersResponseDto[]> {
-    const members = await this.memberRepository.findAll();
+  async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
+    const members = (await this.memberRepository.findAll())
+      .filter((member) => !member.approved)
+      .map(({ name, studentId }) => <EachGetWaitingMembersResponseDto>{ name, studentId });
 
-    return <EachGetWaitingMembersResponseDto[]>(
-      members
-        .filter((member) => !member.approved)
-        .map(({ name, studentId }) => <EachGetWaitingMembersResponseDto>{ name, studentId })
-    );
+    return { members };
   }
 
-  async approveWaitingMember(memberId: string): Promise<void> {
+  async approveWaitingMember({ memberId }: ApproveWaitingMemberRequestDto): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
@@ -46,7 +52,7 @@ export class MemberAdminService {
     this.mailService.approveAccount({ name }).send(email);
   }
 
-  async rejectWaitingMember(memberId: string): Promise<void> {
+  async rejectWaitingMember({ memberId }: RejectWaitingMemberRequestDto): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
@@ -64,25 +70,28 @@ export class MemberAdminService {
     this.mailService.rejectAccount({ name }).send(email);
   }
 
-  async getMembers(): Promise<EachGetMembersForAdminResponseDto[]> {
-    const members = await this.memberRepository.findAll();
-
-    return <EachGetMembersForAdminResponseDto[]>members
+  async getMembers(): Promise<GetMembersForAdminResponseDto> {
+    const members = (await this.memberRepository.findAll())
       .filter((member) => member.approved)
-      .map(({ _id: memberId, name, studentId, email, avatar, description, link, role, fee }) => ({
-        memberId,
-        name,
-        studentId,
-        email,
-        avatar,
-        description,
-        link,
-        role,
-        fee,
-      }));
+      .map(
+        ({ _id: memberId, name, studentId, email, avatar, description, link, role, fee }) =>
+          <EachGetMembersForAdminResponseDto>{
+            memberId,
+            name,
+            studentId,
+            email,
+            avatar,
+            description,
+            link,
+            role,
+            fee,
+          },
+      );
+
+    return { members };
   }
 
-  async updateRole(memberId: string, role: Role): Promise<void> {
+  async updateRole({ memberId, role }: UpdateMemberRoleRequestDto): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }
@@ -98,7 +107,7 @@ export class MemberAdminService {
     await this.memberRepository.updateRoleById(memberId, role);
   }
 
-  async updateFee(memberId: string, fee: boolean): Promise<void> {
+  async updateFee({ memberId, fee }: UpdateMemberFeeRequestDto): Promise<void> {
     if (!(await this.memberRepository.existsById(memberId))) {
       throw new MemberNotFoundException();
     }

@@ -5,6 +5,15 @@ import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
 import {
+  LoginRequestDto,
+  LoginResponseDto,
+  MyInfoResponseDto,
+  RegisterRequestDto,
+  SendCodeRequestDto,
+  VerifyCodeRequestDto,
+  VerifyCodeResponseDto,
+} from '../dto';
+import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
   InvalidVerifyCodeException,
@@ -30,7 +39,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string): Promise<string> {
+  async login({ email, password }: LoginRequestDto): Promise<LoginResponseDto> {
     if (!(await this.memberRepository.existsByEmail(email))) {
       throw new MemberNotFoundException();
     }
@@ -49,15 +58,12 @@ export class AuthService {
       throw new NotApprovedMemberException();
     }
 
-    return this.jwtService.signAsync({ id: _id });
+    const token = await this.jwtService.signAsync({ id: _id });
+
+    return { token };
   }
 
-  async register(
-    name: string,
-    studentId: string,
-    password: string,
-    verifyToken: string,
-  ): Promise<void> {
+  async register({ name, studentId, password, verifyToken }: RegisterRequestDto): Promise<void> {
     if (!(await this.redisTokenRepository.exists(verifyToken))) {
       throw new InvalidVerifyTokenException();
     }
@@ -82,7 +88,7 @@ export class AuthService {
     this.mailService.registerComplete({ name }).send(email);
   }
 
-  async sendCode(email: string): Promise<void> {
+  async sendCode({ email }: SendCodeRequestDto): Promise<void> {
     if (await this.memberRepository.existsByEmail(email)) {
       throw new AlreadyRegisteredByEmailException();
     }
@@ -96,7 +102,7 @@ export class AuthService {
     this.mailService.verifyCode({ email, code }).send(email);
   }
 
-  async verifyCode(email: string, code: string): Promise<string> {
+  async verifyCode({ email, code }: VerifyCodeRequestDto): Promise<VerifyCodeResponseDto> {
     const storedCode = await this.redisCodeRepository.get(email);
 
     if (storedCode !== code) {
@@ -108,10 +114,10 @@ export class AuthService {
     const verifyToken = uuid();
     await this.redisTokenRepository.ttl(verifyToken, email, 60 * 60);
 
-    return verifyToken;
+    return { verifyToken };
   }
 
-  myInfo(member: Member): Omit<Member, '_id' | 'password' | 'approved'> & { memberId: string } {
+  myInfo(member: Member): MyInfoResponseDto {
     const {
       _id: memberId,
       createdAt,

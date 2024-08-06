@@ -1,1 +1,1 @@
-export * from './AvatarFilter.util';
+export * from './avatar-filter.util';
