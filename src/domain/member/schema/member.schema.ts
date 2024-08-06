@@ -1,8 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+import { Schema as MongooseSchema } from 'mongoose';
+
 import { Role } from '../constant';
 
-export type MyInfoLinks = Record<'github' | 'instagram' | 'blog', string>;
+export interface MyInfoLinks {
+  github: string | null;
+  instagram: string | null;
+  blog: string | null;
+}
 
 const DEFAULT_LINKS: MyInfoLinks = {
   github: null,
@@ -12,39 +18,39 @@ const DEFAULT_LINKS: MyInfoLinks = {
 
 @Schema()
 export class Member {
-  readonly _id: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  readonly _id!: string;
+  readonly createdAt!: Date;
+  readonly updatedAt!: Date;
 
-  @Prop({ required: true })
-  name: string;
+  @Prop({ type: String, required: true })
+  name!: string;
 
-  @Prop({ required: true, unique: true, index: true })
-  studentId: number;
+  @Prop({ type: String, required: true, unique: true, index: true })
+  studentId!: string;
 
-  @Prop({ required: true, unique: true, index: true })
-  email: string;
+  @Prop({ type: String, required: true, unique: true, index: true })
+  email!: string;
 
-  @Prop({ default: null })
-  avatar?: string;
+  @Prop({ type: String, required: true, select: false })
+  password!: string;
 
-  @Prop({ default: null })
-  description?: string;
+  @Prop({ type: String, required: false, default: null })
+  avatar!: string | null;
 
-  @Prop({ required: true, select: false })
-  password: string;
+  @Prop({ type: String, required: false, default: null })
+  description!: string | null;
 
-  @Prop({ type: Object, default: DEFAULT_LINKS })
-  link: MyInfoLinks;
+  @Prop({ type: Object, required: false, default: DEFAULT_LINKS })
+  link!: MyInfoLinks;
 
-  @Prop({ type: String, enum: Role, default: null })
-  role: Role;
+  @Prop({ type: String, required: false, enum: Role, default: null })
+  role!: Role | null;
 
-  @Prop({ default: false })
-  fee: boolean;
+  @Prop({ type: Boolean, required: false, default: false })
+  fee!: boolean;
 
-  @Prop({ default: false })
-  approved: boolean;
+  @Prop({ type: Boolean, required: false, default: false })
+  approved!: boolean;
 }
 
-export const MemberSchema = SchemaFactory.createForClass(Member);
+export const MemberSchema: MongooseSchema<Member> = SchemaFactory.createForClass(Member);

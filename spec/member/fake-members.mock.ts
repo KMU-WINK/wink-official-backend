@@ -21,7 +21,27 @@ function bool(): boolean {
   return Math.random() >= 0.5;
 }
 
-export function generateMember(): Member {
+export const createNullMember = (): Member => ({
+  _id: '',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  name: '',
+  studentId: '',
+  email: '',
+  password: '',
+  avatar: null,
+  description: null,
+  link: {
+    github: null,
+    instagram: null,
+    blog: null,
+  },
+  fee: false,
+  role: null,
+  approved: true,
+});
+
+export function createRandomMember(): Member {
   const name = randomString(10);
   const now = new Date();
 
@@ -30,7 +50,9 @@ export function generateMember(): Member {
     createdAt: randomDate(new Date(now.getFullYear(), 0, 1), now),
     updatedAt: randomDate(new Date(now.getFullYear(), 0, 1), now),
     name: name,
-    studentId: 20240000 + Math.floor(Math.random() * 10000),
+    studentId: `${2024}${Math.floor(Math.random() * 10000)
+      .toString()
+      .padStart(4, '0')}`,
     email: `${name.toLowerCase()}@kookmin.ac.kr`,
     password: randomString(10),
     avatar: bool() ? `https://avatar.com/${name}.png` : null,
@@ -46,10 +68,10 @@ export function generateMember(): Member {
   };
 }
 
-export function generateMembers(count: number): Member[] {
+export function createRandomMembers(count: number): Member[] {
   const objects: Member[] = [];
   for (let i = 0; i < count; i++) {
-    objects.push(generateMember());
+    objects.push(createRandomMember());
   }
   return objects;
 }

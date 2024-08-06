@@ -5,5 +5,5 @@ export class LoginResponseDto {
     description: 'JWT 토큰',
     example: 'A.B.C',
   })
-  token: string;
+  token!: string;
 }

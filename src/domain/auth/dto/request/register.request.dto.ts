@@ -1,11 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import {
-  IsName,
-  IsPassword,
-  IsStudentId,
-  IsUUID,
-  NotEmpty,
+  CommonValidation,
+  TypeValidation,
+  StringValidation,
 } from '../../../../common/utils/validation';
 
 export class RegisterRequestDto {
@@ -13,28 +11,40 @@ export class RegisterRequestDto {
     description: '이름',
     example: '홍길동',
   })
-  @IsName()
-  name: string;
+  @CommonValidation.IsNotEmpty()
+  @TypeValidation.IsString()
+  @StringValidation.MinLength(2)
+  @StringValidation.MaxLength(5)
+  @StringValidation.IsName()
+  name!: string;
 
   @ApiProperty({
     description: '학번',
-    example: 20240001,
+    example: '20240001',
   })
-  @IsStudentId()
-  studentId: number;
+  @CommonValidation.IsNotEmpty()
+  @TypeValidation.IsString()
+  @TypeValidation.IsNumberString()
+  @StringValidation.Length(8)
+  @StringValidation.IsStudentId()
+  studentId!: string;
 
   @ApiProperty({
     description: '비밀번호',
     example: 'p4sSw0rd!',
   })
-  @IsPassword()
-  password: string;
+  @CommonValidation.IsNotEmpty()
+  @TypeValidation.IsString()
+  @StringValidation.MinLength(8)
+  @StringValidation.IsPassword()
+  password!: string;
 
   @ApiProperty({
     description: '인증 토큰',
     example: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
   })
-  @NotEmpty()
-  @IsUUID()
-  verifyToken: string;
+  @CommonValidation.IsNotEmpty()
+  @TypeValidation.IsString()
+  @StringValidation.IsUUID()
+  verifyToken!: string;
 }

@@ -14,7 +14,7 @@ import { MailModule } from '../../common/utils/mail';
 
 @Module({
   imports: [
-    MongooseModule.forFeatureAsync([MongoModelFactory.generate(Member.name, MemberSchema)]),
+    MongooseModule.forFeatureAsync([MongoModelFactory.generate<Member>(Member.name, MemberSchema)]),
 
     S3Module.register('member'),
 

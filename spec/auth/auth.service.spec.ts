@@ -1,4 +1,5 @@
 import { mockAuth } from './auth.mock';
+import { createNullMember } from '../member/fake-members.mock';
 
 import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
@@ -13,12 +14,14 @@ import {
   WrongPasswordException,
 } from '../../src/domain/auth/exception';
 
+import { NotApprovedMemberException } from '../../src/domain/member/exception';
+
 import { Member } from '../../src/domain/member/schema';
 
 import { MailService } from '../../src/common/utils/mail';
 import { Role } from '../../src/domain/member/constant';
 
-describe('Auth Service Test', () => {
+describe('AuthService', () => {
   let authService: AuthService;
   let mailService: MailService;
 
@@ -47,8 +50,8 @@ describe('Auth Service Test', () => {
     });
   });
 
-  describe('로그인', () => {
-    it('존재하지 않는 멤버일 때', async () => {
+  describe('login', () => {
+    it('MemberNotFoundException', async () => {
       // Given
 
       // When
@@ -58,7 +61,7 @@ describe('Auth Service Test', () => {
       await expect(result).rejects.toThrow(MemberNotFoundException);
     });
 
-    it('잘못된 비밀번호일 때', async () => {
+    it('MemberNotFoundException', async () => {
       // Given
       const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
@@ -67,17 +70,9 @@ describe('Auth Service Test', () => {
       const hashPassword = await bcrypt.hash(password, salt);
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
+        ...createNullMember(),
         email,
         password: hashPassword,
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 0,
-        approved: undefined,
       });
 
       // When
@@ -87,7 +82,29 @@ describe('Auth Service Test', () => {
       await expect(result).rejects.toThrow(WrongPasswordException);
     });
 
-    it('올바른 정보가 주어졌을 때', async () => {
+    it('NotApprovedMemberException', async () => {
+      // Given
+      const email = 'honggildong@kookmin.ac.kr';
+      const password = 'p4sSw0rd!';
+
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(password, salt);
+
+      memoryMemberRepository.push({
+        ...createNullMember(),
+        email,
+        password: hashPassword,
+        approved: false,
+      });
+
+      // When
+      const result = authService.login(email, password);
+
+      // Then
+      await expect(result).rejects.toThrow(NotApprovedMemberException);
+    });
+
+    it('Passed', async () => {
       // Given
       const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
@@ -96,16 +113,9 @@ describe('Auth Service Test', () => {
       const hash = await bcrypt.hash(password, salt);
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
+        ...createNullMember(),
         email,
         password: hash,
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 0,
         approved: true,
       });
 
@@ -117,76 +127,59 @@ describe('Auth Service Test', () => {
     });
   });
 
-  describe('회원가입', () => {
-    it('인증 토큰이 존재하지 않을 때', async () => {
+  describe('register', () => {
+    it('InvalidVerifyTokenException', async () => {
       // Given
 
       // When
-      const result = authService.register('', 0, '', 'empty-token');
+      const result = authService.register('', '', '', 'empty-token');
 
       // Then
       await expect(result).rejects.toThrow(InvalidVerifyTokenException);
     });
 
-    it('이미 가입된 이메일일 때', async () => {
+    it('AlreadyRegisteredByEmailException', async () => {
       // Given
       const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
       const verifyToken = 'verify-token';
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
+        ...createNullMember(),
         email,
-        password,
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 0,
-        approved: undefined,
       });
 
       memoryRedisTokenRepository[verifyToken] = email;
 
       // When
-      const result = authService.register('', 0, password, verifyToken);
+      const result = authService.register('', '', password, verifyToken);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByEmailException);
     });
 
-    it('이미 가입된 학번일 때', async () => {
+    it('AlreadyRegisteredByStudentIdException', async () => {
       // Given
+      const studentId = '20240001';
       const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
       const verifyToken = 'verify-token';
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
-        email: `other_${email}`,
-        password: '',
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 20240001,
-        approved: undefined,
+        ...createNullMember(),
+        studentId,
       });
 
       memoryRedisTokenRepository[verifyToken] = email;
 
       // When
-      const result = authService.register('', 20240001, password, verifyToken);
+      const result = authService.register('', studentId, password, verifyToken);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByStudentIdException);
     });
 
-    it('올바른 정보가 주어졌을 때', async () => {
+    it('Passed', async () => {
       // Given
       const name = '홍길동';
       const email = 'honggildong@kookmin.ac.kr';
@@ -196,7 +189,7 @@ describe('Auth Service Test', () => {
       memoryRedisTokenRepository[verifyToken] = email;
 
       // When
-      const result = authService.register(name, 20240001, password, verifyToken);
+      const result = authService.register(name, '20240001', password, verifyToken);
 
       // Then
       await expect(result).resolves.toBeUndefined();
@@ -206,23 +199,14 @@ describe('Auth Service Test', () => {
     });
   });
 
-  describe('인증코드 전송', () => {
-    it('이미 가입된 이메일일 때', async () => {
+  describe('sendCode', () => {
+    it('AlreadyRegisteredByEmailException', async () => {
       // Given
       const email = 'honggildong@kookmin.ac.kr';
 
       memoryMemberRepository.push({
-        _id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
-        email: email,
-        password: '',
-        fee: false,
-        link: undefined,
-        name: '',
-        role: undefined,
-        studentId: 20240001,
-        approved: undefined,
+        ...createNullMember(),
+        email,
       });
 
       // When
@@ -232,7 +216,7 @@ describe('Auth Service Test', () => {
       await expect(result).rejects.toThrow(AlreadyRegisteredByEmailException);
     });
 
-    it('올바른 정보가 주어졌을 때', async () => {
+    it('Passed', async () => {
       // Given
       const email = 'honggildong@kookmin.ac.kr';
 
@@ -249,8 +233,8 @@ describe('Auth Service Test', () => {
     });
   });
 
-  describe('인증 토큰 발급', () => {
-    it('인증코드가 일치하지 않을 때', async () => {
+  describe('verifyCode', () => {
+    it('InvalidVerifyCodeException', async () => {
       // Given
       const email = 'honggildong@kookmin.ac.kr';
       const code = '123456';
@@ -264,7 +248,7 @@ describe('Auth Service Test', () => {
       await expect(result).rejects.toThrow(InvalidVerifyCodeException);
     });
 
-    it('올바른 정보가 주어졌을 때', async () => {
+    it('Passed', async () => {
       // Given
       const email = 'honggildong@kookmin.ac.kr';
       const code = '123456';
@@ -279,15 +263,15 @@ describe('Auth Service Test', () => {
     });
   });
 
-  describe('내 정보 조회', () => {
-    it('내 정보 조회', async () => {
+  describe('myInfo', () => {
+    it('Passed', async () => {
       // Given
       const member: Member = {
         _id: uuid(),
         createdAt: new Date(),
         updatedAt: new Date(),
         name: uuid(),
-        studentId: 20240001,
+        studentId: '20240001',
         email: uuid(),
         password: uuid(),
         avatar: uuid(),

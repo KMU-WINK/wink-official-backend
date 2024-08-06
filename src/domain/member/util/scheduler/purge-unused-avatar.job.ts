@@ -25,7 +25,7 @@ export class PurgeUnusedAvatarJob {
   async #job() {
     const usedAvatars = (await this.memberRepository.findAll())
       .map((member) => member.avatar)
-      .filter((avatar) => avatar)
+      .filter((avatar) => avatar !== null)
       .map((avatar) => this.s3AvatarService.extractKeyFromUrl(avatar));
 
     const savedAvatars = await this.s3AvatarService.getKeys();

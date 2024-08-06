@@ -20,34 +20,31 @@ export class MemberService {
   async getMembers(): Promise<EachGetMembersResponseDto[]> {
     const members = await this.memberRepository.findAll();
 
-    return members
+    return <EachGetMembersResponseDto[]>members
       .filter((member) => member.approved)
-      .map(
-        ({ _id: memberId, name, avatar, description, link, role }) =>
-          ({
-            memberId,
-            name,
-            avatar,
-            description,
-            link,
-            role,
-          }) as EachGetMembersResponseDto,
-      ) as EachGetMembersResponseDto[];
+      .map(({ _id: memberId, name, avatar, description, link, role }) => ({
+        memberId,
+        name,
+        avatar,
+        description,
+        link,
+        role,
+      }));
   }
 
   async updateMyInfo(
     member: Member,
-    description?: string,
-    github?: string,
-    instagram?: string,
-    blog?: string,
+    description: string | null,
+    github: string | null,
+    instagram: string | null,
+    blog: string | null,
   ): Promise<void> {
     const { _id: id } = member;
 
-    await this.memberRepository.updateDescription(id, description || null);
-    await this.memberRepository.updateGithub(id, github || null);
-    await this.memberRepository.updateInstagram(id, instagram || null);
-    await this.memberRepository.updateBlog(id, blog || null);
+    await this.memberRepository.updateDescription(id, description);
+    await this.memberRepository.updateGithub(id, github);
+    await this.memberRepository.updateInstagram(id, instagram);
+    await this.memberRepository.updateBlog(id, blog);
   }
 
   async updateMyPassword(member: Member, password: string, newPassword: string): Promise<void> {
@@ -55,7 +52,7 @@ export class MemberService {
 
     const fullMember = await this.memberRepository.findByIdWithPassword(id);
 
-    if (!(await bcrypt.compare(password, fullMember.password))) {
+    if (!(await bcrypt.compare(password, fullMember!.password))) {
       throw new WrongPasswordException();
     }
 
@@ -78,5 +75,16 @@ export class MemberService {
     }
 
     return avatar;
+  }
+
+  async deleteMyAvatar(member: Member): Promise<void> {
+    const { _id: id, avatar } = member;
+
+    if (avatar) {
+      const key = this.s3AvatarService.extractKeyFromUrl(avatar);
+
+      await this.s3AvatarService.delete(key);
+      await this.memberRepository.updateAvatar(id, null);
+    }
   }
 }

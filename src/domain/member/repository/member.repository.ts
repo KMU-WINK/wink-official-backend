@@ -20,15 +20,15 @@ export class MemberRepository {
     return this.memberModel.find().exec();
   }
 
-  async findById(id: string): Promise<Member> {
+  async findById(id: string): Promise<Member | null> {
     return this.memberModel.findById(id).exec();
   }
 
-  async findByIdWithPassword(id: string): Promise<Member> {
+  async findByIdWithPassword(id: string): Promise<Member | null> {
     return this.memberModel.findOne({ _id: id }).select('+password').exec();
   }
 
-  async findByEmailWithPassword(email: string): Promise<Member> {
+  async findByEmailWithPassword(email: string): Promise<Member | null> {
     return this.memberModel.findOne({ email }).select('+password').exec();
   }
 
@@ -37,23 +37,23 @@ export class MemberRepository {
     await this.memberModel.updateOne({ _id: id }, { password }).exec();
   }
 
-  async updateDescription(id: string, description: string): Promise<void> {
+  async updateDescription(id: string, description: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { description }).exec();
   }
 
-  async updateGithub(id: string, githubUrl: string): Promise<void> {
+  async updateGithub(id: string, githubUrl: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.github': githubUrl }).exec();
   }
 
-  async updateInstagram(id: string, instagramUrl: string): Promise<void> {
+  async updateInstagram(id: string, instagramUrl: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.instagram': instagramUrl }).exec();
   }
 
-  async updateBlog(id: string, blog: string): Promise<void> {
+  async updateBlog(id: string, blog: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.blog': blog }).exec();
   }
 
-  async updateAvatar(id: string, avatar: string): Promise<void> {
+  async updateAvatar(id: string, avatar: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { avatar }).exec();
   }
 
@@ -75,11 +75,15 @@ export class MemberRepository {
   }
 
   // Exists
+  async existsById(id: string): Promise<boolean> {
+    return !!(await this.memberModel.exists({ _id: id }).exec());
+  }
+
   async existsByEmail(email: string): Promise<boolean> {
     return !!(await this.memberModel.exists({ email }).exec());
   }
 
-  async existsByStudentId(studentId: number): Promise<boolean> {
+  async existsByStudentId(studentId: string): Promise<boolean> {
     return !!(await this.memberModel.exists({ studentId }).exec());
   }
 }

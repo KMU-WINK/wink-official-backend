@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Patch,
@@ -119,5 +120,20 @@ export class MemberController {
     const avatar = await this.memberService.updateMyAvatar(member, file);
 
     return { avatar };
+  }
+
+  @Delete('/me/avatar')
+  @HttpCode(204)
+  @AuthAccount()
+  @ApiOperation({ summary: '내 프로필 사진 삭제' })
+  @ApiCustomResponse({ status: 204 })
+  @ApiCustomErrorResponse([
+    {
+      description: '인증되지 않은 사용자',
+      error: UnauthorizedException,
+    },
+  ])
+  async deleteMyAvatar(@ReqMember() member: Member): Promise<void> {
+    await this.memberService.deleteMyAvatar(member);
   }
 }

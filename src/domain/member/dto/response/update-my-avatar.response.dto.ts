@@ -6,5 +6,5 @@ export class UpdateMyAvatarResponseDto {
     example:
       'https://kmu-wink.s3.ap-northeast-2.amazonaws.com/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.jpeg',
   })
-  avatar: string;
+  avatar!: string;
 }

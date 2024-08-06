@@ -35,22 +35,26 @@ export class AuthService {
       throw new MemberNotFoundException();
     }
 
-    const member = await this.memberRepository.findByEmailWithPassword(email);
+    const {
+      _id,
+      password: memberPassword,
+      approved,
+    } = <Member>await this.memberRepository.findByEmailWithPassword(email);
 
-    if (!(await bcrypt.compare(password, member.password))) {
+    if (!(await bcrypt.compare(password, memberPassword))) {
       throw new WrongPasswordException();
     }
 
-    if (!member.approved) {
+    if (!approved) {
       throw new NotApprovedMemberException();
     }
 
-    return this.jwtService.signAsync({ id: member._id });
+    return this.jwtService.signAsync({ id: _id });
   }
 
   async register(
     name: string,
-    studentId: number,
+    studentId: string,
     password: string,
     verifyToken: string,
   ): Promise<void> {
@@ -58,7 +62,7 @@ export class AuthService {
       throw new InvalidVerifyTokenException();
     }
 
-    const email = await this.redisTokenRepository.get(verifyToken);
+    const email = <string>await this.redisTokenRepository.get(verifyToken);
 
     if (await this.memberRepository.existsByEmail(email)) {
       throw new AlreadyRegisteredByEmailException();

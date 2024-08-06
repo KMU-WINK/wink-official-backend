@@ -5,7 +5,7 @@ import { Schema } from 'mongoose';
 import auto_populate from 'mongoose-autopopulate';
 
 export class MongoModelFactory {
-  static generate(name: string, schema: Schema<any>): AsyncModelFactory {
+  static generate<T>(name: string, schema: Schema<T>): AsyncModelFactory {
     return {
       name,
       useFactory: () => {
