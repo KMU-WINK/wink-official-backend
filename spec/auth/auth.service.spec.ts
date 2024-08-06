@@ -17,6 +17,7 @@ import { Member } from '../../src/domain/member/schema';
 
 import { MailService } from '../../src/common/utils/mail';
 import { Role } from '../../src/domain/member/constant';
+import { NotApprovedMemberException } from '../../src/domain/member/exception';
 
 const createNullMember = (): Member => ({
   _id: '',
@@ -113,7 +114,29 @@ describe('Auth Service Test', () => {
       await expect(result).rejects.toThrow(WrongPasswordException);
     });
 
-    it('올바른 정보가 주어졌을 때', async () => {
+    it('NotApprovedMemberException', async () => {
+      // Given
+      const email = 'honggildong@kookmin.ac.kr';
+      const password = 'p4sSw0rd!';
+
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(password, salt);
+
+      memoryMemberRepository.push({
+        ...createNullMember(),
+        email,
+        password: hashPassword,
+        approved: false,
+      });
+
+      // When
+      const result = authService.login(email, password);
+
+      // Then
+      await expect(result).rejects.toThrow(NotApprovedMemberException);
+    });
+
+    it('Passed', async () => {
       // Given
       const email = 'honggildong@kookmin.ac.kr';
       const password = 'p4sSw0rd!';
