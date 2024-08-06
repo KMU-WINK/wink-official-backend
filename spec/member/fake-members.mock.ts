@@ -21,7 +21,27 @@ function bool(): boolean {
   return Math.random() >= 0.5;
 }
 
-export function generateMember(): Member {
+export const createNullMember = (): Member => ({
+  _id: '',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  name: '',
+  studentId: '',
+  email: '',
+  password: '',
+  avatar: null,
+  description: null,
+  link: {
+    github: null,
+    instagram: null,
+    blog: null,
+  },
+  fee: false,
+  role: null,
+  approved: true,
+});
+
+export function createRandomMember(): Member {
   const name = randomString(10);
   const now = new Date();
 
@@ -48,10 +68,10 @@ export function generateMember(): Member {
   };
 }
 
-export function generateMembers(count: number): Member[] {
+export function createRandomMembers(count: number): Member[] {
   const objects: Member[] = [];
   for (let i = 0; i < count; i++) {
-    objects.push(generateMember());
+    objects.push(createRandomMember());
   }
   return objects;
 }

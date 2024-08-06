@@ -1,4 +1,5 @@
 import { mockAuth } from './auth.mock';
+import { createNullMember } from '../member/fake-members.mock';
 
 import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
@@ -17,29 +18,8 @@ import { Member } from '../../src/domain/member/schema';
 
 import { MailService } from '../../src/common/utils/mail';
 import { Role } from '../../src/domain/member/constant';
-import { NotApprovedMemberException } from '../../src/domain/member/exception';
 
-const createNullMember = (): Member => ({
-  _id: '',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-  name: '',
-  studentId: '',
-  email: '',
-  password: '',
-  avatar: null,
-  description: null,
-  link: {
-    github: null,
-    instagram: null,
-    blog: null,
-  },
-  fee: false,
-  role: null,
-  approved: true,
-});
-
-describe('Auth Service Test', () => {
+describe('AuthService', () => {
   let authService: AuthService;
   let mailService: MailService;
 

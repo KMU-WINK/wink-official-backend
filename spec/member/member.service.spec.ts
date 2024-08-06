@@ -1,7 +1,7 @@
 import { Member } from '../../src/domain/member/schema';
 import { mockMember } from './member.mock';
-import { MemberService } from '../../src/domain/member/service';
-import { generateMember, generateMembers } from './fake-members.mock';
+import { createRandomMember, createRandomMembers } from './fake-members.mock';
+
 import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import { S3Service } from '../../src/common/s3';
