@@ -1,20 +1,19 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import Redis from 'ioredis';
+import { RedisDeleteEvent, RedisSetEvent, RedisSetTtlEvent } from '../utils/event';
 
 @Injectable()
-export class RedisRepository {
-  private readonly logger: Logger;
-
+export class RedisService {
   private readonly redisClient: Redis;
 
   constructor(
     private readonly configService: ConfigService,
+    private readonly eventEmitter: EventEmitter2,
     @Inject('GROUP') private readonly group: string,
   ) {
-    this.logger = new Logger(`RedisRepository-${group}`);
-
     this.redisClient = new Redis(
       configService.getOrThrow<number>('redis.port'),
       configService.getOrThrow<string>('redis.host'),
@@ -27,18 +26,20 @@ export class RedisRepository {
 
   async set(key: string, value: string): Promise<void> {
     await this.redisClient.set(this.#generateKey(key), value);
-    this.logger.log(`Set key: ${key}, value: ${value}`);
+
+    this.eventEmitter.emit(RedisSetEvent.EVENT_NAME, new RedisSetEvent(key, value));
   }
 
   async ttl(key: string, value: string, seconds: number): Promise<void> {
     await this.redisClient.setex(this.#generateKey(key), seconds, value);
-    this.logger.log(`Set key: ${key}, value: ${value}, seconds: ${seconds}`);
+
+    this.eventEmitter.emit(RedisSetTtlEvent.EVENT_NAME, new RedisSetTtlEvent(key, value, seconds));
   }
 
   async delete(key: string): Promise<void> {
     await this.redisClient.del(this.#generateKey(key));
 
-    this.logger.log(`Delete key: ${key}`);
+    this.eventEmitter.emit(RedisDeleteEvent.EVENT_NAME, new RedisDeleteEvent(key));
   }
 
   async exists(key: string): Promise<boolean> {
@@ -49,7 +50,7 @@ export class RedisRepository {
     return `${this.group}:${key}`;
   }
 
-  sub(key: string): RedisRepository {
-    return new RedisRepository(this.configService, `${this.group}:${key}`);
+  sub(key: string): RedisService {
+    return new RedisService(this.configService, this.eventEmitter, `${this.group}:${key}`);
   }
 }

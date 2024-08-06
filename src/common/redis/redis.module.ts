@@ -1,6 +1,6 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 
-import { RedisRepository } from './redis.repository';
+import { RedisService } from './redis.service';
 
 @Module({})
 export class RedisModule {
@@ -12,9 +12,9 @@ export class RedisModule {
           provide: 'GROUP',
           useValue: group,
         },
-        RedisRepository,
+        RedisService,
       ],
-      exports: [RedisRepository],
+      exports: [RedisService],
     };
   }
 }

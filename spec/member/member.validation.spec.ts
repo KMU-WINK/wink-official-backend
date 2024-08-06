@@ -458,7 +458,7 @@ describe('MemberValidation', () => {
         // Given
         const body: ApproveWaitingMemberRequestDto = {
           // @ts-expect-error: 테스트 목적
-          memberId: undefined,
+          toId: undefined,
         };
 
         // When
@@ -472,7 +472,7 @@ describe('MemberValidation', () => {
         // Given
         const body: ApproveWaitingMemberRequestDto = {
           // @ts-expect-error: 테스트 목적
-          memberId: 1234,
+          toId: 1234,
         };
 
         // When
@@ -485,7 +485,7 @@ describe('MemberValidation', () => {
       it('IsMongoId', async () => {
         // Given
         const body: ApproveWaitingMemberRequestDto = {
-          memberId: 'notvalidmemberid',
+          toId: 'notvalidmemberid',
         };
 
         // When
@@ -499,7 +499,7 @@ describe('MemberValidation', () => {
     it('Passed', async () => {
       // Given
       const body: ApproveWaitingMemberRequestDto = {
-        memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+        toId: '1a2b3c4d5e6f7a8b9c0d1e2f',
       };
 
       // When
@@ -516,7 +516,7 @@ describe('MemberValidation', () => {
         // Given
         const body: RejectWaitingMemberRequestDto = {
           // @ts-expect-error: 테스트 목적
-          memberId: undefined,
+          toId: undefined,
         };
 
         // When
@@ -530,7 +530,7 @@ describe('MemberValidation', () => {
         // Given
         const body: RejectWaitingMemberRequestDto = {
           // @ts-expect-error: 테스트 목적
-          memberId: 1234,
+          toId: 1234,
         };
 
         // When
@@ -543,7 +543,7 @@ describe('MemberValidation', () => {
       it('IsMongoId', async () => {
         // Given
         const body: RejectWaitingMemberRequestDto = {
-          memberId: 'notvalidmemberid',
+          toId: 'notvalidmemberid',
         };
 
         // When
@@ -557,7 +557,7 @@ describe('MemberValidation', () => {
     it('Passed', async () => {
       // Given
       const body: RejectWaitingMemberRequestDto = {
-        memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+        toId: '1a2b3c4d5e6f7a8b9c0d1e2f',
       };
 
       // When
@@ -574,7 +574,7 @@ describe('MemberValidation', () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
           // @ts-expect-error: 테스트 목적
-          memberId: undefined,
+          toId: undefined,
           role: Role.MEMBER,
         };
 
@@ -589,7 +589,7 @@ describe('MemberValidation', () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
           // @ts-expect-error: 테스트 목적
-          memberId: undefined,
+          toId: undefined,
           role: Role.MEMBER,
         };
 
@@ -603,7 +603,7 @@ describe('MemberValidation', () => {
       it('IsMongoId', async () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
-          memberId: 'notvalidmemberid',
+          toId: 'notvalidmemberid',
           role: Role.MEMBER,
         };
 
@@ -619,7 +619,7 @@ describe('MemberValidation', () => {
       it('IsNotEmpty', async () => {
         // Given
         const body: UpdateMemberRoleRequestDto = {
-          memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+          toId: '1a2b3c4d5e6f7a8b9c0d1e2f',
           // @ts-expect-error: 테스트 목적
           role: undefined,
         };
@@ -634,7 +634,7 @@ describe('MemberValidation', () => {
       it('IsEnum', async () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
-          memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+          toId: '1a2b3c4d5e6f7a8b9c0d1e2f',
           // @ts-expect-error: 테스트 목적
           role: 'notvalidrole',
         };
@@ -653,7 +653,7 @@ describe('MemberValidation', () => {
     it('Passed', async () => {
       // Given
       const body: UpdateMemberRoleRequestDto = {
-        memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+        toId: '1a2b3c4d5e6f7a8b9c0d1e2f',
         role: Role.MEMBER,
       };
 
@@ -671,7 +671,7 @@ describe('MemberValidation', () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
           // @ts-expect-error: 테스트 목적
-          memberId: undefined,
+          toId: undefined,
           fee: false,
         };
 
@@ -686,7 +686,7 @@ describe('MemberValidation', () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
           // @ts-expect-error: 테스트 목적
-          memberId: undefined,
+          toId: undefined,
           fee: false,
         };
 
@@ -700,7 +700,7 @@ describe('MemberValidation', () => {
       it('IsMongoId', async () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
-          memberId: 'notvalidmemberid',
+          toId: 'notvalidmemberid',
           fee: false,
         };
 
@@ -716,7 +716,7 @@ describe('MemberValidation', () => {
       it('IsNotEmpty', async () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
-          memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+          toId: '1a2b3c4d5e6f7a8b9c0d1e2f',
           // @ts-expect-error: 테스트 목적
           fee: undefined,
         };
@@ -731,7 +731,7 @@ describe('MemberValidation', () => {
       it('IsBoolean', async () => {
         // Given
         const body: UpdateMemberFeeRequestDto = {
-          memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+          toId: '1a2b3c4d5e6f7a8b9c0d1e2f',
           // @ts-expect-error: 테스트 목적
           fee: 1234,
         };
@@ -747,7 +747,7 @@ describe('MemberValidation', () => {
     it('Passed', async () => {
       // Given
       const body: UpdateMemberFeeRequestDto = {
-        memberId: '1a2b3c4d5e6f7a8b9c0d1e2f',
+        toId: '1a2b3c4d5e6f7a8b9c0d1e2f',
         fee: true,
       };
 

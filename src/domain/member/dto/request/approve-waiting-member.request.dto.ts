@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import {
   CommonValidation,
-  TypeValidation,
   StringValidation,
+  TypeValidation,
 } from '../../../../common/utils/validation';
 
 export class ApproveWaitingMemberRequestDto {
@@ -14,5 +14,5 @@ export class ApproveWaitingMemberRequestDto {
   @CommonValidation.IsNotEmpty()
   @TypeValidation.IsString()
   @StringValidation.IsMongoId()
-  memberId!: string;
+  toId!: string;
 }

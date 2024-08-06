@@ -14,5 +14,5 @@ export class RejectWaitingMemberRequestDto {
   @CommonValidation.IsNotEmpty()
   @TypeValidation.IsString()
   @StringValidation.IsMongoId()
-  memberId!: string;
+  toId!: string;
 }

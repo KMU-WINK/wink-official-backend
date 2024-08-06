@@ -1,5 +1,6 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { v4 as uuid } from 'uuid';
 import { extname } from 'path';
@@ -14,16 +15,13 @@ import {
 
 @Injectable()
 export class S3Service {
-  private readonly logger: Logger;
-
   private readonly s3Client: S3Client;
 
   constructor(
     private readonly configService: ConfigService,
+    private readonly eventEmitter: EventEmitter2,
     @Inject('DIRECTORY') private readonly directory: string,
   ) {
-    this.logger = new Logger(`S3Service-${directory}`);
-
     this.s3Client = new S3Client({
       region: configService.getOrThrow<string>('s3.region'),
       credentials: {
@@ -48,7 +46,7 @@ export class S3Service {
       }),
     );
 
-    this.logger.log(`Upload file: ${_key}`);
+    this.eventEmitter.emit('s3.upload', { key: _key });
 
     return `https://${this.configService.getOrThrow<string>('s3.bucket')}.s3.${this.configService.getOrThrow<string>('s3.region')}.amazonaws.com/${_key}`;
   }
@@ -63,7 +61,7 @@ export class S3Service {
       }),
     );
 
-    this.logger.log(`Delete file: ${_key}`);
+    this.eventEmitter.emit('s3.delete', { key: _key });
   }
 
   async getKeys(): Promise<string[]> {
@@ -82,6 +80,6 @@ export class S3Service {
   }
 
   sub(directory: string): S3Service {
-    return new S3Service(this.configService, `${this.directory}/${directory}`);
+    return new S3Service(this.configService, this.eventEmitter, `${this.directory}/${directory}`);
   }
 }

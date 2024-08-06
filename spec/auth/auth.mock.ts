@@ -9,7 +9,7 @@ import { AuthService } from '../../src/domain/auth/service';
 import { Member } from '../../src/domain/member/schema';
 import { MemberRepository } from '../../src/domain/member/repository';
 
-import { RedisRepository } from '../../src/common/redis';
+import { RedisService } from '../../src/common/redis';
 import { MailService } from '../../src/common/utils/mail';
 
 export const mockAuth = async () => {
@@ -30,11 +30,11 @@ export const mockAuth = async () => {
       { provide: MemberRepository, useValue: mockMemberRepository(memoryMemberRepository) },
       { provide: MailService, useValue: mockMailService() },
       {
-        provide: `${RedisRepository.name}-code`,
+        provide: `${RedisService.name}-code`,
         useValue: mockRedisRepository(memoryRedisCodeRepository),
       },
       {
-        provide: `${RedisRepository.name}-token`,
+        provide: `${RedisService.name}-token`,
         useValue: mockRedisRepository(memoryRedisTokenRepository),
       },
     ],

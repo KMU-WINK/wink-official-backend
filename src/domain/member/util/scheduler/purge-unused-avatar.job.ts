@@ -1,14 +1,16 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 import { MemberRepository } from '../../repository';
 import { S3Service } from '../../../../common/s3';
+import { PurgeUnusedAvatarEvent } from '../../../../common/utils/event';
 
 @Injectable()
 export class PurgeUnusedAvatarJob {
-  private readonly logger = new Logger(PurgeUnusedAvatarJob.name);
-
   constructor(
     private readonly memberRepository: MemberRepository,
+    private readonly eventEmitter: EventEmitter2,
     @Inject(`${S3Service}-avatar`) private readonly s3AvatarService: S3Service,
   ) {}
 
@@ -32,8 +34,11 @@ export class PurgeUnusedAvatarJob {
 
     const unusedAvatars = savedAvatars.filter((a) => !usedAvatars.includes(a));
 
-    this.logger.log(`Found ${unusedAvatars.length} unused avatars`);
-
     unusedAvatars.forEach((key) => this.s3AvatarService.delete(key).then((_) => _));
+
+    this.eventEmitter.emit(
+      PurgeUnusedAvatarEvent.EVENT_NAME,
+      new PurgeUnusedAvatarEvent(unusedAvatars),
+    );
   }
 }
