@@ -36,11 +36,9 @@ export class MemberService {
   }
 
   async updateMyInfo(
-    member: Member,
+    { _id: id }: Member,
     { description, github, instagram, blog }: UpdateMyInfoRequestDto,
   ): Promise<void> {
-    const { _id: id } = member;
-
     await this.memberRepository.updateDescription(id, description);
     await this.memberRepository.updateGithub(id, github);
     await this.memberRepository.updateInstagram(id, instagram);
@@ -48,11 +46,9 @@ export class MemberService {
   }
 
   async updateMyPassword(
-    member: Member,
+    { _id: id }: Member,
     { password, newPassword }: UpdateMyPasswordRequestDto,
   ): Promise<void> {
-    const { _id: id } = member;
-
     const fullMember = await this.memberRepository.findByIdWithPassword(id);
 
     if (!(await bcrypt.compare(password, fullMember!.password))) {
@@ -66,11 +62,9 @@ export class MemberService {
   }
 
   async updateMyAvatar(
-    member: Member,
+    { _id: id, avatar: original }: Member,
     file: Express.Multer.File,
   ): Promise<UpdateMyAvatarResponseDto> {
-    const { _id: id, avatar: original } = member;
-
     const avatar = await this.s3AvatarService.upload(file);
     await this.memberRepository.updateAvatar(id, avatar);
 
@@ -83,9 +77,7 @@ export class MemberService {
     return { avatar };
   }
 
-  async deleteMyAvatar(member: Member): Promise<void> {
-    const { _id: id, avatar } = member;
-
+  async deleteMyAvatar({ _id: id, avatar }: Member): Promise<void> {
     if (avatar) {
       const key = this.s3AvatarService.extractKeyFromUrl(avatar);
 

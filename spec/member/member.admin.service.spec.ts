@@ -16,6 +16,7 @@ import {
 } from '../../src/domain/member/exception';
 
 import { MailService } from '../../src/common/utils/mail';
+import { PermissionException } from '../../src/domain/auth/exception';
 
 describe('MemberAdminService', () => {
   let memberAdminService: MemberAdminService;
@@ -172,37 +173,69 @@ describe('MemberAdminService', () => {
   });
 
   describe('updateRole', () => {
-    const MEMBER = createRandomMember();
-    MEMBER.approved = true;
-    MEMBER.role = Role.MEMBER;
+    const ME = createRandomMember();
+    ME.approved = true;
+    ME.role = Role.VICE_PRESIDENT;
+
+    const TARGET = createRandomMember();
+    TARGET.approved = true;
+    TARGET.role = Role.MEMBER;
 
     const PARAM: UpdateMemberRoleRequestDto = {
-      memberId: MEMBER._id,
+      memberId: TARGET._id,
       role: Role.PRESIDENT,
     };
 
     it('NotApprovedMemberException', async () => {
       // Given
-      const member = { ...MEMBER };
+      const member = { ...TARGET };
       member.approved = false;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.updateRole(PARAM);
+      const result = memberAdminService.updateRole(ME, PARAM);
 
       // Then
       await expect(result).rejects.toThrow(NotApprovedMemberException);
     });
 
-    it('Update role', async () => {
+    it('PermissionException (1)', async () => {
       // Given
-      const member = { ...MEMBER };
+      const member = { ...TARGET };
+      member.role = Role.PRESIDENT;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.updateRole(PARAM);
+      const result = memberAdminService.updateRole(ME, PARAM);
+
+      // Then
+      await expect(result).rejects.toThrow(PermissionException);
+    });
+
+    it('PermissionException (2)', async () => {
+      // Given
+      const member = { ...TARGET };
+      member.role = Role.VICE_PRESIDENT;
+
+      memoryMemberRepository.push(member);
+
+      // When
+      const result = memberAdminService.updateRole(ME, PARAM);
+
+      // Then
+      await expect(result).rejects.toThrow(PermissionException);
+    });
+
+    it('Update role', async () => {
+      // Given
+      const member = { ...TARGET };
+
+      memoryMemberRepository.push(member);
+
+      // When
+      const result = memberAdminService.updateRole(ME, PARAM);
 
       // Then
       await expect(result).resolves.toBeUndefined();
@@ -211,37 +244,69 @@ describe('MemberAdminService', () => {
   });
 
   describe('updateFee', () => {
-    const MEMBER = createRandomMember();
-    MEMBER.approved = true;
-    MEMBER.fee = false;
+    const ME = createRandomMember();
+    ME.approved = true;
+    ME.role = Role.VICE_PRESIDENT;
+
+    const TARGET = createRandomMember();
+    TARGET.approved = true;
+    TARGET.fee = false;
 
     const PARAM: UpdateMemberFeeRequestDto = {
-      memberId: MEMBER._id,
+      memberId: TARGET._id,
       fee: true,
     };
 
     it('NotApprovedMemberException', async () => {
       // Given
-      const member = { ...MEMBER };
+      const member = { ...TARGET };
       member.approved = false;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.updateFee(PARAM);
+      const result = memberAdminService.updateFee(ME, PARAM);
 
       // Then
       await expect(result).rejects.toThrow(NotApprovedMemberException);
     });
 
-    it('Change fee', async () => {
+    it('PermissionException (1)', async () => {
       // Given
-      const member = { ...MEMBER };
+      const member = { ...TARGET };
+      member.role = Role.PRESIDENT;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.updateFee(PARAM);
+      const result = memberAdminService.updateFee(ME, PARAM);
+
+      // Then
+      await expect(result).rejects.toThrow(PermissionException);
+    });
+
+    it('PermissionException (2)', async () => {
+      // Given
+      const member = { ...TARGET };
+      member.role = Role.VICE_PRESIDENT;
+
+      memoryMemberRepository.push(member);
+
+      // When
+      const result = memberAdminService.updateFee(ME, PARAM);
+
+      // Then
+      await expect(result).rejects.toThrow(PermissionException);
+    });
+
+    it('Change fee', async () => {
+      // Given
+      const member = { ...TARGET };
+
+      memoryMemberRepository.push(member);
+
+      // When
+      const result = memberAdminService.updateFee(ME, PARAM);
 
       // Then
       await expect(result).resolves.toBeUndefined();
