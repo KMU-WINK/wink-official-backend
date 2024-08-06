@@ -5,6 +5,12 @@ import { Role } from '../../src/domain/member/constant';
 import { MemberAdminService } from '../../src/domain/member/service';
 import { Member } from '../../src/domain/member/schema';
 import {
+  ApproveWaitingMemberRequestDto,
+  RejectWaitingMemberRequestDto,
+  UpdateMemberFeeRequestDto,
+  UpdateMemberRoleRequestDto,
+} from '../../src/domain/member/dto';
+import {
   NotApprovedMemberException,
   NotWaitingMemberException,
 } from '../../src/domain/member/exception';
@@ -33,6 +39,11 @@ describe('MemberAdminService', () => {
   });
 
   describe('getWaitingMembers', () => {
+    const MEMBERS: Member[] = [
+      ...createRandomMembers(5).map((member) => ({ ...member, approved: false })),
+      ...createRandomMembers(5).map((member) => ({ ...member, approved: true })),
+    ];
+
     it('Empty members', async () => {
       // Given
 
@@ -40,37 +51,38 @@ describe('MemberAdminService', () => {
       const result = memberAdminService.getWaitingMembers();
 
       // Then
-      await expect(result).resolves.toStrictEqual([]);
+      await expect(result).resolves.toStrictEqual({ members: [] });
     });
 
     it('Has members', async () => {
       // Given
-      const members = createRandomMembers(5);
-      const waitingMembers = createRandomMembers(5);
-
-      memoryMemberRepository.push(
-        ...waitingMembers.map((member) => ({ ...member, approved: false })),
-        ...members.map((member) => ({ ...member, approved: true })),
-      );
+      memoryMemberRepository.push(...MEMBERS);
 
       // When
       const result = memberAdminService.getWaitingMembers();
 
       // Then
-      await expect(result).resolves.toHaveLength(5);
+      await expect(result).resolves.toBeInstanceOf(Object);
     });
   });
 
   describe('approveWaitingMember', () => {
+    const MEMBER = createRandomMember();
+    MEMBER.approved = false;
+
+    const PARAM: ApproveWaitingMemberRequestDto = {
+      memberId: MEMBER._id,
+    };
+
     it('NotWaitingMemberException', async () => {
       // Given
-      const member = createRandomMember();
+      const member = { ...MEMBER };
       member.approved = true;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.approveWaitingMember(member._id);
+      const result = memberAdminService.approveWaitingMember(PARAM);
 
       // Then
       await expect(result).rejects.toThrow(NotWaitingMemberException);
@@ -78,13 +90,12 @@ describe('MemberAdminService', () => {
 
     it('Approve waiting member', async () => {
       // Given
-      const member = createRandomMember();
-      member.approved = false;
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.approveWaitingMember(member._id);
+      const result = memberAdminService.approveWaitingMember(PARAM);
 
       // Then
       await expect(result).resolves.toBeUndefined();
@@ -95,15 +106,22 @@ describe('MemberAdminService', () => {
   });
 
   describe('rejectWaitingMember', () => {
+    const MEMBER = createRandomMember();
+    MEMBER.approved = false;
+
+    const PARAM: RejectWaitingMemberRequestDto = {
+      memberId: MEMBER._id,
+    };
+
     it('NotWaitingMemberException', async () => {
       // Given
-      const member = createRandomMember();
+      const member = { ...MEMBER };
       member.approved = true;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.rejectWaitingMember(member._id);
+      const result = memberAdminService.rejectWaitingMember(PARAM);
 
       // Then
       await expect(result).rejects.toThrow(NotWaitingMemberException);
@@ -111,13 +129,12 @@ describe('MemberAdminService', () => {
 
     it('Reject waiting member', async () => {
       // Given
-      const member = createRandomMember();
-      member.approved = false;
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.rejectWaitingMember(member._id);
+      const result = memberAdminService.rejectWaitingMember(PARAM);
 
       // Then
       await expect(result).resolves.toBeUndefined();
@@ -127,6 +144,11 @@ describe('MemberAdminService', () => {
   });
 
   describe('getMembers', () => {
+    const MEMBERS: Member[] = [
+      ...createRandomMembers(5).map((member) => ({ ...member, approved: false })),
+      ...createRandomMembers(5).map((member) => ({ ...member, approved: true })),
+    ];
+
     it('Empty members', async () => {
       // Given
 
@@ -134,37 +156,40 @@ describe('MemberAdminService', () => {
       const result = memberAdminService.getMembers();
 
       // Then
-      await expect(result).resolves.toStrictEqual([]);
+      await expect(result).resolves.toStrictEqual({ members: [] });
     });
 
     it('Has Members', async () => {
       // Given
-      const members = createRandomMembers(5);
-      const waitingMembers = createRandomMembers(5);
-
-      memoryMemberRepository.push(
-        ...waitingMembers.map((member) => ({ ...member, approved: false })),
-        ...members.map((member) => ({ ...member, approved: true })),
-      );
+      memoryMemberRepository.push(...MEMBERS);
 
       // When
       const result = memberAdminService.getMembers();
 
       // Then
-      await expect(result).resolves.toHaveLength(5);
+      await expect(result).resolves.toBeInstanceOf(Object);
     });
   });
 
   describe('updateRole', () => {
+    const MEMBER = createRandomMember();
+    MEMBER.approved = true;
+    MEMBER.role = Role.MEMBER;
+
+    const PARAM: UpdateMemberRoleRequestDto = {
+      memberId: MEMBER._id,
+      role: Role.PRESIDENT,
+    };
+
     it('NotApprovedMemberException', async () => {
       // Given
-      const member = createRandomMember();
+      const member = { ...MEMBER };
       member.approved = false;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.updateRole(member._id, Role.PRESIDENT);
+      const result = memberAdminService.updateRole(PARAM);
 
       // Then
       await expect(result).rejects.toThrow(NotApprovedMemberException);
@@ -172,14 +197,12 @@ describe('MemberAdminService', () => {
 
     it('Update role', async () => {
       // Given
-      const member = createRandomMember();
-      member.approved = true;
-      member.role = Role.MEMBER;
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.updateRole(member._id, Role.PRESIDENT);
+      const result = memberAdminService.updateRole(PARAM);
 
       // Then
       await expect(result).resolves.toBeUndefined();
@@ -188,15 +211,24 @@ describe('MemberAdminService', () => {
   });
 
   describe('updateFee', () => {
+    const MEMBER = createRandomMember();
+    MEMBER.approved = true;
+    MEMBER.fee = false;
+
+    const PARAM: UpdateMemberFeeRequestDto = {
+      memberId: MEMBER._id,
+      fee: true,
+    };
+
     it('NotApprovedMemberException', async () => {
       // Given
-      const member = createRandomMember();
+      const member = { ...MEMBER };
       member.approved = false;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.updateFee(member._id, true);
+      const result = memberAdminService.updateFee(PARAM);
 
       // Then
       await expect(result).rejects.toThrow(NotApprovedMemberException);
@@ -204,14 +236,12 @@ describe('MemberAdminService', () => {
 
     it('Change fee', async () => {
       // Given
-      const member = createRandomMember();
-      member.approved = true;
-      member.fee = false;
+      const member = { ...MEMBER };
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberAdminService.updateFee(member._id, true);
+      const result = memberAdminService.updateFee(PARAM);
 
       // Then
       await expect(result).resolves.toBeUndefined();

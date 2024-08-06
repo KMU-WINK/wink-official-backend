@@ -64,7 +64,7 @@ export function createRandomMember(): Member {
     },
     role: Role.MEMBER,
     fee: bool(),
-    approved: true,
+    approved: bool(),
   };
 }
 

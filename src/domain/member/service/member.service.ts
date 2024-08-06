@@ -8,6 +8,7 @@ import {
   EachGetMembersResponseDto,
   GetMembersResponseDto,
   UpdateMyAvatarResponseDto,
+  UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
 } from '../dto';
 
@@ -42,7 +43,7 @@ export class MemberService {
 
   async updateMyInfo(
     member: Member,
-    { description, github, instagram, blog }: UpdateMyInfoRequestDo,
+    { description, github, instagram, blog }: UpdateMyInfoRequestDto,
   ): Promise<void> {
     const { _id: id } = member;
 
@@ -72,7 +73,7 @@ export class MemberService {
 
   async updateMyAvatar(
     member: Member,
-    file: Express.Multer.Fil,
+    file: Express.Multer.File,
   ): Promise<UpdateMyAvatarResponseDto> {
     const { _id: id, avatar: original } = member;
 

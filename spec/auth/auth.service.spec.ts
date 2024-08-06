@@ -1,10 +1,15 @@
 import { mockAuth } from './auth.mock';
-import { createNullMember } from '../member/fake-members.mock';
+import { createNullMember, createRandomMember } from '../member/fake-members.mock';
 
 import * as bcrypt from 'bcrypt';
-import { v4 as uuid } from 'uuid';
 
 import { AuthService } from '../../src/domain/auth/service';
+import {
+  LoginRequestDto,
+  RegisterRequestDto,
+  SendCodeRequestDto,
+  VerifyCodeRequestDto,
+} from '../../src/domain/auth/dto';
 import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
@@ -19,7 +24,6 @@ import { NotApprovedMemberException } from '../../src/domain/member/exception';
 import { Member } from '../../src/domain/member/schema';
 
 import { MailService } from '../../src/common/utils/mail';
-import { Role } from '../../src/domain/member/constant';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -51,32 +55,37 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
+    const EMAIL = 'honggildong@kookmin.ac.kr';
+    const PASSWORD = 'p4sSw0rd!';
+
+    const HASH = bcrypt.hashSync(PASSWORD, 10);
+    const NULL_MEMBER: Member = {
+      ...createNullMember(),
+      email: EMAIL,
+      password: HASH,
+    };
+
+    const PARAMS: LoginRequestDto = { email: EMAIL, password: PASSWORD };
+
     it('MemberNotFoundException', async () => {
       // Given
 
       // When
-      const result = authService.login('not-exists@kookmin.ac.kr', 'p4sSw0rd!');
+      const result = authService.login(PARAMS);
 
       // Then
       await expect(result).rejects.toThrow(MemberNotFoundException);
     });
 
-    it('MemberNotFoundException', async () => {
+    it('WrongPasswordException', async () => {
       // Given
-      const email = 'honggildong@kookmin.ac.kr';
-      const password = 'p4sSw0rd!';
-
-      const salt = await bcrypt.genSalt(10);
-      const hashPassword = await bcrypt.hash(password, salt);
-
-      memoryMemberRepository.push({
-        ...createNullMember(),
-        email,
-        password: hashPassword,
-      });
+      memoryMemberRepository.push(NULL_MEMBER);
 
       // When
-      const result = authService.login(email, `${password}!`);
+      const result = authService.login({
+        ...PARAMS,
+        password: `${PASSWORD}!`,
+      });
 
       // Then
       await expect(result).rejects.toThrow(WrongPasswordException);
@@ -84,21 +93,13 @@ describe('AuthService', () => {
 
     it('NotApprovedMemberException', async () => {
       // Given
-      const email = 'honggildong@kookmin.ac.kr';
-      const password = 'p4sSw0rd!';
-
-      const salt = await bcrypt.genSalt(10);
-      const hashPassword = await bcrypt.hash(password, salt);
-
       memoryMemberRepository.push({
-        ...createNullMember(),
-        email,
-        password: hashPassword,
+        ...NULL_MEMBER,
         approved: false,
       });
 
       // When
-      const result = authService.login(email, password);
+      const result = authService.login(PARAMS);
 
       // Then
       await expect(result).rejects.toThrow(NotApprovedMemberException);
@@ -106,21 +107,13 @@ describe('AuthService', () => {
 
     it('Passed', async () => {
       // Given
-      const email = 'honggildong@kookmin.ac.kr';
-      const password = 'p4sSw0rd!';
-
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(password, salt);
-
       memoryMemberRepository.push({
-        ...createNullMember(),
-        email,
-        password: hash,
+        ...NULL_MEMBER,
         approved: true,
       });
 
       // When
-      const result = authService.login(email, password);
+      const result = authService.login(PARAMS);
 
       // Then
       await expect(result).resolves.toBeDefined();
@@ -128,11 +121,33 @@ describe('AuthService', () => {
   });
 
   describe('register', () => {
+    const NAME = '홍길동';
+    const STUDENT_ID = '20240001';
+    const PASSWORD = 'p4sSw0rd!';
+    const EMAIL = 'honggildong@kookmin.ac.kr';
+    const VERIFY_TOKEN = 'verify-token';
+
+    const HASH = bcrypt.hashSync(PASSWORD, 10);
+    const NULL_MEMBER: Member = {
+      ...createNullMember(),
+      email: EMAIL,
+      password: HASH,
+      name: NAME,
+      studentId: STUDENT_ID,
+    };
+
+    const PARAMS: RegisterRequestDto = {
+      name: NAME,
+      studentId: STUDENT_ID,
+      password: PASSWORD,
+      verifyToken: VERIFY_TOKEN,
+    };
+
     it('InvalidVerifyTokenException', async () => {
       // Given
 
       // When
-      const result = authService.register('', '', '', 'empty-token');
+      const result = authService.register(PARAMS);
 
       // Then
       await expect(result).rejects.toThrow(InvalidVerifyTokenException);
@@ -140,19 +155,12 @@ describe('AuthService', () => {
 
     it('AlreadyRegisteredByEmailException', async () => {
       // Given
-      const email = 'honggildong@kookmin.ac.kr';
-      const password = 'p4sSw0rd!';
-      const verifyToken = 'verify-token';
+      memoryMemberRepository.push({ ...NULL_MEMBER, studentId: '' });
 
-      memoryMemberRepository.push({
-        ...createNullMember(),
-        email,
-      });
-
-      memoryRedisTokenRepository[verifyToken] = email;
+      memoryRedisTokenRepository[VERIFY_TOKEN] = EMAIL;
 
       // When
-      const result = authService.register('', '', password, verifyToken);
+      const result = authService.register(PARAMS);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByEmailException);
@@ -160,20 +168,12 @@ describe('AuthService', () => {
 
     it('AlreadyRegisteredByStudentIdException', async () => {
       // Given
-      const studentId = '20240001';
-      const email = 'honggildong@kookmin.ac.kr';
-      const password = 'p4sSw0rd!';
-      const verifyToken = 'verify-token';
+      memoryMemberRepository.push({ ...NULL_MEMBER, email: '' });
 
-      memoryMemberRepository.push({
-        ...createNullMember(),
-        studentId,
-      });
-
-      memoryRedisTokenRepository[verifyToken] = email;
+      memoryRedisTokenRepository[VERIFY_TOKEN] = EMAIL;
 
       // When
-      const result = authService.register('', studentId, password, verifyToken);
+      const result = authService.register(PARAMS);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByStudentIdException);
@@ -181,36 +181,35 @@ describe('AuthService', () => {
 
     it('Passed', async () => {
       // Given
-      const name = '홍길동';
-      const email = 'honggildong@kookmin.ac.kr';
-      const password = 'p4sSw0rd!';
-      const verifyToken = 'verify-token';
-
-      memoryRedisTokenRepository[verifyToken] = email;
+      memoryRedisTokenRepository[VERIFY_TOKEN] = EMAIL;
 
       // When
-      const result = authService.register(name, '20240001', password, verifyToken);
+      const result = authService.register(PARAMS);
 
       // Then
       await expect(result).resolves.toBeUndefined();
       expect(memoryMemberRepository).toHaveLength(1);
-      expect(memoryMemberRepository[0].email).toBe(email);
-      expect(mailService.registerComplete).toHaveBeenCalledWith({ name });
+      expect(memoryMemberRepository[0].email).toBe(EMAIL);
+      expect(mailService.registerComplete).toHaveBeenCalledWith({ name: NAME });
     });
   });
 
   describe('sendCode', () => {
+    const EMAIL = 'honggildong@kookmin.ac.kr';
+
+    const NULL_MEMBER: Member = {
+      ...createNullMember(),
+      email: EMAIL,
+    };
+
+    const PARAMS: SendCodeRequestDto = { email: EMAIL };
+
     it('AlreadyRegisteredByEmailException', async () => {
       // Given
-      const email = 'honggildong@kookmin.ac.kr';
-
-      memoryMemberRepository.push({
-        ...createNullMember(),
-        email,
-      });
+      memoryMemberRepository.push(NULL_MEMBER);
 
       // When
-      const result = authService.sendCode(email);
+      const result = authService.sendCode(PARAMS);
 
       // Then
       await expect(result).rejects.toThrow(AlreadyRegisteredByEmailException);
@@ -218,31 +217,40 @@ describe('AuthService', () => {
 
     it('Passed', async () => {
       // Given
-      const email = 'honggildong@kookmin.ac.kr';
 
       // When
-      const result = authService.sendCode(email);
+      const result = authService.sendCode(PARAMS);
 
       // Then
       await expect(result).resolves.toBeUndefined();
-      expect(memoryRedisCodeRepository[email]).toBeDefined();
+      expect(memoryRedisCodeRepository[EMAIL]).toBeDefined();
       expect(mailService.verifyCode).toHaveBeenCalledWith({
-        email,
-        code: memoryRedisCodeRepository[email],
+        email: EMAIL,
+        code: memoryRedisCodeRepository[EMAIL],
       });
     });
   });
 
   describe('verifyCode', () => {
+    const EMAIL = 'honggildong@kookmin.ac.kr';
+    const CODE = '123456';
+
+    const NULL_MEMBER: Member = {
+      ...createNullMember(),
+      email: EMAIL,
+    };
+
+    const PARAMS: VerifyCodeRequestDto = { email: EMAIL, code: CODE };
+
     it('InvalidVerifyCodeException', async () => {
       // Given
-      const email = 'honggildong@kookmin.ac.kr';
-      const code = '123456';
-
-      memoryRedisCodeRepository[email] = '654321';
+      memoryRedisCodeRepository[EMAIL] = CODE;
 
       // When
-      const result = authService.verifyCode(email, code);
+      const result = authService.verifyCode({
+        ...PARAMS,
+        code: `${CODE}1`,
+      });
 
       // Then
       await expect(result).rejects.toThrow(InvalidVerifyCodeException);
@@ -250,13 +258,10 @@ describe('AuthService', () => {
 
     it('Passed', async () => {
       // Given
-      const email = 'honggildong@kookmin.ac.kr';
-      const code = '123456';
-
-      memoryRedisCodeRepository[email] = code;
+      memoryRedisCodeRepository[EMAIL] = CODE;
 
       // When
-      const result = authService.verifyCode(email, code);
+      const result = authService.verifyCode(PARAMS);
 
       // Then
       await expect(result).resolves.toBeDefined();
@@ -266,25 +271,7 @@ describe('AuthService', () => {
   describe('myInfo', () => {
     it('Passed', async () => {
       // Given
-      const member: Member = {
-        _id: uuid(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        name: uuid(),
-        studentId: '20240001',
-        email: uuid(),
-        password: uuid(),
-        avatar: uuid(),
-        description: uuid(),
-        link: {
-          github: uuid(),
-          instagram: uuid(),
-          blog: uuid(),
-        },
-        role: Role.MEMBER,
-        fee: true,
-        approved: true,
-      };
+      const member: Member = createRandomMember();
 
       // When
       const result = authService.myInfo(member);
