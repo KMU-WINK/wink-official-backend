@@ -11,6 +11,7 @@ import { MemberRepository } from '../../src/domain/member/repository';
 
 import { RedisService } from '../../src/common/redis';
 import { MailService } from '../../src/common/utils/mail';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 export const mockAuth = async () => {
   const memoryMemberRepository: Member[] = [];
@@ -23,6 +24,7 @@ export const mockAuth = async () => {
         secret: 'jwt_secret_for_test',
         signOptions: { expiresIn: '1h' },
       }),
+      EventEmitterModule.forRoot(),
     ],
     controllers: [AuthController],
     providers: [

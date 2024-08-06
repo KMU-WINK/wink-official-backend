@@ -10,6 +10,7 @@ import { Member } from '../../src/domain/member/schema';
 
 import { S3Service } from '../../src/common/s3';
 import { MailService } from '../../src/common/utils/mail';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 export const mockMember = async () => {
   const memoryMemberRepository: Member[] = [];
@@ -20,6 +21,7 @@ export const mockMember = async () => {
         secret: 'jwt_secret_for_test',
         signOptions: { expiresIn: '1h' },
       }),
+      EventEmitterModule.forRoot(),
     ],
     controllers: [MemberController, MemberAdminController],
     providers: [
