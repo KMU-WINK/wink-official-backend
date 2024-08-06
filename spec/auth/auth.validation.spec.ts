@@ -7,7 +7,7 @@ import {
   VerifyCodeRequestDto,
 } from '../../src/domain/auth/dto';
 
-describe('Auth Validation Test', () => {
+describe('AuthValidation', () => {
   let validation: Validation;
 
   beforeAll(async () => {

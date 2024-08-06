@@ -1,12 +1,18 @@
-import { Member } from '../../src/domain/member/schema';
 import { mockMember } from './member.mock';
 import { createRandomMember, createRandomMembers } from './fake-members.mock';
 
 import * as bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
+import { Readable } from 'stream';
+
+import { MemberService } from '../../src/domain/member/service';
+import { Member } from '../../src/domain/member/schema';
+
+import { WrongPasswordException } from '../../src/domain/auth/exception';
+
 import { S3Service } from '../../src/common/s3';
 
-describe('Member Service Test', () => {
+describe('MemberService', () => {
   let memberService: MemberService;
   let s3AvatarService: S3Service;
 
@@ -27,8 +33,8 @@ describe('Member Service Test', () => {
     memoryMemberRepository.splice(0, memoryMemberRepository.length);
   });
 
-  describe('부원 조회', () => {
-    it('부원 X', async () => {
+  describe('getMembers', () => {
+    it('Empty members', async () => {
       // Given
 
       // When
@@ -38,9 +44,9 @@ describe('Member Service Test', () => {
       await expect(result).resolves.toStrictEqual([]);
     });
 
-    it('부원 (10명)', async () => {
+    it('Has Members', async () => {
       // Given
-      memoryMemberRepository.push(...generateMembers(10));
+      memoryMemberRepository.push(...createRandomMembers(10));
 
       // When
       const result = memberService.getMembers();
@@ -50,12 +56,12 @@ describe('Member Service Test', () => {
     });
   });
 
-  describe('내 정보 수정', () => {
-    it('한 줄 소개만 수정', async () => {
+  describe('updateMyInfo', () => {
+    it('Change only description', async () => {
       // Given
       const description = '**DESCRIPTION**';
 
-      const member = generateMember();
+      const member = createRandomMember();
 
       memoryMemberRepository.push(member);
 
@@ -70,11 +76,11 @@ describe('Member Service Test', () => {
       expect(memoryMemberRepository[0].link.blog).toBeNull();
     });
 
-    it('Github URL만 수정', async () => {
+    it('Change only github', async () => {
       // Given
       const github = 'https://github.com/honggildong';
 
-      const member = generateMember();
+      const member = createRandomMember();
 
       memoryMemberRepository.push(member);
 
@@ -89,11 +95,11 @@ describe('Member Service Test', () => {
       expect(memoryMemberRepository[0].link.blog).toBeNull();
     });
 
-    it('Instagram URL만 수정', async () => {
+    it('Change only instagram', async () => {
       // Given
       const instagram = 'https://instagram.com/honggildong';
 
-      const member = generateMember();
+      const member = createRandomMember();
 
       memoryMemberRepository.push(member);
 
@@ -108,11 +114,11 @@ describe('Member Service Test', () => {
       expect(memoryMemberRepository[0].link.blog).toBeNull();
     });
 
-    it('Blog URL만 수정', async () => {
+    it('Change only blog', async () => {
       // Given
       const blog = 'https://honggildong.tistory.com';
 
-      const member = generateMember();
+      const member = createRandomMember();
 
       memoryMemberRepository.push(member);
 
@@ -127,12 +133,12 @@ describe('Member Service Test', () => {
       expect(memoryMemberRepository[0].link.blog).toBe(blog);
     });
 
-    it('종합 수정', async () => {
+    it('Change multiple', async () => {
       // Given
       const description = '**DESCRIPTION**';
       const instagram = 'https://instagram.com/honggildong2';
 
-      const member = generateMember();
+      const member = createRandomMember();
       member.description = 'DESCRIPTION';
       member.link.github = 'https://github.com/honggildong';
       member.link.instagram = 'https://instagram.com/honggildong';
@@ -152,13 +158,30 @@ describe('Member Service Test', () => {
     });
   });
 
-  describe('내 비밀번호 수정', () => {
-    it('비밀번호 수정', async () => {
+  describe('updateMyPassword', () => {
+    it('WrongPasswordException', async () => {
       // Given
       const password = 'p4ssw0rd!';
       const newPassword = 'n3wp4ssw0rd!';
 
-      const member = generateMember();
+      const member = createRandomMember();
+      member.password = await bcrypt.hash(password, 10);
+
+      memoryMemberRepository.push(member);
+
+      // When
+      const result = memberService.updateMyPassword(member, `${password}!`, newPassword);
+
+      // Then
+      await expect(result).rejects.toThrow(WrongPasswordException);
+    });
+
+    it('Change password', async () => {
+      // Given
+      const password = 'p4ssw0rd!';
+      const newPassword = 'n3wp4ssw0rd!';
+
+      const member = createRandomMember();
       member.password = await bcrypt.hash(password, 10);
 
       memoryMemberRepository.push(member);
@@ -172,21 +195,32 @@ describe('Member Service Test', () => {
     });
   });
 
-  describe('내 프로필 사진 수정', () => {
-    it('프로필 사진 수정 (기존 X)', async () => {
+  describe('updateMyAvatar', () => {
+    it('Change avatar (first time)', async () => {
       // Given
       const fileName = uuid();
       const fileUrl = `https://s3.amazonaws.com/${fileName}`;
 
-      const member = generateMember();
+      const file: Express.Multer.File = {
+        originalname: fileName,
+        fieldname: '',
+        encoding: '',
+        mimetype: '',
+        size: 0,
+        stream: new Readable(),
+        destination: '',
+        filename: '',
+        path: '',
+        buffer: Buffer.from(''),
+      };
+
+      const member = createRandomMember();
       member.avatar = null;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyAvatar(member, {
-        originalname: fileName,
-      } as Express.Multer.File);
+      const result = memberService.updateMyAvatar(member, file);
 
       // Then
       await expect(result).resolves.toBe(fileUrl);
@@ -194,22 +228,33 @@ describe('Member Service Test', () => {
       expect(s3AvatarService.delete).not.toHaveBeenCalled();
     });
 
-    it('프로필 사진 수정', async () => {
+    it('Change avatar  (not first time)', async () => {
       // Given
       const fileName = uuid();
       const fileUrl = `https://s3.amazonaws.com/${fileName}`;
 
+      const file: Express.Multer.File = {
+        originalname: fileName,
+        fieldname: '',
+        encoding: '',
+        mimetype: '',
+        size: 0,
+        stream: new Readable(),
+        destination: '',
+        filename: '',
+        path: '',
+        buffer: Buffer.from(''),
+      };
+
       const previousFileUrl = `https://s3.amazonaws.com/${uuid()}`;
 
-      const member = generateMember();
+      const member = createRandomMember();
       member.avatar = previousFileUrl;
 
       memoryMemberRepository.push(member);
 
       // When
-      const result = memberService.updateMyAvatar(member, {
-        originalname: fileName,
-      } as Express.Multer.File);
+      const result = memberService.updateMyAvatar(member, file);
 
       // Then
       await expect(result).resolves.toBe(fileUrl);

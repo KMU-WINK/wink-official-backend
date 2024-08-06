@@ -4,16 +4,14 @@ import { createRandomMember, createRandomMembers } from './fake-members.mock';
 import { Role } from '../../src/domain/member/constant';
 import { MemberAdminService } from '../../src/domain/member/service';
 import { Member } from '../../src/domain/member/schema';
-import { mockMember } from './member.mock';
-import { generateMember, generateMembers } from './fake-members.mock';
-import { Role } from '../../src/domain/member/constant';
-import { MailService } from '../../src/common/utils/mail';
 import {
   NotApprovedMemberException,
   NotWaitingMemberException,
 } from '../../src/domain/member/exception';
 
-describe('Member Admin Service Test', () => {
+import { MailService } from '../../src/common/utils/mail';
+
+describe('MemberAdminService', () => {
   let memberAdminService: MemberAdminService;
   let mailService: MailService;
 
@@ -34,8 +32,8 @@ describe('Member Admin Service Test', () => {
     memoryMemberRepository.splice(0, memoryMemberRepository.length);
   });
 
-  describe('대기 중인 부원 조회', () => {
-    it('대기 중인 부원이 없는 경우', async () => {
+  describe('getWaitingMembers', () => {
+    it('Empty members', async () => {
       // Given
 
       // When
@@ -45,10 +43,10 @@ describe('Member Admin Service Test', () => {
       await expect(result).resolves.toStrictEqual([]);
     });
 
-    it('대기 중인 부원이 있는 경우', async () => {
+    it('Has members', async () => {
       // Given
-      const members = generateMembers(5);
-      const waitingMembers = generateMembers(5);
+      const members = createRandomMembers(5);
+      const waitingMembers = createRandomMembers(5);
 
       memoryMemberRepository.push(
         ...waitingMembers.map((member) => ({ ...member, approved: false })),
@@ -63,10 +61,10 @@ describe('Member Admin Service Test', () => {
     });
   });
 
-  describe('대기 중인 부원 승인', () => {
-    it('부원이 이미 승인된 경우', async () => {
+  describe('approveWaitingMember', () => {
+    it('NotWaitingMemberException', async () => {
       // Given
-      const member = generateMember();
+      const member = createRandomMember();
       member.approved = true;
 
       memoryMemberRepository.push(member);
@@ -78,9 +76,9 @@ describe('Member Admin Service Test', () => {
       await expect(result).rejects.toThrow(NotWaitingMemberException);
     });
 
-    it('대기 중인 부원을 승인하는 경우', async () => {
+    it('Approve waiting member', async () => {
       // Given
-      const member = generateMember();
+      const member = createRandomMember();
       member.approved = false;
 
       memoryMemberRepository.push(member);
@@ -96,10 +94,10 @@ describe('Member Admin Service Test', () => {
     });
   });
 
-  describe('대기 중인 부원 거절', () => {
-    it('부원이 이미 승인된 경우', async () => {
+  describe('rejectWaitingMember', () => {
+    it('NotWaitingMemberException', async () => {
       // Given
-      const member = generateMember();
+      const member = createRandomMember();
       member.approved = true;
 
       memoryMemberRepository.push(member);
@@ -111,9 +109,9 @@ describe('Member Admin Service Test', () => {
       await expect(result).rejects.toThrow(NotWaitingMemberException);
     });
 
-    it('대기 중인 부원을 거절하는 경우', async () => {
+    it('Reject waiting member', async () => {
       // Given
-      const member = generateMember();
+      const member = createRandomMember();
       member.approved = false;
 
       memoryMemberRepository.push(member);
@@ -128,8 +126,8 @@ describe('Member Admin Service Test', () => {
     });
   });
 
-  describe('부원 목록 조회', () => {
-    it('승인된 부원이 없는 경우', async () => {
+  describe('getMembers', () => {
+    it('Empty members', async () => {
       // Given
 
       // When
@@ -139,10 +137,10 @@ describe('Member Admin Service Test', () => {
       await expect(result).resolves.toStrictEqual([]);
     });
 
-    it('승인된 부원이 있는 경우', async () => {
+    it('Has Members', async () => {
       // Given
-      const members = generateMembers(5);
-      const waitingMembers = generateMembers(5);
+      const members = createRandomMembers(5);
+      const waitingMembers = createRandomMembers(5);
 
       memoryMemberRepository.push(
         ...waitingMembers.map((member) => ({ ...member, approved: false })),
@@ -157,10 +155,10 @@ describe('Member Admin Service Test', () => {
     });
   });
 
-  describe('부원 역할 수정', () => {
-    it('부원이 승인되지 않은 경우', async () => {
+  describe('updateRole', () => {
+    it('NotApprovedMemberException', async () => {
       // Given
-      const member = generateMember();
+      const member = createRandomMember();
       member.approved = false;
 
       memoryMemberRepository.push(member);
@@ -172,9 +170,9 @@ describe('Member Admin Service Test', () => {
       await expect(result).rejects.toThrow(NotApprovedMemberException);
     });
 
-    it('부원 역할을 수정하는 경우', async () => {
+    it('Update role', async () => {
       // Given
-      const member = generateMember();
+      const member = createRandomMember();
       member.approved = true;
       member.role = Role.MEMBER;
 
@@ -189,10 +187,10 @@ describe('Member Admin Service Test', () => {
     });
   });
 
-  describe('부원 회비 납부 여부 수정', () => {
-    it('부원이 승인되지 않은 경우', async () => {
+  describe('updateFee', () => {
+    it('NotApprovedMemberException', async () => {
       // Given
-      const member = generateMember();
+      const member = createRandomMember();
       member.approved = false;
 
       memoryMemberRepository.push(member);
@@ -204,9 +202,9 @@ describe('Member Admin Service Test', () => {
       await expect(result).rejects.toThrow(NotApprovedMemberException);
     });
 
-    it('부원 회비 납부 여부를 수정하는 경우', async () => {
+    it('Change fee', async () => {
       // Given
-      const member = generateMember();
+      const member = createRandomMember();
       member.approved = true;
       member.fee = false;
 

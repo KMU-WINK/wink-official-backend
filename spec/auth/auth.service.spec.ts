@@ -14,6 +14,8 @@ import {
   WrongPasswordException,
 } from '../../src/domain/auth/exception';
 
+import { NotApprovedMemberException } from '../../src/domain/member/exception';
+
 import { Member } from '../../src/domain/member/schema';
 
 import { MailService } from '../../src/common/utils/mail';
