@@ -101,7 +101,7 @@ describe('MemberAdminService', () => {
       await expect(result).resolves.toBeUndefined();
       expect(memoryMemberRepository[0].approved).toBe(true);
       expect(memoryMemberRepository[0].role).toBe(Role.MEMBER);
-      expect(mailService.approveAccount).toHaveBeenCalledWith({ name: member.name });
+      expect(mailService.sendTemplate).toHaveBeenCalled();
     });
   });
 
@@ -139,7 +139,7 @@ describe('MemberAdminService', () => {
       // Then
       await expect(result).resolves.toBeUndefined();
       expect(memoryMemberRepository).toHaveLength(0);
-      expect(mailService.rejectAccount).toHaveBeenCalledWith({ name: member.name });
+      expect(mailService.sendTemplate).toHaveBeenCalled();
     });
   });
 

@@ -13,7 +13,11 @@ import {
 } from '../dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '../exception';
 
-import { MailService } from '../../../common/utils/mail';
+import {
+  ApproveAccountTemplate,
+  MailService,
+  RejectAccountTemplate,
+} from '../../../common/utils/mail';
 import { Member } from '../schema';
 import { MemberNotFoundException } from '../../auth/exception';
 
@@ -49,7 +53,7 @@ export class MemberAdminService {
 
     this.logger.log(`Approve member: ${name} (${email})`);
 
-    this.mailService.approveAccount({ name }).send(email);
+    this.mailService.sendTemplate(email, new ApproveAccountTemplate(name)).then((_) => _);
   }
 
   async rejectWaitingMember({ memberId }: RejectWaitingMemberRequestDto): Promise<void> {
@@ -67,7 +71,7 @@ export class MemberAdminService {
 
     this.logger.log(`Reject member: ${name} (${email})`);
 
-    this.mailService.rejectAccount({ name }).send(email);
+    this.mailService.sendTemplate(email, new RejectAccountTemplate(name)).then((_) => _);
   }
 
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
