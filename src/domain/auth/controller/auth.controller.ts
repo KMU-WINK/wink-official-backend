@@ -51,11 +51,7 @@ export class AuthController {
     },
   ])
   async login(@Body() request: LoginRequestDto): Promise<LoginResponseDto> {
-    const { email, password } = request;
-
-    const token = await this.authService.login(email, password);
-
-    return { token };
+    return this.authService.login(request);
   }
 
   @Post('/register')
@@ -78,9 +74,7 @@ export class AuthController {
     },
   ])
   async register(@Body() request: RegisterRequestDto): Promise<void> {
-    const { name, studentId, password, verifyToken } = request;
-
-    await this.authService.register(name, studentId, password, verifyToken);
+    return this.authService.register(request);
   }
 
   @Post('/register/code')
@@ -95,9 +89,7 @@ export class AuthController {
     },
   ])
   async sendCode(@Body() request: SendCodeRequestDto): Promise<void> {
-    const { email } = request;
-
-    await this.authService.sendCode(email);
+    return this.authService.sendCode(request);
   }
 
   @Post('/register/code/verify')
@@ -112,11 +104,7 @@ export class AuthController {
     },
   ])
   async verifyCode(@Body() request: VerifyCodeRequestDto): Promise<VerifyCodeResponseDto> {
-    const { email, code } = request;
-
-    const verifyToken = await this.authService.verifyCode(email, code);
-
-    return { verifyToken };
+    return this.authService.verifyCode(request);
   }
 
   @Get('/me')
@@ -125,7 +113,7 @@ export class AuthController {
   @ApiOperation({ summary: '인증 토큰으로 정보 조회' })
   @ApiCustomResponse({ type: MyInfoResponseDto, status: 200 })
   @ApiCustomErrorResponse([...AuthAccountException])
-  async getMyInfo(@ReqMember() member: Member): Promise<MyInfoResponseDto> {
-    return <MyInfoResponseDto>this.authService.myInfo(member);
+  getMyInfo(@ReqMember() member: Member): MyInfoResponseDto {
+    return this.authService.myInfo(member);
   }
 }
