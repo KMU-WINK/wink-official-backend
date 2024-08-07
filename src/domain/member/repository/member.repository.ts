@@ -17,7 +17,11 @@ export class MemberRepository {
 
   // Read
   async findAll(): Promise<Member[]> {
-    return this.memberModel.find().exec();
+    return this.memberModel.find({ approved: true }).exec();
+  }
+
+  async findAllWaitingMember(): Promise<Member[]> {
+    return this.memberModel.find({ approved: false }).exec();
   }
 
   async findById(id: string): Promise<Member | null> {

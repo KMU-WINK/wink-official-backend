@@ -15,7 +15,11 @@ export const mockMemberRepository = (memory: Member[]) => ({
 
   // Read
   findAll: jest.fn(async () => {
-    return memory;
+    return memory.filter((member) => member.approved);
+  }),
+
+  findAllWaitingMember: jest.fn(async () => {
+    return memory.filter((member) => !member.approved);
   }),
 
   findById: jest.fn(async (id: string) => {

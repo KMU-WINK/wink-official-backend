@@ -36,12 +36,9 @@ export class MemberAdminService {
   ) {}
 
   async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
-    const members = (await this.memberRepository.findAll())
-      .filter((member) => !member.approved)
-      .map(
-        (member) =>
-          <EachGetWaitingMembersResponseDto>pickMember(member, ['approved', 'role', 'fee']),
-      );
+    const members = (await this.memberRepository.findAllWaitingMember()).map(
+      (member) => <EachGetWaitingMembersResponseDto>pickMember(member, ['approved', 'role', 'fee']),
+    );
 
     return { members };
   }
@@ -96,11 +93,9 @@ export class MemberAdminService {
   }
 
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
-    const members = (await this.memberRepository.findAll())
-      .filter((member) => member.approved)
-      .map((member) => {
-        return <EachGetMembersForAdminResponseDto>omitMember(member, ['approved']);
-      });
+    const members = (await this.memberRepository.findAll()).map((member) => {
+      return <EachGetMembersForAdminResponseDto>omitMember(member, ['approved']);
+    });
 
     return { members };
   }

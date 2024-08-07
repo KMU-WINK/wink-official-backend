@@ -35,11 +35,9 @@ export class MemberService {
   async getMembers(): Promise<GetMembersResponseDto> {
     const execludeFields: (keyof Member)[] = ['email', 'studentId', 'fee', 'approved'];
 
-    const members = (await this.memberRepository.findAll())
-      .filter((member) => member.approved)
-      .map((member) => {
-        return <EachGetMembersResponseDto>omitMember(member, execludeFields);
-      });
+    const members = (await this.memberRepository.findAll()).map((member) => {
+      return <EachGetMembersResponseDto>omitMember(member, execludeFields);
+    });
 
     return { members };
   }
