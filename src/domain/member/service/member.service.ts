@@ -11,7 +11,7 @@ import {
   UpdateMyPasswordRequestDto,
 } from '@wink/member/dto';
 import { MemberRepository } from '@wink/member/repository';
-import { Member, transferMember } from '@wink/member/schema';
+import { Member, omitMember } from '@wink/member/schema';
 
 import { S3Service } from '@wink/s3';
 import {
@@ -27,8 +27,9 @@ import * as bcrypt from 'bcrypt';
 export class MemberService {
   constructor(
     private readonly memberRepository: MemberRepository,
-    private readonly eventEmitter: EventEmitter2,
     @Inject(`${S3Service}-avatar`) private readonly s3AvatarService: S3Service,
+
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async getMembers(): Promise<GetMembersResponseDto> {
@@ -37,7 +38,7 @@ export class MemberService {
     const members = (await this.memberRepository.findAll())
       .filter((member) => member.approved)
       .map((member) => {
-        return <EachGetMembersResponseDto>transferMember(member, execludeFields);
+        return <EachGetMembersResponseDto>omitMember(member, execludeFields);
       });
 
     return { members };

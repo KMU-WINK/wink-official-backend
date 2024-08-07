@@ -11,20 +11,18 @@ import { MongoModelFactory } from '@wink/mongo';
 import { S3Module, S3Service } from '@wink/s3';
 import { MailModule } from '@wink/mail';
 
+const modelFactory = MongoModelFactory.generate<Member>(Member.name, MemberSchema);
+
 @Module({
-  imports: [
-    MongooseModule.forFeatureAsync([MongoModelFactory.generate<Member>(Member.name, MemberSchema)]),
-
-    S3Module.register('member'),
-
-    MailModule,
-  ],
+  imports: [MongooseModule.forFeatureAsync([modelFactory]), S3Module, MailModule],
   controllers: [MemberController, MemberAdminController],
   providers: [
     MemberService,
     MemberAdminService,
     MemberRepository,
+
     PurgeUnusedAvatarJob,
+
     {
       provide: `${S3Service}-avatar`,
       useFactory: (s3Service: S3Service) => s3Service.sub('avatar'),

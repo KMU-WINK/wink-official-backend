@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -10,10 +10,12 @@ import Redis from 'ioredis';
 export class RedisService {
   private readonly redisClient: Redis;
 
+  public group?: string;
+
   constructor(
     private readonly configService: ConfigService,
+
     private readonly eventEmitter: EventEmitter2,
-    @Inject('GROUP') private readonly group: string,
   ) {
     this.redisClient = new Redis(
       configService.getOrThrow<number>('redis.port'),
@@ -22,36 +24,53 @@ export class RedisService {
   }
 
   async get(key: string): Promise<string | null> {
-    return this.redisClient.get(this.#generateKey(key));
+    if (!this.group) throw new Error('Group is not set');
+
+    const _key = this.#generateKey(key);
+
+    return this.redisClient.get(_key);
   }
 
   async set(key: string, value: string): Promise<void> {
-    await this.redisClient.set(this.#generateKey(key), value);
+    if (!this.group) throw new Error('Group is not set');
 
-    this.eventEmitter.emit(RedisSetEvent.EVENT_NAME, new RedisSetEvent(key, value));
+    const _key = this.#generateKey(key);
+
+    await this.redisClient.set(_key, value);
+
+    this.eventEmitter.emit(RedisSetEvent.EVENT_NAME, new RedisSetEvent(_key, value));
   }
 
   async ttl(key: string, value: string, seconds: number): Promise<void> {
-    await this.redisClient.setex(this.#generateKey(key), seconds, value);
+    if (!this.group) throw new Error('Group is not set');
 
-    this.eventEmitter.emit(RedisSetTtlEvent.EVENT_NAME, new RedisSetTtlEvent(key, value, seconds));
+    const _key = this.#generateKey(key);
+
+    await this.redisClient.setex(_key, seconds, value);
+
+    this.eventEmitter.emit(RedisSetTtlEvent.EVENT_NAME, new RedisSetTtlEvent(_key, value, seconds));
   }
 
   async delete(key: string): Promise<void> {
-    await this.redisClient.del(this.#generateKey(key));
+    if (!this.group) throw new Error('Group is not set');
 
-    this.eventEmitter.emit(RedisDeleteEvent.EVENT_NAME, new RedisDeleteEvent(key));
-  }
+    const _key = this.#generateKey(key);
 
-  async exists(key: string): Promise<boolean> {
-    return (await this.redisClient.exists(this.#generateKey(key))) === 1;
+    await this.redisClient.del(_key);
+
+    this.eventEmitter.emit(RedisDeleteEvent.EVENT_NAME, new RedisDeleteEvent(_key));
   }
 
   #generateKey(key: string): string {
+    if (!this.group) throw new Error('Group is not set');
+
     return `${this.group}:${key}`;
   }
 
-  sub(key: string): RedisService {
-    return new RedisService(this.configService, this.eventEmitter, `${this.group}:${key}`);
+  sub(group: string): RedisService {
+    if (this.group) throw new Error('Group already set');
+    const redisService = new RedisService(this.configService, this.eventEmitter);
+    redisService.group = group.endsWith(':') ? group.substring(0, group.length - 1) : group;
+    return redisService;
   }
 }

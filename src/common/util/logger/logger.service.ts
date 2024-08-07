@@ -4,24 +4,22 @@ import * as winston from 'winston';
 
 import 'winston-daily-rotate-file';
 
-const dailyOptions = (level: string) => {
-  return {
-    level,
-    datePattern: 'YYYY-MM-DD',
-    dirname: `./logs/${level}`,
-    filename: `%DATE%.log`,
-    maxFiles: 30,
-    zippedArchive: true,
-    format: winston.format.combine(
-      winston.format.timestamp({
-        format: 'YYYY-MM-DD HH:mm:ss',
-      }),
-      utilities.format.nestLike('Wink', {
-        colors: false,
-      }),
-    ),
-  };
-};
+const dailyOptions = (level: string) => ({
+  level,
+  datePattern: 'YYYY-MM-DD',
+  dirname: `./logs/${level}`,
+  filename: `%DATE%.log`,
+  maxFiles: 30,
+  zippedArchive: true,
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss',
+    }),
+    utilities.format.nestLike('Wink', {
+      colors: false,
+    }),
+  ),
+});
 
 export const LoggerService = WinstonModule.createLogger({
   transports: [

@@ -14,6 +14,7 @@ export class MailService {
 
   constructor(
     private readonly configService: ConfigService,
+
     private eventEmitter: EventEmitter2,
   ) {
     this.transporter = nodemailer.createTransport({

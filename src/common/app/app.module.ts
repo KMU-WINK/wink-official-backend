@@ -1,8 +1,8 @@
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigModuleOptions } from '@nestjs/config';
+import { MongooseModule, MongooseModuleAsyncOptions } from '@nestjs/mongoose';
+import { JwtModule, JwtModuleAsyncOptions } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
@@ -17,21 +17,16 @@ import { ActivityModule } from '@wink/activity/activity.module';
 import { EventListenerModule } from '@wink/event';
 import { Validation } from '@wink/validation';
 
+const configOptions: ConfigModuleOptions = { isGlobal: true, load: [AppConfig] };
+const mongooseOptions: MongooseModuleAsyncOptions = { useClass: MongoConfig };
+const jwtOptions: JwtModuleAsyncOptions = { global: true, useClass: JwtConfig };
+
 @Module({
   imports: [
-    ConfigModule.forRoot({ load: [AppConfig], isGlobal: true }),
-
-    MongooseModule.forRootAsync({
-      useClass: MongoConfig,
-    }),
-
-    JwtModule.registerAsync({
-      global: true,
-      useClass: JwtConfig,
-    }),
-
+    ConfigModule.forRoot(configOptions),
+    MongooseModule.forRootAsync(mongooseOptions),
+    JwtModule.registerAsync(jwtOptions),
     ScheduleModule.forRoot(),
-
     EventEmitterModule.forRoot(),
     EventListenerModule,
 

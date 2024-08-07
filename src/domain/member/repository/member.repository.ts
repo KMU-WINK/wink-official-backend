@@ -75,10 +75,6 @@ export class MemberRepository {
   }
 
   // Exists
-  async existsById(id: string): Promise<boolean> {
-    return !!(await this.memberModel.exists({ _id: id }).exec());
-  }
-
   async existsByEmail(email: string): Promise<boolean> {
     return !!(await this.memberModel.exists({ email }).exec());
   }

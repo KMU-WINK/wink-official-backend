@@ -7,12 +7,6 @@ export class MongoConfig implements MongooseOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
 
   createMongooseOptions(): MongooseModuleOptions {
-    return {
-      uri: this.buildConnectionString(),
-    };
-  }
-
-  private buildConnectionString(): string {
     const host = this.configService.getOrThrow<string>('mongo.host');
     const port = this.configService.getOrThrow<number>('mongo.port');
     const username = this.configService.getOrThrow<string>('mongo.username');
@@ -20,18 +14,23 @@ export class MongoConfig implements MongooseOptionsFactory {
     const authSource = this.configService.getOrThrow<string>('mongo.authSource');
     const database = this.configService.getOrThrow<string>('mongo.database');
 
-    let connectionString = 'mongodb://';
+    return {
+      uri: this.buildConnectionString(host, port, username, password, authSource, database),
+    };
+  }
 
-    if (username && password) {
-      connectionString += `${username}:${password}@`;
-    }
-
-    connectionString += `${host}:${port}/${database}`;
-
-    if (authSource) {
-      connectionString += `?authSource=${authSource}`;
-    }
-
-    return connectionString;
+  private buildConnectionString(
+    host: string,
+    port: number,
+    username: string,
+    password: string,
+    authSource: string,
+    database: string,
+  ): string {
+    return 'mongodb://${credential}${host}/${database}${otherOptions}'
+      .replace('${credential}', username && password ? `${username}:${password}@` : '')
+      .replace('${host}', `${host}:${port}`)
+      .replace('${database}', database)
+      .replace('${otherOptions}', authSource ? `?authSource=${authSource}` : '');
   }
 }

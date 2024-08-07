@@ -10,16 +10,12 @@ interface ApiCustomExceptionOption {
 }
 
 export class ApiException extends HttpException {
-  private readonly description: string;
+  public readonly description: string;
 
   constructor({ swagger, message, code }: ApiCustomExceptionOption) {
     super(message, code);
 
     this.description = swagger;
-  }
-
-  getDescription(): string {
-    return this.description;
   }
 }
 
@@ -35,7 +31,7 @@ export const ApiCustomErrorResponse = (errors: Type<ApiException>[]) => {
         ERROR_MAP.set(error.getStatus(), []);
       }
 
-      ERROR_MAP.get(error.getStatus())!.push([error.getDescription(), error]);
+      ERROR_MAP.get(error.getStatus())!.push([error.description, error]);
     });
 
   return applyDecorators(

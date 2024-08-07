@@ -1,20 +1,9 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { S3Service } from './service';
 
-@Module({})
-export class S3Module {
-  static register(directory: string): DynamicModule {
-    return {
-      module: S3Module,
-      providers: [
-        {
-          provide: 'DIRECTORY',
-          useValue: directory,
-        },
-        S3Service,
-      ],
-      exports: [S3Service],
-    };
-  }
-}
+@Module({
+  providers: [S3Service],
+  exports: [S3Service],
+})
+export class S3Module {}
