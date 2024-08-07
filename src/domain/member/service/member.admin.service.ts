@@ -14,7 +14,7 @@ import {
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
 } from '@wink/member/dto';
-import { NotWaitingMemberException } from '@wink/member/exception';
+import { NotApprovedMemberException, NotWaitingMemberException } from '@wink/member/exception';
 import { MemberRepository } from '@wink/member/repository';
 import { Member, omitMember, pickMember } from '@wink/member/schema';
 
@@ -115,11 +115,11 @@ export class MemberAdminService {
       throw new MemberNotFoundException();
     }
 
-    if (to.approved) {
-      throw new NotWaitingMemberException();
+    if (!to.approved) {
+      throw new NotApprovedMemberException();
     }
 
-    if (checkRoleHierarchy(from.role!, to.role!)) {
+    if (!checkRoleHierarchy(from.role!, to.role!)) {
       throw new SuperRoleException();
     }
 
@@ -135,11 +135,11 @@ export class MemberAdminService {
       throw new MemberNotFoundException();
     }
 
-    if (to.approved) {
-      throw new NotWaitingMemberException();
+    if (!to.approved) {
+      throw new NotApprovedMemberException();
     }
 
-    if (checkRoleHierarchy(from.role!, to.role!)) {
+    if (!checkRoleHierarchy(from.role!, to.role!)) {
       throw new SuperRoleException();
     }
 
