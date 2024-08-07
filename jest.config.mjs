@@ -10,10 +10,10 @@ export default {
     // Comon
     '^@wink/app$': '<rootDir>/../src/common/app',
     '^@wink/config$': '<rootDir>/../src/common/config',
-    '^@wink/filter$': '<rootDir>/../src/common/filter',
-    '^@wink/interceptor$': '<rootDir>/../src/common/interceptor',
-    '^@wink/mongo$': '<rootDir>/../src/common/mongo',
-    '^@wink/redis$': '<rootDir>/../src/common/redis',
+    '^@wink/filter$': '<rootDir>/../src/common/http/filter',
+    '^@wink/interceptor$': '<rootDir>/../src/common/http/interceptor',
+    '^@wink/mongo$': '<rootDir>/../src/common/database/mongo',
+    '^@wink/redis$': '<rootDir>/../src/common/database/redis',
     '^@wink/s3$': '<rootDir>/../src/common/s3',
 
     // Utils

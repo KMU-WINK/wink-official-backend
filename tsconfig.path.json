@@ -6,10 +6,10 @@
       // Common
       "@wink/app": ["common/app"],
       "@wink/config": ["common/config"],
-      "@wink/filter": ["common/filter"],
-      "@wink/interceptor": ["common/interceptor"],
-      "@wink/mongo": ["common/mongo"],
-      "@wink/redis": ["common/redis"],
+      "@wink/filter": ["common/http/filter"],
+      "@wink/interceptor": ["common/http/interceptor"],
+      "@wink/mongo": ["common/database/mongo"],
+      "@wink/redis": ["common/database/redis"],
       "@wink/s3": ["common/s3"],
 
       // Utils

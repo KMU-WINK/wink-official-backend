@@ -20,8 +20,10 @@ import { MemberRepository } from '@wink/member/repository';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private readonly memberRepository: MemberRepository,
     private readonly jwtService: JwtService,
+
+    private readonly memberRepository: MemberRepository,
+
     private readonly reflector: Reflector,
   ) {}
 

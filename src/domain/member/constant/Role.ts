@@ -26,7 +26,7 @@ const roleHierarchy: { [key: string]: number } = {
   [Role.MEMBER]: 5,
 };
 
-export const canChangeRole = (myRole: Role, targetRole: Role): boolean => {
+export const checkRoleHierarchy = (myRole: Role, targetRole: Role): boolean => {
   const myRoleIndex = roleHierarchy[myRole];
   const targetRoleIndex = roleHierarchy[targetRole];
 

@@ -22,7 +22,7 @@ import {
 
 import { NotApprovedMemberException } from '@wink/member/exception';
 import { MemberRepository } from '@wink/member/repository';
-import { Member, transferMember } from '@wink/member/schema';
+import { Member, omitMember } from '@wink/member/schema';
 
 import { RedisService } from '@wink/redis';
 import { LoginEvent, RegisterEvent, SendCodeEvent, VerifyCodeEvent } from '@wink/event';
@@ -34,31 +34,32 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly jwtService: JwtService,
+
     private readonly memberRepository: MemberRepository,
     @Inject(`${RedisService.name}-code`) private readonly redisCodeRepository: RedisService,
     @Inject(`${RedisService.name}-token`) private readonly redisTokenRepository: RedisService,
-    private readonly mailService: MailService,
-    private readonly jwtService: JwtService,
+
     private readonly eventEmitter: EventEmitter2,
+    private readonly mailService: MailService,
   ) {}
 
   async login({ email, password }: LoginRequestDto): Promise<LoginResponseDto> {
-    if (!(await this.memberRepository.existsByEmail(email))) {
+    const member = await this.memberRepository.findByEmailWithPassword(email);
+
+    if (!member) {
       throw new MemberNotFoundException();
     }
 
-    const member = <Member>await this.memberRepository.findByEmailWithPassword(email);
-    const { _id, password: memberPassword, approved } = member;
-
-    if (!(await bcrypt.compare(password, memberPassword))) {
+    if (!(await bcrypt.compare(password, member.password))) {
       throw new WrongPasswordException();
     }
 
-    if (!approved) {
+    if (!member.approved) {
       throw new NotApprovedMemberException();
     }
 
-    const token = await this.jwtService.signAsync({ id: _id });
+    const token = await this.jwtService.signAsync({ id: member._id });
 
     this.eventEmitter.emit(LoginEvent.EVENT_NAME, new LoginEvent(member));
 
@@ -66,11 +67,11 @@ export class AuthService {
   }
 
   async register({ name, studentId, password, verifyToken }: RegisterRequestDto): Promise<void> {
-    if (!(await this.redisTokenRepository.exists(verifyToken))) {
+    const email = await this.redisTokenRepository.get(verifyToken);
+
+    if (!email) {
       throw new InvalidVerifyTokenException();
     }
-
-    const email = <string>await this.redisTokenRepository.get(verifyToken);
 
     if (await this.memberRepository.existsByEmail(email)) {
       throw new AlreadyRegisteredByEmailException();
@@ -126,6 +127,6 @@ export class AuthService {
   }
 
   myInfo(member: Member): MyInfoResponseDto {
-    return <MyInfoResponseDto>transferMember(member, ['approved']);
+    return <MyInfoResponseDto>omitMember(member, ['approved']);
   }
 }
