@@ -5,6 +5,8 @@ import {
   LoginRequestDto,
   LoginResponseDto,
   MyInfoResponseDto,
+  RefreshRequestDto,
+  RefreshResponseDto,
   RegisterRequestDto,
   SendCodeRequestDto,
   VerifyCodeRequestDto,
@@ -13,6 +15,7 @@ import {
 import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
+  InvalidRefreshTokenException,
   InvalidVerifyCodeException,
   InvalidVerifyTokenException,
   MemberNotFoundException,
@@ -43,6 +46,16 @@ export class AuthController {
   ])
   async login(@Body() request: LoginRequestDto): Promise<LoginResponseDto> {
     return this.authService.login(request);
+  }
+
+  @Post('/refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '토큰 재발행' })
+  @ApiProperty({ type: RefreshRequestDto })
+  @ApiCustomResponse({ type: RefreshResponseDto, status: HttpStatus.OK })
+  @ApiCustomErrorResponse([InvalidRefreshTokenException, MemberNotFoundException])
+  async refresh(@Body() request: RefreshRequestDto): Promise<RefreshResponseDto> {
+    return this.authService.refresh(request);
   }
 
   @Post('/register')
