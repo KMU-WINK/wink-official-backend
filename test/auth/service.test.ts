@@ -28,6 +28,7 @@ describe('AuthService', () => {
   let mailService: MailService;
 
   let memoryMemberRepository: Member[];
+  let memoryRedisRefreshRepository: Record<string, string>;
   let memoryRedisCodeRepository: Record<string, string>;
   let memoryRedisTokenRepository: Record<string, string>;
 
@@ -35,7 +36,12 @@ describe('AuthService', () => {
     const mock = await mockAuth();
 
     const { module } = mock;
-    ({ memoryMemberRepository, memoryRedisCodeRepository, memoryRedisTokenRepository } = mock);
+    ({
+      memoryMemberRepository,
+      memoryRedisRefreshRepository,
+      memoryRedisCodeRepository,
+      memoryRedisTokenRepository,
+    } = mock);
 
     authService = module.get<AuthService>(AuthService);
     mailService = module.get<MailService>(MailService);
@@ -44,6 +50,9 @@ describe('AuthService', () => {
   afterEach(() => {
     jest.clearAllMocks();
     memoryMemberRepository.splice(0, memoryMemberRepository.length);
+    Object.keys(memoryRedisRefreshRepository).forEach((key) => {
+      delete memoryRedisRefreshRepository[key];
+    });
     Object.keys(memoryRedisCodeRepository).forEach((key) => {
       delete memoryRedisCodeRepository[key];
     });

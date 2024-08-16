@@ -2,6 +2,7 @@ import { Validation } from '@wink/validation';
 
 import {
   LoginRequestDto,
+  RefreshRequestDto,
   RegisterRequestDto,
   SendCodeRequestDto,
   VerifyCodeRequestDto,
@@ -102,6 +103,51 @@ describe('AuthValidation', () => {
 
       // When
       const result = validation.validateBody(body, LoginRequestDto);
+
+      // Then
+      await expect(result).resolves.toBeDefined();
+    });
+  });
+
+  describe('RefreshRequestDto', () => {
+    describe('refreshToken', () => {
+      it('IsNotEmpty', async () => {
+        // Given
+        const body: RefreshRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          refreshToken: undefined,
+        };
+
+        // When
+        const result = validation.validateBody(body, RefreshRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('refreshToken은(는) 빈 값이어서는 안됩니다.');
+      });
+
+      it('IsString', async () => {
+        // Given
+        const body: RefreshRequestDto = {
+          // @ts-expect-error: 테스트 목적
+          refreshToken: 1234,
+        };
+
+        // When
+        const result = validation.validateBody(body, RefreshRequestDto);
+
+        // Then
+        await expect(result).rejects.toThrow('refreshToken은(는) 문자열이어야 합니다.');
+      });
+    });
+
+    it('Passed', async () => {
+      // Given
+      const body: RefreshRequestDto = {
+        refreshToken: 'A.B.C',
+      };
+
+      // When
+      const result = validation.validateBody(body, RefreshRequestDto);
 
       // Then
       await expect(result).resolves.toBeDefined();
