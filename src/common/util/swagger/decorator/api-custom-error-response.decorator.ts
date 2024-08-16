@@ -48,6 +48,7 @@ export const ApiCustomErrorResponse = (errors: Type<ApiException>[]) => {
                 `error${index}`,
                 {
                   value: {
+                    code: error.getStatus(),
                     error: true,
                     content: error.getResponse(),
                   },

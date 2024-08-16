@@ -3,20 +3,15 @@ import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 import { ApiCustomResponseDto } from '../dto';
 
-interface ApiCustomResponseOptions {
-  type?: Type<unknown>;
-  status: HttpStatus;
-}
-
 class EmptyResponse {}
 
-export const ApiCustomResponse = (options: ApiCustomResponseOptions) => {
-  options.type ??= EmptyResponse;
+export const ApiCustomResponse = (type?: Type<unknown>) => {
+  type ??= EmptyResponse;
 
   return applyDecorators(
-    ApiExtraModels(options.type, ApiCustomResponseDto),
+    ApiExtraModels(type, ApiCustomResponseDto),
     ApiResponse({
-      status: options.status,
+      status: HttpStatus.OK,
       description: '성공',
       content: {
         'application/json': {
@@ -27,7 +22,7 @@ export const ApiCustomResponse = (options: ApiCustomResponseOptions) => {
               },
               {
                 properties: {
-                  content: { $ref: getSchemaPath(options.type) },
+                  content: { $ref: getSchemaPath(type) },
                 },
               },
             ],

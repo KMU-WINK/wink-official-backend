@@ -2,18 +2,18 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
-  HttpException,
   HttpStatus,
   NotFoundException,
 } from '@nestjs/common';
+import { ApiException } from '@wink/swagger';
 
-@Catch(HttpException)
+@Catch(ApiException)
 export class DefaultExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: ApiException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
-    response.status(exception.getStatus()).json({ error: true, content: exception.message });
+    response.json({ code: exception.getStatus(), error: true, content: exception.message });
   }
 }
 
@@ -23,6 +23,10 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 
-    response.status(HttpStatus.NOT_FOUND).json({ error: true, content: 'API Endpoint not found.' });
+    response.json({
+      code: HttpStatus.NOT_FOUND,
+      error: true,
+      content: '엔드포인트를 찾을 수 없습니다.',
+    });
   }
 }

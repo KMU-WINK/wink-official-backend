@@ -8,21 +8,30 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 
+import { ApiException } from '@wink/swagger';
+
+import { Response } from 'express';
 import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable()
 export class ApiResponseInterceptor implements NestInterceptor {
   private readonly logger: Logger = new Logger(ApiResponseInterceptor.name);
 
-  intercept(_context: ExecutionContext, next: CallHandler): Observable<unknown> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const ctx = context.switchToHttp();
+    const response: Response = ctx.getResponse();
+
+    response.status(HttpStatus.OK);
+
     return next.handle().pipe(
       map((content) => ({
+        code: HttpStatus.OK,
         error: false,
         content: content ?? {},
       })),
 
       catchError((err) => {
-        if (!(err instanceof HttpException)) {
+        if (!(err instanceof ApiException)) {
           this.logger.error(err);
           return throwError(
             () =>
