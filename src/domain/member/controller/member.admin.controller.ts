@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '@wink/auth/guard';
@@ -25,21 +25,19 @@ export class MemberAdminController {
   constructor(private readonly memberAdminService: MemberAdminService) {}
 
   @Get('/waiting')
-  @HttpCode(HttpStatus.OK)
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 승인 대기 목록' })
-  @ApiCustomResponse({ type: GetWaitingMembersResponseDto, status: HttpStatus.OK })
+  @ApiCustomResponse(GetWaitingMembersResponseDto)
   @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
     return this.memberAdminService.getWaitingMembers();
   }
 
   @Post('/waiting/approve')
-  @HttpCode(HttpStatus.OK)
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 승인' })
   @ApiProperty({ type: ApproveWaitingMemberRequestDto })
-  @ApiCustomResponse({ status: HttpStatus.OK })
+  @ApiCustomResponse()
   @ApiCustomErrorResponse([...AuthAdminAccountException, NotWaitingMemberException])
   async approveWaitingMember(
     @ReqMember() member: Member,
@@ -49,11 +47,10 @@ export class MemberAdminController {
   }
 
   @Post('/waiting/reject')
-  @HttpCode(HttpStatus.OK)
   @AuthAdminAccount()
   @ApiOperation({ summary: '회원가입 거부' })
   @ApiProperty({ type: RejectWaitingMemberRequestDto })
-  @ApiCustomResponse({ status: HttpStatus.OK })
+  @ApiCustomResponse()
   @ApiCustomErrorResponse([...AuthAdminAccountException, NotWaitingMemberException])
   async rejectWaitingMember(
     @ReqMember() member: Member,
@@ -63,21 +60,19 @@ export class MemberAdminController {
   }
 
   @Get()
-  @HttpCode(HttpStatus.OK)
   @AuthAdminAccount()
   @ApiOperation({ summary: '부원 목록' })
-  @ApiCustomResponse({ type: GetMembersForAdminResponseDto, status: HttpStatus.OK })
+  @ApiCustomResponse(GetMembersForAdminResponseDto)
   @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getMembers(): Promise<GetMembersForAdminResponseDto> {
     return this.memberAdminService.getMembers();
   }
 
   @Patch('/role')
-  @HttpCode(HttpStatus.OK)
   @AuthAdminAccount()
   @ApiOperation({ summary: '부원 권한 수정' })
   @ApiProperty({ type: UpdateMemberRoleRequestDto })
-  @ApiCustomResponse({ status: HttpStatus.OK })
+  @ApiCustomResponse()
   @ApiCustomErrorResponse([
     ...AuthAdminAccountException,
     NotApprovedMemberException,
@@ -91,11 +86,10 @@ export class MemberAdminController {
   }
 
   @Patch('/fee')
-  @HttpCode(HttpStatus.OK)
   @AuthAdminAccount()
   @ApiOperation({ summary: '부원 회비 납부 여부 수정' })
   @ApiProperty({ type: UpdateMemberFeeRequestDto })
-  @ApiCustomResponse({ status: HttpStatus.OK })
+  @ApiCustomResponse()
   @ApiCustomErrorResponse([
     ...AuthAdminAccountException,
     NotApprovedMemberException,

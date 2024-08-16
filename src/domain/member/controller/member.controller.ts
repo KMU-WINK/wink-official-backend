@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Patch,
   Put,
   UploadedFile,
@@ -35,19 +33,17 @@ export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
   @Get()
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '부원 목록' })
-  @ApiCustomResponse({ type: GetMembersResponseDto, status: HttpStatus.OK })
+  @ApiCustomResponse(GetMembersResponseDto)
   async getMembers(): Promise<GetMembersResponseDto> {
     return this.memberService.getMembers();
   }
 
   @Put('/me/info')
-  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 정보 수정' })
   @ApiProperty({ type: UpdateMyInfoRequestDto })
-  @ApiCustomResponse({ status: HttpStatus.OK })
+  @ApiCustomResponse()
   @ApiCustomErrorResponse([...AuthAccountException])
   async updateMyInfo(
     @ReqMember() member: Member,
@@ -57,11 +53,10 @@ export class MemberController {
   }
 
   @Patch('/me/password')
-  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 비밀번호 수정' })
   @ApiProperty({ type: UpdateMyPasswordRequestDto })
-  @ApiCustomResponse({ status: HttpStatus.OK })
+  @ApiCustomResponse()
   @ApiCustomErrorResponse([...AuthAccountException, WrongPasswordException])
   async updateMyPassword(
     @ReqMember() member: Member,
@@ -71,13 +66,12 @@ export class MemberController {
   }
 
   @Patch('/me/avatar')
-  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @UseInterceptors(FileInterceptor('avatar', { fileFilter: AvatarFilter }))
   @ApiOperation({ summary: '내 프로필 사진 수정' })
   @ApiConsumes('multipart/form-data')
   @ApiProperty({ type: UpdateMyAvatarRequestDto })
-  @ApiCustomResponse({ type: UpdateMyAvatarResponseDto, status: HttpStatus.OK })
+  @ApiCustomResponse(UpdateMyAvatarResponseDto)
   @ApiCustomErrorResponse([...AuthAccountException, ...AvatarFilterException])
   async updateMyAvatar(
     @ReqMember() member: Member,
@@ -87,10 +81,9 @@ export class MemberController {
   }
 
   @Delete('/me/avatar')
-  @HttpCode(HttpStatus.OK)
   @AuthAccount()
   @ApiOperation({ summary: '내 프로필 사진 삭제' })
-  @ApiCustomResponse({ status: HttpStatus.OK })
+  @ApiCustomResponse()
   @ApiCustomErrorResponse([...AuthAccountException])
   async deleteMyAvatar(@ReqMember() member: Member): Promise<void> {
     await this.memberService.deleteMyAvatar(member);
