@@ -1,6 +1,9 @@
 export * from './already-registered-by-email.exception';
 export * from './already-registered-by-student-id.exception';
 
+export * from './expired-access-token.exception';
+
+export * from './invalid-refresh-token.exception';
 export * from './invalid-verify-code.exception';
 export * from './invalid-verify-token.exception';
 

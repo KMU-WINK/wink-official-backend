@@ -8,10 +8,14 @@ import {
   SetMetadata,
   UseGuards,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-import { PermissionException, UnauthorizedException } from '@wink/auth/exception';
+import {
+  ExpiredAccessTokenException,
+  PermissionException,
+  UnauthorizedException,
+} from '@wink/auth/exception';
 
 import { Role } from '@wink/member/constant';
 import { NotApprovedMemberException } from '@wink/member/exception';
@@ -38,7 +42,11 @@ export class AuthGuard implements CanActivate {
     let decoded: Record<string, unknown>;
     try {
       decoded = await this.jwtService.verifyAsync(token as string);
-    } catch {
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        throw new ExpiredAccessTokenException();
+      }
+
       throw new UnauthorizedException();
     }
 
@@ -104,10 +112,10 @@ export const AuthAdminAccount = () =>
     ApiBearerAuth(),
   );
 
-export const AuthAccountException = [UnauthorizedException, NotApprovedMemberException];
-
-export const AuthAdminAccountException = [
+export const AuthAccountException = [
   UnauthorizedException,
+  ExpiredAccessTokenException,
   NotApprovedMemberException,
-  PermissionException,
 ];
+
+export const AuthAdminAccountException = [...AuthAccountException, PermissionException];

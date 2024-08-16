@@ -6,6 +6,12 @@ export class LoginEvent {
   constructor(public readonly member: Member) {}
 }
 
+export class RefreshEvent {
+  public static readonly EVENT_NAME = 'auth.refresh';
+
+  constructor(public readonly member: Member) {}
+}
+
 export class RegisterEvent {
   public static readonly EVENT_NAME = 'auth.register';
 

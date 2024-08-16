@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -6,6 +7,8 @@ import {
   LoginRequestDto,
   LoginResponseDto,
   MyInfoResponseDto,
+  RefreshRequestDto,
+  RefreshResponseDto,
   RegisterRequestDto,
   SendCodeRequestDto,
   VerifyCodeRequestDto,
@@ -14,6 +17,7 @@ import {
 import {
   AlreadyRegisteredByEmailException,
   AlreadyRegisteredByStudentIdException,
+  InvalidRefreshTokenException,
   InvalidVerifyCodeException,
   InvalidVerifyTokenException,
   MemberNotFoundException,
@@ -25,24 +29,39 @@ import { MemberRepository } from '@wink/member/repository';
 import { Member, omitMember } from '@wink/member/schema';
 
 import { RedisService } from '@wink/redis';
-import { LoginEvent, RegisterEvent, SendCodeEvent, VerifyCodeEvent } from '@wink/event';
+import {
+  LoginEvent,
+  RefreshEvent,
+  RegisterEvent,
+  SendCodeEvent,
+  VerifyCodeEvent,
+} from '@wink/event';
 import { MailService, RegisterCompleteTemplate, VerifyCodeTemplate } from '@wink/mail';
 
 import { v4 as uuid } from 'uuid';
+import ms, { StringValue } from 'ms';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+  private readonly accessExpiresIn: string;
+  private readonly refreshExpiresIn: string;
+
   constructor(
+    private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
 
     private readonly memberRepository: MemberRepository,
+    @Inject(`${RedisService.name}-refresh`) private readonly redisRefreshRepository: RedisService,
     @Inject(`${RedisService.name}-code`) private readonly redisCodeRepository: RedisService,
     @Inject(`${RedisService.name}-token`) private readonly redisTokenRepository: RedisService,
 
     private readonly eventEmitter: EventEmitter2,
     private readonly mailService: MailService,
-  ) {}
+  ) {
+    this.accessExpiresIn = this.configService.getOrThrow<string>('jwt.expiresIn.access');
+    this.refreshExpiresIn = this.configService.getOrThrow<string>('jwt.expiresIn.refresh');
+  }
 
   async login({ email, password }: LoginRequestDto): Promise<LoginResponseDto> {
     const member = await this.memberRepository.findByEmailWithPassword(email);
@@ -59,11 +78,55 @@ export class AuthService {
       throw new NotApprovedMemberException();
     }
 
-    const token = await this.jwtService.signAsync({ id: member._id });
+    const accessToken = await this.jwtService.signAsync(
+      { id: member._id },
+      { expiresIn: this.accessExpiresIn },
+    );
+
+    const refreshToken = await this.jwtService.signAsync({}, { expiresIn: this.refreshExpiresIn });
+
+    await this.redisRefreshRepository.ttl(
+      refreshToken,
+      member._id,
+      ms(this.refreshExpiresIn as StringValue),
+    );
 
     this.eventEmitter.emit(LoginEvent.EVENT_NAME, new LoginEvent(member));
 
-    return { token };
+    return { accessToken, refreshToken };
+  }
+
+  async refresh({ refreshToken }: RefreshRequestDto): Promise<RefreshResponseDto> {
+    const memberId = await this.redisRefreshRepository.get(refreshToken);
+    if (!memberId) {
+      throw new InvalidRefreshTokenException();
+    }
+    await this.redisRefreshRepository.delete(refreshToken);
+
+    const member = await this.memberRepository.findById(memberId);
+    if (!member) {
+      throw new MemberNotFoundException();
+    }
+
+    const newAccessToken = await this.jwtService.signAsync(
+      { id: memberId },
+      { expiresIn: this.accessExpiresIn },
+    );
+
+    const newRefreshToken = await this.jwtService.signAsync(
+      {},
+      { expiresIn: this.refreshExpiresIn },
+    );
+
+    await this.redisRefreshRepository.ttl(
+      newRefreshToken,
+      memberId,
+      ms(this.refreshExpiresIn as StringValue),
+    );
+
+    this.eventEmitter.emit(RefreshEvent.EVENT_NAME, new RefreshEvent(member));
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 
   async register({ name, studentId, password, verifyToken }: RegisterRequestDto): Promise<void> {

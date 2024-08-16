@@ -15,6 +15,11 @@ import { MailModule } from '@wink/mail';
     AuthService,
 
     {
+      provide: `${RedisService.name}-refresh`,
+      useFactory: (repository: RedisService) => repository.sub('auth:refresh'),
+      inject: [RedisService],
+    },
+    {
       provide: `${RedisService.name}-code`,
       useFactory: (repository: RedisService) => repository.sub('auth:code'),
       inject: [RedisService],
