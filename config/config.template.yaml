@@ -17,6 +17,15 @@ smtp:
   username: ${SMTP_USERNAME:=''}
   password: ${SMTP_PASSWORD:=''}
 
+s3:
+  region: ${S3_REGION:=ap-northeast-2}
+  bucket: ${S3_BUCKET:=''}
+  credentials:
+    accessKey: ${S3_ACCESS_KEY:=''}
+    secretKey: ${S3_SECRET_KEY:=''}
+
 jwt:
   secret: ${JWT_SECRET:=secret}
-  expiresIn: ${JWT_EXPIRES_IN:=14d}
+  expiresIn:
+    access: ${JWT_EXPIRES_IN_ACCESS:=1h}
+    refresh: ${JWT_EXPIRES_IN_REFRESH:=7d}

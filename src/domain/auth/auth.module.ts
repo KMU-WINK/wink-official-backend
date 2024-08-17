@@ -1,15 +1,34 @@
 import { Module } from '@nestjs/common';
 
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from '@wink/auth/controller';
+import { AuthService } from '@wink/auth/service';
 
-import { MemberModule } from '../member/member.module';
+import { MemberModule } from '@wink/member/member.module';
 
-import { RedisModule, MailModule } from '../../utils';
+import { RedisModule, RedisService } from '@wink/redis';
+import { MailModule } from '@wink/mail';
 
 @Module({
-  imports: [MemberModule, RedisModule, MailModule],
+  imports: [MemberModule, MailModule, RedisModule],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+
+    {
+      provide: `${RedisService.name}-refresh`,
+      useFactory: (repository: RedisService) => repository.sub('auth:refresh'),
+      inject: [RedisService],
+    },
+    {
+      provide: `${RedisService.name}-code`,
+      useFactory: (repository: RedisService) => repository.sub('auth:code'),
+      inject: [RedisService],
+    },
+    {
+      provide: `${RedisService.name}-token`,
+      useFactory: (repository: RedisService) => repository.sub('auth:token'),
+      inject: [RedisService],
+    },
+  ],
 })
 export class AuthModule {}

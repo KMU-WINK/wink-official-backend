@@ -1,12 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsEmail } from 'class-validator';
+import { CommonValidation, TypeValidation, StringValidation } from '@wink/validation';
 
 export class SendCodeRequestDto {
-  @IsEmail({}, { message: '이메일 형식이 올바르지 않습니다.' })
   @ApiProperty({
     description: '이메일',
     example: 'honggildong@kookmin.ac.kr',
   })
-  email: string;
+  @CommonValidation.IsNotEmpty()
+  @TypeValidation.IsString()
+  @StringValidation.IsEmail()
+  @StringValidation.IsKookminEmail()
+  email!: string;
 }

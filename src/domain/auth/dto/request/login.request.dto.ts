@@ -1,19 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { CommonValidation, TypeValidation, StringValidation } from '@wink/validation';
 
 export class LoginRequestDto {
-  @IsEmail({}, { message: '이메일 형식이 올바르지 않습니다.' })
   @ApiProperty({
     description: '이메일',
-    example: 'test@gmail.com',
+    example: 'test@kookmin.ac.kr',
   })
-  email: string;
+  @CommonValidation.IsNotEmpty()
+  @TypeValidation.IsString()
+  @StringValidation.IsEmail()
+  email!: string;
 
-  @IsNotEmpty({ message: '비밀번호는 필수 입력 값입니다.' })
   @ApiProperty({
     description: '비밀번호',
     example: 'p4sSw0rd!',
   })
-  password: string;
+  @CommonValidation.IsNotEmpty()
+  @TypeValidation.IsString()
+  password!: string;
 }
