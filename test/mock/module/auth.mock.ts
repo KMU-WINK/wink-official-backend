@@ -39,16 +39,16 @@ export const mockAuth = async () => {
       { provide: MemberRepository, useValue: mockMemberRepository(memoryMemberRepository) },
       { provide: MailService, useValue: mockMailService() },
       {
-        provide: `${RedisService.name}-refresh`,
-        useValue: mockRedisService(memoryRedisRefreshRepository),
-      },
-      {
-        provide: `${RedisService.name}-code`,
+        provide: 'REDIS_SERVICE_VERIFY_CODE',
         useValue: mockRedisService(memoryRedisCodeRepository),
       },
       {
-        provide: `${RedisService.name}-token`,
+        provide: 'REDIS_SERVICE_VERIFY_TOKEN',
         useValue: mockRedisService(memoryRedisTokenRepository),
+      },
+      {
+        provide: 'REDIS_SERVICE_REFRESH_TOKEN',
+        useValue: mockRedisService(memoryRedisRefreshRepository),
       },
     ],
   }).compile();

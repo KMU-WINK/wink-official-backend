@@ -11,8 +11,9 @@ import { PurgeUnusedAvatarEvent } from '@wink/event';
 export class PurgeUnusedAvatarJob {
   constructor(
     private readonly memberRepository: MemberRepository,
+    @Inject('S3_SERVICE_AVATAR') private readonly avatarService: S3Service,
+
     private readonly eventEmitter: EventEmitter2,
-    @Inject(`${S3Service}-avatar`) private readonly s3AvatarService: S3Service,
   ) {}
 
   @Timeout(0)
@@ -29,13 +30,13 @@ export class PurgeUnusedAvatarJob {
     const usedAvatars = (await this.memberRepository.findAll())
       .map((member) => member.avatar)
       .filter((avatar) => avatar !== null)
-      .map((avatar) => this.s3AvatarService.extractKeyFromUrl(avatar));
+      .map((avatar) => this.avatarService.extractKeyFromUrl(avatar));
 
-    const savedAvatars = await this.s3AvatarService.getKeys();
+    const savedAvatars = await this.avatarService.getKeys();
 
     const unusedAvatars = savedAvatars.filter((a) => !usedAvatars.includes(a));
 
-    unusedAvatars.forEach((key) => this.s3AvatarService.delete(key).then((_) => _));
+    unusedAvatars.forEach((key) => this.avatarService.delete(key).then((_) => _));
 
     this.eventEmitter.emit(
       PurgeUnusedAvatarEvent.EVENT_NAME,

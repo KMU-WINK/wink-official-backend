@@ -52,9 +52,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
 
     private readonly memberRepository: MemberRepository,
-    @Inject(`${RedisService.name}-refresh`) private readonly redisRefreshRepository: RedisService,
-    @Inject(`${RedisService.name}-code`) private readonly redisCodeRepository: RedisService,
-    @Inject(`${RedisService.name}-token`) private readonly redisTokenRepository: RedisService,
+    @Inject('REDIS_SERVICE_VERIFY_CODE') private readonly verifyCodeService: RedisService,
+    @Inject('REDIS_SERVICE_VERIFY_TOKEN') private readonly verifyTokenService: RedisService,
+    @Inject('REDIS_SERVICE_REFRESH_TOKEN') private readonly refreshTokenService: RedisService,
 
     private readonly eventEmitter: EventEmitter2,
     private readonly mailService: MailService,
@@ -85,7 +85,7 @@ export class AuthService {
 
     const refreshToken = await this.jwtService.signAsync({}, { expiresIn: this.refreshExpiresIn });
 
-    await this.redisRefreshRepository.ttl(
+    await this.refreshTokenService.ttl(
       refreshToken,
       member._id,
       ms(this.refreshExpiresIn as StringValue),
@@ -97,11 +97,11 @@ export class AuthService {
   }
 
   async refresh({ refreshToken }: RefreshRequestDto): Promise<RefreshResponseDto> {
-    const memberId = await this.redisRefreshRepository.get(refreshToken);
+    const memberId = await this.refreshTokenService.get(refreshToken);
     if (!memberId) {
       throw new InvalidRefreshTokenException();
     }
-    await this.redisRefreshRepository.delete(refreshToken);
+    await this.refreshTokenService.delete(refreshToken);
 
     const member = await this.memberRepository.findById(memberId);
     if (!member) {
@@ -118,7 +118,7 @@ export class AuthService {
       { expiresIn: this.refreshExpiresIn },
     );
 
-    await this.redisRefreshRepository.ttl(
+    await this.refreshTokenService.ttl(
       newRefreshToken,
       memberId,
       ms(this.refreshExpiresIn as StringValue),
@@ -130,7 +130,7 @@ export class AuthService {
   }
 
   async register({ name, studentId, password, verifyToken }: RegisterRequestDto): Promise<void> {
-    const email = await this.redisTokenRepository.get(verifyToken);
+    const email = await this.verifyTokenService.get(verifyToken);
 
     if (!email) {
       throw new InvalidVerifyTokenException();
@@ -149,7 +149,7 @@ export class AuthService {
 
     const member = await this.memberRepository.save({ name, studentId, email, password: hash });
 
-    await this.redisTokenRepository.delete(verifyToken);
+    await this.verifyTokenService.delete(verifyToken);
 
     this.mailService.sendTemplate(email, new RegisterCompleteTemplate(name)).then((_) => _);
 
@@ -165,7 +165,7 @@ export class AuthService {
       .toString()
       .padStart(6, '0');
 
-    await this.redisCodeRepository.ttl(email, code, 60 * 10);
+    await this.verifyCodeService.ttl(email, code, 60 * 10);
 
     this.mailService.sendTemplate(email, new VerifyCodeTemplate(email, code)).then((_) => _);
 
@@ -173,16 +173,16 @@ export class AuthService {
   }
 
   async verifyCode({ email, code }: VerifyCodeRequestDto): Promise<VerifyCodeResponseDto> {
-    const storedCode = await this.redisCodeRepository.get(email);
+    const storedCode = await this.verifyCodeService.get(email);
 
     if (storedCode !== code) {
       throw new InvalidVerifyCodeException();
     }
 
-    await this.redisCodeRepository.delete(email);
+    await this.verifyCodeService.delete(email);
 
     const verifyToken = uuid();
-    await this.redisTokenRepository.ttl(verifyToken, email, 60 * 60);
+    await this.verifyTokenService.ttl(verifyToken, email, 60 * 60);
 
     this.eventEmitter.emit(VerifyCodeEvent.EVENT_NAME, new VerifyCodeEvent(email, verifyToken));
 
