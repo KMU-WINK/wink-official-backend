@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -10,12 +10,12 @@ import Redis from 'ioredis';
 export class RedisService {
   private readonly redisClient: Redis;
 
-  public group?: string;
-
   constructor(
     private readonly configService: ConfigService,
 
     private readonly eventEmitter: EventEmitter2,
+
+    @Inject('REDIS_MODULE_OPTIONS_GROUP') private readonly group: string,
   ) {
     this.redisClient = new Redis(
       configService.getOrThrow<number>('redis.port'),
@@ -65,12 +65,5 @@ export class RedisService {
     if (!this.group) throw new Error('Group is not set');
 
     return `${this.group}:${key}`;
-  }
-
-  sub(group: string): RedisService {
-    if (this.group) throw new Error('Group already set');
-    const redisService = new RedisService(this.configService, this.eventEmitter);
-    redisService.group = group.endsWith(':') ? group.substring(0, group.length - 1) : group;
-    return redisService;
   }
 }

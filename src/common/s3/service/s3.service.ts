@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -17,12 +17,12 @@ import { extname } from 'path';
 export class S3Service {
   private readonly s3Client: S3Client;
 
-  public directory?: string;
-
   constructor(
     private readonly configService: ConfigService,
 
     private readonly eventEmitter: EventEmitter2,
+
+    @Inject('S3_MODULE_OPTIONS_DIRECTORY') private readonly directory: string,
   ) {
     this.s3Client = new S3Client({
       region: configService.getOrThrow<string>('s3.region'),
@@ -90,14 +90,5 @@ export class S3Service {
     if (!this.directory) throw new Error('Directory is not set');
 
     return url.split(`.com/`)[1].substring(this.directory.length + 1);
-  }
-
-  sub(directory: string): S3Service {
-    if (this.directory) throw new Error('Directory already set');
-    const s3Service = new S3Service(this.configService, this.eventEmitter);
-    s3Service.directory = directory.endsWith('/')
-      ? directory.substring(0, directory.length - 1)
-      : directory;
-    return s3Service;
   }
 }

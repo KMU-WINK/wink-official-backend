@@ -27,7 +27,7 @@ import * as bcrypt from 'bcrypt';
 export class MemberService {
   constructor(
     private readonly memberRepository: MemberRepository,
-    @Inject(`${S3Service}-avatar`) private readonly s3AvatarService: S3Service,
+    @Inject('S3_SERVICE_AVATAR') private readonly avatarService: S3Service,
 
     private readonly eventEmitter: EventEmitter2,
   ) {}
@@ -84,13 +84,13 @@ export class MemberService {
   ): Promise<UpdateMyAvatarResponseDto> {
     const { _id: id, avatar: original } = member;
 
-    const avatar = await this.s3AvatarService.upload(file);
+    const avatar = await this.avatarService.upload(file);
     await this.memberRepository.updateAvatar(id, avatar);
 
     if (original) {
-      const key = this.s3AvatarService.extractKeyFromUrl(original);
+      const key = this.avatarService.extractKeyFromUrl(original);
 
-      await this.s3AvatarService.delete(key);
+      await this.avatarService.delete(key);
     }
 
     this.eventEmitter.emit(UpdateMyAvatarEvent.EVENT_NAME, new UpdateMyAvatarEvent(member, avatar));
@@ -102,9 +102,9 @@ export class MemberService {
     const { _id: id, avatar } = member;
 
     if (avatar) {
-      const key = this.s3AvatarService.extractKeyFromUrl(avatar);
+      const key = this.avatarService.extractKeyFromUrl(avatar);
 
-      await this.s3AvatarService.delete(key);
+      await this.avatarService.delete(key);
       await this.memberRepository.updateAvatar(id, null);
 
       this.eventEmitter.emit(DeleteMyAvatarEvent.EVENT_NAME, new DeleteMyAvatarEvent(member));

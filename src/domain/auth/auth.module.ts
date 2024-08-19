@@ -5,30 +5,18 @@ import { AuthService } from '@wink/auth/service';
 
 import { MemberModule } from '@wink/member/member.module';
 
-import { RedisModule, RedisService } from '@wink/redis';
+import { RedisModule } from '@wink/redis';
 import { MailModule } from '@wink/mail';
 
 @Module({
-  imports: [MemberModule, MailModule, RedisModule],
-  controllers: [AuthController],
-  providers: [
-    AuthService,
-
-    {
-      provide: `${RedisService.name}-refresh`,
-      useFactory: (repository: RedisService) => repository.sub('auth:refresh'),
-      inject: [RedisService],
-    },
-    {
-      provide: `${RedisService.name}-code`,
-      useFactory: (repository: RedisService) => repository.sub('auth:code'),
-      inject: [RedisService],
-    },
-    {
-      provide: `${RedisService.name}-token`,
-      useFactory: (repository: RedisService) => repository.sub('auth:token'),
-      inject: [RedisService],
-    },
+  imports: [
+    MemberModule,
+    MailModule,
+    RedisModule.forRoot({ group: 'verify_code' }),
+    RedisModule.forRoot({ group: 'verify_token' }),
+    RedisModule.forRoot({ group: 'refresh_token' }),
   ],
+  controllers: [AuthController],
+  providers: [AuthService],
 })
 export class AuthModule {}

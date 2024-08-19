@@ -14,7 +14,7 @@ import { Readable } from 'stream';
 
 describe('MemberService', () => {
   let memberService: MemberService;
-  let s3AvatarService: S3Service;
+  let avatarService: S3Service;
 
   let memoryMemberRepository: Member[];
 
@@ -25,7 +25,7 @@ describe('MemberService', () => {
     ({ memoryMemberRepository } = mock);
 
     memberService = module.get<MemberService>(MemberService);
-    s3AvatarService = module.get<S3Service>(`${S3Service}-avatar`);
+    avatarService = module.get<S3Service>('S3_SERVICE_AVATAR');
   });
 
   afterEach(() => {
@@ -264,7 +264,7 @@ describe('MemberService', () => {
       // Then
       await expect(result).resolves.toStrictEqual({ avatar: fileUrl });
       expect(memoryMemberRepository[0].avatar).toBe(fileUrl);
-      expect(s3AvatarService.delete).not.toHaveBeenCalled();
+      expect(avatarService.delete).not.toHaveBeenCalled();
     });
 
     it('Change avatar  (not first time)', async () => {
@@ -298,7 +298,7 @@ describe('MemberService', () => {
       // Then
       await expect(result).resolves.toStrictEqual({ avatar: fileUrl });
       expect(memoryMemberRepository[0].avatar).toBe(fileUrl);
-      expect(s3AvatarService.delete).toHaveBeenCalledWith(previousFileUrl);
+      expect(avatarService.delete).toHaveBeenCalledWith(previousFileUrl);
     });
   });
 });
