@@ -9,7 +9,6 @@ import { MemberRepository } from '@wink/member/repository';
 import { Member } from '@wink/member/schema';
 import { MemberAdminService, MemberService } from '@wink/member/service';
 
-import { S3Service } from '@wink/s3';
 import { MailService } from '@wink/mail';
 
 export const mockMember = async () => {
@@ -29,10 +28,7 @@ export const mockMember = async () => {
       MemberAdminService,
       { provide: MemberRepository, useValue: mockMemberRepository(memoryMemberRepository) },
       { provide: MailService, useValue: mockMailService() },
-      {
-        provide: `${S3Service}-avatar`,
-        useValue: mockS3Service(),
-      },
+      { provide: 'S3_SERVICE_AVATAR', useValue: mockS3Service() },
     ],
   }).compile();
 
