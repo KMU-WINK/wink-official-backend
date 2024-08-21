@@ -27,5 +27,5 @@ s3:
 jwt:
   secret: ${JWT_SECRET:=secret}
   expiresIn:
-    access: ${JWT_EXPIRES_IN_ACCESS:=1h}
-    refresh: ${JWT_EXPIRES_IN_REFRESH:=7d}
+    access: ${JWT_EXPIRES_IN_ACCESS:=10m}
+    refresh: ${JWT_EXPIRES_IN_REFRESH:=30d}
