@@ -39,7 +39,7 @@ export class EachGetMembersResponseDto {
     description: '한 줄 소개',
     example: '안녕하세요! 저는 개발자입니다.',
   })
-  description?: string;
+  description!: string | null;
 
   @ApiProperty({
     description: '링크',
