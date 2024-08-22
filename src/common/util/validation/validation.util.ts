@@ -1,4 +1,6 @@
-import { ArgumentMetadata, HttpException, ValidationPipe } from '@nestjs/common';
+import { ArgumentMetadata, ValidationPipe } from '@nestjs/common';
+
+import { ApiException } from '@wink/swagger';
 
 type Constraints = { [type: string]: string };
 
@@ -13,7 +15,11 @@ export class Validation {
     return new ValidationPipe({
       whitelist: true,
       exceptionFactory: (errors) => {
-        return new HttpException(Object.entries(<Constraints>errors[0].constraints)[0][1], 400);
+        return new ApiException({
+          swagger: 'Validation Error',
+          message: Object.entries(<Constraints>errors[0].constraints)[0][1],
+          code: 400,
+        });
       },
     });
   }
