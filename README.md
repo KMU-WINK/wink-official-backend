@@ -1,5 +1,3 @@
-![Logo](https://avatars.githubusercontent.com/u/69004745?s=100)
-
 # Wink Official Backend
 
 ## Tech Stack
@@ -15,10 +13,9 @@
 - ![mongodb](https://img.shields.io/badge/MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white)
 - ![redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
-**Convention:**
-- ![eslint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
-- ![prettier](https://img.shields.io/badge/prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=white)
-- ![husky](https://img.shields.io/badge/husky-5D4F85?style=for-the-badge&logoColor=white)
+
+## Swagger Documentation Path
+- path: (BASE_URL)/api/swagger
 
 
 ## Related
@@ -26,11 +23,12 @@
 
 [Wink Official Deploy](https://github.com/kmu-wink/wink-official-deploy)
 
-## Documentation
 
-[API Document (Master)](https://wink.kookmin.ac.kr/api/swagger)
+## Live Server
 
-[API Document (Develop)](http://43.202.208.79/api/swagger)
+[Live Server (Master)](https://wink.kookmin.ac.kr)
+
+[Live Server (Develop)](https://wink-dev.kro.kr)
 
 
 ## Run Locally
@@ -71,12 +69,23 @@ Start the server
 yarn start
 ```
 
+
 ## Run Locally with Docker
 
 Build the Docker image 
 
 ```bash
 docker build -t wink-official-backend:local .
+```
+
+Or pull the Docker image from Docker Hub
+
+```bash
+# master branch
+docker pull kmuwink/wink-official-backend:master
+
+# develop branch
+docker pull kmuwink/wink-official-backend:develop
 ```
 
 Run the Docker container
@@ -100,8 +109,9 @@ docker run \
            
            -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
            
-           -p 8080:8080 -d wink-official-backend:local
+           -p 8080:8080 -d (IMAGE_NAME)
 ```
+
 
 ## Running Tests
 
