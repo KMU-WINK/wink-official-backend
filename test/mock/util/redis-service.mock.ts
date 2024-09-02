@@ -7,10 +7,6 @@ export const mockRedisService = (memory: Record<string, string>) => ({
     memory[key] = value;
   }),
 
-  ttl: jest.fn(async (key: string, value: string) => {
-    memory[key] = value;
-  }),
-
   delete: jest.fn(async (key: string) => {
     return delete memory[key];
   }),
