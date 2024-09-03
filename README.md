@@ -92,24 +92,25 @@ Run the Docker container
 
 ```bash
 docker run \
-           --name (CONTAINER_NAME) \
-           
-           -e REDIS_HOST=(REDIS_HOST) -e REDIS_PORT=(REDIS_PORT) \
-           
-           -e MONGO_HOST=(MONGO_HOST) -e MONGO_PORT=(MONGO_PORT) \
-           -e MONGO_USERNAME=(MONGO_USERNAME) -e MONGO_PASSWORD=(MONGO_PASSWORD) \
-           -e MONGO_AUTH_SOURCE=(MONGO_AUTH_SOURCE) -e MONGO_DATABASE=(MONGO_DATABASE) \
-           
-           -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
-           -e SMTP_USERNAME=(SMTP_USER) -e SMTP_PASSWORD=(SMTP_PASS) \
-           -e SMTP_SECURE=(SMTP_SECURE) \
-           
-           -e S3_REGION=(S3_REGION) -e S3_BUCKET=(S3_BUCKET) \
-           -e S3_ACCESS_KEY=(S3_ACCESS_KEY) -e S3_SECRET_KEY=(S3_SECRET_KEY) \
-           
-           -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
-           
-           -p 8080:8080 -d (IMAGE_NAME)
+          --name (CONTAINER_NAME) \
+          
+          -e REDIS_HOST=(REDIS_HOST) -e REDIS_PORT=(REDIS_PORT) \
+          -e REDIS_PASSWORD=(REDIS_PASSWORD) \ 
+          
+          -e MONGO_HOST=(MONGO_HOST) -e MONGO_PORT=(MONGO_PORT) \
+          -e MONGO_USERNAME=(MONGO_USERNAME) -e MONGO_PASSWORD=(MONGO_PASSWORD) \
+          -e MONGO_AUTH_SOURCE=(MONGO_AUTH_SOURCE) -e MONGO_DATABASE=(MONGO_DATABASE) \
+          
+          -e SMTP_HOST=(SMTP_HOST) -e SMTP_PORT=(SMTP_PORT) \
+          -e SMTP_USERNAME=(SMTP_USER) -e SMTP_PASSWORD=(SMTP_PASS) \
+          -e SMTP_SECURE=(SMTP_SECURE) \
+          
+          -e S3_REGION=(S3_REGION) -e S3_BUCKET=(S3_BUCKET) \
+          -e S3_ACCESS_KEY=(S3_ACCESS_KEY) -e S3_SECRET_KEY=(S3_SECRET_KEY) \
+          
+          -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
+          
+          -p 8080:8080 -d (IMAGE_NAME)
 ```
 
 

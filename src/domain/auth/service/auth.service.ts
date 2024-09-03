@@ -85,7 +85,7 @@ export class AuthService {
 
     const refreshToken = await this.jwtService.signAsync({}, { expiresIn: this.refreshExpiresIn });
 
-    await this.refreshTokenService.ttl(
+    await this.refreshTokenService.set(
       refreshToken,
       member._id,
       ms(this.refreshExpiresIn as StringValue),
@@ -97,10 +97,11 @@ export class AuthService {
   }
 
   async refresh({ refreshToken }: RefreshRequestDto): Promise<RefreshResponseDto> {
-    const memberId = await this.refreshTokenService.get(refreshToken);
-    if (!memberId) {
+    if (!(await this.refreshTokenService.exists(refreshToken))) {
       throw new InvalidRefreshTokenException();
     }
+
+    const memberId = await this.refreshTokenService.get(refreshToken);
     await this.refreshTokenService.delete(refreshToken);
 
     const member = await this.memberRepository.findById(memberId);
@@ -118,7 +119,7 @@ export class AuthService {
       { expiresIn: this.refreshExpiresIn },
     );
 
-    await this.refreshTokenService.ttl(
+    await this.refreshTokenService.set(
       newRefreshToken,
       memberId,
       ms(this.refreshExpiresIn as StringValue),
@@ -130,11 +131,11 @@ export class AuthService {
   }
 
   async register({ name, studentId, password, verifyToken }: RegisterRequestDto): Promise<void> {
-    const email = await this.verifyTokenService.get(verifyToken);
-
-    if (!email) {
+    if (!(await this.verifyTokenService.exists(verifyToken))) {
       throw new InvalidVerifyTokenException();
     }
+
+    const email = await this.verifyTokenService.get(verifyToken);
 
     if (await this.memberRepository.existsByEmail(email)) {
       throw new AlreadyRegisteredByEmailException();
@@ -165,7 +166,7 @@ export class AuthService {
       .toString()
       .padStart(6, '0');
 
-    await this.verifyCodeService.ttl(email, code, 60 * 10);
+    await this.verifyCodeService.set(email, code, 60 * 10);
 
     this.mailService.sendTemplate(email, new VerifyCodeTemplate(email, code)).then((_) => _);
 
@@ -173,6 +174,10 @@ export class AuthService {
   }
 
   async verifyCode({ email, code }: VerifyCodeRequestDto): Promise<VerifyCodeResponseDto> {
+    if (!(await this.verifyCodeService.exists(email))) {
+      throw new InvalidVerifyCodeException();
+    }
+
     const storedCode = await this.verifyCodeService.get(email);
 
     if (storedCode !== code) {
@@ -182,7 +187,7 @@ export class AuthService {
     await this.verifyCodeService.delete(email);
 
     const verifyToken = uuid();
-    await this.verifyTokenService.ttl(verifyToken, email, 60 * 60);
+    await this.verifyTokenService.set(verifyToken, email, 60 * 60);
 
     this.eventEmitter.emit(VerifyCodeEvent.EVENT_NAME, new VerifyCodeEvent(email, verifyToken));
 

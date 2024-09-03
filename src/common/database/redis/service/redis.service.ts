@@ -11,7 +11,7 @@ export class RedisService {
   private readonly redisClient: Redis;
 
   constructor(
-    private readonly configService: ConfigService,
+    configService: ConfigService,
 
     private readonly eventEmitter: EventEmitter2,
 
@@ -20,35 +20,46 @@ export class RedisService {
     this.redisClient = new Redis(
       configService.getOrThrow<number>('redis.port'),
       configService.getOrThrow<string>('redis.host'),
+      {
+        password: configService.get<string>('redis.password'),
+      },
     );
   }
 
-  async get(key: string): Promise<string | null> {
+  async exists(key: string): Promise<boolean> {
     if (!this.group) throw new Error('Group is not set');
 
     const _key = this.#generateKey(key);
 
-    return this.redisClient.get(_key);
+    const exists = await this.redisClient.exists(_key);
+
+    return exists === 1;
   }
 
-  async set(key: string, value: string): Promise<void> {
+  async get(key: string): Promise<string> {
     if (!this.group) throw new Error('Group is not set');
 
     const _key = this.#generateKey(key);
 
-    await this.redisClient.set(_key, value);
-
-    this.eventEmitter.emit(RedisSetEvent.EVENT_NAME, new RedisSetEvent(_key, value));
+    return (await this.redisClient.get(_key)) || '';
   }
 
-  async ttl(key: string, value: string, seconds: number): Promise<void> {
+  async set(key: string, value: string, seconds: number = 0): Promise<void> {
     if (!this.group) throw new Error('Group is not set');
 
     const _key = this.#generateKey(key);
 
-    await this.redisClient.setex(_key, seconds, value);
+    let event: RedisSetEvent | RedisSetTtlEvent;
 
-    this.eventEmitter.emit(RedisSetTtlEvent.EVENT_NAME, new RedisSetTtlEvent(_key, value, seconds));
+    if (seconds === 0) {
+      await this.redisClient.set(_key, value);
+      event = new RedisSetEvent(_key, value);
+    } else {
+      await this.redisClient.setex(_key, seconds, value);
+      event = new RedisSetTtlEvent(_key, value, seconds);
+    }
+
+    this.eventEmitter.emit(RedisSetEvent.EVENT_NAME, event);
   }
 
   async delete(key: string): Promise<void> {
