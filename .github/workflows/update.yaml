@@ -1,5 +1,5 @@
-name: Update to Deploy Repository
-run-name: Update to Deploy Repository (${{ github.event.workflow_run.head_branch }})
+name: Deploy
+run-name: Deploy (${{ github.event.workflow_run.head_branch }})
 
 on:
   workflow_run:
@@ -12,37 +12,131 @@ on:
       - develop
 
 concurrency:
-  group: update-${{ github.event.workflow_run.head_branch }}
+  group: deploy-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: true
 
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/wink-official-backend:${{ github.event.workflow_run.head_branch }}
+
+  SSH_HOST: ${{ github.event.workflow_run.head_branch == 'master' && secrets.SSH_MASTER_HOST || secrets.SSH_DEVELOP_HOST }}
+  SSH_USERNAME: ${{ github.event.workflow_run.head_branch == 'master' && secrets.SSH_MASTER_USERNAME || secrets.SSH_DEVELOP_USERNAME }}
+  SSH_KEY: ${{ github.event.workflow_run.head_branch == 'master' && secrets.SSH_MASTER_KEY || secrets.SSH_DEVELOP_KEY }}
+
 jobs:
-  update-deploy:
+  build-amd64:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Git
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Github SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_GITHUB_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      - name: Checkout code
-        run: |
-          git clone --branch ${{ github.event.workflow_run.head_branch }} --recursive git@github.com:kmu-wink/wink-official-deploy.git deploy
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Update Submodule
-        run: |
-          cd deploy
-          git submodule update --remote backend
+      - name: Build Image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: backend
+          platforms: linux/amd64
+          provenance: false
+          tags: ${{ env.IMAGE_NAME }}-amd64
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}-amd64-cache
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}-amd64-cache
 
-      - name: Commit and Push
+  build-arm64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: backend
+          platforms: linux/arm64
+          tags: ${{ env.IMAGE_NAME }}-arm64
+          provenance: false
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}-arm64-cache
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}-arm64-cache
+
+  merge-image:
+    runs-on: ubuntu-latest
+    needs: [ build-amd64, build-arm64 ]
+    steps:
+      - name: Login to Docker Hub
         run: |
-          cd deploy
-          git add backend
-          git commit -m "update: backend"
-          git push -f origin ${{ github.event.workflow_run.head_branch }}
+          echo "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Pull Backend Image
+        run: |
+          docker pull --platform linux/amd64 ${{ env.BACKEND_IMAGE }}-amd64
+          docker pull --platform linux/arm64 ${{ env.BACKEND_IMAGE }}-arm64
+
+      - name: Merge Backend Image
+        run: |
+          docker manifest create ${{ env.BACKEND_IMAGE }} ${{ env.BACKEND_IMAGE }}-amd64 ${{ env.BACKEND_IMAGE }}-arm64
+          docker manifest annotate ${{ env.BACKEND_IMAGE }} ${{ env.BACKEND_IMAGE }}-amd64 --os linux --arch amd64
+          docker manifest annotate ${{ env.BACKEND_IMAGE }} ${{ env.BACKEND_IMAGE }}-arm64 --os linux --arch arm64
+
+      - name: Push Backend Image
+        run: docker manifest push ${{ env.BACKEND_IMAGE }}
+
+  check-server:
+    runs-on: ubuntu-latest
+    needs: [ build-amd64 ]
+    steps:
+      - name: Check exists project
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.SSH_HOST }}
+          username: ${{ env.SSH_USERNAME }}
+          key: ${{ env.SSH_KEY }}
+          script: |
+            if [ ! -d "Backend" ]; then
+              echo "Directory "Backend" not found"
+              exit 1
+            fi
+
+      - name: Check docker compose file
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.SSH_HOST }}
+          username: ${{ env.SSH_USERNAME }}
+          key: ${{ env.SSH_KEY }}
+          script: |
+            if [ ! -f "Backend/docker-compose.yaml" ]; then
+              echo "File "Backend/docker-compose.yaml" not found"
+              exit 1
+            fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ check-server, build-amd64 ]
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.SSH_HOST }}
+          username: ${{ env.SSH_USERNAME }}
+          key: ${{ env.SSH_KEY }}
+          script: |
+            cd Backend
+            
+            docker compose pull
+            docker compose up -d
