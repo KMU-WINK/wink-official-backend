@@ -1,8 +1,8 @@
 name: Test
-run-name: Test on ${{ github.ref_name }}
+run-name: Test (${{ github.ref_name }})
 
 on:
-  push: {}
+  push:
 
 concurrency:
   group: test-${{ github.ref_name }}-${{ github.sha }}
