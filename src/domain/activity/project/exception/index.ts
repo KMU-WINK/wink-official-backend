@@ -1,1 +1,1 @@
-export const empty_project = 'project';
+export * from './project-not-found.exception';
