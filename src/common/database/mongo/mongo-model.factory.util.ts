@@ -17,4 +17,31 @@ export class MongoModelFactory {
       },
     };
   }
+
+  static generateRecursive<T>(
+    name: string,
+    schema: Schema<T>,
+    subSchema: { type: string; schema: Schema }[],
+  ): AsyncModelFactory {
+    return {
+      name,
+      useFactory: () => {
+        schema.set('timestamps', true);
+        schema.set('versionKey', false);
+
+        schema.plugin(AutoPopulate);
+
+        subSchema.forEach(({ type, schema }) => {
+          schema.set('timestamps', true);
+          schema.set('versionKey', false);
+
+          schema.plugin(AutoPopulate);
+
+          schema.discriminator(type, schema);
+        });
+
+        return schema;
+      },
+    };
+  }
 }
