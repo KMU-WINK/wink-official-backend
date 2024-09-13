@@ -22,7 +22,7 @@ const modelFactory = MongoModelFactory.generateRecursive<Activity>(Activity.name
 ]);
 
 @Module({
-  imports: [MongooseModule.forFeatureAsync([modelFactory])],
+  imports: [MongooseModule.forFeature([modelFactory])],
   controllers: [ActivityController],
   providers: [ActivityService, ProjectRepository, StudyRepository, SocialRepository],
   exports: [ProjectRepository, StudyRepository, SocialRepository],

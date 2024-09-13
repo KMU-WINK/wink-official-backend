@@ -15,7 +15,7 @@ const modelFactory = MongoModelFactory.generate<Member>(Member.name, MemberSchem
 
 @Module({
   imports: [
-    MongooseModule.forFeatureAsync([modelFactory]),
+    MongooseModule.forFeature([modelFactory]),
     S3Module.forRoot({ directory: 'avatar' }),
     MailModule,
   ],

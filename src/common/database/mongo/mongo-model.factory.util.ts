@@ -1,47 +1,42 @@
-import { AsyncModelFactory } from '@nestjs/mongoose';
+import { ModelDefinition } from '@nestjs/mongoose';
 
 import { Schema } from 'mongoose';
 import AutoPopulate from 'mongoose-autopopulate';
 
 export class MongoModelFactory {
-  static generate<T>(name: string, schema: Schema<T>): AsyncModelFactory {
-    return {
-      name,
-      useFactory: () => {
-        schema.set('timestamps', true);
-        schema.set('versionKey', false);
+  static generate<T>(name: string, schema: Schema<T>): ModelDefinition {
+    schema = MongoModelFactory.#setSchemaOptions(schema);
 
-        schema.plugin(AutoPopulate);
-
-        return schema;
-      },
-    };
+    return { name, schema };
   }
 
   static generateRecursive<T>(
     name: string,
     schema: Schema<T>,
-    subSchema: { type: string; schema: Schema }[],
-  ): AsyncModelFactory {
+    subSchemas: { type: string; schema: Schema }[],
+  ): ModelDefinition {
+    schema = MongoModelFactory.#setSchemaOptions(schema);
+    subSchemas = subSchemas.map(({ type, schema }) => {
+      schema = MongoModelFactory.#setSchemaOptions(schema);
+
+      return { type, schema };
+    });
+
     return {
       name,
-      useFactory: () => {
-        schema.set('timestamps', true);
-        schema.set('versionKey', false);
-
-        schema.plugin(AutoPopulate);
-
-        subSchema.forEach(({ type, schema }) => {
-          schema.set('timestamps', true);
-          schema.set('versionKey', false);
-
-          schema.plugin(AutoPopulate);
-
-          schema.discriminator(type, schema);
-        });
-
-        return schema;
-      },
+      schema,
+      discriminators: subSchemas.map(({ type, schema }) => {
+        return { name: type, schema };
+      }),
     };
+  }
+
+  static #setSchemaOptions(schema: Schema): Schema {
+    schema.set('timestamps', true);
+    schema.set('versionKey', false);
+
+    schema.plugin(AutoPopulate);
+
+    return schema;
   }
 }
