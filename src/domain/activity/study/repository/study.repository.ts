@@ -19,6 +19,14 @@ export class StudyRepository {
     return this.studyModel.find().exec();
   }
 
+  async findAllPage(page: number): Promise<Study[]> {
+    return this.studyModel
+      .find()
+      .skip((page - 1) * 10)
+      .limit(10)
+      .exec();
+  }
+
   async findById(id: string): Promise<Study | null> {
     return this.studyModel.findById(id).exec();
   }

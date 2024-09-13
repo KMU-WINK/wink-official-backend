@@ -14,7 +14,12 @@ export class Activity {
 
   type!: ActivityType;
 
-  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: 'Member', autopopulate: true })
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    required: true,
+    ref: 'Member',
+    autopopulate: true,
+  })
   author!: Member;
 }
 

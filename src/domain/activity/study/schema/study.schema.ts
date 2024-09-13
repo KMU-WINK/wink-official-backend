@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Activity } from '@wink/activity/schema';
+import { Activity, Category } from '@wink/activity/schema';
 
 import { Schema as MongooseSchema } from 'mongoose';
 
@@ -20,6 +20,14 @@ export class Study extends Activity {
 
   @Prop({ type: Date, required: true })
   uploadedAt!: Date;
+
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    required: true,
+    ref: 'Category',
+    autopopulate: true,
+  })
+  category!: Category;
 }
 
 export const StudySchema: MongooseSchema<Study> = SchemaFactory.createForClass(Study);
