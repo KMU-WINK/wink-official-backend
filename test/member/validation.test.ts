@@ -1,6 +1,6 @@
 import { Validation } from '@wink/validation';
 
-import { Role } from '@wink/member/constant';
+import { Role } from '@wink/member/schema';
 import {
   ApproveWaitingMemberRequestDto,
   RejectWaitingMemberRequestDto,

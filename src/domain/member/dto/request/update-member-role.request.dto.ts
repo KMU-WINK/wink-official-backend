@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Role } from '@wink/member/constant';
+import { Role } from '@wink/member/schema';
 
 import { CommonValidation, StringValidation, TypeValidation } from '@wink/validation';
 

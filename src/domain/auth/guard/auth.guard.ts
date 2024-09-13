@@ -17,7 +17,7 @@ import {
   UnauthorizedException,
 } from '@wink/auth/exception';
 
-import { Role } from '@wink/member/constant';
+import { Role } from '@wink/member/schema';
 import { NotApprovedMemberException } from '@wink/member/exception';
 import { MemberRepository } from '@wink/member/repository';
 

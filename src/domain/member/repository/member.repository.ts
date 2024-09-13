@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Role } from '@wink/member/constant';
-import { Member } from '@wink/member/schema';
+import { Member, Role } from '@wink/member/schema';
 
 import { Model } from 'mongoose';
 
@@ -11,8 +10,8 @@ export class MemberRepository {
   constructor(@InjectModel(Member.name) private readonly memberModel: Model<Member>) {}
 
   // Create
-  async save(Member: Partial<Member>): Promise<Member> {
-    return this.memberModel.create(Member);
+  async save(member: Partial<Member>): Promise<Member> {
+    return this.memberModel.create(member);
   }
 
   // Read
