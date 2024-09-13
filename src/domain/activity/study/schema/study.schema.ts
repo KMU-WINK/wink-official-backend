@@ -12,6 +12,9 @@ export class Study extends Activity {
   @Prop({ type: String, required: true })
   content!: string;
 
+  @Prop({ type: String, require: true })
+  author!: string;
+
   @Prop({ type: String, required: true })
   image!: string;
 

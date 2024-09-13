@@ -1,6 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
-import { Member } from '@wink/member/schema';
+import { Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { ActivityType } from '@wink/activity/schema';
 
@@ -13,14 +11,6 @@ export class Activity {
   readonly updatedAt!: Date;
 
   type!: ActivityType;
-
-  @Prop({
-    type: MongooseSchema.Types.ObjectId,
-    required: true,
-    ref: 'Member',
-    autopopulate: true,
-  })
-  author!: Member;
 }
 
 export const ActivitySchema: MongooseSchema<Activity> = SchemaFactory.createForClass(Activity);
