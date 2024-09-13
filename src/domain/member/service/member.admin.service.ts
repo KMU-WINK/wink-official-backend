@@ -3,7 +3,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { MemberNotFoundException, SuperRoleException } from '@wink/auth/exception';
 
-import { checkRoleHierarchy, Role } from '@wink/member/constant';
 import {
   ApproveWaitingMemberRequestDto,
   EachGetMembersForAdminResponseDto,
@@ -16,7 +15,7 @@ import {
 } from '@wink/member/dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '@wink/member/exception';
 import { MemberRepository } from '@wink/member/repository';
-import { Member, omitMember, pickMember } from '@wink/member/schema';
+import { Member, omitMember, pickMember, Role, checkRoleHierarchy } from '@wink/member/schema';
 
 import {
   ApproveWaitingMemberEvent,

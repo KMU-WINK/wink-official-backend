@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Role } from '@wink/member/constant';
-import { Member } from '@wink/member/schema';
+import { Member, Role } from '@wink/member/schema';
 
 import { Model } from 'mongoose';
 

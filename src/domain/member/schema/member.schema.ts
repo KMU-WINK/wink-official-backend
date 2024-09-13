@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Role } from '@wink/member/constant';
+import { Role } from '@wink/member/schema';
 
 import { Schema as MongooseSchema } from 'mongoose';
 

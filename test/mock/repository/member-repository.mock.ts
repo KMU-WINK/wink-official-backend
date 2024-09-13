@@ -1,5 +1,4 @@
-import { Role } from '@wink/member/constant';
-import { Member } from '@wink/member/schema';
+import { Member, Role } from '@wink/member/schema';
 
 // noinspection t
 export const mockMemberRepository = (memory: Member[]) => ({
