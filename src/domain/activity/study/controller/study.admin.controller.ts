@@ -1,9 +1,7 @@
 import { Body, Controller, Delete, Patch, Put } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '@wink/auth/guard';
-
-import { Member } from '@wink/member/schema';
+import { AuthAdminAccount, AuthAdminAccountException } from '@wink/auth/guard';
 
 import {
   CreateCategoryRequestDto,
@@ -66,11 +64,8 @@ export class StudyAdminController {
   @ApiProperty({ type: CreateStudyRequestDto })
   @ApiCustomResponse(CreateStudyResponseDto)
   @ApiCustomErrorResponse([...AuthAdminAccountException, CategoryNotFoundException])
-  async createStudy(
-    @ReqMember() member: Member,
-    @Body() request: CreateStudyRequestDto,
-  ): Promise<CreateStudyResponseDto> {
-    return this.studyAdminService.createStudy(member, request);
+  async createStudy(@Body() request: CreateStudyRequestDto): Promise<CreateStudyResponseDto> {
+    return this.studyAdminService.createStudy(request);
   }
 
   @Delete()

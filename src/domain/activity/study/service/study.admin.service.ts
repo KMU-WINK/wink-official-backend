@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { Member } from '@wink/member/schema';
-
 import {
   CreateCategoryRequestDto,
   CreateCategoryResponseDto,
@@ -59,10 +57,7 @@ export class StudyAdminService {
     await this.categoryRepository.deleteById(categoryId);
   }
 
-  async createStudy(
-    member: Member,
-    { link }: CreateStudyRequestDto,
-  ): Promise<CreateStudyResponseDto> {
+  async createStudy({ link }: CreateStudyRequestDto): Promise<CreateStudyResponseDto> {
     const { data: html } = await axios.get(link);
     const $ = cheerio.load(html);
 
