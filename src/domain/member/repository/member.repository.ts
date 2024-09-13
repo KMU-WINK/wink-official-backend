@@ -11,8 +11,8 @@ export class MemberRepository {
   constructor(@InjectModel(Member.name) private readonly memberModel: Model<Member>) {}
 
   // Create
-  async save(Member: Partial<Member>): Promise<Member> {
-    return this.memberModel.create(Member);
+  async save(member: Partial<Member>): Promise<Member> {
+    return this.memberModel.create(member);
   }
 
   // Read

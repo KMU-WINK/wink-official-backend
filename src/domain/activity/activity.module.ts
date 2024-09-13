@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ActivityController } from '@wink/activity/controller';
-import { ActivityService } from '@wink/activity/service';
+import { ProjectRepository, StudyRepository, SocialRepository } from '@wink/activity/repository';
 import {
   Activity,
   ActivitySchema,
@@ -11,6 +11,7 @@ import {
   SocialSchema,
   StudySchema,
 } from '@wink/activity/schema';
+import { ActivityService } from '@wink/activity/service';
 
 import { MongoModelFactory } from '@wink/mongo';
 
@@ -23,6 +24,7 @@ const modelFactory = MongoModelFactory.generateRecursive<Activity>(Activity.name
 @Module({
   imports: [MongooseModule.forFeatureAsync([modelFactory])],
   controllers: [ActivityController],
-  providers: [ActivityService],
+  providers: [ActivityService, ProjectRepository, StudyRepository, SocialRepository],
+  exports: [ProjectRepository, StudyRepository, SocialRepository],
 })
 export class ActivityModule {}
