@@ -5,3 +5,4 @@ export * from './is-mongo-id.decorator';
 export * from './is-name.decorator';
 export * from './is-password.decorator';
 export * from './is-student-id.decorator';
+export * from './is-study-link.decorator';

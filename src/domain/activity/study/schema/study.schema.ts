@@ -10,7 +10,16 @@ export class Study extends Activity {
   title!: string;
 
   @Prop({ type: String, required: true })
+  content!: string;
+
+  @Prop({ type: String, required: true })
+  image!: string;
+
+  @Prop({ type: String, required: true })
   link!: string;
+
+  @Prop({ type: Date, required: true })
+  uploadedAt!: Date;
 }
 
 export const StudySchema: MongooseSchema<Study> = SchemaFactory.createForClass(Study);

@@ -1,7 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { ProjectController, StudyController, SocialController } from '@wink/activity/controller';
+import { MemberModule } from '@wink/member/member.module';
+
+import {
+  ProjectController,
+  StudyController,
+  StudyAdminController,
+  SocialController,
+} from '@wink/activity/controller';
 import { ProjectRepository, StudyRepository, SocialRepository } from '@wink/activity/repository';
 import {
   Activity,
@@ -11,7 +18,12 @@ import {
   SocialSchema,
   StudySchema,
 } from '@wink/activity/schema';
-import { ProjectService, StudyService, SocialService } from '@wink/activity/service';
+import {
+  ProjectService,
+  StudyService,
+  StudyAdminService,
+  SocialService,
+} from '@wink/activity/service';
 
 import { MongoModelFactory } from '@wink/mongo';
 
@@ -22,12 +34,14 @@ const modelFactory = MongoModelFactory.generateRecursive<Activity>(Activity.name
 ]);
 
 @Module({
-  imports: [MongooseModule.forFeature([modelFactory])],
-  controllers: [ProjectController, StudyController, SocialController],
+  imports: [MongooseModule.forFeature([modelFactory]), MemberModule],
+  controllers: [ProjectController, StudyController, StudyAdminController, SocialController],
   providers: [
     ProjectService,
     StudyService,
+    StudyAdminService,
     SocialService,
+
     ProjectRepository,
     StudyRepository,
     SocialRepository,
