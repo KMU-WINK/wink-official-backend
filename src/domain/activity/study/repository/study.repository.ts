@@ -37,4 +37,8 @@ export class StudyRepository {
   async existsById(id: string): Promise<boolean> {
     return !!(await this.studyModel.exists({ _id: id }).exec());
   }
+
+  async existsByLink(link: string): Promise<boolean> {
+    return !!(await this.studyModel.exists({ link }).exec());
+  }
 }

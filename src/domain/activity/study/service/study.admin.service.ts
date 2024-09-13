@@ -11,6 +11,7 @@ import {
 } from '@wink/activity/dto';
 import {
   AlreadyExistsCategoryException,
+  AlreadyExistsStudyException,
   CategoryNotFoundException,
   StudyNotFoundException,
 } from '@wink/activity/exception';
@@ -58,6 +59,10 @@ export class StudyAdminService {
   }
 
   async createStudy({ link }: CreateStudyRequestDto): Promise<CreateStudyResponseDto> {
+    if (await this.studyRepository.existsByLink(link)) {
+      throw new AlreadyExistsStudyException();
+    }
+
     const { data: html } = await axios.get(link);
     const $ = cheerio.load(html);
 

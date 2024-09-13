@@ -14,6 +14,7 @@ import {
 } from '@wink/activity/dto';
 import {
   AlreadyExistsCategoryException,
+  AlreadyExistsStudyException,
   CategoryNotFoundException,
   StudyNotFoundException,
 } from '@wink/activity/exception';
@@ -63,7 +64,11 @@ export class StudyAdminController {
   @ApiOperation({ summary: '스터디 생성' })
   @ApiProperty({ type: CreateStudyRequestDto })
   @ApiCustomResponse(CreateStudyResponseDto)
-  @ApiCustomErrorResponse([...AuthAdminAccountException, CategoryNotFoundException])
+  @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
+    CategoryNotFoundException,
+    AlreadyExistsStudyException,
+  ])
   async createStudy(@Body() request: CreateStudyRequestDto): Promise<CreateStudyResponseDto> {
     return this.studyAdminService.createStudy(request);
   }
