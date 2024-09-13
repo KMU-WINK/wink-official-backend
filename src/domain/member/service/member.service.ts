@@ -48,10 +48,10 @@ export class MemberService {
   ): Promise<void> {
     const { _id: id } = member;
 
-    await this.memberRepository.updateDescription(id, description);
-    await this.memberRepository.updateGithub(id, github);
-    await this.memberRepository.updateInstagram(id, instagram);
-    await this.memberRepository.updateBlog(id, blog);
+    await this.memberRepository.updateDescriptionById(id, description);
+    await this.memberRepository.updateGithubUrlById(id, github);
+    await this.memberRepository.updateInstagramUrlById(id, instagram);
+    await this.memberRepository.updateBlogById(id, blog);
 
     this.eventEmitter.emit(
       UpdateMyInfoEvent.EVENT_NAME,
@@ -73,7 +73,7 @@ export class MemberService {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(newPassword, salt);
 
-    await this.memberRepository.updatePassword(id, hash);
+    await this.memberRepository.updatePasswordById(id, hash);
 
     this.eventEmitter.emit(UpdateMyPasswordEvent.EVENT_NAME, new UpdateMyPasswordEvent(member));
   }
@@ -85,7 +85,7 @@ export class MemberService {
     const { _id: id, avatar: original } = member;
 
     const avatar = await this.avatarService.upload(file);
-    await this.memberRepository.updateAvatar(id, avatar);
+    await this.memberRepository.updateAvatarById(id, avatar);
 
     if (original) {
       const key = this.avatarService.extractKeyFromUrl(original);
@@ -105,7 +105,7 @@ export class MemberService {
       const key = this.avatarService.extractKeyFromUrl(avatar);
 
       await this.avatarService.delete(key);
-      await this.memberRepository.updateAvatar(id, null);
+      await this.memberRepository.updateAvatarById(id, null);
 
       this.eventEmitter.emit(DeleteMyAvatarEvent.EVENT_NAME, new DeleteMyAvatarEvent(member));
     }
