@@ -16,12 +16,13 @@ export class StudyRepository {
 
   // Read
   async findAll(): Promise<Study[]> {
-    return this.studyModel.find().exec();
+    return this.studyModel.find().sort({ uploadedAt: -1 }).exec();
   }
 
   async findAllPage(page: number): Promise<Study[]> {
     return this.studyModel
       .find()
+      .sort({ uploadedAt: -1 })
       .skip((page - 1) * 10)
       .limit(10)
       .exec();
