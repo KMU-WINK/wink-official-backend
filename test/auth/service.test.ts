@@ -277,17 +277,19 @@ describe('AuthService', () => {
 
       // Then
       expect(result).toMatchObject({
-        memberId: member._id,
-        createdAt: member.createdAt,
-        updatedAt: member.updatedAt,
-        name: member.name,
-        studentId: member.studentId,
-        email: member.email,
-        avatar: member.avatar,
-        description: member.description,
-        link: member.link,
-        role: member.role,
-        fee: member.fee,
+        member: {
+          _id: member._id,
+          createdAt: member.createdAt,
+          updatedAt: member.updatedAt,
+          name: member.name,
+          studentId: member.studentId,
+          email: member.email,
+          avatar: member.avatar,
+          description: member.description,
+          link: member.link,
+          role: member.role,
+          fee: member.fee,
+        },
       });
     });
   });

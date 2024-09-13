@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { Member } from '@wink/member/schema';
-
 import {
   CreateCategoryRequestDto,
   CreateCategoryResponseDto,
@@ -13,6 +11,7 @@ import {
 } from '@wink/activity/dto';
 import {
   AlreadyExistsCategoryException,
+  AlreadyExistsStudyException,
   CategoryNotFoundException,
   StudyNotFoundException,
 } from '@wink/activity/exception';
@@ -59,22 +58,24 @@ export class StudyAdminService {
     await this.categoryRepository.deleteById(categoryId);
   }
 
-  async createStudy(
-    member: Member,
-    { link }: CreateStudyRequestDto,
-  ): Promise<CreateStudyResponseDto> {
+  async createStudy({ link }: CreateStudyRequestDto): Promise<CreateStudyResponseDto> {
+    if (await this.studyRepository.existsByLink(link)) {
+      throw new AlreadyExistsStudyException();
+    }
+
     const { data: html } = await axios.get(link);
     const $ = cheerio.load(html);
 
     const title = $('meta[property="og:title"]').attr('content')!;
     const content = $('meta[property="og:description"]').attr('content')!;
+    const author = $('meta[property="og.article.author"]').attr('content')!;
     const image = $('meta[property="og:image"]').attr('content')!;
-    const uploadedAt = $('meta[property="article:published_time"]').attr('content')!;
+    const rawUploadedAt = $('meta[property="article:published_time"]').attr('content')!;
+    const uploadedAt = new Date(new Date(rawUploadedAt).getTime() + 9 * 60 * 60 * 1000);
 
     const entryInfoMatch = html.match(/window\.T\.entryInfo\s*=\s*({[^}]*});/);
     const entryInfo = entryInfoMatch ? JSON.parse(entryInfoMatch[1]) : null;
     const categoryLabel = entryInfo['categoryLabel'];
-
     const category = await this.categoryRepository.findByName(categoryLabel);
 
     if (!category) {
@@ -82,11 +83,11 @@ export class StudyAdminService {
     }
 
     const study: Partial<Study> = {
-      author: member,
       title,
       content,
+      author,
       image,
-      uploadedAt: new Date(uploadedAt),
+      uploadedAt,
       link,
       category,
     };

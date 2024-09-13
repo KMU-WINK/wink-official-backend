@@ -60,7 +60,7 @@ export const pickMember = <T>(member: Member, includeFields: (keyof Member)[] = 
 
   const pickedDocument: Record<string, unknown> = {};
   includeFields.forEach((field) => {
-    pickedDocument[field === '_id' ? 'memberId' : field] = _member[field];
+    pickedDocument[field] = _member[field];
   });
 
   return <T>pickedDocument;
@@ -70,15 +70,11 @@ export const omitMember = <T>(member: Member, excludeFields: (keyof Member)[] = 
   const _member: Member = '_doc' in member ? <Member>member._doc : member;
   const document = { ..._member };
 
-  const memberId = document._id;
-
-  excludeFields.push('_id');
   excludeFields.forEach((field) => {
     delete document[field];
   });
 
   return <T>{
-    memberId,
     ...document,
   };
 };

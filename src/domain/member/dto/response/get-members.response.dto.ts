@@ -7,7 +7,7 @@ export class EachGetMembersResponseDto {
     description: '멤버 ID',
     example: '1a2b3c4d5e6f7a8b9c0d1e2f',
   })
-  memberId!: string;
+  _id!: string;
 
   @ApiProperty({
     description: '계정 생성일',

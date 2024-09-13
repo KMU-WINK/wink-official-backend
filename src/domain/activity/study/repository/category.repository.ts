@@ -22,10 +22,6 @@ export class CategoryRepository {
     return this.categoryModel.find().exec();
   }
 
-  async findById(id: string): Promise<Category | null> {
-    return this.categoryModel.findById(id).exec();
-  }
-
   async findByName(name: string): Promise<Category | null> {
     return this.categoryModel.findOne({ name }).exec();
   }

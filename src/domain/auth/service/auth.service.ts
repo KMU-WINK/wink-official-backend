@@ -195,6 +195,6 @@ export class AuthService {
   }
 
   myInfo(member: Member): MyInfoResponseDto {
-    return <MyInfoResponseDto>omitMember(member, ['approved']);
+    return { member: omitMember(member, ['approved']) };
   }
 }

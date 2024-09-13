@@ -36,27 +36,27 @@ export class MemberRepository {
   }
 
   // Update
-  async updatePassword(id: string, password: string): Promise<void> {
+  async updatePasswordById(id: string, password: string): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { password }).exec();
   }
 
-  async updateDescription(id: string, description: string | null): Promise<void> {
+  async updateDescriptionById(id: string, description: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { description }).exec();
   }
 
-  async updateGithub(id: string, githubUrl: string | null): Promise<void> {
+  async updateGithubUrlById(id: string, githubUrl: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.github': githubUrl }).exec();
   }
 
-  async updateInstagram(id: string, instagramUrl: string | null): Promise<void> {
+  async updateInstagramUrlById(id: string, instagramUrl: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.instagram': instagramUrl }).exec();
   }
 
-  async updateBlog(id: string, blog: string | null): Promise<void> {
+  async updateBlogById(id: string, blog: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { 'link.blog': blog }).exec();
   }
 
-  async updateAvatar(id: string, avatar: string | null): Promise<void> {
+  async updateAvatarById(id: string, avatar: string | null): Promise<void> {
     await this.memberModel.updateOne({ _id: id }, { avatar }).exec();
   }
 

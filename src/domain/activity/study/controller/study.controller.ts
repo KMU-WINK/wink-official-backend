@@ -15,7 +15,7 @@ import { ApiCustomResponse } from '@wink/swagger';
 export class StudyController {
   constructor(private readonly studyService: StudyService) {}
 
-  @Get()
+  @Get('/category')
   @ApiOperation({ summary: '스터디 카테고리 목록' })
   @ApiCustomResponse(GetCategoriesResponseDto)
   async getCategories(): Promise<GetCategoriesResponseDto> {

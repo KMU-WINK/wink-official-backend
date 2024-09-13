@@ -1,9 +1,7 @@
 import { Body, Controller, Delete, Patch, Put } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '@wink/auth/guard';
-
-import { Member } from '@wink/member/schema';
+import { AuthAdminAccount, AuthAdminAccountException } from '@wink/auth/guard';
 
 import {
   CreateCategoryRequestDto,
@@ -16,6 +14,7 @@ import {
 } from '@wink/activity/dto';
 import {
   AlreadyExistsCategoryException,
+  AlreadyExistsStudyException,
   CategoryNotFoundException,
   StudyNotFoundException,
 } from '@wink/activity/exception';
@@ -50,7 +49,7 @@ export class StudyAdminController {
     return this.studyAdminService.updateCategory(request);
   }
 
-  @Put('/category')
+  @Delete('/category')
   @AuthAdminAccount()
   @ApiOperation({ summary: '카테고리 삭제' })
   @ApiProperty({ type: CreateStudyRequestDto })
@@ -65,12 +64,13 @@ export class StudyAdminController {
   @ApiOperation({ summary: '스터디 생성' })
   @ApiProperty({ type: CreateStudyRequestDto })
   @ApiCustomResponse(CreateStudyResponseDto)
-  @ApiCustomErrorResponse([...AuthAdminAccountException, CategoryNotFoundException])
-  async createStudy(
-    @ReqMember() member: Member,
-    @Body() request: CreateStudyRequestDto,
-  ): Promise<CreateStudyResponseDto> {
-    return this.studyAdminService.createStudy(member, request);
+  @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
+    CategoryNotFoundException,
+    AlreadyExistsStudyException,
+  ])
+  async createStudy(@Body() request: CreateStudyRequestDto): Promise<CreateStudyResponseDto> {
+    return this.studyAdminService.createStudy(request);
   }
 
   @Delete()

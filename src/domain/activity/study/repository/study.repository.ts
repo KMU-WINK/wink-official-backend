@@ -28,10 +28,6 @@ export class StudyRepository {
       .exec();
   }
 
-  async findById(id: string): Promise<Study | null> {
-    return this.studyModel.findById(id).exec();
-  }
-
   // Delete
   async deleteById(id: string): Promise<void> {
     await this.studyModel.deleteOne({ _id: id }).exec();
@@ -40,5 +36,9 @@ export class StudyRepository {
   // Exists
   async existsById(id: string): Promise<boolean> {
     return !!(await this.studyModel.exists({ _id: id }).exec());
+  }
+
+  async existsByLink(link: string): Promise<boolean> {
+    return !!(await this.studyModel.exists({ link }).exec());
   }
 }

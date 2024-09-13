@@ -34,42 +34,42 @@ export const mockMemberRepository = (memory: Member[]) => ({
   }),
 
   // Update
-  updatePassword: jest.fn(async (id: string, password: string) => {
+  updatePasswordById: jest.fn(async (id: string, password: string) => {
     const member = memory.find((member) => member._id === id);
     if (member) {
       member.password = password;
     }
   }),
 
-  updateDescription: jest.fn(async (id: string, description: string) => {
+  updateDescriptionById: jest.fn(async (id: string, description: string) => {
     const member = memory.find((member) => member._id === id);
     if (member) {
       member.description = description;
     }
   }),
 
-  updateGithub: jest.fn(async (id: string, githubUrl: string) => {
+  updateGithubUrlById: jest.fn(async (id: string, githubUrl: string) => {
     const member = memory.find((member) => member._id === id);
     if (member) {
       member.link.github = githubUrl;
     }
   }),
 
-  updateInstagram: jest.fn(async (id: string, instagramUrl: string) => {
+  updateInstagramUrlById: jest.fn(async (id: string, instagramUrl: string) => {
     const member = memory.find((member) => member._id === id);
     if (member) {
       member.link.instagram = instagramUrl;
     }
   }),
 
-  updateBlog: jest.fn(async (id: string, blog: string) => {
+  updateBlogById: jest.fn(async (id: string, blog: string) => {
     const member = memory.find((member) => member._id === id);
     if (member) {
       member.link.blog = blog;
     }
   }),
 
-  updateAvatar: jest.fn(async (id: string, avatar: string) => {
+  updateAvatarById: jest.fn(async (id: string, avatar: string) => {
     const member = memory.find((member) => member._id === id);
     if (member) {
       member.avatar = avatar;
