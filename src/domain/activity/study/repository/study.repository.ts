@@ -28,6 +28,10 @@ export class StudyRepository {
       .exec();
   }
 
+  async findById(id: string): Promise<Study | null> {
+    return this.studyModel.findById(id).exec();
+  }
+
   // Delete
   async deleteById(id: string): Promise<void> {
     await this.studyModel.deleteOne({ _id: id }).exec();

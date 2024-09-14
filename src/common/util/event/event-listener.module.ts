@@ -8,6 +8,10 @@ import {
   RedisServiceEventListener,
   S3ServiceEventListener,
   SchedulerEventListener,
+  ProjectAdminServiceEventListener,
+  CommonAdminServiceEventListener,
+  StudyAdminServiceEventListener,
+  SocialAdminServiceEventListener,
 } from './listener';
 
 @Module({
@@ -15,6 +19,10 @@ import {
     AuthServiceEventListener,
     MemberAdminServiceEventListener,
     MemberServiceEventListener,
+    CommonAdminServiceEventListener,
+    ProjectAdminServiceEventListener,
+    StudyAdminServiceEventListener,
+    SocialAdminServiceEventListener,
 
     MailEventListener,
     RedisServiceEventListener,

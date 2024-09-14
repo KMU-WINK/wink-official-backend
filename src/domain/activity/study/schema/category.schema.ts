@@ -4,6 +4,10 @@ import { Schema as MongooseSchema } from 'mongoose';
 
 @Schema()
 export class Category {
+  readonly _id!: string;
+  readonly createdAt!: Date;
+  readonly updatedAt!: Date;
+
   @Prop({ type: String, required: true })
   name!: string;
 }

@@ -43,8 +43,11 @@ export class ProjectAdminController {
     ProjectNotFoundException,
     AlreadyExistsProjectException,
   ])
-  async updateProject(@Body() request: UpdateProjectRequestDto): Promise<void> {
-    return this.projectAdminService.updateProject(request);
+  async updateProject(
+    @ReqMember() member: Member,
+    @Body() request: UpdateProjectRequestDto,
+  ): Promise<void> {
+    return this.projectAdminService.updateProject(member, request);
   }
 
   @Delete()
@@ -52,7 +55,10 @@ export class ProjectAdminController {
   @ApiOperation({ summary: '프로젝트 삭제' })
   @ApiProperty({ type: DeleteProjectRequestDto })
   @ApiCustomErrorResponse([...AuthAdminAccountException, ProjectNotFoundException])
-  async deleteProject(@Body() request: DeleteProjectRequestDto): Promise<void> {
-    return this.projectAdminService.deleteProject(request);
+  async deleteProject(
+    @ReqMember() member: Member,
+    @Body() request: DeleteProjectRequestDto,
+  ): Promise<void> {
+    return this.projectAdminService.deleteProject(member, request);
   }
 }

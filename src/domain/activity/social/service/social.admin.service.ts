@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
+import { Member } from '@wink/member/schema';
 
 import {
   CreateSocialRequestDto,
@@ -10,14 +13,20 @@ import { AlreadyExistsSocialException, SocialNotFoundException } from '@wink/act
 import { SocialRepository } from '@wink/activity/repository';
 import { Social } from '@wink/activity/schema';
 
+import { CreateSocialEvent, DeleteSocialEvent, UpdateSocialEvent } from '@wink/event';
+
 @Injectable()
 export class SocialAdminService {
-  constructor(private readonly socialRepository: SocialRepository) {}
+  constructor(
+    private readonly socialRepository: SocialRepository,
 
-  async createSocial({
-    title,
-    contents,
-  }: CreateSocialRequestDto): Promise<CreateSocialResponseDto> {
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
+
+  async createSocial(
+    member: Member,
+    { title, contents }: CreateSocialRequestDto,
+  ): Promise<CreateSocialResponseDto> {
     if (!(await this.socialRepository.existsByTitle(title))) {
       throw new AlreadyExistsSocialException();
     }
@@ -29,10 +38,18 @@ export class SocialAdminService {
 
     const savedSocial = await this.socialRepository.save(social);
 
+    this.eventEmitter.emit(
+      CreateSocialEvent.EVENT_NAME,
+      new CreateSocialEvent(member, savedSocial),
+    );
+
     return { social: savedSocial };
   }
 
-  async updateSocial({ socialId, title, contents }: UpdateSocialRequestDto): Promise<void> {
+  async updateSocial(
+    member: Member,
+    { socialId, title, contents }: UpdateSocialRequestDto,
+  ): Promise<void> {
     if (!(await this.socialRepository.existsById(socialId))) {
       throw new SocialNotFoundException();
     }
@@ -47,13 +64,19 @@ export class SocialAdminService {
     social.contents = contents;
 
     await this.socialRepository.save(social);
+
+    this.eventEmitter.emit(UpdateSocialEvent.EVENT_NAME, new UpdateSocialEvent(member, social));
   }
 
-  async deleteSocial({ socialId }: DeleteSocialRequestDto): Promise<void> {
+  async deleteSocial(member: Member, { socialId }: DeleteSocialRequestDto): Promise<void> {
     if (!(await this.socialRepository.existsById(socialId))) {
       throw new SocialNotFoundException();
     }
 
+    const social = (await this.socialRepository.findById(socialId))!;
+
     await this.socialRepository.deleteById(socialId);
+
+    this.eventEmitter.emit(DeleteSocialEvent.EVENT_NAME, new DeleteSocialEvent(member, social));
   }
 }

@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Patch, Put } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { AuthAdminAccount, AuthAdminAccountException } from '@wink/auth/guard';
+import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '@wink/auth/guard';
+
+import { Member } from '@wink/member/schema';
 
 import {
   CreateCategoryRequestDto,
@@ -34,9 +36,10 @@ export class StudyAdminController {
   @ApiCustomResponse(CreateStudyResponseDto)
   @ApiCustomErrorResponse([...AuthAdminAccountException, AlreadyExistsCategoryException])
   async createCategory(
+    @ReqMember() member: Member,
     @Body() request: CreateCategoryRequestDto,
   ): Promise<CreateCategoryResponseDto> {
-    return this.studyAdminService.createCategory(request);
+    return this.studyAdminService.createCategory(member, request);
   }
 
   @Patch('/category')
@@ -49,8 +52,11 @@ export class StudyAdminController {
     CategoryNotFoundException,
     AlreadyExistsCategoryException,
   ])
-  async updateCategory(@Body() request: UpdateCategoryRequestDto): Promise<void> {
-    return this.studyAdminService.updateCategory(request);
+  async updateCategory(
+    @ReqMember() member: Member,
+    @Body() request: UpdateCategoryRequestDto,
+  ): Promise<void> {
+    return this.studyAdminService.updateCategory(member, request);
   }
 
   @Delete('/category')
@@ -59,8 +65,11 @@ export class StudyAdminController {
   @ApiProperty({ type: CreateStudyRequestDto })
   @ApiCustomResponse(CreateStudyResponseDto)
   @ApiCustomErrorResponse([...AuthAdminAccountException, CategoryNotFoundException])
-  async deleteCategory(@Body() request: DeleteCategoryRequestDto): Promise<void> {
-    return this.studyAdminService.deleteCategory(request);
+  async deleteCategory(
+    @ReqMember() member: Member,
+    @Body() request: DeleteCategoryRequestDto,
+  ): Promise<void> {
+    return this.studyAdminService.deleteCategory(member, request);
   }
 
   @Put()
@@ -73,8 +82,11 @@ export class StudyAdminController {
     CategoryNotFoundException,
     AlreadyExistsStudyException,
   ])
-  async createStudy(@Body() request: CreateStudyRequestDto): Promise<CreateStudyResponseDto> {
-    return this.studyAdminService.createStudy(request);
+  async createStudy(
+    @ReqMember() member: Member,
+    @Body() request: CreateStudyRequestDto,
+  ): Promise<CreateStudyResponseDto> {
+    return this.studyAdminService.createStudy(member, request);
   }
 
   @Delete()
@@ -82,7 +94,10 @@ export class StudyAdminController {
   @ApiOperation({ summary: '스터디 삭제' })
   @ApiProperty({ type: DeleteStudyRequestDto })
   @ApiCustomErrorResponse([...AuthAdminAccountException, StudyNotFoundException])
-  async deleteStudy(@Body() request: DeleteStudyRequestDto): Promise<void> {
-    return this.studyAdminService.deleteStudy(request);
+  async deleteStudy(
+    @ReqMember() member: Member,
+    @Body() request: DeleteStudyRequestDto,
+  ): Promise<void> {
+    return this.studyAdminService.deleteStudy(member, request);
   }
 }

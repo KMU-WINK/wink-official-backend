@@ -2,7 +2,9 @@ import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { AuthAdminAccount, AuthAdminAccountException } from '@wink/auth/guard';
+import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '@wink/auth/guard';
+
+import { Member } from '@wink/member/schema';
 
 import { ImageFilter, ImageFilterException } from '@wink/activity/common/util/multer';
 import { UploadResponseDto } from '@wink/activity/common/dto';
@@ -21,7 +23,10 @@ export class ActivityAdminController {
   @ApiOperation({ summary: '사진 업로드' })
   @ApiCustomResponse()
   @ApiCustomErrorResponse([...AuthAdminAccountException, ...ImageFilterException])
-  async upload(@UploadedFile() file: Express.Multer.File): Promise<UploadResponseDto> {
-    return this.activityAdminService.upload(file);
+  async upload(
+    @ReqMember() member: Member,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<UploadResponseDto> {
+    return this.activityAdminService.upload(member, file);
   }
 }
