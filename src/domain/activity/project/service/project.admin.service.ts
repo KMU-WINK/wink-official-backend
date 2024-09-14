@@ -48,10 +48,18 @@ export class ProjectAdminService {
       throw new ProjectNotFoundException();
     }
 
-    await this.projectRepository.updateTitleById(projectId, title);
-    await this.projectRepository.updateContentById(projectId, content);
-    await this.projectRepository.updateTagsById(projectId, tags);
-    await this.projectRepository.updateImageById(projectId, image);
+    const project = (await this.projectRepository.findById(projectId))!;
+
+    if (title !== project.title && (await this.projectRepository.existsByTitle(title))) {
+      throw new AlreadyExistsProjectException();
+    }
+
+    project.title = title;
+    project.content = content;
+    project.tags = tags;
+    project.image = image;
+
+    await this.projectRepository.save(project);
   }
 
   async deleteProject({ projectId }: DeleteProjectRequestDto): Promise<void> {

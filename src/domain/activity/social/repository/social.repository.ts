@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Content, Social } from '@wink/activity/schema';
+import { Social } from '@wink/activity/schema';
 
 import { Model } from 'mongoose';
 
@@ -21,15 +21,6 @@ export class SocialRepository {
 
   async findById(id: string): Promise<Social | null> {
     return this.socialModel.findById(id).exec();
-  }
-
-  // Update
-  async updateTitleById(id: string, title: string): Promise<void> {
-    await this.socialModel.updateOne({ _id: id }, { title }).exec();
-  }
-
-  async updateContentsById(id: string, contents: Content[]): Promise<void> {
-    await this.socialModel.updateOne({ _id: id }, { contents }).exec();
   }
 
   // Delete

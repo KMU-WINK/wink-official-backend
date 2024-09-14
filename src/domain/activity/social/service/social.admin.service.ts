@@ -37,8 +37,16 @@ export class SocialAdminService {
       throw new SocialNotFoundException();
     }
 
-    await this.socialRepository.updateTitleById(socialId, title);
-    await this.socialRepository.updateContentsById(socialId, contents);
+    const social = (await this.socialRepository.findById(socialId))!;
+
+    if (title !== social.title && (await this.socialRepository.existsByTitle(title))) {
+      throw new AlreadyExistsSocialException();
+    }
+
+    social.title = title;
+    social.contents = contents;
+
+    await this.socialRepository.save(social);
   }
 
   async deleteSocial({ socialId }: DeleteSocialRequestDto): Promise<void> {

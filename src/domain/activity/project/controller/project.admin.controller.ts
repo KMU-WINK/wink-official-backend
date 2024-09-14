@@ -38,7 +38,11 @@ export class ProjectAdminController {
   @AuthAdminAccount()
   @ApiOperation({ summary: '프로젝트 수정' })
   @ApiProperty({ type: UpdateProjectRequestDto })
-  @ApiCustomErrorResponse([...AuthAdminAccountException, ProjectNotFoundException])
+  @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
+    ProjectNotFoundException,
+    AlreadyExistsProjectException,
+  ])
   async updateProject(@Body() request: UpdateProjectRequestDto): Promise<void> {
     return this.projectAdminService.updateProject(request);
   }
