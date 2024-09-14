@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import {
   GetProjectRequestDto,
   GetProjectResponseDto,
   GetProjectsPageResponseDto,
+  GetProjectsRequestDto,
   GetProjectsResponseDto,
 } from '@wink/activity/dto';
 import { ProjectNotFoundException } from '@wink/activity/exception';
@@ -33,10 +34,11 @@ export class ProjectController {
     return this.projectService.getProjectsPage();
   }
 
-  @Get('/:page')
+  @Get()
   @ApiOperation({ summary: '프로젝트 목록' })
+  @ApiProperty({ type: GetProjectsRequestDto })
   @ApiCustomResponse(GetProjectsResponseDto)
-  async getProjects(@Param('page', ParseIntPipe) page: number): Promise<GetProjectsResponseDto> {
-    return this.projectService.getProjects(page);
+  async getProjects(@Body() request: GetProjectsRequestDto): Promise<GetProjectsResponseDto> {
+    return this.projectService.getProjects(request);
   }
 }

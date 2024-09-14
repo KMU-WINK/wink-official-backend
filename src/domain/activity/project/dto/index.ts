@@ -2,6 +2,7 @@
 export * from './request/create-project.request.dto';
 export * from './request/update-project.request.dto';
 export * from './request/get-project.request.dto';
+export * from './request/get-projects.request.dto';
 export * from './request/delete-project.request.dto';
 
 // Response

@@ -1,10 +1,11 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import {
   GetCategoriesResponseDto,
-  GetStudiesPageResponse,
-  GetStudiesResponse,
+  GetStudiesPageResponseDto,
+  GetStudiesRequestDto,
+  GetStudiesResponseDto,
 } from '@wink/activity/dto';
 import { StudyService } from '@wink/activity/service';
 
@@ -24,15 +25,16 @@ export class StudyController {
 
   @Get('/max')
   @ApiOperation({ summary: '스터디 최대 페이지' })
-  @ApiCustomResponse(GetStudiesPageResponse)
-  async getStudiesPage(): Promise<GetStudiesPageResponse> {
+  @ApiCustomResponse(GetStudiesPageResponseDto)
+  async getStudiesPage(): Promise<GetStudiesPageResponseDto> {
     return this.studyService.getStudiesPage();
   }
 
-  @Get('/:page')
+  @Get()
   @ApiOperation({ summary: '스터디 목록' })
-  @ApiCustomResponse(GetStudiesResponse)
-  async getStudies(@Param('page', ParseIntPipe) page: number): Promise<GetStudiesResponse> {
-    return this.studyService.getStudies(page);
+  @ApiProperty({ type: GetStudiesRequestDto })
+  @ApiCustomResponse(GetStudiesResponseDto)
+  async getStudies(@Body() request: GetStudiesRequestDto): Promise<GetStudiesResponseDto> {
+    return this.studyService.getStudies(request);
   }
 }

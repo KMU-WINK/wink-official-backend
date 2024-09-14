@@ -5,6 +5,7 @@ import {
   GetProjectRequestDto,
   GetProjectResponseDto,
   GetProjectsPageResponseDto,
+  GetProjectsRequestDto,
   GetProjectsResponseDto,
 } from '@wink/activity/dto';
 import { ProjectRepository } from '@wink/activity/repository';
@@ -30,7 +31,7 @@ export class ProjectService {
     return { page };
   }
 
-  async getProjects(page: number): Promise<GetProjectsResponseDto> {
+  async getProjects({ page }: GetProjectsRequestDto): Promise<GetProjectsResponseDto> {
     const projects = await this.projectRepository.findAllPage(page);
 
     return { projects };
