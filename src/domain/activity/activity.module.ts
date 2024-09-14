@@ -10,6 +10,7 @@ import {
   StudyAdminController,
   SocialController,
   SocialAdminController,
+  ActivityAdminController,
 } from '@wink/activity/controller';
 import {
   ProjectRepository,
@@ -34,9 +35,11 @@ import {
   StudyAdminService,
   SocialService,
   SocialAdminService,
+  ActivityAdminService,
 } from '@wink/activity/service';
 
 import { MongoModelFactory } from '@wink/mongo';
+import { S3Module } from '@wink/s3';
 
 const modelFactory1 = MongoModelFactory.generateRecursive<Activity>(Activity.name, ActivitySchema, [
   { type: ActivityType.Project, schema: ProjectSchema },
@@ -47,8 +50,13 @@ const modelFactory1 = MongoModelFactory.generateRecursive<Activity>(Activity.nam
 const modelFactory2 = MongoModelFactory.generate<Category>(Category.name, CategorySchema);
 
 @Module({
-  imports: [MongooseModule.forFeature([modelFactory1, modelFactory2]), MemberModule],
+  imports: [
+    MongooseModule.forFeature([modelFactory1, modelFactory2]),
+    S3Module.forRoot({ directory: 'activity' }),
+    MemberModule,
+  ],
   controllers: [
+    ActivityAdminController,
     ProjectController,
     ProjectAdminController,
     StudyController,
@@ -57,6 +65,7 @@ const modelFactory2 = MongoModelFactory.generate<Category>(Category.name, Catego
     SocialAdminController,
   ],
   providers: [
+    ActivityAdminService,
     ProjectService,
     ProjectAdminService,
     StudyService,
