@@ -31,7 +31,11 @@ export class SocialAdminController {
   @AuthAdminAccount()
   @ApiOperation({ summary: '친목 활동 수정' })
   @ApiProperty({ type: UpdateSocialRequestDto })
-  @ApiCustomErrorResponse([...AuthAdminAccountException, SocialNotFoundException])
+  @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
+    SocialNotFoundException,
+    AlreadyExistsSocialException,
+  ])
   async updateProject(@Body() request: UpdateSocialRequestDto): Promise<void> {
     return this.socialAdminService.updateSocial(request);
   }

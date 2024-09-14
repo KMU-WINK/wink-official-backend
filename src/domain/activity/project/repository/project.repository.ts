@@ -32,23 +32,6 @@ export class ProjectRepository {
     return this.projectModel.findById(id).exec();
   }
 
-  // Update
-  async updateTitleById(id: string, title: string): Promise<void> {
-    await this.projectModel.updateOne({ _id: id }, { title }).exec();
-  }
-
-  async updateContentById(id: string, content: string): Promise<void> {
-    await this.projectModel.updateOne({ _id: id }, { content }).exec();
-  }
-
-  async updateTagsById(id: string, tags: string[]): Promise<void> {
-    await this.projectModel.updateOne({ _id: id }, { tags }).exec();
-  }
-
-  async updateImageById(id: string, image: string): Promise<void> {
-    await this.projectModel.updateOne({ _id: id }, { image }).exec();
-  }
-
   // Delete
   async deleteById(id: string): Promise<void> {
     await this.projectModel.deleteOne({ _id: id }).exec();

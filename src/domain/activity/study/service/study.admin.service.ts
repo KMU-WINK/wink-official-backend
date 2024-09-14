@@ -47,7 +47,15 @@ export class StudyAdminService {
       throw new CategoryNotFoundException();
     }
 
-    await this.categoryRepository.updateNameById(categoryId, name);
+    const category = (await this.categoryRepository.findById(categoryId))!;
+
+    if (name !== category.name && (await this.categoryRepository.existsByName(name))) {
+      throw new AlreadyExistsCategoryException();
+    }
+
+    category.name = name;
+
+    await this.categoryRepository.save(category);
   }
 
   async deleteCategory({ categoryId }: DeleteCategoryRequestDto): Promise<void> {

@@ -26,9 +26,8 @@ export class CategoryRepository {
     return this.categoryModel.findOne({ name }).exec();
   }
 
-  // Update
-  async updateNameById(id: string, name: string): Promise<void> {
-    await this.categoryModel.updateOne({ _id: id }, { name }).exec();
+  async findById(id: string): Promise<Category | null> {
+    return this.categoryModel.findById(id).exec();
   }
 
   // Delete

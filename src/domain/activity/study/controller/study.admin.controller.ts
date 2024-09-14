@@ -44,7 +44,11 @@ export class StudyAdminController {
   @ApiOperation({ summary: '카테고리 수정' })
   @ApiProperty({ type: CreateStudyRequestDto })
   @ApiCustomResponse(CreateStudyResponseDto)
-  @ApiCustomErrorResponse([...AuthAdminAccountException, CategoryNotFoundException])
+  @ApiCustomErrorResponse([
+    ...AuthAdminAccountException,
+    CategoryNotFoundException,
+    AlreadyExistsCategoryException,
+  ])
   async updateCategory(@Body() request: UpdateCategoryRequestDto): Promise<void> {
     return this.studyAdminService.updateCategory(request);
   }

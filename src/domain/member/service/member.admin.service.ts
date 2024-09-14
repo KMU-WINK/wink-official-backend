@@ -56,8 +56,10 @@ export class MemberAdminService {
       throw new NotWaitingMemberException();
     }
 
-    await this.memberRepository.updateApprovedById(toId, true);
-    await this.memberRepository.updateRoleById(toId, Role.MEMBER);
+    to.approved = true;
+    to.role = Role.MEMBER;
+
+    await this.memberRepository.save(to);
 
     this.mailService.sendTemplate(to.email, new ApproveAccountTemplate(to.name)).then((_) => _);
 
@@ -117,7 +119,9 @@ export class MemberAdminService {
       throw new SuperRoleException();
     }
 
-    await this.memberRepository.updateRoleById(to._id, role);
+    to.role = role;
+
+    await this.memberRepository.save(to);
 
     this.eventEmitter.emit(UpdateRoleEvent.EVENT_NAME, new UpdateRoleEvent(from, to, role));
   }
@@ -137,7 +141,9 @@ export class MemberAdminService {
       throw new SuperRoleException();
     }
 
-    await this.memberRepository.updateFeeById(toId, fee);
+    to.fee = fee;
+
+    await this.memberRepository.save(to);
 
     this.eventEmitter.emit(UpdateFeeEvent.EVENT_NAME, new UpdateFeeEvent(from, to, fee));
   }
