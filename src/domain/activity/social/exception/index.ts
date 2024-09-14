@@ -1,1 +1,2 @@
-export const empty_social = 'social';
+export * from './already-exists-social.exception';
+export * from './social-not-found.exception';

@@ -5,9 +5,11 @@ import { MemberModule } from '@wink/member/member.module';
 
 import {
   ProjectController,
+  ProjectAdminController,
   StudyController,
   StudyAdminController,
   SocialController,
+  SocialAdminController,
 } from '@wink/activity/controller';
 import {
   ProjectRepository,
@@ -27,9 +29,11 @@ import {
 } from '@wink/activity/schema';
 import {
   ProjectService,
+  ProjectAdminService,
   StudyService,
   StudyAdminService,
   SocialService,
+  SocialAdminService,
 } from '@wink/activity/service';
 
 import { MongoModelFactory } from '@wink/mongo';
@@ -42,19 +46,23 @@ const modelFactory1 = MongoModelFactory.generateRecursive<Activity>(Activity.nam
 
 const modelFactory2 = MongoModelFactory.generate<Category>(Category.name, CategorySchema);
 
-/**
- * TODO:
- *   - [ ] Study에서 OG를 동적으로 불러오게 하고 싶음.
- *   - [ ] Study에서 카테고리를 제공해야 함.
- */
 @Module({
   imports: [MongooseModule.forFeature([modelFactory1, modelFactory2]), MemberModule],
-  controllers: [ProjectController, StudyController, StudyAdminController, SocialController],
+  controllers: [
+    ProjectController,
+    ProjectAdminController,
+    StudyController,
+    StudyAdminController,
+    SocialController,
+    SocialAdminController,
+  ],
   providers: [
     ProjectService,
+    ProjectAdminService,
     StudyService,
     StudyAdminService,
     SocialService,
+    SocialAdminService,
 
     ProjectRepository,
     StudyRepository,

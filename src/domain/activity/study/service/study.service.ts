@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import {
   GetCategoriesResponseDto,
-  GetStudiesPageResponse,
-  GetStudiesResponse,
+  GetStudiesPageResponseDto,
+  GetStudiesRequestDto,
+  GetStudiesResponseDto,
 } from '@wink/activity/dto';
 import { StudyRepository, CategoryRepository } from '@wink/activity/repository';
 
@@ -20,13 +21,13 @@ export class StudyService {
     return { categories };
   }
 
-  async getStudies(page: number): Promise<GetStudiesResponse> {
+  async getStudies({ page }: GetStudiesRequestDto): Promise<GetStudiesResponseDto> {
     const studies = await this.studyRepository.findAllPage(page);
 
     return { studies };
   }
 
-  async getStudiesPage(): Promise<GetStudiesPageResponse> {
+  async getStudiesPage(): Promise<GetStudiesPageResponseDto> {
     const studies = await this.studyRepository.findAll();
     const page = Math.ceil(studies.length / 10);
 

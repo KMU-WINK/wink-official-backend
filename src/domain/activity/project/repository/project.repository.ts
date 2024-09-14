@@ -16,11 +16,37 @@ export class ProjectRepository {
 
   // Read
   async findAll(): Promise<Project[]> {
-    return this.projectModel.find().exec();
+    return this.projectModel.find().sort({ createdAt: -1 }).exec();
+  }
+
+  async findAllPage(page: number): Promise<Project[]> {
+    return this.projectModel
+      .find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * 10)
+      .limit(10)
+      .exec();
   }
 
   async findById(id: string): Promise<Project | null> {
     return this.projectModel.findById(id).exec();
+  }
+
+  // Update
+  async updateTitleById(id: string, title: string): Promise<void> {
+    await this.projectModel.updateOne({ _id: id }, { title }).exec();
+  }
+
+  async updateContentById(id: string, content: string): Promise<void> {
+    await this.projectModel.updateOne({ _id: id }, { content }).exec();
+  }
+
+  async updateTagsById(id: string, tags: string[]): Promise<void> {
+    await this.projectModel.updateOne({ _id: id }, { tags }).exec();
+  }
+
+  async updateImageById(id: string, image: string): Promise<void> {
+    await this.projectModel.updateOne({ _id: id }, { image }).exec();
   }
 
   // Delete
@@ -31,5 +57,9 @@ export class ProjectRepository {
   // Exists
   async existsById(id: string): Promise<boolean> {
     return !!(await this.projectModel.exists({ _id: id }).exec());
+  }
+
+  async existsByTitle(title: string): Promise<boolean> {
+    return !!(await this.projectModel.exists({ title }).exec());
   }
 }

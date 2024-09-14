@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class GetStudiesPageResponseDto {
+export class GetProjectsPageResponseDto {
   @ApiProperty({
     description: '최대 페이지',
     example: 1,
