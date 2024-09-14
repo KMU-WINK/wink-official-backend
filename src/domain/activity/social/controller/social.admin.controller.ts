@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Patch, Put } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import { SocialAdminService } from '@wink/activity/service';
-import { AuthAdminAccount, AuthAdminAccountException } from '@wink/auth/guard';
+import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '@wink/auth/guard';
 import { ApiCustomErrorResponse, ApiCustomResponse } from '@wink/swagger';
 import {
   CreateSocialRequestDto,
@@ -11,6 +11,7 @@ import {
   UpdateSocialRequestDto,
 } from '@wink/activity/dto';
 import { AlreadyExistsSocialException, SocialNotFoundException } from '@wink/activity/exception';
+import { Member } from '@wink/member/schema';
 
 @Controller('/admin/activity/social')
 @ApiTags('[Admin] Activity [친목]')
@@ -23,8 +24,11 @@ export class SocialAdminController {
   @ApiProperty({ type: CreateSocialRequestDto })
   @ApiCustomResponse(CreateSocialResponseDto)
   @ApiCustomErrorResponse([...AuthAdminAccountException, AlreadyExistsSocialException])
-  async createProject(@Body() request: CreateSocialRequestDto): Promise<CreateSocialResponseDto> {
-    return this.socialAdminService.createSocial(request);
+  async createProject(
+    @ReqMember() member: Member,
+    @Body() request: CreateSocialRequestDto,
+  ): Promise<CreateSocialResponseDto> {
+    return this.socialAdminService.createSocial(member, request);
   }
 
   @Patch()
@@ -36,8 +40,11 @@ export class SocialAdminController {
     SocialNotFoundException,
     AlreadyExistsSocialException,
   ])
-  async updateProject(@Body() request: UpdateSocialRequestDto): Promise<void> {
-    return this.socialAdminService.updateSocial(request);
+  async updateProject(
+    @ReqMember() member: Member,
+    @Body() request: UpdateSocialRequestDto,
+  ): Promise<void> {
+    return this.socialAdminService.updateSocial(member, request);
   }
 
   @Delete()
@@ -45,7 +52,10 @@ export class SocialAdminController {
   @ApiOperation({ summary: '친목 활동 삭제' })
   @ApiProperty({ type: DeleteSocialRequestDto })
   @ApiCustomErrorResponse([...AuthAdminAccountException, SocialNotFoundException])
-  async deleteProject(@Body() request: DeleteSocialRequestDto): Promise<void> {
-    return this.socialAdminService.deleteSocial(request);
+  async deleteProject(
+    @ReqMember() member: Member,
+    @Body() request: DeleteSocialRequestDto,
+  ): Promise<void> {
+    return this.socialAdminService.deleteSocial(member, request);
   }
 }

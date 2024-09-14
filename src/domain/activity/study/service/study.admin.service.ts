@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
+import { Member } from '@wink/member/schema';
 
 import {
   CreateCategoryRequestDto,
@@ -21,28 +24,47 @@ import { Study, Category } from '@wink/activity/schema';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
+import {
+  CreateCategoryEvent,
+  CreateStudyEvent,
+  DeleteCategoryEvent,
+  DeleteStudyEvent,
+  UpdateCategoryEvent,
+} from '@wink/event';
+
 @Injectable()
 export class StudyAdminService {
   constructor(
     private readonly categoryRepository: CategoryRepository,
     private readonly studyRepository: StudyRepository,
+
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async createCategory({
-    category: name,
-  }: CreateCategoryRequestDto): Promise<CreateCategoryResponseDto> {
+  async createCategory(
+    member: Member,
+    { category: name }: CreateCategoryRequestDto,
+  ): Promise<CreateCategoryResponseDto> {
     if (await this.categoryRepository.existsByName(name)) {
       throw new AlreadyExistsCategoryException();
     }
 
-    const category: Category = { name };
+    const category: Partial<Category> = { name };
 
     const savedCategory = await this.categoryRepository.save(category);
+
+    this.eventEmitter.emit(
+      CreateCategoryEvent.EVENT_NAME,
+      new CreateCategoryEvent(member, savedCategory),
+    );
 
     return { category: savedCategory };
   }
 
-  async updateCategory({ categoryId, category: name }: UpdateCategoryRequestDto): Promise<void> {
+  async updateCategory(
+    member: Member,
+    { categoryId, category: name }: UpdateCategoryRequestDto,
+  ): Promise<void> {
     if (!(await this.categoryRepository.existsById(categoryId))) {
       throw new CategoryNotFoundException();
     }
@@ -56,17 +78,32 @@ export class StudyAdminService {
     category.name = name;
 
     await this.categoryRepository.save(category);
+
+    this.eventEmitter.emit(
+      UpdateCategoryEvent.EVENT_NAME,
+      new UpdateCategoryEvent(member, category),
+    );
   }
 
-  async deleteCategory({ categoryId }: DeleteCategoryRequestDto): Promise<void> {
+  async deleteCategory(member: Member, { categoryId }: DeleteCategoryRequestDto): Promise<void> {
     if (!(await this.categoryRepository.existsById(categoryId))) {
       throw new CategoryNotFoundException();
     }
 
+    const category = (await this.categoryRepository.findById(categoryId))!;
+
     await this.categoryRepository.deleteById(categoryId);
+
+    this.eventEmitter.emit(
+      DeleteCategoryEvent.EVENT_NAME,
+      new DeleteCategoryEvent(member, category),
+    );
   }
 
-  async createStudy({ link }: CreateStudyRequestDto): Promise<CreateStudyResponseDto> {
+  async createStudy(
+    member: Member,
+    { link }: CreateStudyRequestDto,
+  ): Promise<CreateStudyResponseDto> {
     if (await this.studyRepository.existsByLink(link)) {
       throw new AlreadyExistsStudyException();
     }
@@ -102,16 +139,22 @@ export class StudyAdminService {
 
     const createdStudy = await this.studyRepository.save(study);
 
+    this.eventEmitter.emit(CreateStudyEvent.EVENT_NAME, new CreateStudyEvent(member, createdStudy));
+
     return {
       study: createdStudy,
     };
   }
 
-  async deleteStudy({ studyId }: DeleteStudyRequestDto): Promise<void> {
+  async deleteStudy(member: Member, { studyId }: DeleteStudyRequestDto): Promise<void> {
     if (!(await this.studyRepository.existsById(studyId))) {
       throw new StudyNotFoundException();
     }
 
-    return this.studyRepository.deleteById(studyId);
+    const study = (await this.studyRepository.findById(studyId))!;
+
+    await this.studyRepository.deleteById(studyId);
+
+    this.eventEmitter.emit(DeleteStudyEvent.EVENT_NAME, new DeleteStudyEvent(member, study));
   }
 }
