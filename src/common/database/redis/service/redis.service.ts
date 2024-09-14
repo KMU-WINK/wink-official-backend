@@ -27,7 +27,9 @@ export class RedisService {
   }
 
   async exists(key: string): Promise<boolean> {
-    if (!this.group) throw new Error('Group is not set');
+    if (!this.group) {
+      throw new Error('Group is not set');
+    }
 
     const _key = this.#generateKey(key);
 
@@ -37,7 +39,9 @@ export class RedisService {
   }
 
   async get(key: string): Promise<string> {
-    if (!this.group) throw new Error('Group is not set');
+    if (!this.group) {
+      throw new Error('Group is not set');
+    }
 
     const _key = this.#generateKey(key);
 
@@ -45,7 +49,9 @@ export class RedisService {
   }
 
   async set(key: string, value: string, seconds: number = 0): Promise<void> {
-    if (!this.group) throw new Error('Group is not set');
+    if (!this.group) {
+      throw new Error('Group is not set');
+    }
 
     const _key = this.#generateKey(key);
 
@@ -63,7 +69,9 @@ export class RedisService {
   }
 
   async delete(key: string): Promise<void> {
-    if (!this.group) throw new Error('Group is not set');
+    if (!this.group) {
+      throw new Error('Group is not set');
+    }
 
     const _key = this.#generateKey(key);
 
@@ -73,7 +81,9 @@ export class RedisService {
   }
 
   #generateKey(key: string): string {
-    if (!this.group) throw new Error('Group is not set');
+    if (!this.group) {
+      throw new Error('Group is not set');
+    }
 
     return `${this.group}:${key}`;
   }

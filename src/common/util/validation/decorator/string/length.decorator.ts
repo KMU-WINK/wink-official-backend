@@ -12,7 +12,7 @@ export const Length = (length: number) => (object: NonNullable<unknown>, propert
       validate: (value: unknown, args: ValidationArguments) => {
         const [length] = args.constraints;
 
-        return typeof value === 'string' && value.length == length;
+        return typeof value === 'string' && value.length === length;
       },
     },
   });
