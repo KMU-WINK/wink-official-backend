@@ -7,9 +7,10 @@ import {
   GetProjectsPageResponseDto,
   GetProjectsResponseDto,
 } from '@wink/activity/dto';
+import { ProjectNotFoundException } from '@wink/activity/exception';
 import { ProjectService } from '@wink/activity/service';
 
-import { ApiCustomResponse } from '@wink/swagger';
+import { ApiCustomErrorResponse, ApiCustomResponse } from '@wink/swagger';
 
 @Controller('/activity/project')
 @ApiTags('Activity [프로젝트]')
@@ -20,6 +21,7 @@ export class ProjectController {
   @ApiOperation({ summary: '프로젝트 상세 조회' })
   @ApiProperty({ type: GetProjectRequestDto })
   @ApiCustomResponse(GetProjectResponseDto)
+  @ApiCustomErrorResponse([ProjectNotFoundException])
   async getProject(@Body() request: GetProjectRequestDto): Promise<GetProjectResponseDto> {
     return this.projectService.getProject(request);
   }

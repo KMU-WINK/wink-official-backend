@@ -9,6 +9,7 @@ import {
   StudyController,
   StudyAdminController,
   SocialController,
+  SocialAdminController,
 } from '@wink/activity/controller';
 import {
   ProjectRepository,
@@ -32,6 +33,7 @@ import {
   StudyService,
   StudyAdminService,
   SocialService,
+  SocialAdminService,
 } from '@wink/activity/service';
 
 import { MongoModelFactory } from '@wink/mongo';
@@ -52,6 +54,7 @@ const modelFactory2 = MongoModelFactory.generate<Category>(Category.name, Catego
     StudyController,
     StudyAdminController,
     SocialController,
+    SocialAdminController,
   ],
   providers: [
     ProjectService,
@@ -59,6 +62,7 @@ const modelFactory2 = MongoModelFactory.generate<Category>(Category.name, Catego
     StudyService,
     StudyAdminService,
     SocialService,
+    SocialAdminService,
 
     ProjectRepository,
     StudyRepository,

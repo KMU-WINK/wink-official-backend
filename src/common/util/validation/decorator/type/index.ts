@@ -5,3 +5,5 @@ export * from './is-boolean.decorator';
 export * from './is-enum.decorator';
 
 export * from './is-string-array.decorator';
+
+export * from './custom';
