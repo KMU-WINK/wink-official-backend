@@ -36,7 +36,7 @@ export class PurgeUnusedAvatarJob {
 
     const unusedAvatars = savedAvatars.filter((a) => !usedAvatars.includes(a));
 
-    unusedAvatars.forEach((key) => this.avatarService.delete(key).then((_) => _));
+    unusedAvatars.forEach((key) => this.avatarService.delete(key));
 
     this.eventEmitter.emit(
       PurgeUnusedAvatarEvent.EVENT_NAME,

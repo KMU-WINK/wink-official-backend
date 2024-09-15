@@ -31,7 +31,7 @@ export class RedisService {
       throw new Error('Group is not set');
     }
 
-    const _key = this.#generateKey(key);
+    const _key = this.generateKey(key);
 
     const exists = await this.redisClient.exists(_key);
 
@@ -43,7 +43,7 @@ export class RedisService {
       throw new Error('Group is not set');
     }
 
-    const _key = this.#generateKey(key);
+    const _key = this.generateKey(key);
 
     return (await this.redisClient.get(_key)) || '';
   }
@@ -53,7 +53,7 @@ export class RedisService {
       throw new Error('Group is not set');
     }
 
-    const _key = this.#generateKey(key);
+    const _key = this.generateKey(key);
 
     let event: RedisSetEvent | RedisSetTtlEvent;
 
@@ -73,14 +73,14 @@ export class RedisService {
       throw new Error('Group is not set');
     }
 
-    const _key = this.#generateKey(key);
+    const _key = this.generateKey(key);
 
     await this.redisClient.del(_key);
 
     this.eventEmitter.emit(RedisDeleteEvent.EVENT_NAME, new RedisDeleteEvent(_key));
   }
 
-  #generateKey(key: string): string {
+  private generateKey(key: string): string {
     if (!this.group) {
       throw new Error('Group is not set');
     }

@@ -7,7 +7,7 @@ const convertToKST = (date: Date): Date => new Date(date.getTime() + 9 * 60 * 60
 
 export class MongoModelFactory {
   static generate<T>(name: string, schema: Schema<T>): ModelDefinition {
-    schema = MongoModelFactory.#setSchemaOptions(schema);
+    schema = MongoModelFactory.setSchemaOptions(schema);
 
     return { name, schema };
   }
@@ -17,9 +17,9 @@ export class MongoModelFactory {
     schema: Schema<T>,
     subSchemas: { type: string; schema: Schema }[],
   ): ModelDefinition {
-    schema = MongoModelFactory.#setSchemaOptions(schema);
+    schema = MongoModelFactory.setSchemaOptions(schema);
     subSchemas = subSchemas.map(({ type, schema }) => {
-      schema = MongoModelFactory.#setSchemaOptions(schema);
+      schema = MongoModelFactory.setSchemaOptions(schema);
 
       return { type, schema };
     });
@@ -33,7 +33,7 @@ export class MongoModelFactory {
     };
   }
 
-  static #setSchemaOptions(schema: Schema): Schema {
+  private static setSchemaOptions(schema: Schema): Schema {
     schema.set('versionKey', false);
     schema.set('timestamps', true);
 
