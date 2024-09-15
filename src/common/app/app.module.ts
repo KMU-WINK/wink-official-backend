@@ -1,20 +1,18 @@
+import { APP_PIPE, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigModuleOptions } from '@nestjs/config';
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { JwtModule, JwtModuleAsyncOptions } from '@nestjs/jwt';
 import { MongooseModule, MongooseModuleAsyncOptions } from '@nestjs/mongoose';
+import { JwtModule, JwtModuleAsyncOptions } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
-
-import { AuthModule } from '@wink/auth/auth.module';
-
-import { MemberModule } from '@wink/member/member.module';
-
-import { ActivityModule } from '@wink/activity/activity.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { AppConfig, JwtConfig, MongoConfig } from '@wink/config';
 import { DefaultExceptionFilter, NotFoundExceptionFilter } from '@wink/filter';
 import { ApiResponseInterceptor } from '@wink/interceptor';
+
+import { AuthModule } from '@wink/auth/auth.module';
+import { MemberModule } from '@wink/member/member.module';
+import { ActivityModule } from '@wink/activity/activity.module';
 
 import { EventListenerModule } from '@wink/event';
 import { Validation } from '@wink/validation';

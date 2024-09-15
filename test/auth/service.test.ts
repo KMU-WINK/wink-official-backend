@@ -1,3 +1,5 @@
+import { mockAuth, createNullMember, createRandomMember } from '@wink/test-mock';
+
 import {
   LoginRequestDto,
   RegisterRequestDto,
@@ -18,8 +20,6 @@ import { NotApprovedMemberException } from '@wink/member/exception';
 import { Member } from '@wink/member/schema';
 
 import { MailService } from '@wink/mail';
-
-import { createNullMember, createRandomMember, mockAuth } from '@wink/test-mock';
 
 import * as bcrypt from 'bcrypt';
 
@@ -277,19 +277,17 @@ describe('AuthService', () => {
 
       // Then
       expect(result).toMatchObject({
-        member: {
-          _id: member._id,
-          createdAt: member.createdAt,
-          updatedAt: member.updatedAt,
-          name: member.name,
-          studentId: member.studentId,
-          email: member.email,
-          avatar: member.avatar,
-          description: member.description,
-          link: member.link,
-          role: member.role,
-          fee: member.fee,
-        },
+        memberId: member._id,
+        createdAt: member.createdAt,
+        updatedAt: member.updatedAt,
+        name: member.name,
+        studentId: member.studentId,
+        email: member.email,
+        avatar: member.avatar,
+        description: member.description,
+        link: member.link,
+        role: member.role,
+        fee: member.fee,
       });
     });
   });

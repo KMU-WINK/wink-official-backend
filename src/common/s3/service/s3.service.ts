@@ -9,8 +9,9 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { extname } from 'path';
+
 import { v4 as uuid } from 'uuid';
+import { extname } from 'path';
 
 @Injectable()
 export class S3Service {
@@ -33,9 +34,7 @@ export class S3Service {
   }
 
   async upload(file: Express.Multer.File): Promise<string> {
-    if (!this.directory) {
-      throw new Error('Directory is not set');
-    }
+    if (!this.directory) throw new Error('Directory is not set');
 
     let _key = `${this.directory}/${uuid()}${extname(file.originalname)}`;
     _key = _key.replace(/ /g, '_');
@@ -57,9 +56,7 @@ export class S3Service {
   }
 
   async delete(key: string): Promise<void> {
-    if (!this.directory) {
-      throw new Error('Directory is not set');
-    }
+    if (!this.directory) throw new Error('Directory is not set');
 
     const _key = `${this.directory}/${key}`;
 
@@ -74,9 +71,7 @@ export class S3Service {
   }
 
   async getKeys(): Promise<string[]> {
-    if (!this.directory) {
-      throw new Error('Directory is not set');
-    }
+    if (!this.directory) throw new Error('Directory is not set');
 
     const result = await this.s3Client.send(
       new ListObjectsV2Command({
@@ -92,9 +87,7 @@ export class S3Service {
   }
 
   extractKeyFromUrl(url: string): string {
-    if (!this.directory) {
-      throw new Error('Directory is not set');
-    }
+    if (!this.directory) throw new Error('Directory is not set');
 
     return url.split(`.com/`)[1].substring(this.directory.length + 1);
   }

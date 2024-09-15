@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { SuperRoleException } from '@wink/auth/exception';
 import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '@wink/auth/guard';
 
 import {
@@ -13,8 +12,10 @@ import {
   UpdateMemberRoleRequestDto,
 } from '@wink/member/dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '@wink/member/exception';
-import { Member } from '@wink/member/schema';
 import { MemberAdminService } from '@wink/member/service';
+
+import { SuperRoleException } from '@wink/auth/exception';
+import { Member } from '@wink/member/schema';
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '@wink/swagger';
 

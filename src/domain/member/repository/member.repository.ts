@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { Role } from '@wink/member/constant';
 import { Member } from '@wink/member/schema';
 
 import { Model } from 'mongoose';
@@ -10,8 +11,8 @@ export class MemberRepository {
   constructor(@InjectModel(Member.name) private readonly memberModel: Model<Member>) {}
 
   // Create
-  async save(member: Partial<Member>): Promise<Member> {
-    return this.memberModel.create(member);
+  async save(Member: Partial<Member>): Promise<Member> {
+    return this.memberModel.create(Member);
   }
 
   // Read
@@ -33,6 +34,43 @@ export class MemberRepository {
 
   async findByEmailWithPassword(email: string): Promise<Member | null> {
     return this.memberModel.findOne({ email }).select('+password').exec();
+  }
+
+  // Update
+  async updatePassword(id: string, password: string): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { password }).exec();
+  }
+
+  async updateDescription(id: string, description: string | null): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { description }).exec();
+  }
+
+  async updateGithub(id: string, githubUrl: string | null): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { 'link.github': githubUrl }).exec();
+  }
+
+  async updateInstagram(id: string, instagramUrl: string | null): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { 'link.instagram': instagramUrl }).exec();
+  }
+
+  async updateBlog(id: string, blog: string | null): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { 'link.blog': blog }).exec();
+  }
+
+  async updateAvatar(id: string, avatar: string | null): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { avatar }).exec();
+  }
+
+  async updateRoleById(id: string, role: Role): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { role }).exec();
+  }
+
+  async updateFeeById(id: string, fee: boolean): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { fee }).exec();
+  }
+
+  async updateApprovedById(id: string, approved: boolean): Promise<void> {
+    await this.memberModel.updateOne({ _id: id }, { approved }).exec();
   }
 
   // Delete

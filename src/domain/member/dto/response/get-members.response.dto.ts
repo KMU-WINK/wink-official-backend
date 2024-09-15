@@ -1,13 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { MyInfoLinks, Role } from '@wink/member/schema';
+import { Role } from '@wink/member/constant';
+import { MyInfoLinks } from '@wink/member/schema';
 
 export class EachGetMembersResponseDto {
   @ApiProperty({
     description: '멤버 ID',
     example: '1a2b3c4d5e6f7a8b9c0d1e2f',
   })
-  _id!: string;
+  memberId!: string;
 
   @ApiProperty({
     description: '계정 생성일',

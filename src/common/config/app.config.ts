@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
-import { load } from 'js-yaml';
 import { join } from 'path';
+import { load } from 'js-yaml';
 
 type ConfigType = Record<string, unknown>;
 

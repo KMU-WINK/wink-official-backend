@@ -1,14 +1,15 @@
+import { Role } from '@wink/member/constant';
 import { Member } from '@wink/member/schema';
 
+// noinspection t
 export const mockMemberRepository = (memory: Member[]) => ({
   // Create
   save: jest.fn(async (member: Partial<Member>) => {
-    const index = memory.findIndex((m) => m._id === member._id);
-    if (index !== -1) {
-      memory[index] = { ...memory[index], ...member };
-    } else {
-      memory.push(member as Member);
-    }
+    Object.assign(member, {
+      _id: member['_id'],
+      ...member,
+    });
+    memory.push(member as Member);
     return member as Member;
   }),
 
@@ -31,6 +32,70 @@ export const mockMemberRepository = (memory: Member[]) => ({
 
   findByEmailWithPassword: jest.fn(async (email: string) => {
     return memory.find((member) => member.email === email);
+  }),
+
+  // Update
+  updatePassword: jest.fn(async (id: string, password: string) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.password = password;
+    }
+  }),
+
+  updateDescription: jest.fn(async (id: string, description: string) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.description = description;
+    }
+  }),
+
+  updateGithub: jest.fn(async (id: string, githubUrl: string) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.link.github = githubUrl;
+    }
+  }),
+
+  updateInstagram: jest.fn(async (id: string, instagramUrl: string) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.link.instagram = instagramUrl;
+    }
+  }),
+
+  updateBlog: jest.fn(async (id: string, blog: string) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.link.blog = blog;
+    }
+  }),
+
+  updateAvatar: jest.fn(async (id: string, avatar: string) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.avatar = avatar;
+    }
+  }),
+
+  updateRoleById: jest.fn(async (id: string, role: Role) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.role = role;
+    }
+  }),
+
+  updateFeeById: jest.fn(async (id: string, fee: boolean) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.fee = fee;
+    }
+  }),
+
+  updateApprovedById: jest.fn(async (id: string, approved: boolean) => {
+    const member = memory.find((member) => member._id === id);
+    if (member) {
+      member.approved = approved;
+    }
   }),
 
   // Delete

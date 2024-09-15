@@ -10,7 +10,7 @@ import {
 import { ApiException } from '@wink/swagger';
 
 import { Response } from 'express';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable()
 export class ApiResponseInterceptor implements NestInterceptor {

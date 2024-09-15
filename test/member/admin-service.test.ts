@@ -1,3 +1,5 @@
+import { mockMember, createRandomMember, createRandomMembers } from '@wink/test-mock';
+
 import { SuperRoleException } from '@wink/auth/exception';
 
 import {
@@ -7,12 +9,11 @@ import {
   UpdateMemberRoleRequestDto,
 } from '@wink/member/dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '@wink/member/exception';
-import { Member, Role } from '@wink/member/schema';
+import { Role } from '@wink/member/constant';
+import { Member } from '@wink/member/schema';
 import { MemberAdminService } from '@wink/member/service';
 
 import { MailService } from '@wink/mail';
-
-import { createRandomMember, createRandomMembers, mockMember } from '@wink/test-mock';
 
 describe('MemberAdminService', () => {
   let memberAdminService: MemberAdminService;

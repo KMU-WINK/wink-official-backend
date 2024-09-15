@@ -14,7 +14,6 @@ import { MemberRepository } from '@wink/member/repository';
 import { Member, omitMember } from '@wink/member/schema';
 
 import { S3Service } from '@wink/s3';
-
 import {
   DeleteMyAvatarEvent,
   UpdateMyAvatarEvent,
@@ -47,12 +46,12 @@ export class MemberService {
     member: Member,
     { description, github, instagram, blog }: UpdateMyInfoRequestDto,
   ): Promise<void> {
-    member.description = description;
-    member.link.github = github;
-    member.link.instagram = instagram;
-    member.link.blog = blog;
+    const { _id: id } = member;
 
-    await this.memberRepository.save(member);
+    await this.memberRepository.updateDescription(id, description);
+    await this.memberRepository.updateGithub(id, github);
+    await this.memberRepository.updateInstagram(id, instagram);
+    await this.memberRepository.updateBlog(id, blog);
 
     this.eventEmitter.emit(
       UpdateMyInfoEvent.EVENT_NAME,
@@ -64,16 +63,17 @@ export class MemberService {
     member: Member,
     { password, newPassword }: UpdateMyPasswordRequestDto,
   ): Promise<void> {
-    const fullMember = (await this.memberRepository.findByIdWithPassword(member._id))!;
+    const { _id: id } = member;
+    const fullMember = await this.memberRepository.findByIdWithPassword(id);
 
-    if (!(await bcrypt.compare(password, fullMember.password))) {
+    if (!(await bcrypt.compare(password, fullMember!.password))) {
       throw new WrongPasswordException();
     }
 
     const salt = await bcrypt.genSalt(10);
-    fullMember.password = await bcrypt.hash(newPassword, salt);
+    const hash = await bcrypt.hash(newPassword, salt);
 
-    await this.memberRepository.save(fullMember);
+    await this.memberRepository.updatePassword(id, hash);
 
     this.eventEmitter.emit(UpdateMyPasswordEvent.EVENT_NAME, new UpdateMyPasswordEvent(member));
   }
@@ -82,12 +82,10 @@ export class MemberService {
     member: Member,
     file: Express.Multer.File,
   ): Promise<UpdateMyAvatarResponseDto> {
-    const { avatar: original } = member;
+    const { _id: id, avatar: original } = member;
 
     const avatar = await this.avatarService.upload(file);
-
-    member.avatar = avatar;
-    await this.memberRepository.save(member);
+    await this.memberRepository.updateAvatar(id, avatar);
 
     if (original) {
       const key = this.avatarService.extractKeyFromUrl(original);
@@ -101,13 +99,13 @@ export class MemberService {
   }
 
   async deleteMyAvatar(member: Member): Promise<void> {
-    if (member.avatar) {
-      const key = this.avatarService.extractKeyFromUrl(member.avatar);
+    const { _id: id, avatar } = member;
+
+    if (avatar) {
+      const key = this.avatarService.extractKeyFromUrl(avatar);
 
       await this.avatarService.delete(key);
-
-      member.avatar = null;
-      await this.memberRepository.save(member);
+      await this.memberRepository.updateAvatar(id, null);
 
       this.eventEmitter.emit(DeleteMyAvatarEvent.EVENT_NAME, new DeleteMyAvatarEvent(member));
     }

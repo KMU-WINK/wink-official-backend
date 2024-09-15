@@ -1,11 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { MemberRepository } from '@wink/member/repository';
 
 import { S3Service } from '@wink/s3';
-
 import { PurgeUnusedAvatarEvent } from '@wink/event';
 
 @Injectable()
@@ -37,7 +36,7 @@ export class PurgeUnusedAvatarJob {
 
     const unusedAvatars = savedAvatars.filter((a) => !usedAvatars.includes(a));
 
-    unusedAvatars.forEach((key) => this.avatarService.delete(key));
+    unusedAvatars.forEach((key) => this.avatarService.delete(key).then((_) => _));
 
     this.eventEmitter.emit(
       PurgeUnusedAvatarEvent.EVENT_NAME,

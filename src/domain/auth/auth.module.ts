@@ -6,7 +6,6 @@ import { AuthService } from '@wink/auth/service';
 import { MemberModule } from '@wink/member/member.module';
 
 import { RedisModule } from '@wink/redis';
-
 import { MailModule } from '@wink/mail';
 
 @Module({

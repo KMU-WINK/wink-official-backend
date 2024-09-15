@@ -1,3 +1,5 @@
+import { mockMember, createRandomMember, createRandomMembers } from '@wink/test-mock';
+
 import { WrongPasswordException } from '@wink/auth/exception';
 
 import { UpdateMyInfoRequestDto, UpdateMyPasswordRequestDto } from '@wink/member/dto';
@@ -6,11 +8,9 @@ import { MemberService } from '@wink/member/service';
 
 import { S3Service } from '@wink/s3';
 
-import { createRandomMember, createRandomMembers, mockMember } from '@wink/test-mock';
-
 import * as bcrypt from 'bcrypt';
-import { Readable } from 'stream';
 import { v4 as uuid } from 'uuid';
+import { Readable } from 'stream';
 
 describe('MemberService', () => {
   let memberService: MemberService;

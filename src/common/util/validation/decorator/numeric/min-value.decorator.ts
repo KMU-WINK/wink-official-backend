@@ -1,4 +1,4 @@
-import { ValidationArguments, registerDecorator } from 'class-validator';
+import { registerDecorator, ValidationArguments } from 'class-validator';
 
 export const MinValue =
   (minValue: number) => (object: NonNullable<unknown>, propertyName: string) => {

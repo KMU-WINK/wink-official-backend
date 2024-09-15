@@ -16,12 +16,13 @@ import { AuthAccount, AuthAccountException, ReqMember } from '@wink/auth/guard';
 
 import {
   GetMembersResponseDto,
+  UpdateMyAvatarRequestDto,
   UpdateMyAvatarResponseDto,
   UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
 } from '@wink/member/dto';
-import { Member } from '@wink/member/schema';
 import { MemberService } from '@wink/member/service';
+import { Member } from '@wink/member/schema';
 import { AvatarFilter, AvatarFilterException } from '@wink/member/util/multer';
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '@wink/swagger';
@@ -69,6 +70,7 @@ export class MemberController {
   @UseInterceptors(FileInterceptor('avatar', { fileFilter: AvatarFilter }))
   @ApiOperation({ summary: '내 프로필 사진 수정' })
   @ApiConsumes('multipart/form-data')
+  @ApiProperty({ type: UpdateMyAvatarRequestDto })
   @ApiCustomResponse(UpdateMyAvatarResponseDto)
   @ApiCustomErrorResponse([...AuthAccountException, ...AvatarFilterException])
   async updateMyAvatar(

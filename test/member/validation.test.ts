@@ -1,3 +1,6 @@
+import { Validation } from '@wink/validation';
+
+import { Role } from '@wink/member/constant';
 import {
   ApproveWaitingMemberRequestDto,
   RejectWaitingMemberRequestDto,
@@ -6,9 +9,6 @@ import {
   UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
 } from '@wink/member/dto';
-import { Role } from '@wink/member/schema';
-
-import { Validation } from '@wink/validation';
 
 describe('MemberValidation', () => {
   let validation: Validation;

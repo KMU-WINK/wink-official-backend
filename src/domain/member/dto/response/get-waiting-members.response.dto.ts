@@ -5,7 +5,7 @@ export class EachGetWaitingMembersResponseDto {
     description: '멤버 ID',
     example: '1a2b3c4d5e6f7a8b9c0d1e2f',
   })
-  _id!: string;
+  memberId!: string;
 
   @ApiProperty({
     description: '이름',

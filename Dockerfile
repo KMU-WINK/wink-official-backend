@@ -23,7 +23,7 @@ RUN apk add --no-cache curl \
 COPY --from=build /app/config/config.template.yaml ./config/config.template.yaml
 
 COPY --from=build /app/package.json /app/yarn.lock ./
-RUN yarn install --production --frozen-lockfile && yarn cache clean
+RUN yarn install --production --frozen-lockfile
 
 COPY --from=build /app/dist ./dist
 

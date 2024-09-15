@@ -1,5 +1,4 @@
 import { DynamicModule, Module } from '@nestjs/common';
-
 import { RedisService } from './service';
 
 export interface RedisModuleOptions {

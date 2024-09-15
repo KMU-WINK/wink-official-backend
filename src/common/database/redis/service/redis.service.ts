@@ -27,11 +27,9 @@ export class RedisService {
   }
 
   async exists(key: string): Promise<boolean> {
-    if (!this.group) {
-      throw new Error('Group is not set');
-    }
+    if (!this.group) throw new Error('Group is not set');
 
-    const _key = this.generateKey(key);
+    const _key = this.#generateKey(key);
 
     const exists = await this.redisClient.exists(_key);
 
@@ -39,21 +37,17 @@ export class RedisService {
   }
 
   async get(key: string): Promise<string> {
-    if (!this.group) {
-      throw new Error('Group is not set');
-    }
+    if (!this.group) throw new Error('Group is not set');
 
-    const _key = this.generateKey(key);
+    const _key = this.#generateKey(key);
 
     return (await this.redisClient.get(_key)) || '';
   }
 
   async set(key: string, value: string, seconds: number = 0): Promise<void> {
-    if (!this.group) {
-      throw new Error('Group is not set');
-    }
+    if (!this.group) throw new Error('Group is not set');
 
-    const _key = this.generateKey(key);
+    const _key = this.#generateKey(key);
 
     let event: RedisSetEvent | RedisSetTtlEvent;
 
@@ -69,21 +63,17 @@ export class RedisService {
   }
 
   async delete(key: string): Promise<void> {
-    if (!this.group) {
-      throw new Error('Group is not set');
-    }
+    if (!this.group) throw new Error('Group is not set');
 
-    const _key = this.generateKey(key);
+    const _key = this.#generateKey(key);
 
     await this.redisClient.del(_key);
 
     this.eventEmitter.emit(RedisDeleteEvent.EVENT_NAME, new RedisDeleteEvent(_key));
   }
 
-  private generateKey(key: string): string {
-    if (!this.group) {
-      throw new Error('Group is not set');
-    }
+  #generateKey(key: string): string {
+    if (!this.group) throw new Error('Group is not set');
 
     return `${this.group}:${key}`;
   }

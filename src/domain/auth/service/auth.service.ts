@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import {
   LoginRequestDto,
@@ -29,7 +29,6 @@ import { MemberRepository } from '@wink/member/repository';
 import { Member, omitMember } from '@wink/member/schema';
 
 import { RedisService } from '@wink/redis';
-
 import {
   LoginEvent,
   RefreshEvent,
@@ -39,9 +38,9 @@ import {
 } from '@wink/event';
 import { MailService, RegisterCompleteTemplate, VerifyCodeTemplate } from '@wink/mail';
 
-import * as bcrypt from 'bcrypt';
-import ms, { StringValue } from 'ms';
 import { v4 as uuid } from 'uuid';
+import ms, { StringValue } from 'ms';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -196,6 +195,6 @@ export class AuthService {
   }
 
   myInfo(member: Member): MyInfoResponseDto {
-    return { member: omitMember(member, ['approved']) };
+    return <MyInfoResponseDto>omitMember(member, ['approved']);
   }
 }

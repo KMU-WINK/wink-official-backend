@@ -3,6 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { MemberNotFoundException, SuperRoleException } from '@wink/auth/exception';
 
+import { checkRoleHierarchy, Role } from '@wink/member/constant';
 import {
   ApproveWaitingMemberRequestDto,
   EachGetMembersForAdminResponseDto,
@@ -15,7 +16,7 @@ import {
 } from '@wink/member/dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '@wink/member/exception';
 import { MemberRepository } from '@wink/member/repository';
-import { Member, Role, checkRoleHierarchy, omitMember, pickMember } from '@wink/member/schema';
+import { Member, omitMember, pickMember } from '@wink/member/schema';
 
 import {
   ApproveWaitingMemberEvent,
@@ -56,10 +57,8 @@ export class MemberAdminService {
       throw new NotWaitingMemberException();
     }
 
-    to.approved = true;
-    to.role = Role.MEMBER;
-
-    await this.memberRepository.save(to);
+    await this.memberRepository.updateApprovedById(toId, true);
+    await this.memberRepository.updateRoleById(toId, Role.MEMBER);
 
     this.mailService.sendTemplate(to.email, new ApproveAccountTemplate(to.name)).then((_) => _);
 
@@ -119,9 +118,7 @@ export class MemberAdminService {
       throw new SuperRoleException();
     }
 
-    to.role = role;
-
-    await this.memberRepository.save(to);
+    await this.memberRepository.updateRoleById(to._id, role);
 
     this.eventEmitter.emit(UpdateRoleEvent.EVENT_NAME, new UpdateRoleEvent(from, to, role));
   }
@@ -141,9 +138,7 @@ export class MemberAdminService {
       throw new SuperRoleException();
     }
 
-    to.fee = fee;
-
-    await this.memberRepository.save(to);
+    await this.memberRepository.updateFeeById(toId, fee);
 
     this.eventEmitter.emit(UpdateFeeEvent.EVENT_NAME, new UpdateFeeEvent(from, to, fee));
   }
