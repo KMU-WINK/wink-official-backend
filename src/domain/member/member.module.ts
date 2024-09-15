@@ -15,7 +15,6 @@ import { MailModule } from '@wink/mail';
 const modelFactory = MongoModelFactory.generate<Member>(Member.name, MemberSchema);
 
 @Module({
-  imports: [
     MongooseModule.forFeature([modelFactory]),
     S3Module.forRoot({ directory: 'avatar' }),
     MailModule,
