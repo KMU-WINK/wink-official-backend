@@ -15,7 +15,7 @@ import {
 } from '@wink/member/dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '@wink/member/exception';
 import { MemberRepository } from '@wink/member/repository';
-import { Member, omitMember, pickMember, Role, checkRoleHierarchy } from '@wink/member/schema';
+import { Member, Role, checkRoleHierarchy, omitMember, pickMember } from '@wink/member/schema';
 
 import {
   ApproveWaitingMemberEvent,

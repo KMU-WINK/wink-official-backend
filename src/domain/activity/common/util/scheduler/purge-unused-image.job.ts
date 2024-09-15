@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
 
 import { ProjectRepository, SocialRepository } from '@wink/activity/repository';
 
 import { S3Service } from '@wink/s3';
+
 import { PurgeUnusedImageEvent } from '@wink/event';
 
 import * as cheerio from 'cheerio';

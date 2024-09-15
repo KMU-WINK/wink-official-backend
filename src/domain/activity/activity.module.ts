@@ -5,38 +5,38 @@ import { MemberModule } from '@wink/member/member.module';
 
 import { PurgeUnusedImageJob } from '@wink/activity/common/util/scheduler';
 import {
-  ProjectController,
-  ProjectAdminController,
-  StudyController,
-  StudyAdminController,
-  SocialController,
-  SocialAdminController,
   ActivityAdminController,
+  ProjectAdminController,
+  ProjectController,
+  SocialAdminController,
+  SocialController,
+  StudyAdminController,
+  StudyController,
 } from '@wink/activity/controller';
 import {
-  ProjectRepository,
-  StudyRepository,
-  SocialRepository,
   CategoryRepository,
+  ProjectRepository,
+  SocialRepository,
+  StudyRepository,
 } from '@wink/activity/repository';
 import {
   Activity,
   ActivitySchema,
   ActivityType,
+  Category,
+  CategorySchema,
   ProjectSchema,
   SocialSchema,
   StudySchema,
-  Category,
-  CategorySchema,
 } from '@wink/activity/schema';
 import {
-  ProjectService,
-  ProjectAdminService,
-  StudyService,
-  StudyAdminService,
-  SocialService,
-  SocialAdminService,
   ActivityAdminService,
+  ProjectAdminService,
+  ProjectService,
+  SocialAdminService,
+  SocialService,
+  StudyAdminService,
+  StudyService,
 } from '@wink/activity/service';
 
 import { MongoModelFactory } from '@wink/mongo';

@@ -2,16 +2,16 @@ import { Module } from '@nestjs/common';
 
 import {
   AuthServiceEventListener,
+  CommonAdminServiceEventListener,
+  MailEventListener,
   MemberAdminServiceEventListener,
   MemberServiceEventListener,
-  MailEventListener,
+  ProjectAdminServiceEventListener,
   RedisServiceEventListener,
   S3ServiceEventListener,
   SchedulerEventListener,
-  ProjectAdminServiceEventListener,
-  CommonAdminServiceEventListener,
-  StudyAdminServiceEventListener,
   SocialAdminServiceEventListener,
+  StudyAdminServiceEventListener,
 } from './listener';
 
 @Module({

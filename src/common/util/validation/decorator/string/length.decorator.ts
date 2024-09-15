@@ -1,4 +1,4 @@
-import { registerDecorator, ValidationArguments } from 'class-validator';
+import { ValidationArguments, registerDecorator } from 'class-validator';
 
 export const Length = (length: number) => (object: NonNullable<unknown>, propertyName: string) => {
   registerDecorator({

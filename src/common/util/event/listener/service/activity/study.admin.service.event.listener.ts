@@ -3,10 +3,10 @@ import { OnEvent } from '@nestjs/event-emitter';
 
 import {
   CreateCategoryEvent,
-  UpdateCategoryEvent,
-  DeleteCategoryEvent,
   CreateStudyEvent,
+  DeleteCategoryEvent,
   DeleteStudyEvent,
+  UpdateCategoryEvent,
 } from '../../../type';
 
 @Injectable()

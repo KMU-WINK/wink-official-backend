@@ -1,5 +1,3 @@
-import { mockAuth, createNullMember, createRandomMember } from '@wink/test-mock';
-
 import {
   LoginRequestDto,
   RegisterRequestDto,
@@ -20,6 +18,8 @@ import { NotApprovedMemberException } from '@wink/member/exception';
 import { Member } from '@wink/member/schema';
 
 import { MailService } from '@wink/mail';
+
+import { createNullMember, createRandomMember, mockAuth } from '@wink/test-mock';
 
 import * as bcrypt from 'bcrypt';
 
