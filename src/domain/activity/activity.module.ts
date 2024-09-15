@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { MemberModule } from '@wink/member/member.module';
 
+import { PurgeUnusedImageJob } from '@wink/activity/common/util/scheduler';
 import {
   ProjectController,
   ProjectAdminController,
@@ -77,6 +78,8 @@ const modelFactory2 = MongoModelFactory.generate<Category>(Category.name, Catego
     StudyRepository,
     CategoryRepository,
     SocialRepository,
+
+    PurgeUnusedImageJob,
   ],
   exports: [ProjectRepository, StudyRepository, CategoryRepository, SocialRepository],
 })
