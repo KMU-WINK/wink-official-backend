@@ -1,4 +1,4 @@
-import { registerDecorator, ValidationArguments } from 'class-validator';
+import { ValidationArguments, registerDecorator } from 'class-validator';
 
 export const MaxLength =
   (maxLength: number) => (object: NonNullable<unknown>, propertyName: string) => {

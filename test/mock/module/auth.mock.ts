@@ -1,13 +1,7 @@
-import { Test } from '@nestjs/testing';
-import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-
-import {
-  mockConfigService,
-  mockMailService,
-  mockMemberRepository,
-  mockRedisService,
-} from '@wink/test-mock';
+import { JwtModule } from '@nestjs/jwt';
+import { Test } from '@nestjs/testing';
 
 import { AuthController } from '@wink/auth/controller';
 import { AuthService } from '@wink/auth/service';
@@ -15,9 +9,14 @@ import { AuthService } from '@wink/auth/service';
 import { MemberRepository } from '@wink/member/repository';
 import { Member } from '@wink/member/schema';
 
-import { RedisService } from '@wink/redis';
 import { MailService } from '@wink/mail';
-import { ConfigService } from '@nestjs/config';
+
+import {
+  mockConfigService,
+  mockMailService,
+  mockMemberRepository,
+  mockRedisService,
+} from '@wink/test-mock';
 
 export const mockAuth = async () => {
   const memoryMemberRepository: Member[] = [];

@@ -1,8 +1,6 @@
-import { Test } from '@nestjs/testing';
-import { JwtModule } from '@nestjs/jwt';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-
-import { mockMailService, mockMemberRepository, mockS3Service } from '@wink/test-mock';
+import { JwtModule } from '@nestjs/jwt';
+import { Test } from '@nestjs/testing';
 
 import { MemberAdminController, MemberController } from '@wink/member/controller';
 import { MemberRepository } from '@wink/member/repository';
@@ -10,6 +8,8 @@ import { Member } from '@wink/member/schema';
 import { MemberAdminService, MemberService } from '@wink/member/service';
 
 import { MailService } from '@wink/mail';
+
+import { mockMailService, mockMemberRepository, mockS3Service } from '@wink/test-mock';
 
 export const mockMember = async () => {
   const memoryMemberRepository: Member[] = [];

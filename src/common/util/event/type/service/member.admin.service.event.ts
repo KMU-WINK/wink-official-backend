@@ -1,5 +1,4 @@
-import { Role } from '@wink/member/constant';
-import { Member } from '@wink/member/schema';
+import { Member, Role } from '@wink/member/schema';
 
 export class ApproveWaitingMemberEvent {
   public static readonly EVENT_NAME = 'member.admin.approve_waiting_member';
