@@ -18,11 +18,8 @@ import {
   CategoryNotFoundException,
   StudyNotFoundException,
 } from '@wink/activity/exception';
-import { StudyRepository, CategoryRepository } from '@wink/activity/repository';
-import { Study, Category } from '@wink/activity/schema';
-
-import axios from 'axios';
-import * as cheerio from 'cheerio';
+import { CategoryRepository, StudyRepository } from '@wink/activity/repository';
+import { Category, Study } from '@wink/activity/schema';
 
 import {
   CreateCategoryEvent,
@@ -31,6 +28,9 @@ import {
   DeleteStudyEvent,
   UpdateCategoryEvent,
 } from '@wink/event';
+
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 @Injectable()
 export class StudyAdminService {

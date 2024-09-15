@@ -6,7 +6,7 @@ import {
   GetStudiesRequestDto,
   GetStudiesResponseDto,
 } from '@wink/activity/dto';
-import { StudyRepository, CategoryRepository } from '@wink/activity/repository';
+import { CategoryRepository, StudyRepository } from '@wink/activity/repository';
 
 @Injectable()
 export class StudyService {

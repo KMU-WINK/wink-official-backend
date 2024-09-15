@@ -7,6 +7,7 @@ import { Member } from '@wink/member/schema';
 import { UploadResponseDto } from '@wink/activity/common/dto';
 
 import { S3Service } from '@wink/s3';
+
 import { UploadEvent } from '@wink/event';
 
 @Injectable()

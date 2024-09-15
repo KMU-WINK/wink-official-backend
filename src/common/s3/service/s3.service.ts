@@ -9,9 +9,8 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-
-import { v4 as uuid } from 'uuid';
 import { extname } from 'path';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class S3Service {

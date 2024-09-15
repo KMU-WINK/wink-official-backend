@@ -1,7 +1,5 @@
-import { utilities, WinstonModule } from 'nest-winston';
-
+import { WinstonModule, utilities } from 'nest-winston';
 import * as winston from 'winston';
-
 import 'winston-daily-rotate-file';
 
 const dailyOptions = (level: string) => ({

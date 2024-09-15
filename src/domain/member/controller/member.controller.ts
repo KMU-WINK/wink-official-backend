@@ -20,8 +20,8 @@ import {
   UpdateMyInfoRequestDto,
   UpdateMyPasswordRequestDto,
 } from '@wink/member/dto';
-import { MemberService } from '@wink/member/service';
 import { Member } from '@wink/member/schema';
+import { MemberService } from '@wink/member/service';
 import { AvatarFilter, AvatarFilterException } from '@wink/member/util/multer';
 
 import { ApiCustomErrorResponse, ApiCustomResponse } from '@wink/swagger';

@@ -14,6 +14,7 @@ import { MemberRepository } from '@wink/member/repository';
 import { Member, omitMember } from '@wink/member/schema';
 
 import { S3Service } from '@wink/s3';
+
 import {
   DeleteMyAvatarEvent,
   UpdateMyAvatarEvent,

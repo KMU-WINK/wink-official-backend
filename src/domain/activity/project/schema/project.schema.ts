@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Member } from '@wink/member/schema';
+
 import { Activity } from '@wink/activity/schema';
 
 import { Schema as MongooseSchema } from 'mongoose';

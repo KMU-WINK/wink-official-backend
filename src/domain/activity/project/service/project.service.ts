@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-import { ProjectNotFoundException } from '@wink/activity/exception';
 import {
   GetProjectRequestDto,
   GetProjectResponseDto,
@@ -8,6 +7,7 @@ import {
   GetProjectsRequestDto,
   GetProjectsResponseDto,
 } from '@wink/activity/dto';
+import { ProjectNotFoundException } from '@wink/activity/exception';
 import { ProjectRepository } from '@wink/activity/repository';
 
 @Injectable()
