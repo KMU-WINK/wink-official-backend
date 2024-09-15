@@ -1,7 +1,6 @@
-import { v4 as uuid } from 'uuid';
+import { Member, Role } from '@wink/member/schema';
 
-import { Role } from '@wink/member/constant';
-import { Member } from '@wink/member/schema';
+import { v4 as uuid } from 'uuid';
 
 const randomDate = (start: Date, end: Date): Date => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));

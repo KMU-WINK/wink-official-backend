@@ -1,5 +1,3 @@
-import { Validation } from '@wink/validation';
-
 import {
   LoginRequestDto,
   RefreshRequestDto,
@@ -7,6 +5,8 @@ import {
   SendCodeRequestDto,
   VerifyCodeRequestDto,
 } from '@wink/auth/dto';
+
+import { Validation } from '@wink/validation';
 
 describe('AuthValidation', () => {
   let validation: Validation;

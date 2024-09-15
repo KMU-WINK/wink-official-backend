@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
-import { PurgeUnusedAvatarEvent } from '../../type';
+import { PurgeUnusedAvatarEvent, PurgeUnusedImageEvent } from '../../type';
 
 @Injectable()
 export class SchedulerEventListener {
@@ -9,6 +9,11 @@ export class SchedulerEventListener {
 
   @OnEvent(PurgeUnusedAvatarEvent.EVENT_NAME)
   onPurgeUnusedAvatar({ keys }: PurgeUnusedAvatarEvent) {
-    this.logger.log(`Purge unused ${keys.length} avatars. (${keys.join(', ')})`);
+    this.logger.log(`Purge unused ${keys.length} avatars.`);
+  }
+
+  @OnEvent(PurgeUnusedImageEvent.EVENT_NAME)
+  onPurgeUnusedImage({ keys }: PurgeUnusedImageEvent) {
+    this.logger.log(`Purge unused ${keys.length} images.`);
   }
 }

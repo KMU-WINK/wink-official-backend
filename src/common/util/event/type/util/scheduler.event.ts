@@ -3,3 +3,9 @@ export class PurgeUnusedAvatarEvent {
 
   constructor(public readonly keys: string[]) {}
 }
+
+export class PurgeUnusedImageEvent {
+  public static readonly EVENT_NAME = 'scheduler.purge_unused_image';
+
+  constructor(public readonly keys: string[]) {}
+}

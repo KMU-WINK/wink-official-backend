@@ -1,13 +1,13 @@
-import { Reflector } from '@nestjs/core';
 import {
-  applyDecorators,
   CanActivate,
-  createParamDecorator,
   ExecutionContext,
   Injectable,
   SetMetadata,
   UseGuards,
+  applyDecorators,
+  createParamDecorator,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
@@ -17,9 +17,9 @@ import {
   UnauthorizedException,
 } from '@wink/auth/exception';
 
-import { Role } from '@wink/member/constant';
 import { NotApprovedMemberException } from '@wink/member/exception';
 import { MemberRepository } from '@wink/member/repository';
+import { Role } from '@wink/member/schema';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
