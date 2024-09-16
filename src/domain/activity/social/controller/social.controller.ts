@@ -4,6 +4,8 @@ import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import {
   GetSocialRequestDto,
   GetSocialResponseDto,
+  GetSocialsPageResponseDto,
+  GetSocialsRequestDto,
   GetSocialsResponseDto,
 } from '@wink/activity/dto';
 import { SocialNotFoundException } from '@wink/activity/exception';
@@ -25,10 +27,17 @@ export class SocialController {
     return this.socialService.getSocial(request);
   }
 
+  @Get('/max')
+  @ApiOperation({ summary: '부원 최대 페이지' })
+  @ApiCustomResponse(GetSocialsPageResponseDto)
+  async getMembersPage(): Promise<GetSocialsPageResponseDto> {
+    return this.socialService.getSocialsPage();
+  }
+
   @Get()
   @ApiOperation({ summary: '친목 활동 목록' })
   @ApiCustomResponse(GetSocialsResponseDto)
-  async getSocials(): Promise<GetSocialsResponseDto> {
-    return this.socialService.getSocials();
+  async getSocials(@Body() request: GetSocialsRequestDto): Promise<GetSocialsResponseDto> {
+    return this.socialService.getSocials(request);
   }
 }

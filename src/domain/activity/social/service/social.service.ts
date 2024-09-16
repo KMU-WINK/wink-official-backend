@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import {
   GetSocialRequestDto,
   GetSocialResponseDto,
+  GetSocialsPageResponseDto,
+  GetSocialsRequestDto,
   GetSocialsResponseDto,
 } from '@wink/activity/dto';
 import { SocialNotFoundException } from '@wink/activity/exception';
@@ -22,9 +24,15 @@ export class SocialService {
     return { social };
   }
 
-  async getSocials(): Promise<GetSocialsResponseDto> {
-    const socials = await this.socialRepository.findAll();
+  async getSocials({ page }: GetSocialsRequestDto): Promise<GetSocialsResponseDto> {
+    const socials = await this.socialRepository.findAllPage(page);
 
     return { socials };
+  }
+
+  async getSocialsPage(): Promise<GetSocialsPageResponseDto> {
+    const count = await this.socialRepository.count();
+
+    return { page: Math.ceil(count / 10) };
   }
 }

@@ -15,6 +15,10 @@ export class ProjectRepository {
   }
 
   // Read
+  async count(): Promise<number> {
+    return this.projectModel.countDocuments().exec();
+  }
+
   async findAll(): Promise<Project[]> {
     return this.projectModel.find().sort({ createdAt: -1 }).exec();
   }
@@ -23,7 +27,7 @@ export class ProjectRepository {
     return this.projectModel
       .find()
       .sort({ createdAt: -1 })
-      .skip((page - 1) * 10)
+      .skip((page - 1) * 15)
       .limit(10)
       .exec();
   }

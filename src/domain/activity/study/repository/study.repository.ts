@@ -15,6 +15,10 @@ export class StudyRepository {
   }
 
   // Read
+  async count(): Promise<number> {
+    return this.studyModel.countDocuments().exec();
+  }
+
   async findAll(): Promise<Study[]> {
     return this.studyModel.find().sort({ uploadedAt: -1 }).exec();
   }

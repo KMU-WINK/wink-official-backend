@@ -25,10 +25,9 @@ export class ProjectService {
   }
 
   async getProjectsPage(): Promise<GetProjectsPageResponseDto> {
-    const projects = await this.projectRepository.findAll();
-    const page = Math.ceil(projects.length / 10);
+    const count = await this.projectRepository.count();
 
-    return { page };
+    return { page: Math.ceil(count / 15) };
   }
 
   async getProjects({ page }: GetProjectsRequestDto): Promise<GetProjectsResponseDto> {

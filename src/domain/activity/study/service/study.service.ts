@@ -28,9 +28,8 @@ export class StudyService {
   }
 
   async getStudiesPage(): Promise<GetStudiesPageResponseDto> {
-    const studies = await this.studyRepository.findAll();
-    const page = Math.ceil(studies.length / 10);
+    const count = await this.studyRepository.count();
 
-    return { page };
+    return { page: Math.ceil(count / 10) };
   }
 }

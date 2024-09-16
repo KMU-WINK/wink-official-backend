@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Member } from '@wink/member/schema';
+import { Member, Role } from '@wink/member/schema';
 
 import { Model } from 'mongoose';
+
+const roleOrder = Object.values(Role);
 
 @Injectable()
 export class MemberRepository {
@@ -15,8 +17,72 @@ export class MemberRepository {
   }
 
   // Read
+  async count(): Promise<number> {
+    return this.memberModel.countDocuments().exec();
+  }
+
   async findAll(): Promise<Member[]> {
-    return this.memberModel.find({ approved: true }).exec();
+    return this.memberModel.aggregate([
+      {
+        $match: {
+          approved: true,
+        },
+      },
+      {
+        $addFields: {
+          roleIndex: {
+            $switch: {
+              branches: roleOrder.map((role, index) => ({
+                case: { $eq: ['$role', role] },
+                then: index,
+              })),
+              default: roleOrder.length,
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          roleIndex: 1,
+          name: 1,
+        },
+      },
+    ]);
+  }
+
+  async findAllPage(page: number): Promise<Member[]> {
+    return this.memberModel.aggregate([
+      {
+        $match: {
+          approved: true,
+        },
+      },
+      {
+        $addFields: {
+          roleIndex: {
+            $switch: {
+              branches: roleOrder.map((role, index) => ({
+                case: { $eq: ['$role', role] },
+                then: index,
+              })),
+              default: roleOrder.length,
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          roleIndex: 1,
+          name: 1,
+        },
+      },
+      {
+        $skip: 10 * (page - 1),
+      },
+      {
+        $limit: 10,
+      },
+    ]);
   }
 
   async findAllWaitingMember(): Promise<Member[]> {
