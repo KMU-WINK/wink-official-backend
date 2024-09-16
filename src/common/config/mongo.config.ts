@@ -9,9 +9,9 @@ export class MongoConfig implements MongooseOptionsFactory {
   createMongooseOptions(): MongooseModuleOptions {
     const host = this.configService.getOrThrow<string>('mongo.host');
     const port = this.configService.getOrThrow<number>('mongo.port');
-    const username = this.configService.getOrThrow<string>('mongo.username');
-    const password = this.configService.getOrThrow<string>('mongo.password');
-    const authSource = this.configService.getOrThrow<string>('mongo.authSource');
+    const username = this.configService.get<string>('mongo.username');
+    const password = this.configService.get<string>('mongo.password');
+    const authSource = this.configService.get<string>('mongo.authSource');
     const database = this.configService.getOrThrow<string>('mongo.database');
 
     return {
@@ -22,9 +22,9 @@ export class MongoConfig implements MongooseOptionsFactory {
   private buildConnectionString(
     host: string,
     port: number,
-    username: string,
-    password: string,
-    authSource: string,
+    username: string | undefined,
+    password: string | undefined,
+    authSource: string | undefined,
     database: string,
   ): string {
     return 'mongodb://${credential}${host}/${database}${otherOptions}'
