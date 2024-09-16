@@ -15,6 +15,10 @@ export class ProjectRepository {
   }
 
   // Read
+  async count(): Promise<number> {
+    return this.projectModel.countDocuments().exec();
+  }
+
   async findAll(): Promise<Project[]> {
     return this.projectModel.find().sort({ createdAt: -1 }).exec();
   }
@@ -23,13 +27,20 @@ export class ProjectRepository {
     return this.projectModel
       .find()
       .sort({ createdAt: -1 })
-      .skip((page - 1) * 10)
-      .limit(10)
+      .skip((page - 1) * 15)
+      .limit(15)
       .exec();
   }
 
   async findById(id: string): Promise<Project | null> {
     return this.projectModel.findById(id).exec();
+  }
+
+  async findAllByContainsTitle(title: string): Promise<Project[]> {
+    return this.projectModel
+      .find({ title: { $regex: title, $options: 'i' } })
+      .sort({ createdAt: -1 })
+      .exec();
   }
 
   // Delete

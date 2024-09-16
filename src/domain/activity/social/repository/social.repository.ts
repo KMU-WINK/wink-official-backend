@@ -15,8 +15,28 @@ export class SocialRepository {
   }
 
   // Read
+  async count(): Promise<number> {
+    return this.socialModel.countDocuments().exec();
+  }
+
   async findAll(): Promise<Social[]> {
-    return this.socialModel.find().sort({ createdAt: -1 }).limit(6).exec();
+    return this.socialModel.find().sort({ createdAt: -1 }).exec();
+  }
+
+  async findAllPage(page: number): Promise<Social[]> {
+    return this.socialModel
+      .find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * 10)
+      .limit(10)
+      .exec();
+  }
+
+  async findAllByContainsTitle(title: string): Promise<Social[]> {
+    return this.socialModel
+      .find({ title: { $regex: title, $options: 'i' } })
+      .sort({ createdAt: -1 })
+      .exec();
   }
 
   async findById(id: string): Promise<Social | null> {

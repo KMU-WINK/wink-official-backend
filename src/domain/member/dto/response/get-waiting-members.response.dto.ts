@@ -14,6 +14,12 @@ export class EachGetWaitingMembersResponseDto {
   name!: string;
 
   @ApiProperty({
+    description: '이메일',
+    example: 'honggildong@kookmin.ac.kr',
+  })
+  email!: string;
+
+  @ApiProperty({
     description: '학번',
     example: '20240001',
   })

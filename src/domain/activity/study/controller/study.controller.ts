@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import {
@@ -6,6 +6,7 @@ import {
   GetStudiesPageResponseDto,
   GetStudiesRequestDto,
   GetStudiesResponseDto,
+  SearchStudyRequestDto,
 } from '@wink/activity/dto';
 import { StudyService } from '@wink/activity/service';
 
@@ -30,11 +31,19 @@ export class StudyController {
     return this.studyService.getStudiesPage();
   }
 
+  @Get('/search')
+  @ApiOperation({ summary: '스터디 활동 검색' })
+  @ApiProperty({ type: SearchStudyRequestDto })
+  @ApiCustomResponse(GetStudiesResponseDto)
+  async searchStudied(@Query() request: SearchStudyRequestDto): Promise<GetStudiesResponseDto> {
+    return this.studyService.searchStudies(request);
+  }
+
   @Get()
   @ApiOperation({ summary: '스터디 목록' })
   @ApiProperty({ type: GetStudiesRequestDto })
   @ApiCustomResponse(GetStudiesResponseDto)
-  async getStudies(@Body() request: GetStudiesRequestDto): Promise<GetStudiesResponseDto> {
+  async getStudies(@Query() request: GetStudiesRequestDto): Promise<GetStudiesResponseDto> {
     return this.studyService.getStudies(request);
   }
 }

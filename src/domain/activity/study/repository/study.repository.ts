@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Study } from '@wink/activity/schema';
+import { Category, Study } from '@wink/activity/schema';
 
 import { Model } from 'mongoose';
 
@@ -15,6 +15,10 @@ export class StudyRepository {
   }
 
   // Read
+  async count(): Promise<number> {
+    return this.studyModel.countDocuments().exec();
+  }
+
   async findAll(): Promise<Study[]> {
     return this.studyModel.find().sort({ uploadedAt: -1 }).exec();
   }
@@ -32,9 +36,20 @@ export class StudyRepository {
     return this.studyModel.findById(id).exec();
   }
 
+  async findAllByContainsTitle(title: string): Promise<Study[]> {
+    return this.studyModel
+      .find({ title: { $regex: title, $options: 'i' } })
+      .sort({ uploadedAt: -1 })
+      .exec();
+  }
+
   // Delete
   async deleteById(id: string): Promise<void> {
     await this.studyModel.deleteOne({ _id: id }).exec();
+  }
+
+  async deleteByCategory(category: Category): Promise<void> {
+    await this.studyModel.deleteMany({ category }).exec();
   }
 
   // Exists

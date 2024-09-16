@@ -33,13 +33,16 @@ export class PurgeUnusedImageJob {
 
   private async job() {
     const usedImages = [
-      ...(await this.socialRepository.findAll())
-        .flatMap((member) => member.contents)
-        .map((content) => content.image)
-        .map((image) => this.activityService.extractKeyFromUrl(image)),
       ...(await this.projectRepository.findAll())
         .map((project) => project.content)
         .flatMap((content) => this.toImagesFromHtml(content))
+        .map((image) => this.activityService.extractKeyFromUrl(image)),
+      ...(await this.projectRepository.findAll())
+        .map((project) => project.image)
+        .map((image) => this.activityService.extractKeyFromUrl(image)),
+      ...(await this.socialRepository.findAll())
+        .flatMap((social) => social.contents)
+        .map((content) => content.image)
         .map((image) => this.activityService.extractKeyFromUrl(image)),
     ];
 

@@ -27,7 +27,7 @@ export class SocialAdminService {
     member: Member,
     { title, contents }: CreateSocialRequestDto,
   ): Promise<CreateSocialResponseDto> {
-    if (!(await this.socialRepository.existsByTitle(title))) {
+    if (await this.socialRepository.existsByTitle(title)) {
       throw new AlreadyExistsSocialException();
     }
 

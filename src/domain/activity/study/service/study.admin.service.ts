@@ -92,6 +92,7 @@ export class StudyAdminService {
 
     const category = (await this.categoryRepository.findById(categoryId))!;
 
+    await this.studyRepository.deleteByCategory(category);
     await this.categoryRepository.deleteById(categoryId);
 
     this.eventEmitter.emit(
@@ -114,13 +115,15 @@ export class StudyAdminService {
     const title = $('meta[property="og:title"]').attr('content')!;
     const content = $('meta[property="og:description"]').attr('content')!;
     const author = $('meta[property="og.article.author"]').attr('content')!;
-    const image = $('meta[property="og:image"]').attr('content')!;
+    const image = decodeURIComponent(
+      $('meta[property="og:image"]').attr('content')!.split('fname=')[1],
+    );
     const rawUploadedAt = $('meta[property="article:published_time"]').attr('content')!;
     const uploadedAt = new Date(new Date(rawUploadedAt).getTime() + 9 * 60 * 60 * 1000);
 
     const entryInfoMatch = html.match(/window\.T\.entryInfo\s*=\s*({[^}]*});/);
     const entryInfo = entryInfoMatch ? JSON.parse(entryInfoMatch[1]) : null;
-    const categoryLabel = entryInfo['categoryLabel'];
+    const categoryLabel = entryInfo['categoryLabel'].replace('WINK-(Web & App)/', '');
     const category = await this.categoryRepository.findByName(categoryLabel);
 
     if (!category) {

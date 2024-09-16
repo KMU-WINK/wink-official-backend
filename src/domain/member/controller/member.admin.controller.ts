@@ -1,14 +1,16 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
-import { SuperRoleException } from '@wink/auth/exception';
 import { AuthAdminAccount, AuthAdminAccountException, ReqMember } from '@wink/auth/guard';
 
 import {
   ApproveWaitingMemberRequestDto,
+  GetMembersForAdminPageResponseDto,
+  GetMembersForAdminRequestDto,
   GetMembersForAdminResponseDto,
   GetWaitingMembersResponseDto,
   RejectWaitingMemberRequestDto,
+  SearchMembersRequestDto,
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
 } from '@wink/member/dto';
@@ -58,13 +60,37 @@ export class MemberAdminController {
     return this.memberAdminService.rejectWaitingMember(member, request);
   }
 
+  @Get('/max')
+  @AuthAdminAccount()
+  @ApiOperation({ summary: '부원 목록 최대 페이지' })
+  @ApiCustomResponse(GetMembersForAdminPageResponseDto)
+  @ApiCustomErrorResponse([...AuthAdminAccountException])
+  async getMembersPage(): Promise<GetMembersForAdminPageResponseDto> {
+    return this.memberAdminService.getMembersPage();
+  }
+
+  @Get('/search')
+  @AuthAdminAccount()
+  @ApiOperation({ summary: '부원 검색' })
+  @ApiProperty({ type: SearchMembersRequestDto })
+  @ApiCustomResponse(GetMembersForAdminResponseDto)
+  @ApiCustomErrorResponse([...AuthAdminAccountException])
+  async searchMembers(
+    @Query() request: SearchMembersRequestDto,
+  ): Promise<GetMembersForAdminResponseDto> {
+    return this.memberAdminService.searchMember(request);
+  }
+
   @Get()
   @AuthAdminAccount()
   @ApiOperation({ summary: '부원 목록' })
+  @ApiProperty({ type: GetMembersForAdminRequestDto })
   @ApiCustomResponse(GetMembersForAdminResponseDto)
   @ApiCustomErrorResponse([...AuthAdminAccountException])
-  async getMembers(): Promise<GetMembersForAdminResponseDto> {
-    return this.memberAdminService.getMembers();
+  async getMembers(
+    @Query() request: GetMembersForAdminRequestDto,
+  ): Promise<GetMembersForAdminResponseDto> {
+    return this.memberAdminService.getMembers(request);
   }
 
   @Patch('/role')
@@ -72,11 +98,7 @@ export class MemberAdminController {
   @ApiOperation({ summary: '부원 권한 수정' })
   @ApiProperty({ type: UpdateMemberRoleRequestDto })
   @ApiCustomResponse()
-  @ApiCustomErrorResponse([
-    ...AuthAdminAccountException,
-    NotApprovedMemberException,
-    SuperRoleException,
-  ])
+  @ApiCustomErrorResponse([...AuthAdminAccountException, NotApprovedMemberException])
   async updateMemberRole(
     @ReqMember() member: Member,
     @Body() request: UpdateMemberRoleRequestDto,
@@ -89,11 +111,7 @@ export class MemberAdminController {
   @ApiOperation({ summary: '부원 회비 납부 여부 수정' })
   @ApiProperty({ type: UpdateMemberFeeRequestDto })
   @ApiCustomResponse()
-  @ApiCustomErrorResponse([
-    ...AuthAdminAccountException,
-    NotApprovedMemberException,
-    SuperRoleException,
-  ])
+  @ApiCustomErrorResponse([...AuthAdminAccountException, NotApprovedMemberException])
   async updateMemberFee(
     @ReqMember() member: Member,
     @Body() request: UpdateMemberFeeRequestDto,

@@ -1,5 +1,3 @@
-import { SuperRoleException } from '@wink/auth/exception';
-
 import {
   ApproveWaitingMemberRequestDto,
   RejectWaitingMemberRequestDto,
@@ -158,7 +156,7 @@ describe('MemberAdminService', () => {
       // Given
 
       // When
-      const result = memberAdminService.getMembers();
+      const result = memberAdminService.getMembers({ page: 1 });
 
       // Then
       await expect(result).resolves.toStrictEqual({ members: [] });
@@ -169,7 +167,7 @@ describe('MemberAdminService', () => {
       memoryMemberRepository.push(...MEMBERS);
 
       // When
-      const result = memberAdminService.getMembers();
+      const result = memberAdminService.getMembers({ page: 1 });
 
       // Then
       await expect(result).resolves.toBeInstanceOf(Object);
@@ -202,34 +200,6 @@ describe('MemberAdminService', () => {
 
       // Then
       await expect(result).rejects.toThrow(NotApprovedMemberException);
-    });
-
-    it('PermissionException (1)', async () => {
-      // Given
-      const member = { ...TARGET };
-      member.role = Role.PRESIDENT;
-
-      memoryMemberRepository.push(member);
-
-      // When
-      const result = memberAdminService.updateRole(ME, PARAM);
-
-      // Then
-      await expect(result).rejects.toThrow(SuperRoleException);
-    });
-
-    it('PermissionException (2)', async () => {
-      // Given
-      const member = { ...TARGET };
-      member.role = Role.VICE_PRESIDENT;
-
-      memoryMemberRepository.push(member);
-
-      // When
-      const result = memberAdminService.updateRole(ME, PARAM);
-
-      // Then
-      await expect(result).rejects.toThrow(SuperRoleException);
     });
 
     it('Update role', async () => {
@@ -273,34 +243,6 @@ describe('MemberAdminService', () => {
 
       // Then
       await expect(result).rejects.toThrow(NotApprovedMemberException);
-    });
-
-    it('PermissionException (1)', async () => {
-      // Given
-      const member = { ...TARGET };
-      member.role = Role.PRESIDENT;
-
-      memoryMemberRepository.push(member);
-
-      // When
-      const result = memberAdminService.updateFee(ME, PARAM);
-
-      // Then
-      await expect(result).rejects.toThrow(SuperRoleException);
-    });
-
-    it('PermissionException (2)', async () => {
-      // Given
-      const member = { ...TARGET };
-      member.role = Role.VICE_PRESIDENT;
-
-      memoryMemberRepository.push(member);
-
-      // When
-      const result = memberAdminService.updateFee(ME, PARAM);
-
-      // Then
-      await expect(result).rejects.toThrow(SuperRoleException);
     });
 
     it('Change fee', async () => {

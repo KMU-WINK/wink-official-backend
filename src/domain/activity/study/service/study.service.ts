@@ -5,8 +5,10 @@ import {
   GetStudiesPageResponseDto,
   GetStudiesRequestDto,
   GetStudiesResponseDto,
+  SearchStudyRequestDto,
 } from '@wink/activity/dto';
 import { CategoryRepository, StudyRepository } from '@wink/activity/repository';
+import { Category } from '@wink/activity/study/schema';
 
 @Injectable()
 export class StudyService {
@@ -16,7 +18,11 @@ export class StudyService {
   ) {}
 
   async getCategories(): Promise<GetCategoriesResponseDto> {
-    const categories = await this.categoryRepository.findAll();
+    const studies = await this.studyRepository.findAll();
+    const categories = (await this.categoryRepository.findAll()).map((category) => ({
+      ...('_doc' in category ? <Category>category._doc : category),
+      dependencies: studies.filter((study) => study.category.name === category.name).length,
+    }));
 
     return { categories };
   }
@@ -27,10 +33,15 @@ export class StudyService {
     return { studies };
   }
 
-  async getStudiesPage(): Promise<GetStudiesPageResponseDto> {
-    const studies = await this.studyRepository.findAll();
-    const page = Math.ceil(studies.length / 10);
+  async searchStudies({ query }: SearchStudyRequestDto): Promise<GetStudiesResponseDto> {
+    const studies = await this.studyRepository.findAllByContainsTitle(query);
 
-    return { page };
+    return { studies };
+  }
+
+  async getStudiesPage(): Promise<GetStudiesPageResponseDto> {
+    const count = await this.studyRepository.count();
+
+    return { page: Math.ceil(count / 10) };
   }
 }

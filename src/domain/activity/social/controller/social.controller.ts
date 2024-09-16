@@ -1,10 +1,13 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import {
   GetSocialRequestDto,
   GetSocialResponseDto,
+  GetSocialsPageResponseDto,
+  GetSocialsRequestDto,
   GetSocialsResponseDto,
+  SearchSocialsRequestDto,
 } from '@wink/activity/dto';
 import { SocialNotFoundException } from '@wink/activity/exception';
 import { SocialService } from '@wink/activity/service';
@@ -21,14 +24,29 @@ export class SocialController {
   @ApiProperty({ type: GetSocialRequestDto })
   @ApiCustomResponse(GetSocialResponseDto)
   @ApiCustomErrorResponse([SocialNotFoundException])
-  async getProject(@Body() request: GetSocialRequestDto): Promise<GetSocialResponseDto> {
+  async getSocial(@Query() request: GetSocialRequestDto): Promise<GetSocialResponseDto> {
     return this.socialService.getSocial(request);
+  }
+
+  @Get('/max')
+  @ApiOperation({ summary: '친목 활동 최대 페이지' })
+  @ApiCustomResponse(GetSocialsPageResponseDto)
+  async getSocialsPage(): Promise<GetSocialsPageResponseDto> {
+    return this.socialService.getSocialsPage();
+  }
+
+  @Get('/search')
+  @ApiOperation({ summary: '친목 활동 검색' })
+  @ApiProperty({ type: SearchSocialsRequestDto })
+  @ApiCustomResponse(GetSocialsResponseDto)
+  async searchProjects(@Query() request: SearchSocialsRequestDto): Promise<GetSocialsResponseDto> {
+    return this.socialService.searchSocials(request);
   }
 
   @Get()
   @ApiOperation({ summary: '친목 활동 목록' })
   @ApiCustomResponse(GetSocialsResponseDto)
-  async getSocials(): Promise<GetSocialsResponseDto> {
-    return this.socialService.getSocials();
+  async getSocials(@Query() request: GetSocialsRequestDto): Promise<GetSocialsResponseDto> {
+    return this.socialService.getSocials(request);
   }
 }

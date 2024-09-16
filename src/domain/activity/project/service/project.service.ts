@@ -6,6 +6,7 @@ import {
   GetProjectsPageResponseDto,
   GetProjectsRequestDto,
   GetProjectsResponseDto,
+  SearchProjectsRequestDto,
 } from '@wink/activity/dto';
 import { ProjectNotFoundException } from '@wink/activity/exception';
 import { ProjectRepository } from '@wink/activity/repository';
@@ -25,10 +26,15 @@ export class ProjectService {
   }
 
   async getProjectsPage(): Promise<GetProjectsPageResponseDto> {
-    const projects = await this.projectRepository.findAll();
-    const page = Math.ceil(projects.length / 10);
+    const count = await this.projectRepository.count();
 
-    return { page };
+    return { page: Math.ceil(count / 15) };
+  }
+
+  async searchProjects({ query }: SearchProjectsRequestDto): Promise<GetProjectsResponseDto> {
+    const projects = await this.projectRepository.findAllByContainsTitle(query);
+
+    return { projects };
   }
 
   async getProjects({ page }: GetProjectsRequestDto): Promise<GetProjectsResponseDto> {
