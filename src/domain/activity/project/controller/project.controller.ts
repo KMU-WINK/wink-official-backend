@@ -7,6 +7,7 @@ import {
   GetProjectsPageResponseDto,
   GetProjectsRequestDto,
   GetProjectsResponseDto,
+  SearchProjectsRequestDto,
 } from '@wink/activity/dto';
 import { ProjectNotFoundException } from '@wink/activity/exception';
 import { ProjectService } from '@wink/activity/service';
@@ -32,6 +33,14 @@ export class ProjectController {
   @ApiCustomResponse(GetProjectsPageResponseDto)
   async getProjectsPage(): Promise<GetProjectsPageResponseDto> {
     return this.projectService.getProjectsPage();
+  }
+
+  @Get('/search')
+  @ApiOperation({ summary: '프로젝트 검색' })
+  @ApiProperty({ type: SearchProjectsRequestDto })
+  @ApiCustomResponse(GetProjectsResponseDto)
+  async searchProjects(@Body() request: SearchProjectsRequestDto): Promise<GetProjectsResponseDto> {
+    return this.projectService.searchProjects(request);
   }
 
   @Get()

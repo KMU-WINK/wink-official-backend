@@ -32,6 +32,13 @@ export class SocialRepository {
       .exec();
   }
 
+  async findAllByContainsTitle(title: string): Promise<Social[]> {
+    return this.socialModel
+      .find({ title: { $regex: title, $options: 'i' } })
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
   async findById(id: string): Promise<Social | null> {
     return this.socialModel.findById(id).exec();
   }

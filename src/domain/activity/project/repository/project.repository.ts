@@ -36,6 +36,13 @@ export class ProjectRepository {
     return this.projectModel.findById(id).exec();
   }
 
+  async findAllByContainsTitle(title: string): Promise<Project[]> {
+    return this.projectModel
+      .find({ title: { $regex: title, $options: 'i' } })
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
   // Delete
   async deleteById(id: string): Promise<void> {
     await this.projectModel.deleteOne({ _id: id }).exec();

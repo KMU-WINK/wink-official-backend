@@ -85,6 +85,36 @@ export class MemberRepository {
     ]);
   }
 
+  async findByContainsName(name: string): Promise<Member[]> {
+    return this.memberModel.aggregate([
+      {
+        $match: {
+          approved: true,
+          name: { $regex: name, $options: 'i' },
+        },
+      },
+      {
+        $addFields: {
+          roleIndex: {
+            $switch: {
+              branches: roleOrder.map((role, index) => ({
+                case: { $eq: ['$role', role] },
+                then: index,
+              })),
+              default: roleOrder.length,
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          roleIndex: 1,
+          name: 1,
+        },
+      },
+    ]);
+  }
+
   async findAllWaitingMember(): Promise<Member[]> {
     return this.memberModel.find({ approved: false }).exec();
   }

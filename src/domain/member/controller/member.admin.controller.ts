@@ -10,6 +10,7 @@ import {
   GetMembersForAdminResponseDto,
   GetWaitingMembersResponseDto,
   RejectWaitingMemberRequestDto,
+  SearchMembersRequestDto,
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
 } from '@wink/member/dto';
@@ -61,11 +62,23 @@ export class MemberAdminController {
 
   @Get('/max')
   @AuthAdminAccount()
-  @ApiOperation({ summary: '부원 최대 페이지' })
+  @ApiOperation({ summary: '부원 목록 최대 페이지' })
   @ApiCustomResponse(GetMembersForAdminPageResponseDto)
   @ApiCustomErrorResponse([...AuthAdminAccountException])
   async getMembersPage(): Promise<GetMembersForAdminPageResponseDto> {
     return this.memberAdminService.getMembersPage();
+  }
+
+  @Get('/search')
+  @AuthAdminAccount()
+  @ApiOperation({ summary: '부원 검색' })
+  @ApiProperty({ type: SearchMembersRequestDto })
+  @ApiCustomResponse(GetMembersForAdminResponseDto)
+  @ApiCustomErrorResponse([...AuthAdminAccountException])
+  async searchMembers(
+    @Body() request: SearchMembersRequestDto,
+  ): Promise<GetMembersForAdminResponseDto> {
+    return this.memberAdminService.searchMember(request);
   }
 
   @Get()

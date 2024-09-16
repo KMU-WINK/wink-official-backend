@@ -12,6 +12,7 @@ import {
   GetMembersForAdminResponseDto,
   GetWaitingMembersResponseDto,
   RejectWaitingMemberRequestDto,
+  SearchMembersRequestDto,
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
 } from '@wink/member/dto';
@@ -99,6 +100,14 @@ export class MemberAdminService {
     const count = await this.memberRepository.count();
 
     return { page: Math.ceil(count / 10) };
+  }
+
+  async searchMember({ query }: SearchMembersRequestDto): Promise<GetMembersForAdminResponseDto> {
+    const members = (await this.memberRepository.findByContainsName(query)).map((member) => {
+      return <EachGetMembersForAdminResponseDto>omitMember(member, ['approved']);
+    });
+
+    return { members };
   }
 
   async getMembers({ page }: GetMembersForAdminRequestDto): Promise<GetMembersForAdminResponseDto> {

@@ -5,6 +5,7 @@ import {
   GetStudiesPageResponseDto,
   GetStudiesRequestDto,
   GetStudiesResponseDto,
+  SearchStudyRequestDto,
 } from '@wink/activity/dto';
 import { CategoryRepository, StudyRepository } from '@wink/activity/repository';
 
@@ -23,6 +24,12 @@ export class StudyService {
 
   async getStudies({ page }: GetStudiesRequestDto): Promise<GetStudiesResponseDto> {
     const studies = await this.studyRepository.findAllPage(page);
+
+    return { studies };
+  }
+
+  async searchStudies({ query }: SearchStudyRequestDto): Promise<GetStudiesResponseDto> {
+    const studies = await this.studyRepository.findAllByContainsTitle(query);
 
     return { studies };
   }

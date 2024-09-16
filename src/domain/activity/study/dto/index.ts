@@ -4,6 +4,7 @@ export * from './request/create-study.request.dto';
 export * from './request/delete-category.request.dto';
 export * from './request/delete-study.request.dto';
 export * from './request/get-studies.request.dto';
+export * from './request/search-study.request.dto';
 export * from './request/update-category.request.dto';
 
 // Response

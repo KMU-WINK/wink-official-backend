@@ -6,6 +6,7 @@ import {
   GetStudiesPageResponseDto,
   GetStudiesRequestDto,
   GetStudiesResponseDto,
+  SearchStudyRequestDto,
 } from '@wink/activity/dto';
 import { StudyService } from '@wink/activity/service';
 
@@ -28,6 +29,14 @@ export class StudyController {
   @ApiCustomResponse(GetStudiesPageResponseDto)
   async getStudiesPage(): Promise<GetStudiesPageResponseDto> {
     return this.studyService.getStudiesPage();
+  }
+
+  @Get('/search')
+  @ApiOperation({ summary: '스터디 활동 검색' })
+  @ApiProperty({ type: SearchStudyRequestDto })
+  @ApiCustomResponse(GetStudiesResponseDto)
+  async searchStudied(@Body() request: SearchStudyRequestDto): Promise<GetStudiesResponseDto> {
+    return this.studyService.searchStudies(request);
   }
 
   @Get()

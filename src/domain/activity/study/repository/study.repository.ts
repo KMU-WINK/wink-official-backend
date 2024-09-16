@@ -36,6 +36,13 @@ export class StudyRepository {
     return this.studyModel.findById(id).exec();
   }
 
+  async findAllByContainsTitle(title: string): Promise<Study[]> {
+    return this.studyModel
+      .find({ title: { $regex: title, $options: 'i' } })
+      .sort({ uploadedAt: -1 })
+      .exec();
+  }
+
   // Delete
   async deleteById(id: string): Promise<void> {
     await this.studyModel.deleteOne({ _id: id }).exec();
