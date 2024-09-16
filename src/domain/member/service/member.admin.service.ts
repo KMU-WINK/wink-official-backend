@@ -1,21 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { MemberNotFoundException, SuperRoleException } from '@wink/auth/exception';
+import { MemberNotFoundException } from '@wink/auth/exception';
 
 import {
   ApproveWaitingMemberRequestDto,
   EachGetMembersForAdminResponseDto,
   EachGetWaitingMembersResponseDto,
+  GetMembersForAdminPageResponseDto,
+  GetMembersForAdminRequestDto,
   GetMembersForAdminResponseDto,
   GetWaitingMembersResponseDto,
   RejectWaitingMemberRequestDto,
+  SearchMembersRequestDto,
   UpdateMemberFeeRequestDto,
   UpdateMemberRoleRequestDto,
 } from '@wink/member/dto';
 import { NotApprovedMemberException, NotWaitingMemberException } from '@wink/member/exception';
 import { MemberRepository } from '@wink/member/repository';
-import { Member, Role, checkRoleHierarchy, omitMember, pickMember } from '@wink/member/schema';
+import { Member, Role, omitMember, pickMember } from '@wink/member/schema';
 
 import {
   ApproveWaitingMemberEvent,
@@ -36,7 +39,8 @@ export class MemberAdminService {
 
   async getWaitingMembers(): Promise<GetWaitingMembersResponseDto> {
     const members = (await this.memberRepository.findAllWaitingMember()).map(
-      (member) => <EachGetWaitingMembersResponseDto>pickMember(member, ['approved', 'role', 'fee']),
+      (member) =>
+        <EachGetWaitingMembersResponseDto>pickMember(member, ['_id', 'name', 'email', 'studentId']),
     );
 
     return { members };
@@ -93,8 +97,22 @@ export class MemberAdminService {
     );
   }
 
-  async getMembers(): Promise<GetMembersForAdminResponseDto> {
-    const members = (await this.memberRepository.findAll()).map((member) => {
+  async getMembersPage(): Promise<GetMembersForAdminPageResponseDto> {
+    const count = await this.memberRepository.count();
+
+    return { page: Math.ceil(count / 10) };
+  }
+
+  async searchMember({ query }: SearchMembersRequestDto): Promise<GetMembersForAdminResponseDto> {
+    const members = (await this.memberRepository.findByContainsName(query)).map((member) => {
+      return <EachGetMembersForAdminResponseDto>omitMember(member, ['approved']);
+    });
+
+    return { members };
+  }
+
+  async getMembers({ page }: GetMembersForAdminRequestDto): Promise<GetMembersForAdminResponseDto> {
+    const members = (await this.memberRepository.findAllPage(page)).map((member) => {
       return <EachGetMembersForAdminResponseDto>omitMember(member, ['approved']);
     });
 
@@ -115,10 +133,6 @@ export class MemberAdminService {
       throw new NotApprovedMemberException();
     }
 
-    if (!checkRoleHierarchy(from.role!, to.role!)) {
-      throw new SuperRoleException();
-    }
-
     to.role = role;
 
     await this.memberRepository.save(to);
@@ -135,10 +149,6 @@ export class MemberAdminService {
 
     if (!to.approved) {
       throw new NotApprovedMemberException();
-    }
-
-    if (!checkRoleHierarchy(from.role!, to.role!)) {
-      throw new SuperRoleException();
     }
 
     to.fee = fee;

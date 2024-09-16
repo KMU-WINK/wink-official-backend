@@ -13,7 +13,15 @@ export const mockMemberRepository = (memory: Member[]) => ({
   }),
 
   // Read
+  count: jest.fn(async () => {
+    return memory.length;
+  }),
+
   findAll: jest.fn(async () => {
+    return memory.filter((member) => member.approved);
+  }),
+
+  findAllPage: jest.fn(async () => {
     return memory.filter((member) => member.approved);
   }),
 

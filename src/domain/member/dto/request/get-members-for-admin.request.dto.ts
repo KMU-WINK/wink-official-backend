@@ -4,7 +4,7 @@ import { CommonValidation, TypeValidation } from '@wink/validation';
 
 import { Type } from 'class-transformer';
 
-export class GetStudiesRequestDto {
+export class GetMembersForAdminRequestDto {
   @ApiProperty({
     description: '페이지',
     example: 1,

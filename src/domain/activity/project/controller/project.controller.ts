@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 
 import {
@@ -7,6 +7,7 @@ import {
   GetProjectsPageResponseDto,
   GetProjectsRequestDto,
   GetProjectsResponseDto,
+  SearchProjectsRequestDto,
 } from '@wink/activity/dto';
 import { ProjectNotFoundException } from '@wink/activity/exception';
 import { ProjectService } from '@wink/activity/service';
@@ -23,7 +24,7 @@ export class ProjectController {
   @ApiProperty({ type: GetProjectRequestDto })
   @ApiCustomResponse(GetProjectResponseDto)
   @ApiCustomErrorResponse([ProjectNotFoundException])
-  async getProject(@Body() request: GetProjectRequestDto): Promise<GetProjectResponseDto> {
+  async getProject(@Query() request: GetProjectRequestDto): Promise<GetProjectResponseDto> {
     return this.projectService.getProject(request);
   }
 
@@ -34,11 +35,21 @@ export class ProjectController {
     return this.projectService.getProjectsPage();
   }
 
+  @Get('/search')
+  @ApiOperation({ summary: '프로젝트 검색' })
+  @ApiProperty({ type: SearchProjectsRequestDto })
+  @ApiCustomResponse(GetProjectsResponseDto)
+  async searchProjects(
+    @Query() request: SearchProjectsRequestDto,
+  ): Promise<GetProjectsResponseDto> {
+    return this.projectService.searchProjects(request);
+  }
+
   @Get()
   @ApiOperation({ summary: '프로젝트 목록' })
   @ApiProperty({ type: GetProjectsRequestDto })
   @ApiCustomResponse(GetProjectsResponseDto)
-  async getProjects(@Body() request: GetProjectsRequestDto): Promise<GetProjectsResponseDto> {
+  async getProjects(@Query() request: GetProjectsRequestDto): Promise<GetProjectsResponseDto> {
     return this.projectService.getProjects(request);
   }
 }

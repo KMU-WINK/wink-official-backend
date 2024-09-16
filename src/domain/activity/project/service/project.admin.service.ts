@@ -27,7 +27,7 @@ export class ProjectAdminService {
     member: Member,
     { title, content, tags, image }: CreateProjectRequestDto,
   ): Promise<CreateProjectResponseDto> {
-    if (!(await this.projectRepository.existsByTitle(title))) {
+    if (await this.projectRepository.existsByTitle(title)) {
       throw new AlreadyExistsProjectException();
     }
 
