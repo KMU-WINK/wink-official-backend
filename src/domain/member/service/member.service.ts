@@ -51,11 +51,7 @@ export class MemberService {
     member.description = description;
     member.link = { github, instagram, blog };
 
-    console.log(member);
-
-    const t = await this.memberRepository.save(member);
-
-    console.log(t);
+    await this.memberRepository.save(member);
 
     this.eventEmitter.emit(
       UpdateMyInfoEvent.EVENT_NAME,
