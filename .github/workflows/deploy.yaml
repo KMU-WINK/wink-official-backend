@@ -45,8 +45,8 @@ jobs:
           platforms: linux/amd64
           provenance: false
           tags: ${{ env.IMAGE_NAME }}-amd64
-          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}-amd64-cache
-          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}-amd64-cache
+#          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}-amd64-cache
+#          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}-amd64-cache
 
   build-arm64:
     runs-on: ubuntu-latest
@@ -70,8 +70,8 @@ jobs:
           platforms: linux/arm64
           tags: ${{ env.IMAGE_NAME }}-arm64
           provenance: false
-          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}-arm64-cache
-          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}-arm64-cache
+#          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}-arm64-cache
+#          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}-arm64-cache
 
   merge-image:
     runs-on: ubuntu-latest

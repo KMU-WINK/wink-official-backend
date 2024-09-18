@@ -36,13 +36,19 @@ export class PurgeUnusedImageJob {
       ...(await this.projectRepository.findAll())
         .map((project) => project.content)
         .flatMap((content) => this.toImagesFromHtml(content))
+
+        .filter((key) => !key.startsWith('data:image'))
         .map((image) => this.activityService.extractKeyFromUrl(image)),
       ...(await this.projectRepository.findAll())
         .map((project) => project.image)
+
+        .filter((key) => !key.startsWith('data:image'))
         .map((image) => this.activityService.extractKeyFromUrl(image)),
       ...(await this.socialRepository.findAll())
         .flatMap((social) => social.contents)
         .map((content) => content.image)
+
+        .filter((key) => !key.startsWith('data:image'))
         .map((image) => this.activityService.extractKeyFromUrl(image)),
     ];
 
