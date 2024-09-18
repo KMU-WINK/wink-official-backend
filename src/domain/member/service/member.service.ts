@@ -47,7 +47,6 @@ export class MemberService {
     member: Member,
     { description, github, instagram, blog }: UpdateMyInfoRequestDto,
   ): Promise<void> {
-    console.log(description, github, instagram, blog);
     member.description = description;
     member.link = { github, instagram, blog };
 

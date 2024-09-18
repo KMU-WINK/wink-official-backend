@@ -41,6 +41,7 @@ jobs:
       - name: Build Image
         uses: docker/build-push-action@v6
         with:
+          context: .
           push: true
           platforms: linux/amd64
           provenance: false
@@ -66,6 +67,7 @@ jobs:
       - name: Build Image
         uses: docker/build-push-action@v6
         with:
+          context: .
           push: true
           platforms: linux/arm64
           tags: ${{ env.IMAGE_NAME }}-arm64
