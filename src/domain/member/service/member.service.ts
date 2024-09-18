@@ -47,12 +47,15 @@ export class MemberService {
     member: Member,
     { description, github, instagram, blog }: UpdateMyInfoRequestDto,
   ): Promise<void> {
+    console.log(description, github, instagram, blog);
     member.description = description;
-    member.link.github = github;
-    member.link.instagram = instagram;
-    member.link.blog = blog;
+    member.link = { github, instagram, blog };
 
-    await this.memberRepository.save(member);
+    console.log(member);
+
+    const t = await this.memberRepository.save(member);
+
+    console.log(t);
 
     this.eventEmitter.emit(
       UpdateMyInfoEvent.EVENT_NAME,
