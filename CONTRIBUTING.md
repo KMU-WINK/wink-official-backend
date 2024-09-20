@@ -4,8 +4,7 @@
 
 1. [시작하기](#시작하기)
 2. [개발 워크플로우](#개발-워크플로우)
-3. [코딩 컨벤션](#코딩-컨벤션)
-4. [풀 리퀘스트](#풀-리퀘스트)
+3. [풀 리퀘스트](#풀-리퀘스트)
 
 ## 시작하기
 
@@ -13,11 +12,6 @@
     ```bash
     git clone https://github.com/your-username/wink-official-backend.git
     cd wink-official-backend
-    ```
-
-2. **의존성 설치:**
-    ```bash
-    yarn install
     ```
 
 ## 개발 워크플로우
@@ -33,20 +27,6 @@
 git checkout develop
 git pull origin develop
 git checkout -b features/your-feature-name
-```
-
-### 코딩 컨벤션
-
-코드 린팅과 포매팅을 위해 ESLint와 Prettier를 사용합니다. 이 컨벤션은 Git hook을 사용하여 자동으로 적용됩니다.
-
-- **린팅:** 다음 명령어를 실행하여 린팅 오류를 확인하세요:
-```
-yarn lint
-```
-
-- **포매팅:** 다음 명령어를 실행하여 코드를 포매팅하세요:
-```yarn
-yarn format
 ```
 
 ### 커밋 메시지

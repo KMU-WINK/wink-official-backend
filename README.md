@@ -2,33 +2,18 @@
 
 ## Tech Stack
 
-**Runtime:**
-- ![nodejs](https://img.shields.io/badge/node.js-5FA04E?style=for-the-badge&logo=node.js&logoColor=white)
-- ![typescript](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-
 **Server:**
-- ![nestjs](https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+- ![spring boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 
 **Database:**
 - ![mongodb](https://img.shields.io/badge/MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white)
 - ![redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
 
-## Swagger Documentation Path
-- path: (BASE_URL)/api/swagger
-
-
 ## Related
 [Wink Official Frontend](https://github.com/kmu-wink/wink-official-frontend)
 
 [Wink Official Deploy](https://github.com/kmu-wink/wink-official-deploy)
-
-
-## Live Server
-
-[Live Server (Master)](https://wink.kookmin.ac.kr)
-
-[Live Server (Develop)](https://wink-dev.kro.kr)
 
 
 ## Run Locally
@@ -45,28 +30,10 @@ Go to the project directory
 cd wink-official-backend
 ```
 
-Install dependencies
-
-```bash
-yarn install
-```
-
-Copy the config file
-
-```bash
-cp config/config.template.yaml config/config.yaml
-```
-
-Edit the config file
-
-```bash
-vim config/config.yaml
-```
-
 Start the server
 
 ```bash
-yarn start
+./gradlew bootRun
 ```
 
 
@@ -111,15 +78,6 @@ docker run \
           -e JWT_SECRET=(JWT_SECRET) -e JWT_EXPIRES_IN=(JWT_EXPIRES_IN) \
           
           -p 8080:8080 -d (IMAGE_NAME)
-```
-
-
-## Running Tests
-
-To run tests, run the following command
-
-```bash
-  yarn test
 ```
 
 
