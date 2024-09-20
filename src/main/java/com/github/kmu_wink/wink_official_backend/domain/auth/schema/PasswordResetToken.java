@@ -6,15 +6,15 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
 @Builder
-@RedisHash(value = "verify_code", timeToLive = 60 * 60)
-public record VerifyCode(
+@RedisHash(value = "password_reset_token", timeToLive = 60 * 60)
+public record PasswordResetToken(
 
         @Id
         Long id,
 
         @Indexed
-        String email,
+        String token,
 
-        String code
+        String userId
 ) {
 }

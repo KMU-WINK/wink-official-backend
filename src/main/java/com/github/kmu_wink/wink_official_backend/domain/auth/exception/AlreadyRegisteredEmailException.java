@@ -7,6 +7,6 @@ public class AlreadyRegisteredEmailException extends ApiException {
 
     public AlreadyRegisteredEmailException() {
 
-        super(HttpStatus.CONFLICT, "이미 등록된 이메일입니다.");
+        super(HttpStatus.CONFLICT, "이미 가입된 이메일입니다.");
     }
 }

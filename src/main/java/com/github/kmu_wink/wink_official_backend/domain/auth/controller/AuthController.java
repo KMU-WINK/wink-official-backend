@@ -5,6 +5,7 @@ import com.github.kmu_wink.wink_official_backend.common.security.util.UserContex
 import com.github.kmu_wink.wink_official_backend.domain.auth.dto.request.*;
 import com.github.kmu_wink.wink_official_backend.domain.auth.dto.response.CheckVerifyCodeResponse;
 import com.github.kmu_wink.wink_official_backend.domain.auth.dto.response.LoginResponse;
+import com.github.kmu_wink.wink_official_backend.domain.auth.dto.response.VerifyResetPasswordResponse;
 import com.github.kmu_wink.wink_official_backend.domain.auth.service.AuthService;
 import com.github.kmu_wink.wink_official_backend.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official_backend.domain.user.schema.User;
@@ -52,6 +53,28 @@ public class AuthController {
     public ApiResponse<LoginResponse> refresh(@RequestBody @Valid RefreshRequest request) {
 
         return ApiResponse.ok(authService.refresh(request));
+    }
+
+    @PostMapping("/reset-password/request")
+    public ApiResponse<Void> requestResetPassword(@RequestBody @Valid RequestResetPasswordRequest request) {
+
+        authService.requestResetPassword(request);
+
+        return ApiResponse.ok();
+    }
+
+    @PostMapping("/reset-password/verify")
+    public ApiResponse<VerifyResetPasswordResponse> verifyResetPassword(@RequestBody @Valid VerifyResetPasswordRequest request) {
+
+        return ApiResponse.ok(authService.verifyResetPassword(request));
+    }
+
+    @PostMapping("/reset-password")
+    public ApiResponse<Void> confirmResetPassword(@RequestBody @Valid ConfirmResetPasswordRequest request) {
+
+        authService.confirmResetPassword(request);
+
+        return ApiResponse.ok();
     }
 
     @GetMapping("/me")

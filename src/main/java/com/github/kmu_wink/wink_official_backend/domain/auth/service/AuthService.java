@@ -6,13 +6,19 @@ import com.github.kmu_wink.wink_official_backend.common.security.jwt.JwtUtil;
 import com.github.kmu_wink.wink_official_backend.domain.auth.dto.request.*;
 import com.github.kmu_wink.wink_official_backend.domain.auth.dto.response.CheckVerifyCodeResponse;
 import com.github.kmu_wink.wink_official_backend.domain.auth.dto.response.LoginResponse;
+import com.github.kmu_wink.wink_official_backend.domain.auth.dto.response.VerifyResetPasswordResponse;
+import com.github.kmu_wink.wink_official_backend.domain.auth.email.PasswordResetTokenTemplate;
 import com.github.kmu_wink.wink_official_backend.domain.auth.email.VerifyCodeTemplate;
 import com.github.kmu_wink.wink_official_backend.domain.auth.exception.*;
+import com.github.kmu_wink.wink_official_backend.domain.auth.repository.PasswordResetTokenRepository;
 import com.github.kmu_wink.wink_official_backend.domain.auth.repository.RefreshTokenRepository;
 import com.github.kmu_wink.wink_official_backend.domain.auth.repository.VerifyCodeRepository;
+import com.github.kmu_wink.wink_official_backend.domain.auth.schema.PasswordResetToken;
 import com.github.kmu_wink.wink_official_backend.domain.auth.schema.RefreshToken;
 import com.github.kmu_wink.wink_official_backend.domain.auth.schema.VerifyCode;
 import com.github.kmu_wink.wink_official_backend.domain.user.dto.response.UserResponse;
+import com.github.kmu_wink.wink_official_backend.domain.user.exception.NotApprovedUserException;
+import com.github.kmu_wink.wink_official_backend.domain.user.exception.UserNotFoundException;
 import com.github.kmu_wink.wink_official_backend.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official_backend.domain.user.schema.User;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @Service
@@ -30,6 +37,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final VerifyCodeRepository verifyCodeRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder encoder;
@@ -163,15 +171,70 @@ public class AuthService {
 
         refreshTokenRepository.delete(refreshToken);
 
-        User user = refreshToken.user();
+        String userId = refreshToken.userId();
 
-        String accessToken = jwtUtil.generateAccessToken(user);
-        String newRefreshToken = jwtUtil.generateRefreshToken(user);
+        String accessToken = jwtUtil.generateAccessToken(userId);
+        String newRefreshToken = jwtUtil.generateRefreshToken(userId);
 
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(newRefreshToken)
                 .build();
+    }
+
+    public void requestResetPassword(RequestResetPasswordRequest dto) {
+
+        String email = dto.email();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
+
+        String passwordResetTokenRaw = UUID.randomUUID().toString();
+
+        PasswordResetToken passwordResetToken = PasswordResetToken.builder()
+                .token(passwordResetTokenRaw)
+                .userId(user.getId())
+                .build();
+
+        passwordResetTokenRepository.save(passwordResetToken);
+
+        emailSender.send(email, PasswordResetTokenTemplate.of(email, passwordResetTokenRaw));
+    }
+
+    public VerifyResetPasswordResponse verifyResetPassword(VerifyResetPasswordRequest dto) {
+
+        String passwordResetToken = dto.passwordResetToken();
+
+        boolean isVerified = passwordResetTokenRepository.existsByToken(passwordResetToken);
+
+        return VerifyResetPasswordResponse.builder()
+                .isVerified(isVerified)
+                .build();
+    }
+
+    public void confirmResetPassword(ConfirmResetPasswordRequest request) {
+
+        String passwordResetToken = request.passwordResetToken();
+        String newPassword = request.newPassword();
+
+        if (!passwordResetTokenRepository.existsByToken(passwordResetToken)) {
+
+            throw new InvalidPasswordResetTokenException();
+        }
+
+        PasswordResetToken passwordResetTokenEntity = passwordResetTokenRepository.findByToken(passwordResetToken)
+                .orElseThrow();
+
+        passwordResetTokenRepository.delete(passwordResetTokenEntity);
+
+        String userId = passwordResetTokenEntity.userId();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        user.setPassword(encoder.encode(newPassword));
+
+        userRepository.save(user);
     }
 
     public UserResponse me(User user) {

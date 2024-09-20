@@ -7,6 +7,6 @@ public class AccessTokenExpiredException extends ApiException {
 
     public AccessTokenExpiredException() {
 
-        super(HttpStatus.UNAUTHORIZED, "Access Token이 만료되었습니다.");
+        super(HttpStatus.UNAUTHORIZED, "엑세스 토큰이 만료되었습니다.");
     }
 }

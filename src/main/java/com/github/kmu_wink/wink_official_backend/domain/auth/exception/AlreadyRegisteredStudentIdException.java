@@ -7,6 +7,6 @@ public class AlreadyRegisteredStudentIdException extends ApiException {
 
     public AlreadyRegisteredStudentIdException() {
 
-        super(HttpStatus.CONFLICT, "이미 등록된 학번입니다.");
+        super(HttpStatus.CONFLICT, "이미 가입된 학번입니다.");
     }
 }
