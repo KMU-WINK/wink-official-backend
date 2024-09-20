@@ -26,7 +26,7 @@ public class JwtUtil {
     @PostConstruct
     public void init() {
 
-        algorithm = Algorithm.HMAC256(jwtProperty.getSecretKey());
+        algorithm = Algorithm.HMAC256(jwtProperty.getKey());
     }
 
     public String generateAccessToken(User user) {

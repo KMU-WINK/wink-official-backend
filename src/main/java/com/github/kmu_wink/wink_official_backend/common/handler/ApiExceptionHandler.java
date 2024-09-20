@@ -1,9 +1,11 @@
-package com.github.kmu_wink.wink_official_backend.common.api.exception;
+package com.github.kmu_wink.wink_official_backend.common.handler;
 
 import com.github.kmu_wink.wink_official_backend.common.api.dto.response.ApiResponse;
+import com.github.kmu_wink.wink_official_backend.common.api.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,7 +24,13 @@ public class ApiExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ApiResponse<?> httpMessageNotReadableException(HttpMessageNotReadableException ignored) {
 
-        return ApiResponse.error(HttpStatus.BAD_REQUEST, "Body를 읽을 수 없습니다.");
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, "요청 데이터가 올바르지 않습니다.");
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ApiResponse<?> authorizationDeniedException(AuthorizationDeniedException ignored) {
+
+        return ApiResponse.error(HttpStatus.FORBIDDEN, "권한이 없습니다.");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -51,6 +59,6 @@ public class ApiExceptionHandler {
 
         log.error("Server Error", e);
 
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.");
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
     }
 }

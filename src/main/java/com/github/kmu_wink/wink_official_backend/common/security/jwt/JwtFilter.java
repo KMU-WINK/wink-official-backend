@@ -73,6 +73,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String content = new ObjectMapper().writeValueAsString(apiResponse);
 
+        response.addHeader("Content-Type", "application/json");
         response.getWriter().write(content);
         response.getWriter().flush();
     }

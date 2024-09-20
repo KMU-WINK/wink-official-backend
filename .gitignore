@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Configuration ###
+src/main/resources/config/*.yaml
+!src/main/resources/config/*.example.yaml

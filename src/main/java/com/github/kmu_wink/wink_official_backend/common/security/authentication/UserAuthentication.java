@@ -6,10 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class UserAuthentication implements Authentication {
@@ -28,7 +26,7 @@ public class UserAuthentication implements Authentication {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return user.getRole().getAuthorization();
     }
 
     @Override
