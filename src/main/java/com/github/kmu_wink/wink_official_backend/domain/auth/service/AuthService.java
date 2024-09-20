@@ -120,24 +120,21 @@ public class AuthService {
             throw new AlreadyRegisteredEmailException();
         }
 
-        VerifyCode verifyCode;
+        VerifyCode verifyCode = verifyCodeRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    String verifyCodeRaw = IntStream.range(0, 6)
+                            .mapToObj(i -> String.valueOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt((int) (Math.random() * 36))))
+                            .collect(java.util.stream.Collectors.joining());
 
-        if (verifyCodeRepository.existsByEmail(email)) {
+                    VerifyCode internalVerifyCode = VerifyCode.builder()
+                            .email(email)
+                            .code(verifyCodeRaw)
+                            .build();
 
-            verifyCode = verifyCodeRepository.findByEmail(email).orElseThrow();
-        } else {
+                    verifyCodeRepository.save(internalVerifyCode);
 
-            String verifyCodeRaw = IntStream.range(0, 6)
-                    .mapToObj(i -> String.valueOf("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt((int) (Math.random() * 36))))
-                    .collect(java.util.stream.Collectors.joining());
-
-            verifyCode = VerifyCode.builder()
-                    .email(email)
-                    .code(verifyCodeRaw)
-                    .build();
-
-            verifyCodeRepository.save(verifyCode);
-        }
+                    return internalVerifyCode;
+                });
 
         emailSender.send(email, VerifyCodeTemplate.of(email, verifyCode.code()));
     }
@@ -147,14 +144,9 @@ public class AuthService {
         String email = dto.email();
         String verifyCodeRaw = dto.verifyCode();
 
-        boolean isVerified = false;
-
-        if (verifyCodeRepository.existsByEmail(email)) {
-
-            VerifyCode verifyCode = verifyCodeRepository.findByEmail(email).orElseThrow();
-
-            isVerified = verifyCode.code().equals(verifyCodeRaw);
-        }
+        boolean isVerified = verifyCodeRepository.findByEmail(email)
+                .map(verifyCode -> verifyCode.code().equals(verifyCodeRaw))
+                .orElse(false);
 
         return CheckVerifyCodeResponse.builder()
                 .isVerified(isVerified)
@@ -217,13 +209,8 @@ public class AuthService {
         String passwordResetToken = request.passwordResetToken();
         String newPassword = request.newPassword();
 
-        if (!passwordResetTokenRepository.existsByToken(passwordResetToken)) {
-
-            throw new InvalidPasswordResetTokenException();
-        }
-
         PasswordResetToken passwordResetTokenEntity = passwordResetTokenRepository.findByToken(passwordResetToken)
-                .orElseThrow();
+                .orElseThrow(InvalidPasswordResetTokenException::new);
 
         passwordResetTokenRepository.delete(passwordResetTokenEntity);
 

@@ -13,6 +13,8 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     List<User> findAllByApprovedTrue(Sort sort);
 
+    List<User> findAllByApprovedFalse(Sort sort);
+
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
