@@ -28,11 +28,12 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
+    implementation("com.auth0:java-jwt:4.4.0")
 }
