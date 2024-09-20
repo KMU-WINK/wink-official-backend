@@ -105,7 +105,7 @@ public class AuthService {
                 .password(encoder.encode(password))
                 .name(name)
                 .studentId(studentId)
-                .link(User.Link.empty())
+                .social(User.Social.empty())
                 .build();
 
         userRepository.save(user);

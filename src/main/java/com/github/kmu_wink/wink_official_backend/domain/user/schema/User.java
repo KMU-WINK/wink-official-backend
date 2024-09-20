@@ -32,7 +32,7 @@ public class User extends BaseSchema {
 
     private String description;
 
-    private Link link;
+    private Social social;
 
     private Role role;
 
@@ -42,14 +42,14 @@ public class User extends BaseSchema {
 
     @Data
     @Builder
-    public static class Link {
+    public static class Social {
 
         private String github;
         private String instagram;
         private String blog;
 
-        public static Link empty() {
-            return Link.builder().build();
+        public static Social empty() {
+            return Social.builder().build();
         }
     }
 
