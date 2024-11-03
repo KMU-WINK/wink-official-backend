@@ -40,15 +40,10 @@ public class UserService {
 
     public void updateMyInfo(User user, UpdateMyInfoRequest dto) {
 
-        String description = dto.description();
-        String github = dto.github();
-        String instagram = dto.instagram();
-        String blog = dto.blog();
-
-        user.setDescription(description);
-        user.getSocial().setGithub(github);
-        user.getSocial().setInstagram(instagram);
-        user.getSocial().setBlog(blog);
+        user.setDescription(dto.description());
+        user.getSocial().setGithub(dto.github());
+        user.getSocial().setInstagram(dto.instagram());
+        user.getSocial().setBlog(dto.blog());
 
         userRepository.save(user);
     }
@@ -77,13 +72,10 @@ public class UserService {
 
     public void updateMyPassword(User user, UpdateMyPasswordRequest dto) {
 
-        String password = dto.password();
-        String newPassword = dto.newPassword();
-
-        UserAuthentication authentication = new UserAuthentication(user, password);
+        UserAuthentication authentication = new UserAuthentication(user, dto.password());
         authenticationManager.authenticate(authentication);
 
-        user.setPassword(encoder.encode(newPassword));
+        user.setPassword(encoder.encode(dto.newPassword()));
 
         userRepository.save(user);
     }

@@ -20,5 +20,8 @@ public abstract class BaseUser extends BaseSchema {
 
     @Indexed(unique = true)
     String studentId;
+
+    @Indexed(unique = true)
+    String phoneNumber;
 }
 

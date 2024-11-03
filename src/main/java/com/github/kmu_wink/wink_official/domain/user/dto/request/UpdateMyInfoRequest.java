@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.user.dto.request;
 
-import com.github.kmu_wink.wink_official.common.regexp.RegExp;
+import com.github.kmu_wink.wink_official.common.validation.Validation;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -14,15 +14,15 @@ public record UpdateMyInfoRequest(
         String description,
 
         @Nullable
-        @Pattern(regexp = RegExp.GITHUB_EXPRESSION, message = RegExp.GITHUB_MESSAGE)
+        @Pattern(regexp = Validation.GITHUB_EXPRESSION, message = Validation.GITHUB_MESSAGE)
         String github,
 
         @Nullable
-        @Pattern(regexp = RegExp.INSTAGRAM_EXPRESSION, message = RegExp.INSTAGRAM_MESSAGE)
+        @Pattern(regexp = Validation.INSTAGRAM_EXPRESSION, message = Validation.INSTAGRAM_MESSAGE)
         String instagram,
 
         @Nullable
-        @Pattern(regexp = RegExp.BLOG_EXPRESSION, message = RegExp.BLOG_MESSAGE)
+        @Pattern(regexp = Validation.BLOG_EXPRESSION, message = Validation.BLOG_MESSAGE)
         String blog
 ) {
 }

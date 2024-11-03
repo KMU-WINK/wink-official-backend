@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.auth.dto.request;
 
-import com.github.kmu_wink.wink_official.common.regexp.RegExp;
+import com.github.kmu_wink.wink_official.common.validation.Validation;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -14,7 +14,7 @@ public record RegisterRequest(
         String token,
 
         @NotBlank
-        @Pattern(regexp = RegExp.PASSWORD_EXPRESSION, message = RegExp.PASSWORD_MESSAGE)
+        @Pattern(regexp = Validation.PASSWORD_EXPRESSION, message = Validation.PASSWORD_MESSAGE)
         String password,
 
         @Nullable
@@ -22,15 +22,15 @@ public record RegisterRequest(
         String description,
 
         @Nullable
-        @Pattern(regexp = RegExp.GITHUB_EXPRESSION, message = RegExp.GITHUB_MESSAGE)
+        @Pattern(regexp = Validation.GITHUB_EXPRESSION, message = Validation.GITHUB_MESSAGE)
         String github,
 
         @Nullable
-        @Pattern(regexp = RegExp.INSTAGRAM_EXPRESSION, message = RegExp.INSTAGRAM_MESSAGE)
+        @Pattern(regexp = Validation.INSTAGRAM_EXPRESSION, message = Validation.INSTAGRAM_MESSAGE)
         String instagram,
 
         @Nullable
-        @Pattern(regexp = RegExp.BLOG_EXPRESSION, message = RegExp.BLOG_MESSAGE)
+        @Pattern(regexp = Validation.BLOG_EXPRESSION, message = Validation.BLOG_MESSAGE)
         String blog
 ) {
 }

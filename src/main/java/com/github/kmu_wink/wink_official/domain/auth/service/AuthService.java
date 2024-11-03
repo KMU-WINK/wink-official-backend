@@ -45,26 +45,12 @@ public class AuthService {
 
     private final EmailSender emailSender;
 
-//    @PostConstruct
-//    public void init() {
-//        PreUser preUser = PreUser.builder()
-//                .token(UUID.randomUUID().toString())
-//                .name("손대현")
-//                .studentId("20243156")
-//                .email("sondaehyeon01@kookmin.ac.kr")
-//                .build();
-//        preUserRepository.save(preUser);
-//    }
-
     public LoginResponse login(LoginRequest dto) {
 
-        String email = dto.email();
-        String password = dto.password();
-
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(dto.email())
                 .orElseThrow(AuthenticationFailException::new);
 
-        UserAuthentication authentication = new UserAuthentication(user, password);
+        UserAuthentication authentication = new UserAuthentication(user, dto.password());
         authenticationManager.authenticate(authentication);
 
         String accessToken = jwtUtil.generateAccessToken(user);
@@ -78,9 +64,7 @@ public class AuthService {
 
     public CheckRegisterResponse checkRegister(CheckRegisterRequest dto) {
 
-        String token = dto.token();
-
-        Optional<PreUser> preUser = preUserRepository.findByToken(token);
+        Optional<PreUser> preUser = preUserRepository.findByToken(dto.token());
 
         return CheckRegisterResponse.builder()
                 .isValid(preUser.isPresent())
@@ -90,41 +74,35 @@ public class AuthService {
 
     public void register(RegisterRequest dto) {
 
-        String token = dto.token();
-        String password = dto.password();
-        String description = dto.description();
-        String github = dto.github();
-        String instagram = dto.instagram();
-        String blog = dto.blog();
+        PreUser preUser = preUserRepository.findByToken(dto.token()).orElseThrow(InvalidRegisterTokenException::new);
 
-        PreUser preUser = preUserRepository.findByToken(token).orElseThrow(InvalidRegisterTokenException::new);
         preUserRepository.delete(preUser);
 
         User user = User.builder()
                 .email(preUser.getEmail())
                 .name(preUser.getName())
                 .studentId(preUser.getStudentId())
-                .password(encoder.encode(password))
-                .description(description)
+                .phoneNumber(preUser.getPhoneNumber())
+                .password(encoder.encode(dto.password()))
+                .description(dto.description())
                 .social(
                         User.Social.builder()
-                                .github(github)
-                                .instagram(instagram)
-                                .blog(blog)
+                                .github(dto.github())
+                                .instagram(dto.instagram())
+                                .blog(dto.blog())
                                 .build()
                 )
                 .role(User.Role.MEMBER)
                 .fee(false)
                 .build();
+
         userRepository.save(user);
     }
 
     public LoginResponse refresh(RefreshRequest dto) {
 
-        String token = dto.token();
-
         RefreshToken refreshToken = refreshTokenRepository
-                .findByToken(token)
+                .findByToken(dto.token())
                 .orElseThrow(InvalidRefreshTokenException::new);
 
         refreshTokenRepository.delete(refreshToken);
@@ -142,9 +120,7 @@ public class AuthService {
 
     public void requestResetPassword(RequestResetPasswordRequest dto) {
 
-        String email = dto.email();
-
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmail(dto.email())
                 .orElseThrow(UserNotFoundException::new);
 
         String passwordResetTokenRaw = UUID.randomUUID().toString();
@@ -156,14 +132,12 @@ public class AuthService {
 
         passwordResetTokenRepository.save(passwordResetToken);
 
-        emailSender.send(email, PasswordResetTokenTemplate.of(user, passwordResetToken));
+        emailSender.send(dto.email(), PasswordResetTokenTemplate.of(user, passwordResetToken));
     }
 
     public CheckResetPasswordResponse checkResetPassword(CheckResetPasswordRequest dto) {
 
-        String token = dto.token();
-
-        boolean isVerified = passwordResetTokenRepository.existsByToken(token);
+        boolean isVerified = passwordResetTokenRepository.existsByToken(dto.token());
 
         return CheckResetPasswordResponse.builder()
                 .isValid(isVerified)
@@ -172,10 +146,7 @@ public class AuthService {
 
     public void resetPassword(ResetPasswordRequest request) {
 
-        String token = request.token();
-        String newPassword = request.newPassword();
-
-        PasswordResetToken passwordResetTokenEntity = passwordResetTokenRepository.findByToken(token)
+        PasswordResetToken passwordResetTokenEntity = passwordResetTokenRepository.findByToken(request.token())
                 .orElseThrow(InvalidPasswordResetTokenException::new);
 
         passwordResetTokenRepository.delete(passwordResetTokenEntity);
@@ -185,7 +156,7 @@ public class AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        user.setPassword(encoder.encode(newPassword));
+        user.setPassword(encoder.encode(request.newPassword()));
 
         userRepository.save(user);
     }
