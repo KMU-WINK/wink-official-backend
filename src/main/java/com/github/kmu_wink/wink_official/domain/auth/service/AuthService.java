@@ -45,6 +45,17 @@ public class AuthService {
 
     private final EmailSender emailSender;
 
+//    @PostConstruct
+//    public void init() {
+//        PreUser preUser = PreUser.builder()
+//                .token(UUID.randomUUID().toString())
+//                .name("손대현")
+//                .studentId("20243156")
+//                .email("sondaehyeon01@kookmin.ac.kr")
+//                .build();
+//        preUserRepository.save(preUser);
+//    }
+
     public LoginResponse login(LoginRequest dto) {
 
         String email = dto.email();

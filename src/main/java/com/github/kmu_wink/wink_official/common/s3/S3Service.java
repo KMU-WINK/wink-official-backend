@@ -1,17 +1,13 @@
 package com.github.kmu_wink.wink_official.common.s3;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.github.kmu_wink.wink_official.common.property.AwsProperty;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -20,28 +16,16 @@ public class S3Service {
     private final AwsProperty awsProperty;
     private final AmazonS3Client amazonS3Client;
 
-    @SneakyThrows(IOException.class)
-    public String uploadFile(String key, MultipartFile file) {
+    public String generatePresignedUrl(String path) {
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(awsProperty.getS3().getBucket(), path)
+                .withMethod(HttpMethod.PUT)
+                .withExpiration(new Date(System.currentTimeMillis() + 1000 * 60));
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(file.getContentType());
-        objectMetadata.setContentLength(file.getSize());
-
-        return uploadFile(key, file.getInputStream(), objectMetadata);
+        return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
     }
 
-    public String uploadFile(String key, InputStream inputStream, ObjectMetadata objectMetadata) {
+    public void deleteFile(String path) {
 
-        PutObjectRequest putObjectRequest = new PutObjectRequest(awsProperty.getS3().getBucket(), key, inputStream, objectMetadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead);
-
-        amazonS3Client.putObject(putObjectRequest);
-
-        return "https://" + awsProperty.getS3().getBucket() + ".s3." + awsProperty.getRegion() + ".amazonaws.com/" + key;
-    }
-
-    public void deleteFile(String key) {
-
-        amazonS3Client.deleteObject(awsProperty.getS3().getBucket(), key);
+        amazonS3Client.deleteObject(awsProperty.getS3().getBucket(), path);
     }
 }
