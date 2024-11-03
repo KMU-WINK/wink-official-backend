@@ -145,7 +145,7 @@ public class AuthService {
 
         passwordResetTokenRepository.save(passwordResetToken);
 
-        emailSender.send(email, PasswordResetTokenTemplate.of(email, passwordResetTokenRaw));
+        emailSender.send(email, PasswordResetTokenTemplate.of(user, passwordResetToken));
     }
 
     public CheckResetPasswordResponse checkResetPassword(CheckResetPasswordRequest dto) {
