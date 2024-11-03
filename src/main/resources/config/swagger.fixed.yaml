@@ -1,0 +1,9 @@
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /docs
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+    defaultModelsExpandDepth: -1
