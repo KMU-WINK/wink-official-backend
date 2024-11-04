@@ -1,25 +1,27 @@
 package com.github.kmu_wink.wink_official.domain.user.service;
 
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
-import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyApplicationException;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.InviteRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.RemovePreUserRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminPreUsersResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminUsersResponse;
 import com.github.kmu_wink.wink_official.domain.user.email.InviteTemplate;
+import com.github.kmu_wink.wink_official.domain.user.exception.AlreadyApplicationException;
 import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
 import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
