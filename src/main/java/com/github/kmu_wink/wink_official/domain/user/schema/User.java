@@ -31,6 +31,8 @@ public class User extends BaseUser {
 
     boolean fee;
 
+    boolean active;
+
     @Data
     @Builder
     public static class Social {

@@ -31,7 +31,7 @@ public class UserService {
 
     public UsersResponse getUsers() {
 
-        List<User> users = userRepository.findAllExcludingFee();
+        List<User> users = userRepository.findAllActiveIsTrueAndExcludingFee();
 
         return UsersResponse.builder()
                 .users(users)

@@ -41,7 +41,7 @@ public class UserController {
         return ApiResponse.ok();
     }
 
-    @PutMapping("/avatar")
+    @PostMapping("/avatar")
     @Operation(summary = "내 프로필 사진 수정")
     @PreAuthorize("isAuthenticated()")
     public ApiResponse<UpdateMyAvatarResponse> updateMyAvatar(@AuthenticationPrincipal User user) {
