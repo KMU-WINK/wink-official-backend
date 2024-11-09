@@ -25,7 +25,7 @@ public class InviteTemplate implements EmailTemplate {
                         <h1 style="color: #333333;">부원 초대</h1>
                         <p style="font-size: 16px; color: #666666;">안녕하세요, %s(%s)님</p>
                         <p style="font-size: 16px; color: #666666;">WINK 가입을 위해 아래 버튼을 눌러 가입을 완료해주세요.</p>
-                        <a href="http://localhost:3000/auth/register?token=%s" style="display: inline-block; font-size: 18px; color: #ffffff; background-color: #3a70ff; padding: 14px 24px; border-radius: 12px; text-decoration: none; margin-top: 20px;">비밀번호 재설정</a>
+                        <a href="http://localhost:3000/auth/register?token=%s" style="display: inline-block; font-size: 18px; color: #ffffff; background-color: #3a70ff; padding: 14px 24px; border-radius: 12px; text-decoration: none; margin-top: 20px;">가입하기</a>
                     </div>
                 </div>
                 """.formatted(preUser.getName(), preUser.getEmail(), preUser.getToken());
