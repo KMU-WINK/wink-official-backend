@@ -1,13 +1,15 @@
-package com.github.kmu_wink.wink_official.common.redis;
+package com.github.kmu_wink.wink_official.common.database.redis;
 
-import com.github.kmu_wink.wink_official.common.property.RedisProperty;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+
+import com.github.kmu_wink.wink_official.common.property.RedisProperty;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor

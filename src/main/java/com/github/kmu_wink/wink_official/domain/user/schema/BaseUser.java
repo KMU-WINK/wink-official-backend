@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.user.schema;
 
-import com.github.kmu_wink.wink_official.common.schema.BaseSchema;
+import com.github.kmu_wink.wink_official.common.database.mongo.schema.BaseSchema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

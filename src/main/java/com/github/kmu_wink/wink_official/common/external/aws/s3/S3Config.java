@@ -1,4 +1,4 @@
-package com.github.kmu_wink.wink_official.common.s3;
+package com.github.kmu_wink.wink_official.common.external.aws.s3;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;

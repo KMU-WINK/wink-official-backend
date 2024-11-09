@@ -12,6 +12,7 @@ import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
 import com.github.kmu_wink.wink_official.domain.custom.recruit_qna.dto.request.CreateQnaRequest;
 import com.github.kmu_wink.wink_official.domain.custom.recruit_qna.dto.request.DeleteQnaRequest;
 import com.github.kmu_wink.wink_official.domain.custom.recruit_qna.dto.request.UpdateQnaRequest;
+import com.github.kmu_wink.wink_official.domain.custom.recruit_qna.dto.response.GetRecruitQnaResponse;
 import com.github.kmu_wink.wink_official.domain.custom.recruit_qna.service.AdminCustomRecruitQnaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,20 +31,16 @@ public class AdminCustomRecruitQnaController {
 
 	@PostMapping
 	@Operation(summary = "Q&A 생성")
-	public ApiResponse<Void> createQna(@RequestBody @Valid CreateQnaRequest request) {
+	public ApiResponse<GetRecruitQnaResponse> createQna(@RequestBody @Valid CreateQnaRequest request) {
 
-		adminCustomRecruitQnaService.createQna(request);
-
-		return ApiResponse.ok();
+		return ApiResponse.ok(adminCustomRecruitQnaService.createQna(request));
 	}
 
 	@PutMapping
 	@Operation(summary = "Q&A 수정")
-	public ApiResponse<Void> updateQna(@RequestBody @Valid UpdateQnaRequest request) {
+	public ApiResponse<GetRecruitQnaResponse> updateQna(@RequestBody @Valid UpdateQnaRequest request) {
 
-		adminCustomRecruitQnaService.updateQna(request);
-
-		return ApiResponse.ok();
+		return ApiResponse.ok(adminCustomRecruitQnaService.updateQna(request));
 	}
 
 	@DeleteMapping

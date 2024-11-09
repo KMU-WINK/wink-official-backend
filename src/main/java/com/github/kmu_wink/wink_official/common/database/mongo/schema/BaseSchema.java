@@ -1,4 +1,4 @@
-package com.github.kmu_wink.wink_official.common.schema;
+package com.github.kmu_wink.wink_official.common.database.mongo.schema;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -40,3 +40,7 @@ out/
 src/main/resources/config/*.yaml
 !src/main/resources/config/*.example.yaml
 !src/main/resources/config/*.fixed.yaml
+
+### Credential ###
+src/main/resources/credential/*.json
+!src/main/resources/credential/*.example.json

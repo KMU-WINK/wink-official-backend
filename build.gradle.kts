@@ -37,6 +37,14 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     implementation("com.auth0:java-jwt:4.4.0")
+
     implementation("io.awspring.cloud:spring-cloud-starter-aws:2.4.4")
     implementation("javax.xml.bind:jaxb-api:2.3.1")
+
+    implementation("com.google.apis:google-api-services-drive:v3-rev20241027-2.0.0")
+    implementation("com.google.apis:google-api-services-forms:v1-rev20220908-2.0.0")
+
+    implementation("com.konghq:unirest-java-core:4.4.5")
+    implementation("com.konghq:unirest-objectmapper-jackson:4.2.9")
+    implementation("org.jsoup:jsoup:1.18.1")
 }

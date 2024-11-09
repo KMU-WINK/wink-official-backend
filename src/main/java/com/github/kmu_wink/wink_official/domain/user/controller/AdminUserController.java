@@ -1,18 +1,29 @@
 package com.github.kmu_wink.wink_official.domain.user.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.InviteRequest;
-import com.github.kmu_wink.wink_official.domain.user.dto.request.RemovePreUserRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateRequest;
+import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminPreUserResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminPreUsersResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminUsersResponse;
+import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official.domain.user.service.AdminUserService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin/user")
@@ -43,28 +54,24 @@ public class AdminUserController {
 
     @PostMapping
     @Operation(summary = "유저 초대")
-    public ApiResponse<Void> invite(@RequestBody @Valid InviteRequest request) {
+    public ApiResponse<AdminPreUserResponse> invite(@RequestBody @Valid InviteRequest request) {
 
-        adminUserService.invite(request);
-
-        return ApiResponse.ok();
+        return ApiResponse.ok(adminUserService.invite(request));
     }
 
-    @DeleteMapping("/pre-user")
+    @DeleteMapping("/pre-user/{id}")
     @Operation(summary = "임시 유저 삭제")
-    public ApiResponse<Void> removePreUser(@RequestBody @Valid RemovePreUserRequest request) {
+    public ApiResponse<Void> removePreUser(@PathVariable String id) {
 
-        adminUserService.removePreUser(request);
+        adminUserService.removePreUser(id);
 
         return ApiResponse.ok();
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Operation(summary = "유저 수정")
-    public ApiResponse<Void> update(@RequestBody @Valid UpdateRequest request) {
+    public ApiResponse<UserResponse> update(@PathVariable String id, @RequestBody @Valid UpdateRequest request) {
 
-        adminUserService.update(request);
-
-        return ApiResponse.ok();
+        return ApiResponse.ok(adminUserService.update(id, request));
     }
 }

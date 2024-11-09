@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
-import com.github.kmu_wink.wink_official.domain.custom.recruit_qna.dto.response.GetRecruitQnaResponse;
+import com.github.kmu_wink.wink_official.domain.custom.recruit_qna.dto.response.GetRecruitQnasResponse;
 import com.github.kmu_wink.wink_official.domain.custom.recruit_qna.service.CustomRecruitQnaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,7 @@ public class CustomRecruitQnaController {
 
 	@GetMapping
 	@Operation(summary = "Q&A 목록")
-	public ApiResponse<GetRecruitQnaResponse> getRecruitQna() {
+	public ApiResponse<GetRecruitQnasResponse> getRecruitQna() {
 
 		return ApiResponse.ok(customRecruitQnaService.getRecruitQna());
 	}

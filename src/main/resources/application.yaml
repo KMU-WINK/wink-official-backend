@@ -11,6 +11,7 @@ spring:
   config:
     import:
       - classpath:config/aws.yaml
+      - classpath:config/google.yaml
       - classpath:config/jwt.yaml
       - classpath:config/mail.yaml
       - classpath:config/mongo.yaml

@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.InviteRequest;
-import com.github.kmu_wink.wink_official.domain.user.dto.request.RemovePreUserRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateRequest;
+import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminPreUserResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminPreUsersResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminUsersResponse;
+import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official.domain.user.email.InviteTemplate;
 import com.github.kmu_wink.wink_official.domain.user.exception.AlreadyApplicationException;
 import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
@@ -52,7 +53,7 @@ public class AdminUserService {
                 .build();
     }
 
-    public void invite(InviteRequest dto) {
+    public AdminPreUserResponse invite(InviteRequest dto) {
 
         if (userRepository.findByStudentId(dto.studentId()).isPresent()
                 || userRepository.findByEmail(dto.email()).isPresent()
@@ -72,21 +73,24 @@ public class AdminUserService {
                 .token(UUID.randomUUID().toString())
                 .build();
 
-        preUserRepository.save(preUser);
-
+        preUser = preUserRepository.save(preUser);
         emailSender.send(dto.email(), InviteTemplate.of(preUser));
+
+        return AdminPreUserResponse.builder()
+            .user(preUser)
+            .build();
     }
 
-    public void removePreUser(RemovePreUserRequest dto) {
+    public void removePreUser(String id) {
 
-        PreUser preUser = preUserRepository.findById(dto.id()).orElseThrow(UserNotFoundException::new);
+        PreUser preUser = preUserRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         preUserRepository.delete(preUser);
     }
 
-    public void update(UpdateRequest dto) {
+    public UserResponse update(String id, UpdateRequest dto) {
 
-        User user = userRepository.findById(dto.id()).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         user.setName(dto.name());
         user.setStudentId(dto.studentId());
@@ -100,6 +104,10 @@ public class AdminUserService {
 
         user.setActive(dto.active());
 
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        return UserResponse.builder()
+            .user(user)
+            .build();
     }
 }

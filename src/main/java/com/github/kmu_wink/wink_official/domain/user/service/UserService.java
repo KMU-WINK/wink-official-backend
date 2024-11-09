@@ -1,21 +1,24 @@
 package com.github.kmu_wink.wink_official.domain.user.service;
 
-import com.github.kmu_wink.wink_official.common.property.AwsProperty;
-import com.github.kmu_wink.wink_official.common.s3.S3Service;
-import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
-import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyInfoRequest;
-import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyPasswordRequest;
-import com.github.kmu_wink.wink_official.domain.user.dto.response.UpdateMyAvatarResponse;
-import com.github.kmu_wink.wink_official.domain.user.dto.response.UsersResponse;
-import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
-import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
-import com.github.kmu_wink.wink_official.domain.user.schema.User;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.github.kmu_wink.wink_official.common.property.AwsProperty;
+import com.github.kmu_wink.wink_official.common.external.aws.s3.S3Service;
+import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
+import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyInfoRequest;
+import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyPasswordRequest;
+import com.github.kmu_wink.wink_official.domain.user.dto.response.UpdateMyAvatarResponse;
+import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
+import com.github.kmu_wink.wink_official.domain.user.dto.response.UsersResponse;
+import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
+import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
+import com.github.kmu_wink.wink_official.domain.user.schema.User;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -38,14 +41,18 @@ public class UserService {
                 .build();
     }
 
-    public void updateMyInfo(User user, UpdateMyInfoRequest dto) {
+    public UserResponse updateMyInfo(User user, UpdateMyInfoRequest dto) {
 
         user.setDescription(dto.description());
         user.getSocial().setGithub(dto.github());
         user.getSocial().setInstagram(dto.instagram());
         user.getSocial().setBlog(dto.blog());
 
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        return UserResponse.builder()
+            .user(user)
+            .build();
     }
 
     public UpdateMyAvatarResponse updateMyAvatar(User user) {
@@ -57,17 +64,23 @@ public class UserService {
                 .build();
     }
 
-    public void deleteMyAvatar(User user) {
+    public UserResponse deleteMyAvatar(User user) {
 
         if (user.getAvatar() == null) {
-            return;
+            return UserResponse.builder()
+                .user(user)
+                .build();
         }
 
         s3Service.deleteFile("avatar/%s.jpg".formatted(user.getId()));
 
         user.setAvatar(null);
 
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        return UserResponse.builder()
+            .user(user)
+            .build();
     }
 
     public void updateMyPassword(User user, UpdateMyPasswordRequest dto) {
