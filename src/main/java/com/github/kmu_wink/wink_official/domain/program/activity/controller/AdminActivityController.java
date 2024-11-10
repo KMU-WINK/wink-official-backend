@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.request.CreateActivityRequest;
-import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivitiesResponse;
+import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivitiesPageableResponse;
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivityResponse;
 import com.github.kmu_wink.wink_official.domain.program.activity.service.AdminActivityService;
 
@@ -32,7 +32,7 @@ public class AdminActivityController {
 	private final AdminActivityService adminActivityService;
 
 	@GetMapping
-	public ApiResponse<GetActivitiesResponse> getHistories(
+	public ApiResponse<GetActivitiesPageableResponse> getActivities(
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "") String query) {
 

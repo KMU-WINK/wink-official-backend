@@ -23,7 +23,7 @@ public class ActivityService {
 		Page<Activity> histories = activityRepository.findAll(pageRequest);
 
 		return GetActivitiesResponse.builder()
-			.activities(histories)
+			.activities(histories.getContent())
 			.build();
 	}
 }

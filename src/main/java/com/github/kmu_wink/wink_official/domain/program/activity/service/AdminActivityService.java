@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.request.CreateActivityRequest;
-import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivitiesResponse;
+import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivitiesPageableResponse;
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivityResponse;
 import com.github.kmu_wink.wink_official.domain.program.activity.exception.ActivityNotFoundException;
 import com.github.kmu_wink.wink_official.domain.program.activity.repository.ActivityRepository;
@@ -20,12 +20,12 @@ public class AdminActivityService {
 
 	private final ActivityRepository activityRepository;
 
-	public GetActivitiesResponse getActivities(int page, String query) {
+	public GetActivitiesPageableResponse getActivities(int page, String query) {
 
-		PageRequest pageRequest = PageRequest.of(page, 20, Sort.by("name").ascending());
+		PageRequest pageRequest = PageRequest.of(page, 20, Sort.by("createdAt").descending());
 		Page<Activity> activities = activityRepository.findAllSearch(query, pageRequest);
 
-		return GetActivitiesResponse.builder()
+		return GetActivitiesPageableResponse.builder()
 			.activities(activities)
 			.build();
 	}
