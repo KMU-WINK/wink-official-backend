@@ -30,7 +30,7 @@ public record RegisterRequest(
         String instagram,
 
         @Nullable
-        @Pattern(regexp = Validation.BLOG_EXPRESSION, message = Validation.BLOG_MESSAGE)
+        @Pattern(regexp = Validation.URL_EXPRESSION, message = Validation.URL_MESSAGE)
         String blog
 ) {
 }

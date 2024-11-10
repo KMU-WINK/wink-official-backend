@@ -19,8 +19,8 @@ public class Validation {
     public static final String INSTAGRAM_EXPRESSION = "^(?!.*\\.\\.)(?!.*\\.$)[a-zA-Z0-9._]{1,30}$";
     public static final String INSTAGRAM_MESSAGE = "올바른 Instagram 유저가 아닙니다.";
 
-    public static final String BLOG_EXPRESSION = "^(https?://)?(www\\.)?[a-zA-Z0-9\\-]+(\\.[a-zA-Z]{2,}){1,3}(/.*)?$";
-    public static final String BLOG_MESSAGE = "올바른 URL이 아닙니다.";
+    public static final String URL_EXPRESSION = "^(https?://)?(www\\.)?[a-zA-Z0-9\\-]+(\\.[a-zA-Z]{2,}){1,3}(/.*)?$";
+    public static final String URL_MESSAGE = "올바른 URL이 아닙니다.";
 
     public static final String STUDENT_ID_MESSAGE = "올바른 학번이 아닙니다.";
 

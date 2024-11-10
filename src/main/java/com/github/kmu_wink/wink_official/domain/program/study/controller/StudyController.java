@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/program/study")
 @RequiredArgsConstructor
-@Tag(name = "Study")
+@Tag(name = "Program - Study")
 public class StudyController {
 
 	private final StudyService studyService;
