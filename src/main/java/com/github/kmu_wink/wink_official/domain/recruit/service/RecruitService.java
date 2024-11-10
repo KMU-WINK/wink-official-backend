@@ -1,6 +1,7 @@
 package com.github.kmu_wink.wink_official.domain.recruit.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.github.kmu_wink.wink_official.domain.recruit.dto.request.StudentIdChe
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.DuplicationCheckResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyApplicationException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.NotValidPeriodException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.ApplicationRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
@@ -95,6 +97,11 @@ public class RecruitService {
                 .map(DesignTechStack::valueOf)
                 .toList()
                 : List.of();
+
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(recruit.getRecruitStartDateTime()) || now.isAfter(recruit.getRecruitEndDateTime())) {
+            throw new NotValidPeriodException();
+        }
 
         if (applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent()
             || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent()
