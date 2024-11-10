@@ -49,7 +49,7 @@ public class AdminRecruitService {
 
     public GetRecruitsResponse getRecruits() {
 
-        List<Recruit> recruits = recruitRepository.findAllByOrderByYearDescSemesterDesc();
+        List<Recruit> recruits = recruitRepository.findAllWithSort();
 
         return GetRecruitsResponse.builder()
             .recruits(recruits)

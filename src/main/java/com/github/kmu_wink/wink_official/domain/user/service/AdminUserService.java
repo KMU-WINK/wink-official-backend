@@ -36,7 +36,7 @@ public class AdminUserService {
     public AdminUsersResponse getUsers(int page, String query) {
 
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by("name").ascending());
-        Page<User> users = userRepository.findAllByNameRegexOrStudentIdRegexOrEmailRegexOrPhoneNumberRegex(query, query, query, query, pageRequest);
+        Page<User> users = userRepository.findAllSearch(query, pageRequest);
 
         return AdminUsersResponse.builder()
                 .users(users)
@@ -46,7 +46,7 @@ public class AdminUserService {
     public AdminPreUsersResponse getPreUsers(int page, String query) {
 
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by("name").ascending());
-        Page<PreUser> users = preUserRepository.findAllByNameRegexOrStudentIdRegexOrEmailRegexOrPhoneNumberRegex(query, query, query, query, pageRequest);
+        Page<PreUser> users = preUserRepository.findAllSearch(query, pageRequest);
 
         return AdminPreUsersResponse.builder()
                 .users(users)

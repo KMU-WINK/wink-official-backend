@@ -41,7 +41,7 @@ public class RecruitService {
 
     public GetRecruitResponse getLatestRecruit() {
 
-        Recruit recruit = recruitRepository.findFirstByOrderByYearDescSemesterDesc().orElse(null);
+        Recruit recruit = recruitRepository.findLatestRecruit().orElse(null);
 
         if (recruit != null) {
             recruit.setGoogleFormId(null);

@@ -4,12 +4,17 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 
+@Repository
 public interface RecruitRepository extends MongoRepository<Recruit, String> {
 
-    List<Recruit> findAllByOrderByYearDescSemesterDesc();
+    @Query(value = "{}", sort = "{ year: -1, semester: -1 }")
+    List<Recruit> findAllWithSort();
 
-    Optional<Recruit> findFirstByOrderByYearDescSemesterDesc();
+    @Query(value = "{}", sort = "{ year: -1, semester: -1 }")
+    Optional<Recruit> findLatestRecruit();
 }

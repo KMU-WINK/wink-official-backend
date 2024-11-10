@@ -34,7 +34,7 @@ public class UserService {
 
     public UsersResponse getUsers() {
 
-        List<User> users = userRepository.findAllActiveIsTrueAndExcludingFee();
+        List<User> users = userRepository.findAllWithMask();
 
         return UsersResponse.builder()
                 .users(users)
