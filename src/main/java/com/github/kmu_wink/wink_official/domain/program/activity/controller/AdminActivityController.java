@@ -18,6 +18,7 @@ import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.Ge
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivityResponse;
 import com.github.kmu_wink.wink_official.domain.program.activity.service.AdminActivityService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +27,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/program/activity")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
-@Tag(name = "Program - Activity")
+@Tag(name = "[Admin] Program - Activity")
 public class AdminActivityController {
 
 	private final AdminActivityService adminActivityService;
 
 	@GetMapping
+	@Operation(summary = "활동 목록")
 	public ApiResponse<GetActivitiesPageableResponse> getActivities(
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "") String query) {
@@ -40,18 +42,21 @@ public class AdminActivityController {
 	}
 
 	@PostMapping
+	@Operation(summary = "활동 생성")
 	public ApiResponse<GetActivityResponse> createActivity(@RequestBody @Valid CreateActivityRequest request) {
 
 		return ApiResponse.ok(adminActivityService.createActivity(request));
 	}
 
 	@PutMapping("/{id}")
+	@Operation(summary = "활동 수정")
 	public ApiResponse<GetActivityResponse> updateActivity(@PathVariable String id, @RequestBody @Valid CreateActivityRequest request) {
 
 		return ApiResponse.ok(adminActivityService.updateActivity(id, request));
 	}
 
 	@DeleteMapping("/{id}")
+	@Operation(summary = "활동 삭제")
 	public ApiResponse<Void> deleteActivity(@PathVariable String id) {
 
 		adminActivityService.deleteActivity(id);
@@ -60,12 +65,14 @@ public class AdminActivityController {
 	}
 
 	@PatchMapping("/{id}/pin")
+	@Operation(summary = "활동 고정")
 	public ApiResponse<GetActivityResponse> pinActivity(@PathVariable String id) {
 
 		return ApiResponse.ok(adminActivityService.pinActivity(id));
 	}
 
 	@DeleteMapping("/{id}/pin")
+	@Operation(summary = "활동 고정 해제")
 	public ApiResponse<GetActivityResponse> unpinActivity(@PathVariable String id) {
 
 		return ApiResponse.ok(adminActivityService.unpinActivity(id));

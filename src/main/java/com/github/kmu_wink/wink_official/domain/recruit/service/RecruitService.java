@@ -27,6 +27,8 @@ import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitReposi
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Application;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 import com.github.kmu_wink.wink_official.domain.recruit.util.GoogleFormUtil;
+import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
+import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +36,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecruitService {
 
+    private final UserRepository userRepository;
+    private final PreUserRepository preUserRepository;
     private final RecruitRepository recruitRepository;
     private final ApplicationRepository applicationRepository;
 
@@ -103,7 +107,13 @@ public class RecruitService {
             throw new NotValidPeriodException();
         }
 
-        if (applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent()
+        if (userRepository.findByStudentId(dto.studentId()).isPresent()
+            || userRepository.findByEmail(dto.email()).isPresent()
+            || userRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
+            || preUserRepository.findByStudentId(dto.studentId()).isPresent()
+            || preUserRepository.findByEmail(dto.email()).isPresent()
+            || preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
+            || applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent()
             || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent()
             || applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent()) {
 
@@ -139,7 +149,9 @@ public class RecruitService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        boolean duplicated = applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent();
+        boolean duplicated = userRepository.findByStudentId(dto.studentId()).isPresent()
+            || preUserRepository.findByStudentId(dto.studentId()).isPresent()
+            || applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent();
 
         return DuplicationCheckResponse.builder()
                 .duplicated(duplicated)
@@ -150,7 +162,9 @@ public class RecruitService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        boolean duplicated = applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent();
+        boolean duplicated = userRepository.findByEmail(dto.email()).isPresent()
+            || preUserRepository.findByEmail(dto.email()).isPresent()
+            || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent();
 
         return DuplicationCheckResponse.builder()
                 .duplicated(duplicated)
@@ -161,7 +175,9 @@ public class RecruitService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        boolean duplicated = applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent();
+        boolean duplicated = userRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
+            || preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
+            || applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent();
 
         return DuplicationCheckResponse.builder()
                 .duplicated(duplicated)

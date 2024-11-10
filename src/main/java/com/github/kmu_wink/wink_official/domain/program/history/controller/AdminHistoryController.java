@@ -17,6 +17,7 @@ import com.github.kmu_wink.wink_official.domain.program.history.dto.response.Get
 import com.github.kmu_wink.wink_official.domain.program.history.dto.response.GetHistoryResponse;
 import com.github.kmu_wink.wink_official.domain.program.history.service.AdminHistoryService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/program/history")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
-@Tag(name = "Program - History")
+@Tag(name = "[Admin] Program - History")
 public class AdminHistoryController {
 
 	private final AdminHistoryService adminHistoryService;
 
 	@GetMapping
+	@Operation(summary = "연혁 목록")
 	public ApiResponse<GetHistoriesPageableResponse> getHistories(
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "") String query) {
@@ -39,18 +41,21 @@ public class AdminHistoryController {
 	}
 
 	@PostMapping
+	@Operation(summary = "연혁 생성")
 	public ApiResponse<GetHistoryResponse> getHistories(@RequestBody @Valid CreateHistoryRequest request) {
 
 		return ApiResponse.ok(adminHistoryService.createHistory(request));
 	}
 
 	@PutMapping("/{id}")
+	@Operation(summary = "연혁 수정")
 	public ApiResponse<GetHistoryResponse> updateHistory(@PathVariable String id, @RequestBody @Valid CreateHistoryRequest request) {
 
 		return ApiResponse.ok(adminHistoryService.updateHistory(id, request));
 	}
 
 	@DeleteMapping("/{id}")
+	@Operation(summary = "연혁 삭제")
 	public ApiResponse<Void> deleteHistory(@PathVariable String id) {
 
 		adminHistoryService.deleteHistory(id);

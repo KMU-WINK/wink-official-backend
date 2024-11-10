@@ -1,13 +1,4 @@
-server:
-  servlet:
-    context-path: /api
-    encoding:
-      charset: UTF-8
-      force-response: true
-
 spring:
-  mvc:
-    log-resolved-exception: false
   config:
     import:
       - classpath:config/aws.yaml
@@ -16,4 +7,5 @@ spring:
       - classpath:config/mail.yaml
       - classpath:config/mongo.yaml
       - classpath:config/redis.yaml
+      - classpath:config/server.fixed.yaml
       - classpath:config/swagger.fixed.yaml

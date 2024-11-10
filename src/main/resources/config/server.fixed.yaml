@@ -1,0 +1,10 @@
+server:
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      force-response: true
+
+spring:
+  mvc:
+    log-resolved-exception: false
