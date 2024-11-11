@@ -3,6 +3,9 @@ package com.github.kmu_wink.wink_official.domain.program.project.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -60,6 +63,7 @@ public class ProjectService {
 		Project project = Project.builder()
 			.title(dto.title())
 			.content(dto.content())
+			.image(firstImage(dto.content()))
 			.tags(dto.tags())
 			.githubLinks(dto.githubLinks())
 			.users(users)
@@ -91,6 +95,7 @@ public class ProjectService {
 
 		project.setTitle(dto.title());
 		project.setContent(dto.content());
+		project.setImage(firstImage(dto.content()));
 		project.setTags(dto.tags());
 		project.setGithubLinks(dto.githubLinks());
 		project.setUsers(users);
@@ -112,5 +117,17 @@ public class ProjectService {
 		}
 
 		projectRepository.delete(project);
+	}
+
+	private String firstImage(String html) {
+
+		Document doc = Jsoup.parse(html);
+		Elements images = doc.select("img");
+
+		return images.stream()
+			.map(element -> element.attr("src"))
+			.filter(src -> !src.isEmpty())
+			.findFirst()
+			.orElse(null);
 	}
 }

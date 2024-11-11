@@ -22,6 +22,7 @@ public class Project extends BaseSchema {
 
 	String title;
 	String content;
+	String image;
 	List<String> tags;
 	List<String> githubLinks;
 
