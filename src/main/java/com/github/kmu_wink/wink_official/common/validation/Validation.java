@@ -7,14 +7,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Validation {
 
+    public static final String OBJECT_ID_EXPRESSION = "^[0-9a-fA-F]{24}$";
+    public static final String OBJECT_ID_MESSAGE = "올바른 ObjectId가 아닙니다.";
+
     public static final String PASSWORD_EXPRESSION = "^(?=.*[a-zA-Z])(?=.*\\d)\\S{8,}$";
     public static final String PASSWORD_MESSAGE = "비밀번호는 8자 이상의 영문자 및 숫자 조합으로 작성해주세요.";
 
     public static final String KOOKMIN_EMAIL_EXPRESSION = "^[a-zA-Z0-9._%+-]+@kookmin\\.ac\\.kr$";
     public static final String KOOKMIN_EMAIL_MESSAGE = "국민대학교 이메일 형식이 아닙니다.";
 
-    public static final String GITHUB_EXPRESSION = "^(?!-)[a-zA-Z0-9-]{1,39}(?<!-)$";
-    public static final String GITHUB_MESSAGE = "올바른 Github 유저가 아닙니다.";
+    public static final String GITHUB_USERNAME_EXPRESSION = "^(?!-)[a-zA-Z0-9-]{1,39}(?<!-)$";
+    public static final String GITHUB_USERNAME_MESSAGE = "올바른 Github 유저가 아닙니다.";
+
+    public static final String GITHUB_PROJECT_URL_EXPRESSION = "^https?:\\/\\/(?:www\\.)?github\\.com\\/[a-zA-Z0-9-]+\\/[a-zA-Z0-9._-]+\\/?$";
+    public static final String GITHUB_PROJECT_URL_MESSAGE = "올바른 Github URL이 아닙니다.";
 
     public static final String INSTAGRAM_EXPRESSION = "^(?!.*\\.\\.)(?!.*\\.$)[a-zA-Z0-9._]{1,30}$";
     public static final String INSTAGRAM_MESSAGE = "올바른 Instagram 유저가 아닙니다.";

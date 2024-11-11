@@ -51,7 +51,7 @@ public record ApplicationRequest(
         List<@Enum(enumClass = Domain.class) String> domains,
 
         @Nullable
-        @Pattern(regexp = Validation.GITHUB_EXPRESSION, message = Validation.GITHUB_MESSAGE)
+        @Pattern(regexp = Validation.GITHUB_USERNAME_EXPRESSION, message = Validation.GITHUB_USERNAME_MESSAGE)
         String github,
 
         @Nullable
