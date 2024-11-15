@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
+import com.github.kmu_wink.wink_official.domain.auth.exception.AlreadyRegisteredException;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.InviteRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminPreUserResponse;
@@ -15,7 +16,6 @@ import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminPreUsersR
 import com.github.kmu_wink.wink_official.domain.user.dto.response.AdminUsersResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official.domain.user.email.InviteTemplate;
-import com.github.kmu_wink.wink_official.domain.user.exception.AlreadyApplicationException;
 import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
 import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
@@ -62,7 +62,7 @@ public class AdminUserService {
                 || preUserRepository.findByEmail(dto.email()).isPresent()
                 || preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()) {
 
-            throw new AlreadyApplicationException();
+            throw new AlreadyRegisteredException();
         }
 
         PreUser preUser = PreUser.builder()

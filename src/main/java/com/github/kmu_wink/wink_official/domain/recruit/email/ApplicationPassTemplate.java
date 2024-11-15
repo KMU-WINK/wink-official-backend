@@ -20,7 +20,7 @@ public class ApplicationPassTemplate implements EmailTemplate {
         return """
             <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; font-family: Arial, sans-serif;">
                 <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #dddddd;">
-                    <img src="https://avatars.githubusercontent.com/u/69004745" alt="Service Logo" style="max-width: 150px;">
+                    <img src="https://i.imgur.com/qXRRE56.png" alt="Wink Logo" style="max-width: 150px;">
                 </div>
                 <div style="padding: 20px; text-align: center;">
                     <h1 style="color: #333333;">신규 부원 결과 안내</h1>

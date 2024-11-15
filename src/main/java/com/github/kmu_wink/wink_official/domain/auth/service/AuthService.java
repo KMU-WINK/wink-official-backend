@@ -1,13 +1,27 @@
 package com.github.kmu_wink.wink_official.domain.auth.service;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
 import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
 import com.github.kmu_wink.wink_official.common.security.jwt.JwtUtil;
-import com.github.kmu_wink.wink_official.domain.auth.dto.request.*;
+import com.github.kmu_wink.wink_official.domain.auth.dto.request.CheckRegisterRequest;
+import com.github.kmu_wink.wink_official.domain.auth.dto.request.CheckResetPasswordRequest;
+import com.github.kmu_wink.wink_official.domain.auth.dto.request.LoginRequest;
+import com.github.kmu_wink.wink_official.domain.auth.dto.request.RefreshRequest;
+import com.github.kmu_wink.wink_official.domain.auth.dto.request.RegisterRequest;
+import com.github.kmu_wink.wink_official.domain.auth.dto.request.RequestResetPasswordRequest;
+import com.github.kmu_wink.wink_official.domain.auth.dto.request.ResetPasswordRequest;
 import com.github.kmu_wink.wink_official.domain.auth.dto.response.CheckRegisterResponse;
 import com.github.kmu_wink.wink_official.domain.auth.dto.response.CheckResetPasswordResponse;
 import com.github.kmu_wink.wink_official.domain.auth.dto.response.LoginResponse;
 import com.github.kmu_wink.wink_official.domain.auth.email.PasswordResetTokenTemplate;
+import com.github.kmu_wink.wink_official.domain.auth.exception.AlreadyRegisteredException;
 import com.github.kmu_wink.wink_official.domain.auth.exception.AuthenticationFailException;
 import com.github.kmu_wink.wink_official.domain.auth.exception.InvalidPasswordResetTokenException;
 import com.github.kmu_wink.wink_official.domain.auth.exception.InvalidRefreshTokenException;
@@ -22,13 +36,8 @@ import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepositor
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -78,6 +87,13 @@ public class AuthService {
 
         preUserRepository.delete(preUser);
 
+        if (userRepository.findByEmail(preUser.getEmail()).isPresent()
+            || userRepository.findByStudentId(preUser.getStudentId()).isPresent()
+            || userRepository.findByPhoneNumber(preUser.getPhoneNumber()).isPresent()) {
+
+            throw new AlreadyRegisteredException();
+        }
+
         User user = User.builder()
                 .email(preUser.getEmail())
                 .name(preUser.getName())
@@ -121,19 +137,18 @@ public class AuthService {
 
     public void requestResetPassword(RequestResetPasswordRequest dto) {
 
-        User user = userRepository.findByEmail(dto.email())
-                .orElseThrow(UserNotFoundException::new);
+        userRepository.findByEmail(dto.email()).ifPresent((user) -> {
+            String passwordResetTokenRaw = UUID.randomUUID().toString();
 
-        String passwordResetTokenRaw = UUID.randomUUID().toString();
-
-        PasswordResetToken passwordResetToken = PasswordResetToken.builder()
+            PasswordResetToken passwordResetToken = PasswordResetToken.builder()
                 .token(passwordResetTokenRaw)
                 .userId(user.getId())
                 .build();
 
-        passwordResetTokenRepository.save(passwordResetToken);
+            passwordResetTokenRepository.save(passwordResetToken);
 
-        emailSender.send(dto.email(), PasswordResetTokenTemplate.of(user, passwordResetToken));
+            emailSender.send(dto.email(), PasswordResetTokenTemplate.of(user, passwordResetToken));
+        });
     }
 
     public CheckResetPasswordResponse checkResetPassword(CheckResetPasswordRequest dto) {
