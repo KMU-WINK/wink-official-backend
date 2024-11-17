@@ -9,6 +9,7 @@ import com.github.kmu_wink.wink_official.common.validation.custom.Enum;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DatabaseTechStack;
+import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
 
@@ -67,7 +68,7 @@ public record ApplicationRequest(
         List<@Enum(enumClass = DevOpsTechStack.class) String> devOpsTechStacks,
 
         @Nullable
-        List<@Enum(enumClass = DevOpsTechStack.class) String> designTechStacks,
+        List<@Enum(enumClass = DesignTechStack.class) String> designTechStacks,
 
         @Nullable
         String favoriteProject,

@@ -153,7 +153,7 @@ public class AuthService {
 
     public CheckResetPasswordResponse checkResetPassword(CheckResetPasswordRequest dto) {
 
-        boolean isVerified = passwordResetTokenRepository.existsByToken(dto.token());
+        boolean isVerified = passwordResetTokenRepository.findByToken(dto.token()).isPresent();
 
         return CheckResetPasswordResponse.builder()
                 .isValid(isVerified)

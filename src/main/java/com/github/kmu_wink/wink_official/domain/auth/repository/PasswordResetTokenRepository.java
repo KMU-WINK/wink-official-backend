@@ -11,6 +11,4 @@ import com.github.kmu_wink.wink_official.domain.auth.schema.PasswordResetToken;
 public interface PasswordResetTokenRepository extends KeyValueRepository<PasswordResetToken, Long> {
 
     Optional<PasswordResetToken> findByToken(String token);
-
-    boolean existsByToken(String token);
 }

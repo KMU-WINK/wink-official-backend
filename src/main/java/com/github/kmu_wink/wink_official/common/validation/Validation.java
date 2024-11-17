@@ -30,7 +30,7 @@ public class Validation {
 
     public static final String STUDENT_ID_MESSAGE = "올바른 학번이 아닙니다.";
 
-    public static final String PHONE_NUMBER_EXPRESSION = "^(01[016789]{1})-?[0-9]{3,4}-?[0-9]{4}$";
+    public static final String PHONE_NUMBER_EXPRESSION = "^(01[016789])-[0-9]{3,4}-[0-9]{4}$";
     public static final String PHONE_NUMBER_MESSAGE = "올바른 전화번호가 아닙니다.";
 
     public static final String YYYY_MM_DD_EXPRESSION = "^\\d{4}-\\d{2}-\\d{2}$";

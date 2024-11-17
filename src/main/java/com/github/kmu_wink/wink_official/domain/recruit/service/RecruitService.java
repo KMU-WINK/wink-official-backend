@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.github.kmu_wink.wink_official.domain.auth.exception.AlreadyRegisteredException;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DatabaseTechStack;
@@ -107,17 +108,21 @@ public class RecruitService {
             throw new NotValidPeriodException();
         }
 
+        if (applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent()
+            || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent()
+            || applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent()) {
+
+            throw new AlreadyApplicationException();
+        }
+
         if (userRepository.findByStudentId(dto.studentId()).isPresent()
             || userRepository.findByEmail(dto.email()).isPresent()
             || userRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
             || preUserRepository.findByStudentId(dto.studentId()).isPresent()
             || preUserRepository.findByEmail(dto.email()).isPresent()
-            || preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
-            || applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent()
-            || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent()
-            || applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent()) {
+            || preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()) {
 
-            throw new AlreadyApplicationException();
+            throw new AlreadyRegisteredException();
         }
 
         Application application = Application.builder()
