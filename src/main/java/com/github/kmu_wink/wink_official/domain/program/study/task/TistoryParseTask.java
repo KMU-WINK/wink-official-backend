@@ -50,6 +50,7 @@ public class TistoryParseTask {
 				String _date = text(document, "#content > div > div.hgroup > div.post-meta > span.date");
 				LocalDateTime date = LocalDateTime.parse(_date, formatter);
 				String content = text(document, "#content > div > div.entry-content > div.tt_article_useless_p_margin.contents_style");
+				Optional<String> image = firstImage(document, "#content > div > div.entry-content > div.tt_article_useless_p_margin.contents_style");
 				content = content.replaceAll("[\\s\\n\\t]+", " ")
 					.trim()
 					.substring(0, Math.min(content.length(), 300));
@@ -62,6 +63,7 @@ public class TistoryParseTask {
 					.title(title)
 					.author(author)
 					.content(content)
+					.image(image.orElse(null))
 					.build();
 
 				studyRepository.save(study);
@@ -103,5 +105,16 @@ public class TistoryParseTask {
 
 	private String text(Document document, String selector) {
 		return Objects.requireNonNull(document.selectFirst(selector)).text().trim();
+	}
+
+	private Optional<String> firstImage(Document document, String selector) {
+
+		return Objects.requireNonNull(document.selectFirst(selector))
+			.select("img")
+			.stream()
+			.map(element -> element.attr("src"))
+			.filter(src -> !src.isBlank())
+			.filter(src -> src.startsWith("http"))
+			.findFirst();
 	}
 }

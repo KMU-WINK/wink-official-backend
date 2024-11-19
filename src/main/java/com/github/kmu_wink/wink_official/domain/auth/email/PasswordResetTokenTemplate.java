@@ -25,12 +25,12 @@ public class PasswordResetTokenTemplate implements EmailTemplate {
                     </div>
                     <div style="padding: 20px; text-align: center;">
                         <h1 style="color: #333333;">비밀번호 초기화</h1>
-                        <p style="font-size: 16px; color: #666666;">안녕하세요, %s(%s)님</p>
+                        <p style="font-size: 16px; color: #666666;">안녕하세요, %s님</p>
                         <p style="font-size: 16px; color: #666666;">비밀번호를 초기화하려면 아래 버튼을 클릭하세요.</p>
                         <p style="font-size: 16px; color: #666666;">만약 비밀번호 초기화 요청을 하지 않았다면 이 이메일을 무시해주세요.</p>
                         <a href="http://localhost:3000/auth/reset-password?token=%s" style="display: inline-block; font-size: 18px; color: #ffffff; background-color: #3a70ff; padding: 14px 24px; border-radius: 12px; text-decoration: none; margin-top: 20px;">비밀번호 재설정</a>
                     </div>
                 </div>
-                """.formatted(user.getName(), user.getEmail(), token.token());
+                """.formatted(user.getName(),token.token());
     }
 }

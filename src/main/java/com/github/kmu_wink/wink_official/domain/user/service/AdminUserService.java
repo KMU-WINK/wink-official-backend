@@ -35,7 +35,15 @@ public class AdminUserService {
 
     public AdminUsersResponse getUsers(int page, String query) {
 
-        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by("name").ascending());
+        PageRequest pageRequest = PageRequest.of(
+            page,
+            20,
+            Sort.by(
+                Sort.Order.desc("role"),
+                Sort.Order.desc("fee"),
+                Sort.Order.asc("name")
+            )
+        );
         Page<User> users = userRepository.findAllSearch(query, pageRequest);
 
         return AdminUsersResponse.builder()
@@ -97,12 +105,8 @@ public class AdminUserService {
         user.setEmail(dto.email());
         user.setPhoneNumber(dto.phoneNumber());
 
-        user.setDescription(dto.description());
-        user.getSocial().setGithub(dto.github());
-        user.getSocial().setInstagram(dto.instagram());
-        user.getSocial().setBlog(dto.blog());
-
-        user.setActive(dto.active());
+        user.setRole(User.Role.valueOf(dto.role()));
+        user.setFee(dto.fee());
 
         user = userRepository.save(user);
 

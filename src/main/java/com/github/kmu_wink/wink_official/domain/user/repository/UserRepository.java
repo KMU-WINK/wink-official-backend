@@ -14,7 +14,7 @@ import com.github.kmu_wink.wink_official.domain.user.schema.User;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
 
-    @Query(value = "{ 'active': true }", fields = "{ 'fee': 0 }")
+    @Query(value = "{}", fields = "{ 'fee': 0 }")
     List<User> findAllWithMask();
 
     @Query("{ $or: [ {'name': { $regex: ?0 }}, {'studentId': { $regex: ?0 }}, {'email': { $regex: ?0 }}, {'phoneNumber': { $regex: ?0 }} ]}")

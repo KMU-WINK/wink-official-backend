@@ -6,8 +6,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.github.kmu_wink.wink_official.common.property.AwsProperty;
 import com.github.kmu_wink.wink_official.common.external.aws.s3.S3Service;
+import com.github.kmu_wink.wink_official.common.property.AwsProperty;
 import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyInfoRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyPasswordRequest;
@@ -72,7 +72,7 @@ public class UserService {
                 .build();
         }
 
-        s3Service.deleteFile("avatar/%s.jpg".formatted(user.getId()));
+        s3Service.deleteFile("avatar/%s.webp".formatted(user.getId()));
 
         user.setAvatar(null);
 
@@ -97,7 +97,10 @@ public class UserService {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-        user.setAvatar("https://%s.s3.%s.amazonaws.com/avatar/%s.jpg".formatted(awsProperty.getS3().getBucket(), awsProperty.getRegion(), userId));
+        String bucket = awsProperty.getS3().getBucket();
+        String region = awsProperty.getRegion();
+
+        user.setAvatar("https://%s.s3.%s.amazonaws.com/avatar/%s.webp".formatted(bucket, region, userId));
 
         userRepository.save(user);
     }

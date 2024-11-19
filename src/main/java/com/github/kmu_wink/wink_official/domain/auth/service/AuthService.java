@@ -110,7 +110,6 @@ public class AuthService {
                 )
                 .role(User.Role.MEMBER)
                 .fee(false)
-                .active(true)
                 .build();
 
         userRepository.save(user);

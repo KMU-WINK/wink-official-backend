@@ -35,8 +35,6 @@ public class User extends BaseUser {
 
     boolean fee;
 
-    boolean active;
-
     @Data
     @Builder
     public static class Social {
@@ -49,6 +47,7 @@ public class User extends BaseUser {
     public enum Role {
 
         MEMBER,
+        GRADUATED(MEMBER),
         ADMIN(MEMBER),
         PLANNING_ASSISTANT(ADMIN, MEMBER),
         PLANNING_HEAD(PLANNING_ASSISTANT),

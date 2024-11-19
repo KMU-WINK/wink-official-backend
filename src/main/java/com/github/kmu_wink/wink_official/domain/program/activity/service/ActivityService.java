@@ -1,8 +1,7 @@
 package com.github.kmu_wink.wink_official.domain.program.activity.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivitiesResponse;
@@ -19,11 +18,10 @@ public class ActivityService {
 
 	public GetActivitiesResponse getActivities() {
 
-		PageRequest pageRequest = PageRequest.of(0, 6, Sort.by("createdAt").descending());
-		Page<Activity> histories = activityRepository.findAll(pageRequest);
+		List<Activity> histories = activityRepository.findAllPinned();
 
 		return GetActivitiesResponse.builder()
-			.activities(histories.getContent())
+			.activities(histories)
 			.build();
 	}
 }

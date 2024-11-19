@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.github.kmu_wink.wink_official.common.database.mongo.schema.BaseSchema;
 
+import jakarta.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,7 @@ public class Study extends BaseSchema {
     String title;
     String author;
     String content;
+
+    @Nullable
+    String image;
 }
