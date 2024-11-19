@@ -1,7 +1,5 @@
 package com.github.kmu_wink.wink_official.domain.program.project.schema;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,12 +18,9 @@ import lombok.experimental.SuperBuilder;
 @Document
 public class Project extends BaseSchema {
 
-	String title;
-	String content;
-	String image;
-	List<String> tags;
-	List<String> githubLinks;
-
 	@DBRef
-	List<User> users;
+	User author;
+	String title;
+	String image;
+	String link;
 }

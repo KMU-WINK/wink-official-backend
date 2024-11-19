@@ -17,7 +17,7 @@ public class UploadService {
 
 	public UploadImageResponse uploadImage() {
 
-		String url = s3Service.generatePresignedUrl("/program/%s".formatted(UUID.randomUUID().toString()));
+		String url = s3Service.generatePresignedUrl("program/%s".formatted(UUID.randomUUID().toString()));
 
 		return UploadImageResponse.builder()
 			.url(url)

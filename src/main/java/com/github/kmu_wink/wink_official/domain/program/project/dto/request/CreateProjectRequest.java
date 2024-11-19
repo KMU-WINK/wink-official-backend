@@ -1,12 +1,8 @@
 package com.github.kmu_wink.wink_official.domain.program.project.dto.request;
 
-import java.util.List;
-
 import com.github.kmu_wink.wink_official.common.validation.Validation;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
@@ -17,15 +13,11 @@ public record CreateProjectRequest(
 	String title,
 
 	@NotBlank
-	String content,
+	@Pattern(regexp = Validation.URL_EXPRESSION, message = Validation.URL_MESSAGE)
+	String image,
 
-	@NotNull
-	List<@NotBlank String> tags,
-
-	@Nullable
-	List<@Pattern(regexp = Validation.GITHUB_PROJECT_URL_EXPRESSION, message = Validation.GITHUB_PROJECT_URL_MESSAGE) String> githubLinks,
-
-	@NotNull
-	List<@Pattern(regexp = Validation.OBJECT_ID_EXPRESSION, message =  Validation.OBJECT_ID_MESSAGE) String> users
+	@NotBlank
+	@Pattern(regexp = Validation.GITHUB_PROJECT_URL_EXPRESSION, message = Validation.GITHUB_PROJECT_URL_MESSAGE)
+	String link
 ) {
 }

@@ -13,9 +13,6 @@ public record CreateHistoryRequest(
 	String title,
 
 	@NotBlank
-	String description,
-
-	@NotBlank
 	@Pattern(regexp = Validation.URL_EXPRESSION, message = Validation.URL_MESSAGE)
 	String image,
 

@@ -142,7 +142,7 @@ public class AdminRecruitService {
             .build();
 
         preUser = preUserRepository.save(preUser);
-        emailSender.send(application.getEmail(), ApplicationPassTemplate.of(preUser));
+        emailSender.send(application.getEmail(), ApplicationPassTemplate.of(application, preUser));
     }
 
     public void failApplication(String recruitId, String applicationId) {

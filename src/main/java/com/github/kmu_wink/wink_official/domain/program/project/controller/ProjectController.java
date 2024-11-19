@@ -41,13 +41,6 @@ public class ProjectController {
 		return ApiResponse.ok(projectService.getProjects(page, query));
 	}
 
-	@GetMapping("/{id}")
-	@Operation(summary = "프로젝트 읽기")
-	public ApiResponse<GetProjectResponse> getProject(@PathVariable String id) {
-
-		return ApiResponse.ok(projectService.getProject(id));
-	}
-
 	@PostMapping
 	@PreAuthorize("isAuthenticated()")
 	@Operation(summary = "프로젝트 생성")

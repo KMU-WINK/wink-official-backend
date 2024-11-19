@@ -1,12 +1,11 @@
 package com.github.kmu_wink.wink_official.domain.recruit.util;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -15,9 +14,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -102,30 +98,28 @@ public class GoogleFormUtil {
         String baseUri = recruit.getGoogleFormUri().replace("viewform", "formResponse");
         Map<FormEntryKeys, String> entry = recruit.getGoogleFormResponseEntry();
 
-        List<NameValuePair> pairs = new ArrayList<>() {{
-            add(new BasicNameValuePair("submit", "Submit"));
-            add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.NAME), application.getName()));
-            add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.STUDENT_ID), application.getStudentId()));
-            add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.EMAIL), application.getEmail()));
-            add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.PHONE_NUMBER), application.getPhoneNumber()));
-            add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), application.getJiwonDonggi()));
-            add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.BAEUGO_SIPEUN_JEOM), application.getBaeugoSipeunJeom()));
-            application.getCanInterviewDates().forEach(date -> add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.CAN_INTERVIEW_DATES), formatDate(date))));
-            application.getDomains().forEach(domain -> add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.DOMAIN), domain.getDisplayName())));
+        Map<String, Object> pairs = new HashMap<>() {{
+            put("submit", "Submit");
+            put("entry." + entry.get(FormEntryKeys.NAME), application.getName());
+            put("entry." + entry.get(FormEntryKeys.STUDENT_ID), application.getStudentId());
+            put("entry." + entry.get(FormEntryKeys.EMAIL), application.getEmail());
+            put("entry." + entry.get(FormEntryKeys.PHONE_NUMBER), application.getPhoneNumber());
+            put("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), application.getJiwonDonggi());
+            put("entry." + entry.get(FormEntryKeys.BAEUGO_SIPEUN_JEOM), application.getBaeugoSipeunJeom());
+            application.getCanInterviewDates().forEach(date -> put("entry." + entry.get(FormEntryKeys.CAN_INTERVIEW_DATES), formatDate(date)));
+            application.getDomains().forEach(domain -> put("entry." + entry.get(FormEntryKeys.DOMAIN), domain.getDisplayName()));
 
-            if (application.getGithub() != null) add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.GITHUB), application.getGithub()));
-            if (!application.getFrontendTechStacks().isEmpty()) application.getFrontendTechStacks().forEach(stack -> add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), stack.getDisplayName())));
-            if (!application.getBackendTechStacks().isEmpty()) application.getBackendTechStacks().forEach(stack -> add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), stack.getDisplayName())));
-            if (!application.getDatabaseTechStacks().isEmpty()) application.getDatabaseTechStacks().forEach(stack -> add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.DATABASE_TECH_STACKS), stack.getDisplayName())));
-            if (!application.getDevOpsTechStacks().isEmpty()) application.getDevOpsTechStacks().forEach(stack -> add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), stack.getDisplayName())));
-            if (!application.getDesignTechStacks().isEmpty()) application.getDesignTechStacks().forEach(stack -> add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), stack.getDisplayName())));
-            if (application.getFavoriteProject() != null) add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), application.getFavoriteProject()));
-            if (application.getLastComment() != null) add(new BasicNameValuePair("entry." + entry.get(FormEntryKeys.LAST_COMMENT), application.getLastComment()));
+            if (application.getGithub() != null) put("entry." + entry.get(FormEntryKeys.GITHUB), application.getGithub());
+            if (!application.getFrontendTechStacks().isEmpty()) application.getFrontendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), stack.getDisplayName()));
+            if (!application.getBackendTechStacks().isEmpty()) application.getBackendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), stack.getDisplayName()));
+            if (!application.getDatabaseTechStacks().isEmpty()) application.getDatabaseTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DATABASE_TECH_STACKS), stack.getDisplayName()));
+            if (!application.getDevOpsTechStacks().isEmpty()) application.getDevOpsTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), stack.getDisplayName()));
+            if (!application.getDesignTechStacks().isEmpty()) application.getDesignTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), stack.getDisplayName()));
+            if (application.getFavoriteProject() != null) put("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), application.getFavoriteProject());
+            if (application.getLastComment() != null) put("entry." + entry.get(FormEntryKeys.LAST_COMMENT), application.getLastComment());
         }};
 
-        String queryString = URLEncodedUtils.format(pairs, StandardCharsets.UTF_8);
-
-        Unirest.get(baseUri + "?" + queryString).asBytes();
+        System.out.println(Unirest.get(baseUri).queryString(pairs).getUrl());
     }
 
     @SneakyThrows(IOException.class)

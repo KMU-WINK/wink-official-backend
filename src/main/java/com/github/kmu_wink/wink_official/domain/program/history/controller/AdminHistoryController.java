@@ -2,18 +2,15 @@ package com.github.kmu_wink.wink_official.domain.program.history.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
 import com.github.kmu_wink.wink_official.domain.program.history.dto.request.CreateHistoryRequest;
-import com.github.kmu_wink.wink_official.domain.program.history.dto.response.GetHistoriesPageableResponse;
 import com.github.kmu_wink.wink_official.domain.program.history.dto.response.GetHistoryResponse;
 import com.github.kmu_wink.wink_official.domain.program.history.service.AdminHistoryService;
 
@@ -30,15 +27,6 @@ import lombok.RequiredArgsConstructor;
 public class AdminHistoryController {
 
 	private final AdminHistoryService adminHistoryService;
-
-	@GetMapping
-	@Operation(summary = "연혁 목록")
-	public ApiResponse<GetHistoriesPageableResponse> getHistories(
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "") String query) {
-
-		return ApiResponse.ok(adminHistoryService.getHistories(page, query));
-	}
 
 	@PostMapping
 	@Operation(summary = "연혁 생성")

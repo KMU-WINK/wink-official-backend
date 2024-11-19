@@ -13,9 +13,6 @@ import com.github.kmu_wink.wink_official.domain.program.history.schema.History;
 @Repository
 public interface HistoryRepository extends MongoRepository<History, String> {
 
-	@Query("{ $or: [ {'title': { $regex: ?0 }}, {'description': { $regex: ?0 }} ]}")
-	Page<History> findAllSearch(String query, Pageable pageable);
-
 	@Query(value = "{}", sort = "{ date: -1 }")
 	List<History> findAllWithSort();
 }

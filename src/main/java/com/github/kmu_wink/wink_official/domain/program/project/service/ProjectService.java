@@ -1,11 +1,5 @@
 package com.github.kmu_wink.wink_official.domain.program.project.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,8 +12,6 @@ import com.github.kmu_wink.wink_official.domain.program.project.exception.NotOwn
 import com.github.kmu_wink.wink_official.domain.program.project.exception.ProjectNotFoundException;
 import com.github.kmu_wink.wink_official.domain.program.project.repository.ProjectRepository;
 import com.github.kmu_wink.wink_official.domain.program.project.schema.Project;
-import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
-import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 
 import lombok.RequiredArgsConstructor;
@@ -29,11 +21,10 @@ import lombok.RequiredArgsConstructor;
 public class ProjectService {
 
 	private final ProjectRepository projectRepository;
-	private final UserRepository userRepository;
 
 	public GetProjectsPageableResponse getProjects(int page, String query) {
 
-		PageRequest pageRequest = PageRequest.of(page, 20, Sort.by("createdAt").descending());
+		PageRequest pageRequest = PageRequest.of(page, 15, Sort.by("createdAt").descending());
 		Page<Project> projects = projectRepository.findAllSearch(query, pageRequest);
 
 		return GetProjectsPageableResponse.builder()
@@ -41,32 +32,13 @@ public class ProjectService {
 			.build();
 	}
 
-	public GetProjectResponse getProject(String id) {
-
-		Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
-
-		return GetProjectResponse.builder()
-			.project(project)
-			.build();
-	}
-
 	public GetProjectResponse createProject(User user, CreateProjectRequest dto) {
 
-		List<User> users = dto.users().stream()
-			.map(userId -> userRepository.findById(userId).orElseThrow(UserNotFoundException::new))
-			.collect(Collectors.toList());
-
-		if (!users.contains(user)) {
-			users.add(user);
-		}
-
 		Project project = Project.builder()
+			.author(user)
 			.title(dto.title())
-			.content(dto.content())
-			.image(firstImage(dto.content()))
-			.tags(dto.tags())
-			.githubLinks(dto.githubLinks())
-			.users(users)
+			.image(dto.image())
+			.link(dto.link())
 			.build();
 
 		project = projectRepository.save(project);
@@ -80,25 +52,14 @@ public class ProjectService {
 
 		Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
 
-		if (!project.getUsers().contains(user)) {
+		if (!project.getAuthor().equals(user)) {
 
 			throw new NotOwnedProjectException();
 		}
 
-		List<User> users = dto.users().stream()
-				.map(userId -> userRepository.findById(userId).orElseThrow(UserNotFoundException::new))
-				.collect(Collectors.toList());
-
-		if (!users.contains(user)) {
-			users.add(user);
-		}
-
 		project.setTitle(dto.title());
-		project.setContent(dto.content());
-		project.setImage(firstImage(dto.content()));
-		project.setTags(dto.tags());
-		project.setGithubLinks(dto.githubLinks());
-		project.setUsers(users);
+		project.setImage(dto.image());
+		project.setLink(dto.link());
 
 		project = projectRepository.save(project);
 
@@ -111,23 +72,11 @@ public class ProjectService {
 
 		Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
 
-		if (!project.getUsers().contains(user)) {
+		if (!project.getAuthor().equals(user)) {
 
 			throw new NotOwnedProjectException();
 		}
 
 		projectRepository.delete(project);
-	}
-
-	private String firstImage(String html) {
-
-		Document doc = Jsoup.parse(html);
-		Elements images = doc.select("img");
-
-		return images.stream()
-			.map(element -> element.attr("src"))
-			.filter(src -> !src.isEmpty())
-			.findFirst()
-			.orElse(null);
 	}
 }

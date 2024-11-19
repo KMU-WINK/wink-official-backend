@@ -19,7 +19,6 @@ import lombok.experimental.SuperBuilder;
 public class History extends BaseSchema {
 
 	String title;
-	String description;
 	String image;
 	LocalDate date;
 }
