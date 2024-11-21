@@ -94,7 +94,6 @@ public class AdminRecruitService {
                 application.setGithub(null);
                 application.setFrontendTechStacks(null);
                 application.setBackendTechStacks(null);
-                application.setDatabaseTechStacks(null);
                 application.setDevOpsTechStacks(null);
                 application.setDevOpsTechStacks(null);
                 application.setFavoriteProject(null);

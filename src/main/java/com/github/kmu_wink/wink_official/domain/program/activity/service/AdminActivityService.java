@@ -22,7 +22,7 @@ public class AdminActivityService {
 
 	public GetActivitiesPageableResponse getActivities(int page, String query) {
 
-		PageRequest pageRequest = PageRequest.of(page, 20, Sort.by("createdAt").descending());
+		PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Order.desc("pinned"), Sort.Order.desc("createdAt")));
 		Page<Activity> activities = activityRepository.findAllSearch(query, pageRequest);
 
 		return GetActivitiesPageableResponse.builder()

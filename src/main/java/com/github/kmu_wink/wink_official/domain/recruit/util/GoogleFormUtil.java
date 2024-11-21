@@ -24,7 +24,6 @@ import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormCheckbox;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormEntryKeys;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DatabaseTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
@@ -77,9 +76,8 @@ public class GoogleFormUtil {
             shortText("Github 아이디", false),
             checkBox("프론트엔드 기술 스택", FrontendTechStack.values(), false),
             checkBox("백엔드 기술 스택", BackendTechStack.values(), false),
-            checkBox("데이터베이스 기술 스택", DatabaseTechStack.values(), false),
             checkBox("DevOps 기술 스택", DevOpsTechStack.values(), false),
-            checkBox("디자인 기술 스택", DesignTechStack.values(), false),
+            checkBox("디자인 도구", DesignTechStack.values(), false),
             longText("가장 기억에 남는 프로젝트", false),
             longText("마지막 한마디", false)))).execute();
 
@@ -112,14 +110,13 @@ public class GoogleFormUtil {
             if (application.getGithub() != null) put("entry." + entry.get(FormEntryKeys.GITHUB), application.getGithub());
             if (!application.getFrontendTechStacks().isEmpty()) application.getFrontendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), stack.getDisplayName()));
             if (!application.getBackendTechStacks().isEmpty()) application.getBackendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), stack.getDisplayName()));
-            if (!application.getDatabaseTechStacks().isEmpty()) application.getDatabaseTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DATABASE_TECH_STACKS), stack.getDisplayName()));
             if (!application.getDevOpsTechStacks().isEmpty()) application.getDevOpsTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), stack.getDisplayName()));
             if (!application.getDesignTechStacks().isEmpty()) application.getDesignTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), stack.getDisplayName()));
             if (application.getFavoriteProject() != null) put("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), application.getFavoriteProject());
             if (application.getLastComment() != null) put("entry." + entry.get(FormEntryKeys.LAST_COMMENT), application.getLastComment());
         }};
 
-        System.out.println(Unirest.get(baseUri).queryString(pairs).getUrl());
+        Unirest.get(baseUri).queryString(pairs).asString();
     }
 
     @SneakyThrows(IOException.class)

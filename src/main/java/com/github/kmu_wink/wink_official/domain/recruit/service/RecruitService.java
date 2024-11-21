@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.github.kmu_wink.wink_official.domain.auth.exception.AlreadyRegisteredException;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DatabaseTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
@@ -85,12 +84,6 @@ public class RecruitService {
                 .toList()
                 : List.of();
 
-        List<DatabaseTechStack> databaseTechStacks = dto.databaseTechStacks() != null
-                ? dto.databaseTechStacks().stream()
-                .map(DatabaseTechStack::valueOf)
-                .toList()
-                : List.of();
-
         List<DevOpsTechStack> devOpsTechStacks = dto.devOpsTechStacks() != null
                 ? dto.devOpsTechStacks().stream()
                 .map(DevOpsTechStack::valueOf)
@@ -138,7 +131,6 @@ public class RecruitService {
                 .github(dto.github())
                 .frontendTechStacks(frontendTechStacks)
                 .backendTechStacks(backendTechStacks)
-                .databaseTechStacks(databaseTechStacks)
                 .devOpsTechStacks(devOpsTechStacks)
                 .designTechStacks(designTechStacks)
                 .favoriteProject(dto.favoriteProject())

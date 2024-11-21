@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.github.kmu_wink.wink_official.common.database.mongo.schema.BaseSchema;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DatabaseTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
@@ -44,7 +43,6 @@ public class Application extends BaseSchema {
     String github;
     List<FrontendTechStack> frontendTechStacks;
     List<BackendTechStack> backendTechStacks;
-    List<DatabaseTechStack> databaseTechStacks;
     List<DevOpsTechStack> devOpsTechStacks;
     List<DesignTechStack> designTechStacks;
 

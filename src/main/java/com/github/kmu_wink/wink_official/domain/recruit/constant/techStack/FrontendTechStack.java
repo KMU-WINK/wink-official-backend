@@ -13,7 +13,7 @@ public enum FrontendTechStack implements FormCheckbox {
 	SCSS("SCSS"),
 	SASS("SASS"),
 	JAVASCRIPT("JavaScript"),
-	TYPESCRIPT("TypeScript"),
+
 	REACT("React"),
 	VUE("Vue.js"),
 	ANGULAR("Angular"),
@@ -21,12 +21,18 @@ public enum FrontendTechStack implements FormCheckbox {
 	NEXT_JS("Next.js"),
 	NUXT_JS("Nuxt.js"),
 	JQUERY("jQuery"),
+
 	TAILWIND_CSS("Tailwind CSS"),
 	BOOTSTRAP("Bootstrap"),
 	MATERIAL_UI("Material-UI"),
+	STYLED_COMPONENT("Styled Component"),
+
 	REDUX("Redux"),
 	MOBX("MobX"),
-	ZUSTAND("Zustand");
+	RECOIL("Recoil"),
+	ZUSTAND("Zustand"),
+	CONTEXT_API("Context API"),
+	;
 
 	private final String displayName;
 }

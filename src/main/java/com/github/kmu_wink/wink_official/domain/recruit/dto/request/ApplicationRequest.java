@@ -8,7 +8,6 @@ import com.github.kmu_wink.wink_official.common.validation.Validation;
 import com.github.kmu_wink.wink_official.common.validation.custom.Enum;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DatabaseTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
@@ -60,9 +59,6 @@ public record ApplicationRequest(
 
         @Nullable
         List<@Enum(enumClass = BackendTechStack.class) String> backendTechStacks,
-
-        @Nullable
-        List<@Enum(enumClass = DatabaseTechStack.class) String> databaseTechStacks,
 
         @Nullable
         List<@Enum(enumClass = DevOpsTechStack.class) String> devOpsTechStacks,

@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.github.kmu_wink.wink_official.common.email.EmailSender;
 import com.github.kmu_wink.wink_official.common.external.aws.s3.S3Service;
 import com.github.kmu_wink.wink_official.common.property.AwsProperty;
 import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
@@ -14,10 +15,13 @@ import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyPasswor
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UpdateMyAvatarResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UsersResponse;
+import com.github.kmu_wink.wink_official.domain.user.email.InviteTemplate;
 import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
+import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -31,6 +35,7 @@ public class UserService {
 
     private final AwsProperty awsProperty;
     private final S3Service s3Service;
+    private final EmailSender emailSender;
 
     public UsersResponse getUsers() {
 
@@ -103,5 +108,19 @@ public class UserService {
         user.setAvatar("https://%s.s3.%s.amazonaws.com/avatar/%s.webp".formatted(bucket, region, userId));
 
         userRepository.save(user);
+    }
+
+    @PostConstruct
+    public void a() {
+        PreUser preUser = PreUser.builder()
+            .name("손대현")
+            .email("sondaehyeon01@kookmin.ac.kr")
+            .studentId("20243156")
+            .phoneNumber("010-9460-3583")
+            .build();
+
+        emailSender.send(preUser.getEmail(), InviteTemplate.of(preUser));
+
+        System.out.println("SEND");
     }
 }

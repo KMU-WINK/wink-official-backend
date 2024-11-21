@@ -16,7 +16,7 @@ public class Validation {
     public static final String GITHUB_USERNAME_EXPRESSION = "^(?!-)[a-zA-Z0-9-]{1,39}(?<!-)$";
     public static final String GITHUB_USERNAME_MESSAGE = "올바른 Github 유저가 아닙니다.";
 
-    public static final String GITHUB_PROJECT_URL_EXPRESSION = "^https?:\\/\\/(?:www\\.)?github\\.com\\/[a-zA-Z0-9-]+\\/[a-zA-Z0-9._-]+\\/?$";
+    public static final String GITHUB_PROJECT_URL_EXPRESSION = "^https?:\\/\\/(?:www\\.)?github\\.com\\/[a-zA-Z0-9-]+(?:\\/[a-zA-Z0-9._-]+)?\\/?$";
     public static final String GITHUB_PROJECT_URL_MESSAGE = "올바른 Github URL이 아닙니다.";
 
     public static final String INSTAGRAM_EXPRESSION = "^(?!.*\\.\\.)(?!.*\\.$)[a-zA-Z0-9._]{1,30}$";

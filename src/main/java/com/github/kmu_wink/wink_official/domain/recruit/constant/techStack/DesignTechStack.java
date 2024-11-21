@@ -9,11 +9,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum DesignTechStack implements FormCheckbox {
 	FIGMA("Figma"),
-	ADOBE_XD("Adobe XD"),
+	FRAMER("Framer"),
 	SKETCH("Sketch"),
-	INVISION("InVision"),
-	AXURE("Axure"),
-	FRAMER("Framer");
+	ADOBE_XD("Adobe XD"),
+	PHOTOSHOP("Adobe Photoshop"),
+	ILLUSTRATOR("Adobe Illustrator"),
+	;
 
 	private final String displayName;
 }

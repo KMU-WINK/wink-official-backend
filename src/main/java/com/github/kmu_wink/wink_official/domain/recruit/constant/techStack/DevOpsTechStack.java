@@ -8,12 +8,16 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum DevOpsTechStack implements FormCheckbox {
+	AWS("Amazon Web Service"),
+	GCP("Google Cloud Platform"),
+	AZURE("Microsoft Azure"),
+
 	DOCKER("Docker"),
 	KUBERNETES("Kubernetes"),
-	AWS("AWS"),
-	GCP("Google Cloud Platform"),
-	AZURE("Azure"),
-	CI_CD("CI/CD");
+
+	JENKINS("Jenkins"),
+	GITHUB_ACTIONS("GitHub Actions"),
+	;
 
 	private final String displayName;
 }
