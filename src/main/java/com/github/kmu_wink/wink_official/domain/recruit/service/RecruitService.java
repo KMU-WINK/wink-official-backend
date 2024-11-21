@@ -97,7 +97,7 @@ public class RecruitService {
                 : List.of();
 
         LocalDateTime now = LocalDateTime.now();
-        if (now.isBefore(recruit.getRecruitStartDateTime()) || now.isAfter(recruit.getRecruitEndDateTime())) {
+        if (now.isBefore(recruit.getRecruitStartDate().atStartOfDay()) || now.isAfter(recruit.getRecruitEndDate().atTime(23, 59, 59))) {
             throw new NotValidPeriodException();
         }
 

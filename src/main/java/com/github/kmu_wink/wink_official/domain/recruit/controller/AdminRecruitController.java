@@ -39,6 +39,13 @@ public class AdminRecruitController {
 		return ApiResponse.ok(adminRecruitService.getRecruits());
 	}
 
+	@GetMapping("/{recruitId}")
+	@Operation(summary = "모집 조회")
+	public ApiResponse<GetRecruitResponse> getRecruit(@PathVariable String recruitId) {
+
+		return ApiResponse.ok(adminRecruitService.getRecruit(recruitId));
+	}
+
 	@PostMapping
 	@Operation(summary = "모집 생성")
 	public ApiResponse<GetRecruitResponse> createRecruit(@RequestBody @Valid CreateRecruitRequest request) {
@@ -62,21 +69,21 @@ public class AdminRecruitController {
 		return ApiResponse.ok();
 	}
 
-	@GetMapping("/{recruitId}")
+	@GetMapping("/{recruitId}/application")
 	@Operation(summary = "신청자 목록")
 	public ApiResponse<GetApplicationsResponse> getApplications(@PathVariable String recruitId) {
 
 		return ApiResponse.ok(adminRecruitService.getApplications(recruitId));
 	}
 
-	@GetMapping("/{recruitId}/{applicationId}")
+	@GetMapping("/{recruitId}/application/{applicationId}")
 	@Operation(summary = "신청자 조회")
 	public ApiResponse<GetApplicationResponse> getApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
 
 		return ApiResponse.ok(adminRecruitService.getApplication(recruitId, applicationId));
 	}
 
-	@PostMapping("/{recruitId}/{applicationId}/pass")
+	@PostMapping("/{recruitId}/application/{applicationId}/pass")
 	@Operation(summary = "합격 처리")
 	public ApiResponse<Void> passApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
 
@@ -85,7 +92,7 @@ public class AdminRecruitController {
 		return ApiResponse.ok();
 	}
 
-	@PostMapping("/{recruitId}/{applicationId}/fail")
+	@PostMapping("/{recruitId}/application/{applicationId}/fail")
 	@Operation(summary = "불합격 처리")
 	public ApiResponse<Void> failApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
 

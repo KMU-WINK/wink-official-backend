@@ -1,7 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.recruit.schema;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -28,8 +27,8 @@ public class Recruit extends BaseSchema {
     String googleFormUri;
     Map<FormEntryKeys, String> googleFormResponseEntry;
 
-    LocalDateTime recruitStartDateTime;
-    LocalDateTime recruitEndDateTime;
+    LocalDate recruitStartDate;
+    LocalDate recruitEndDate;
 
     LocalDate interviewStartDate;
     LocalDate interviewEndDate;

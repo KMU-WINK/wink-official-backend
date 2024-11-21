@@ -2,7 +2,6 @@
 package com.github.kmu_wink.wink_official.domain.recruit.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,6 @@ public class AdminRecruitService {
     private final EmailSender emailSender;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public GetRecruitsResponse getRecruits() {
 
@@ -56,13 +54,22 @@ public class AdminRecruitService {
             .build();
     }
 
+    public GetRecruitResponse getRecruit(String recruitId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        return GetRecruitResponse.builder()
+            .recruit(recruit)
+            .build();
+    }
+
     public GetRecruitResponse createRecruit(CreateRecruitRequest dto) {
 
         Recruit recruit = Recruit.builder()
             .year(dto.year())
             .semester(dto.semester())
-            .recruitStartDateTime(LocalDateTime.parse(dto.recruitStartDateTime(), DATE_TIME_FORMATTER))
-            .recruitEndDateTime(LocalDateTime.parse(dto.recruitEndDateTime(), DATE_TIME_FORMATTER))
+            .recruitStartDate(LocalDate.parse(dto.recruitStartDate(), DATE_FORMATTER))
+            .recruitEndDate(LocalDate.parse(dto.recruitEndDate(), DATE_FORMATTER))
             .interviewStartDate(LocalDate.parse(dto.interviewStartDate(), DATE_FORMATTER))
             .interviewEndDate(LocalDate.parse(dto.interviewEndDate(), DATE_FORMATTER))
             .build();
@@ -87,8 +94,8 @@ public class AdminRecruitService {
 
         recruit.setYear(dto.year());
         recruit.setSemester(dto.semester());
-        recruit.setRecruitStartDateTime(LocalDateTime.parse(dto.recruitStartDateTime(), DATE_TIME_FORMATTER));
-        recruit.setRecruitEndDateTime(LocalDateTime.parse(dto.recruitEndDateTime(), DATE_TIME_FORMATTER));
+        recruit.setRecruitStartDate(LocalDate.parse(dto.recruitStartDate(), DATE_FORMATTER));
+        recruit.setRecruitEndDate(LocalDate.parse(dto.recruitEndDate(), DATE_FORMATTER));
         recruit.setInterviewStartDate(LocalDate.parse(dto.interviewStartDate(), DATE_FORMATTER));
         recruit.setInterviewEndDate(LocalDate.parse(dto.interviewEndDate(), DATE_FORMATTER));
 

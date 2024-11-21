@@ -20,12 +20,12 @@ public record CreateRecruitRequest(
         int semester,
 
         @NotBlank
-        @Pattern(regexp = Validation.YYYY_MM_DD_HH_MM_EXPRESSION, message = Validation.YYYY_MM_DD_HH_MM_MESSAGE)
-        String recruitStartDateTime,
+        @Pattern(regexp = Validation.YYYY_MM_DD_EXPRESSION, message = Validation.YYYY_MM_DD_MESSAGE)
+        String recruitStartDate,
 
         @NotBlank
-        @Pattern(regexp = Validation.YYYY_MM_DD_HH_MM_EXPRESSION, message = Validation.YYYY_MM_DD_HH_MM_MESSAGE)
-        String recruitEndDateTime,
+        @Pattern(regexp = Validation.YYYY_MM_DD_EXPRESSION, message = Validation.YYYY_MM_DD_MESSAGE)
+        String recruitEndDate,
 
         @NotBlank
         @Pattern(regexp = Validation.YYYY_MM_DD_EXPRESSION, message = Validation.YYYY_MM_DD_MESSAGE)
