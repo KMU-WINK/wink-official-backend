@@ -1,9 +1,11 @@
 package com.github.kmu_wink.wink_official.domain.recruit.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +44,22 @@ public class AdminRecruitController {
 	public ApiResponse<GetRecruitResponse> createRecruit(@RequestBody @Valid CreateRecruitRequest request) {
 
 		return ApiResponse.ok(adminRecruitService.createRecruit(request));
+	}
+
+	@PutMapping("/{recruitId}")
+	@Operation(summary = "모집 수정")
+	public ApiResponse<GetRecruitResponse> updateRecruit(@PathVariable String recruitId, @RequestBody @Valid CreateRecruitRequest request) {
+
+		return ApiResponse.ok(adminRecruitService.updateRecruit(recruitId, request));
+	}
+
+	@DeleteMapping("/{recruitId}")
+	@Operation(summary = "모집 삭제")
+	public ApiResponse<Void> deleteRecruit(@PathVariable String recruitId) {
+
+		adminRecruitService.deleteRecruit(recruitId);
+
+		return ApiResponse.ok();
 	}
 
 	@GetMapping("/{recruitId}")

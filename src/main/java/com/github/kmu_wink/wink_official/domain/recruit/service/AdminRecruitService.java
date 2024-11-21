@@ -81,6 +81,32 @@ public class AdminRecruitService {
             .build();
     }
 
+    public GetRecruitResponse updateRecruit(String recruitId, CreateRecruitRequest dto) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        recruit.setYear(dto.year());
+        recruit.setSemester(dto.semester());
+        recruit.setRecruitStartDateTime(LocalDateTime.parse(dto.recruitStartDateTime(), DATE_TIME_FORMATTER));
+        recruit.setRecruitEndDateTime(LocalDateTime.parse(dto.recruitEndDateTime(), DATE_TIME_FORMATTER));
+        recruit.setInterviewStartDate(LocalDate.parse(dto.interviewStartDate(), DATE_FORMATTER));
+        recruit.setInterviewEndDate(LocalDate.parse(dto.interviewEndDate(), DATE_FORMATTER));
+
+        recruit = recruitRepository.save(recruit);
+
+        return GetRecruitResponse.builder()
+            .recruit(recruit)
+            .build();
+    }
+
+    public void deleteRecruit(String recruitId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        applicationRepository.deleteAll(applicationRepository.findAllByRecruit(recruit));
+        recruitRepository.delete(recruit);
+    }
+
     public GetApplicationsResponse getApplications(String recruitId) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);

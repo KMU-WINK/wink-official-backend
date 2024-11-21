@@ -12,6 +12,8 @@ public interface ApplicationRepository extends MongoRepository<Application, Stri
 
     List<Application> findAllByRecruitOrderByCreatedAtDesc(Recruit recruit);
 
+    List<Application> findAllByRecruit(Recruit recruit);
+
     Optional<Application> findByIdAndRecruit(String id, Recruit recruit);
     Optional<Application> findByRecruitAndStudentId(Recruit recruit, String studentId);
     Optional<Application> findByRecruitAndEmail(Recruit recruit, String email);
