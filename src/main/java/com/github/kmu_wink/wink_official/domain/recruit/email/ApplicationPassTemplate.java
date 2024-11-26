@@ -26,7 +26,7 @@ public class ApplicationPassTemplate implements EmailTemplate {
             <p class="text">%s님은 이번 모집을 통해 신규 부원으로 합격하셨습니다.</p>
             <p class="text">아래 가입하기 버튼을 눌러 저희 홈페이지에 가입해주세요.</p>
             <p class="text">감사합니다.</p>
-            <button onclick="window.location.href='http://wink.daehyeon.cloud:3000/auth/register?token=%s'" class="button">가입하기</button>
+            <a href="http://wink.daehyeon.cloud:3000/auth/register?token=%s" class="button">가입하기</button>
             """).formatted(application.getName(), application.getRecruit().getYear(), application.getRecruit().getSemester(), application.getName(), preUser.getToken());
     }
 }

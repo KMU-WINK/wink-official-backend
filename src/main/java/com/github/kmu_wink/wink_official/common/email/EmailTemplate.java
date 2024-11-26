@@ -48,7 +48,7 @@ public interface EmailTemplate {
                         .button {
                             display: inline-block;
                             font-size: 18px;
-                            color: #ffffff;
+                            color: #ffffff !important;
                             background-color: #3a70ff;
                             padding: 14px 24px;
                             border-radius: 12px;
