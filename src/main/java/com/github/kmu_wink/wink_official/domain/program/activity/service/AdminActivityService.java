@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.github.kmu_wink.wink_official.common.external.aws.s3.S3Service;
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.request.CreateActivityRequest;
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivitiesPageableResponse;
 import com.github.kmu_wink.wink_official.domain.program.activity.dto.response.GetActivityResponse;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminActivityService {
 
 	private final ActivityRepository activityRepository;
+	private final S3Service s3Service;
 
 	public GetActivitiesPageableResponse getActivities(int page, String query) {
 
@@ -63,6 +65,8 @@ public class AdminActivityService {
 	public void deleteActivity(String id) {
 
 		Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+
+		activity.getImages().forEach(image -> s3Service.deleteFile(s3Service.urlToKey(image)));
 
 		activityRepository.delete(activity);
 	}

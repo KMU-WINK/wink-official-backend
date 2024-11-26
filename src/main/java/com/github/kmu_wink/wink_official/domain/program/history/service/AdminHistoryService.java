@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Service;
 
+import com.github.kmu_wink.wink_official.common.external.aws.s3.S3Service;
 import com.github.kmu_wink.wink_official.domain.program.history.dto.request.CreateHistoryRequest;
 import com.github.kmu_wink.wink_official.domain.program.history.dto.response.GetHistoryResponse;
 import com.github.kmu_wink.wink_official.domain.program.history.exception.HistoryNotFoundException;
@@ -20,6 +21,7 @@ public class AdminHistoryService {
 	private final HistoryRepository historyRepository;
 
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private final S3Service s3Service;
 
 	public GetHistoryResponse createHistory(CreateHistoryRequest dto) {
 
@@ -53,6 +55,10 @@ public class AdminHistoryService {
 	public void deleteHistory(String id) {
 
 		History history = historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
+
+		if (history.getImage() != null) {
+			s3Service.deleteFile(s3Service.urlToKey(history.getImage()));
+		}
 
 		historyRepository.delete(history);
 	}
