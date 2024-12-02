@@ -1,6 +1,9 @@
 package com.github.kmu_wink.wink_official.domain.program.upload.task;
 
-import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -32,30 +35,23 @@ public class PurgeUnusedS3ResourceTask {
 	@Scheduled(cron = "0 0 0 * * *")
 	private void run() {
 
-		List<String> list1 = activityRepository.findAll()
-			.stream()
-			.flatMap(activity -> activity.getImages().stream())
-			.toList();
+		Set<String> use = Stream.of(
+				activityRepository.findAll().stream().flatMap(activity -> activity.getImages().stream()),
+				historyRepository.findAll().stream().map(History::getImage),
+				projectRepository.findAll().stream().map(Project::getImage))
+			.flatMap(s -> s)
+			.collect(Collectors.toSet());
 
-		List<String> list2 = historyRepository.findAll()
-			.stream()
-			.map(History::getImage)
-			.toList();
+		AtomicInteger size = new AtomicInteger(0);
 
-		List<String> list3 = projectRepository.findAll()
-			.stream()
-			.map(Project::getImage)
-			.toList();
-
-		List<String> targets = s3Service.files("program").stream()
+		s3Service.files("program").stream()
 			.filter(file -> System.currentTimeMillis() - file.getLastModified().getTime() > 1000 * 60 * 30)
 			.map(S3ObjectSummary::getKey)
-			.filter(file -> !list1.contains(file) && !list2.contains(file) && !list3.contains(file))
+			.filter(file -> !use.contains(file))
+			.peek((file) -> size.getAndAdd(1))
 			.map(s3Service::urlToKey)
-			.toList();
+			.forEach(s3Service::deleteFile);
 
-		targets.forEach(s3Service::deleteFile);
-
-		log.info("Purge Unused S3 Resource. (amount: {})", targets.size());
+		log.info("Purge Unused S3 Resource. (amount: {})", size);
 	}
 }
