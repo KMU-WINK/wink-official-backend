@@ -46,6 +46,7 @@ import com.google.api.services.forms.v1.model.Request;
 import com.google.api.services.forms.v1.model.TextQuestion;
 
 import kong.unirest.core.Unirest;
+import kong.unirest.core.UnirestInstance;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -116,7 +117,9 @@ public class GoogleFormUtil {
             if (application.getLastComment() != null) put("entry." + entry.get(FormEntryKeys.LAST_COMMENT), application.getLastComment());
         }};
 
-        Unirest.get(baseUri).queryString(pairs).asString();
+        try (UnirestInstance instance = Unirest.spawnInstance()) {
+            instance.get(baseUri).queryString(pairs).asEmpty();
+        }
     }
 
     @SneakyThrows(IOException.class)

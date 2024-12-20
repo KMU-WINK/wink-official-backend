@@ -52,6 +52,8 @@ public class PurgeUnusedS3ResourceTask {
 			.map(s3Service::urlToKey)
 			.forEach(s3Service::deleteFile);
 
-		log.info("Purge Unused S3 Resource. (amount: {})", size);
+		if (size.get() > 0) {
+			log.info("Purge Unused S3 Resource. (amount: {})", size.get());
+		}
 	}
 }

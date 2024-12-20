@@ -6,6 +6,7 @@ spring:
       - classpath:config/jwt.yaml
       - classpath:config/mail.yaml
       - classpath:config/mongo.yaml
+      - classpath:config/notion.yaml
       - classpath:config/redis.yaml
       - classpath:config/server.fixed.yaml
       - classpath:config/swagger.fixed.yaml

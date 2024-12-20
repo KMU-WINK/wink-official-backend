@@ -33,8 +33,6 @@ public class TistoryParseTask {
 	@Scheduled(cron = "0 0 0 * * *")
 	private void run() {
 
-		log.info("Task started.");
-
 		int remoteLatestIndex = getRemoteLatestIndex();
 		int localLatestIndex = getLocalLatestIndex();
 
@@ -72,8 +70,6 @@ public class TistoryParseTask {
 			} catch (IOException ignored) {
 			}
 		}
-
-		log.info("Task finished.");
 	}
 
 	@SneakyThrows(IOException.class)
