@@ -1,6 +1,7 @@
 package com.github.kmu_wink.wink_official.domain.user.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.github.kmu_wink.wink_official.common.external.aws.s3.S3Service;
 import com.github.kmu_wink.wink_official.common.property.AwsProperty;
 import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
+import com.github.kmu_wink.wink_official.domain.user.dto.internal.NotionDbUser;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyInfoRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyPasswordRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UpdateMyAvatarResponse;
@@ -18,6 +20,7 @@ import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundExcep
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 
+import kong.unirest.core.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -101,6 +104,21 @@ public class UserService {
         String region = awsProperty.getRegion();
 
         user.setAvatar("https://%s.s3.%s.amazonaws.com/avatar/%s.webp".formatted(bucket, region, userId));
+
+        userRepository.save(user);
+    }
+
+    public void notionCallback(Map<?, ?> body) {
+
+        NotionDbUser notionDbUser = NotionDbUser.from(new JSONObject(body).getJSONObject("data")).orElseThrow();
+        User user = userRepository.findById(notionDbUser.id()).orElseThrow();
+
+        user.setName(notionDbUser.name());
+        user.setStudentId(notionDbUser.studentId());
+        user.setEmail(notionDbUser.email());
+        user.setPhoneNumber(notionDbUser.phoneNumber());
+        user.setRole(notionDbUser.role());
+        user.setFee(notionDbUser.fee());
 
         userRepository.save(user);
     }
