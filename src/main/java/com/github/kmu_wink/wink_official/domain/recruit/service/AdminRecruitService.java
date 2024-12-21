@@ -96,8 +96,6 @@ public class AdminRecruitService {
         recruit.setSemester(dto.semester());
         recruit.setRecruitStartDate(LocalDate.parse(dto.recruitStartDate(), DATE_FORMATTER));
         recruit.setRecruitEndDate(LocalDate.parse(dto.recruitEndDate(), DATE_FORMATTER));
-        recruit.setInterviewStartDate(LocalDate.parse(dto.interviewStartDate(), DATE_FORMATTER));
-        recruit.setInterviewEndDate(LocalDate.parse(dto.interviewEndDate(), DATE_FORMATTER));
 
         recruit = recruitRepository.save(recruit);
 
