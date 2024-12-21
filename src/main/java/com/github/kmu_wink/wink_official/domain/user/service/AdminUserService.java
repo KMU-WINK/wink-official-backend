@@ -21,6 +21,7 @@ import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepositor
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
+import com.github.kmu_wink.wink_official.domain.user.task.SyncNotionDbTask;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +33,8 @@ public class AdminUserService {
     private final PreUserRepository preUserRepository;
 
     private final EmailSender emailSender;
+
+    private final SyncNotionDbTask syncNotionDbTask;
 
     public AdminUsersResponse getUsers(int page, String query) {
 
@@ -109,6 +112,8 @@ public class AdminUserService {
         user.setFee(dto.fee());
 
         user = userRepository.save(user);
+
+        syncNotionDbTask.manual(user);
 
         return UserResponse.builder()
             .user(user)

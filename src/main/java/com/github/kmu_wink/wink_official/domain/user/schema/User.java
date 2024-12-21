@@ -85,7 +85,7 @@ public class User extends BaseUser {
             }
         }
 
-        public static Role fromString(String role) {
+        public static Role fromKorean(String role) {
 
             return switch (role) {
                 case "회장" -> PRESIDENT;
@@ -104,8 +104,7 @@ public class User extends BaseUser {
             };
         }
 
-        @Override
-        public String toString() {
+        public String toKorean() {
 
             return switch (this) {
                 case PRESIDENT -> "회장";

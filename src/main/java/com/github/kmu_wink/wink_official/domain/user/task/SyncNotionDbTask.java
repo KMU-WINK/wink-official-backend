@@ -36,30 +36,44 @@ public class SyncNotionDbTask {
 
 	private final UserRepository userRepository;
 
-	@Scheduled(fixedDelay = 1000 * 5)
+	@Scheduled(fixedDelay = 1000 * 60 * 5)
 	private void run() {
 
-		List<NotionDbUser> notionDbUsers = getNotionDb().orElseThrow();
+		getNotionDb().ifPresent(notionDbUsers -> {
 
-		Map<String, User> userMap = userRepository.findAll().stream().collect(Collectors.toMap(User::getId, Function.identity()));
-		Set<String> notionSet = notionDbUsers.stream().map(NotionDbUser::id).collect(Collectors.toSet());
+			Map<String, User> userMap = userRepository.findAll().stream()
+				.collect(Collectors.toMap(User::getId, Function.identity()));
 
-		notionDbUsers.stream()
-			.filter(x -> !userMap.containsKey(x.id()))
-			.forEach(this::deletePage);
+			Set<String> notionSet = notionDbUsers.stream()
+				.map(NotionDbUser::id)
+				.collect(Collectors.toSet());
 
-		notionDbUsers.stream()
-			.filter(x -> userMap.containsKey(x.id()))
-			.filter(x -> checkPageIsDiffer(x, userMap.get(x.id())))
-			.filter(this::checkUpdatedTime)
-			.forEach(x -> updatePage(x, userMap.get(x.id())));
+			notionDbUsers.stream()
+				.filter(x -> !userMap.containsKey(x.id()))
+				.forEach(this::deletePage);
 
-		userMap.entrySet().stream()
-			.filter(x -> !notionSet.contains(x.getKey()))
-			.map(Map.Entry::getValue)
-			.forEach(this::createPage);
+			notionDbUsers.stream()
+				.filter(x -> userMap.containsKey(x.id()))
+				.filter(x -> checkPageIsDiffer(x, userMap.get(x.id())))
+				.filter(this::checkUpdatedTime)
+				.forEach(x -> updatePage(x, userMap.get(x.id())));
+
+			userMap.entrySet().stream()
+				.filter(x -> !notionSet.contains(x.getKey()))
+				.map(Map.Entry::getValue)
+				.forEach(this::createPage);
+		});
 	}
 
+	public void manual(User user) {
+
+		getNotionDb()
+			.flatMap(notionDbUsers -> notionDbUsers.stream()
+				.filter(x -> x.id().equals(user.getId()))
+				.findFirst()
+			)
+			.ifPresent(notionDbUser -> updatePage(notionDbUser, user));
+	}
 
 	private void setUnirestHeader(UnirestInstance instance) {
 
@@ -109,7 +123,7 @@ public class SyncNotionDbTask {
 						Map.entry("학번", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getStudentId()))))),
 						Map.entry("이메일", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getEmail()))))),
 						Map.entry("전화번호", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getPhoneNumber()))))),
-						Map.entry("역할", Map.of("select", Map.of("name", user.getRole().toString()))),
+						Map.entry("역할", Map.of("select", Map.of("name", user.getRole().toKorean()))),
 						Map.entry("회비 납부", Map.of("checkbox", user.isFee()))
 					))
 				))
@@ -132,7 +146,7 @@ public class SyncNotionDbTask {
 					Map.entry("학번", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getStudentId()))))),
 					Map.entry("이메일", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getEmail()))))),
 					Map.entry("전화번호", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getPhoneNumber()))))),
-					Map.entry("역할", Map.of("select", Map.of("name", user.getRole().toString()))),
+					Map.entry("역할", Map.of("select", Map.of("name", user.getRole().toKorean()))),
 					Map.entry("회비 납부", Map.of("checkbox", user.isFee()))
 				)))
 				.asEmpty();

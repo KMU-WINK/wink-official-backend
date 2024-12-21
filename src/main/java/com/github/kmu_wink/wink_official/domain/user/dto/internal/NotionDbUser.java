@@ -35,7 +35,7 @@ public record NotionDbUser(
 				.studentId(object.getJSONObject("properties").getJSONObject("학번").getJSONArray("rich_text").getJSONObject(0).getString("plain_text"))
 				.email(object.getJSONObject("properties").getJSONObject("이메일").getJSONArray("rich_text").getJSONObject(0).getString("plain_text"))
 				.phoneNumber(object.getJSONObject("properties").getJSONObject("전화번호").getJSONArray("rich_text").getJSONObject(0).getString("plain_text"))
-				.role(User.Role.fromString(object.getJSONObject("properties").getJSONObject("역할").getJSONObject("select").getString("name")))
+				.role(User.Role.fromKorean(object.getJSONObject("properties").getJSONObject("역할").getJSONObject("select").getString("name")))
 				.fee(object.getJSONObject("properties").getJSONObject("회비 납부").getBoolean("checkbox"))
 				.build());
 		} catch (JSONException e) {
