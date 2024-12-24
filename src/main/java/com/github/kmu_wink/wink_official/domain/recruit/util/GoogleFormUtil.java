@@ -20,7 +20,6 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import com.github.kmu_wink.wink_official.common.property.GoogleProperty;
-import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormCheckbox;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormEntryKeys;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
@@ -73,7 +72,6 @@ public class GoogleFormUtil {
             longText("지원 동기", true),
             longText("배우고 싶은 점", true),
             checkBox("면접 가능 날짜", betweenDates(recruit.getInterviewStartDate(), recruit.getInterviewEndDate()), true),
-            checkBox("지원 분야", Domain.values(), true),
             shortText("Github 아이디", false),
             checkBox("프론트엔드 기술 스택", FrontendTechStack.values(), false),
             checkBox("백엔드 기술 스택", BackendTechStack.values(), false),
@@ -106,7 +104,6 @@ public class GoogleFormUtil {
             put("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), application.getJiwonDonggi());
             put("entry." + entry.get(FormEntryKeys.BAEUGO_SIPEUN_JEOM), application.getBaeugoSipeunJeom());
             application.getCanInterviewDates().forEach(date -> put("entry." + entry.get(FormEntryKeys.CAN_INTERVIEW_DATES), formatDate(date)));
-            application.getDomains().forEach(domain -> put("entry." + entry.get(FormEntryKeys.DOMAIN), domain.getDisplayName()));
 
             if (application.getGithub() != null) put("entry." + entry.get(FormEntryKeys.GITHUB), application.getGithub());
             if (!application.getFrontendTechStacks().isEmpty()) application.getFrontendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), stack.getDisplayName()));

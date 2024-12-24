@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.domain.auth.exception.AlreadyRegisteredException;
-import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
@@ -68,10 +67,6 @@ public class RecruitService {
                 .map(s -> LocalDate.parse(s, DATE_FORMATTER))
                 .toList();
 
-        List<Domain> domains = dto.domains().stream()
-            .map(Domain::valueOf)
-            .toList();
-
         List<FrontendTechStack> frontendTechStacks = dto.frontendTechStacks() != null
                 ? dto.frontendTechStacks().stream()
                 .map(FrontendTechStack::valueOf)
@@ -127,7 +122,6 @@ public class RecruitService {
                 .jiwonDonggi(dto.jiwonDonggi())
                 .baeugoSipeunJeom(dto.baeugoSipeunJeom())
                 .canInterviewDates(canInterviewDates)
-                .domains(domains)
                 .github(dto.github())
                 .frontendTechStacks(frontendTechStacks)
                 .backendTechStacks(backendTechStacks)
@@ -135,7 +129,6 @@ public class RecruitService {
                 .designTechStacks(designTechStacks)
                 .favoriteProject(dto.favoriteProject())
                 .lastComment(dto.lastComment())
-                .passed(null)
                 .build();
 
         googleFormUtil.createResponse(application);

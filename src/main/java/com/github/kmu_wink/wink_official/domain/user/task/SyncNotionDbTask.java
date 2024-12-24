@@ -72,7 +72,7 @@ public class SyncNotionDbTask {
 				.filter(x -> x.id().equals(user.getId()))
 				.findFirst()
 			)
-			.ifPresent(notionDbUser -> updatePage(notionDbUser, user));
+			.ifPresentOrElse(notionDbUser -> updatePage(notionDbUser, user), () -> createPage(user));
 	}
 
 	private void setUnirestHeader(UnirestInstance instance) {

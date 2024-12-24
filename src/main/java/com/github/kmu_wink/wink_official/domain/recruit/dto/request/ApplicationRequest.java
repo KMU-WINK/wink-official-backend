@@ -6,7 +6,6 @@ import org.hibernate.validator.constraints.Length;
 
 import com.github.kmu_wink.wink_official.common.validation.Validation;
 import com.github.kmu_wink.wink_official.common.validation.custom.Enum;
-import com.github.kmu_wink.wink_official.domain.recruit.constant.Domain;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
@@ -46,9 +45,6 @@ public record ApplicationRequest(
 
         @NotNull
         List<@Pattern(regexp = Validation.YYYY_MM_DD_EXPRESSION, message = Validation.YYYY_MM_DD_MESSAGE) String> canInterviewDates,
-
-        @NotNull
-        List<@Enum(enumClass = Domain.class) String> domains,
 
         @Nullable
         @Pattern(regexp = Validation.GITHUB_USERNAME_EXPRESSION, message = Validation.GITHUB_USERNAME_MESSAGE)

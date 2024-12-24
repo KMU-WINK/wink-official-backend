@@ -87,16 +87,12 @@ public class AdminRecruitController {
 	@Operation(summary = "합격 처리")
 	public ApiResponse<Void> passApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
 
-		adminRecruitService.passApplication(recruitId, applicationId);
-
 		return ApiResponse.ok();
 	}
 
 	@PostMapping("/{recruitId}/application/{applicationId}/fail")
 	@Operation(summary = "불합격 처리")
 	public ApiResponse<Void> failApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
-
-		adminRecruitService.failApplication(recruitId, applicationId);
 
 		return ApiResponse.ok();
 	}
