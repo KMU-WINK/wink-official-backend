@@ -32,4 +32,6 @@ public class Recruit extends BaseSchema {
 
     LocalDate interviewStartDate;
     LocalDate interviewEndDate;
+
+    boolean finalized;
 }

@@ -69,6 +69,15 @@ public class AdminRecruitController {
 		return ApiResponse.ok();
 	}
 
+	@PostMapping("/{recruitId}/finalize")
+	@Operation(summary = "모집 확정")
+	public ApiResponse<Void> finalizeRecruit(@PathVariable String recruitId) {
+
+		adminRecruitService.finalizeRecruit(recruitId);
+
+		return ApiResponse.ok();
+	}
+
 	@GetMapping("/{recruitId}/application")
 	@Operation(summary = "신청자 목록")
 	public ApiResponse<GetApplicationsResponse> getApplications(@PathVariable String recruitId) {
@@ -87,12 +96,16 @@ public class AdminRecruitController {
 	@Operation(summary = "합격 처리")
 	public ApiResponse<Void> passApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
 
+		adminRecruitService.passApplication(recruitId, applicationId);
+
 		return ApiResponse.ok();
 	}
 
 	@PostMapping("/{recruitId}/application/{applicationId}/fail")
 	@Operation(summary = "불합격 처리")
 	public ApiResponse<Void> failApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
+
+		adminRecruitService.failApplication(recruitId, applicationId);
 
 		return ApiResponse.ok();
 	}

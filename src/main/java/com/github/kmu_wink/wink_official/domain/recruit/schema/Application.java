@@ -46,4 +46,6 @@ public class Application extends BaseSchema {
     String favoriteProject;
 
     String lastComment;
+
+    Boolean passed;
 }

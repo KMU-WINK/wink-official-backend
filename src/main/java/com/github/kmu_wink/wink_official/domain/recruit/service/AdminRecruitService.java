@@ -5,15 +5,21 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.github.kmu_wink.wink_official.common.email.EmailSender;
+import com.github.kmu_wink.wink_official.common.email.EmailTemplate;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormEntryKeys;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.CreateRecruitRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitsResponse;
+import com.github.kmu_wink.wink_official.domain.recruit.email.ApplicationFailTemplate;
+import com.github.kmu_wink.wink_official.domain.recruit.email.ApplicationPassTemplate;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.ApplicationNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.ApplicationRepository;
@@ -21,6 +27,8 @@ import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitReposi
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Application;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 import com.github.kmu_wink.wink_official.domain.recruit.util.GoogleFormUtil;
+import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
+import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.google.api.services.forms.v1.model.Form;
 
 import lombok.RequiredArgsConstructor;
@@ -31,10 +39,12 @@ public class AdminRecruitService {
 
     private final RecruitRepository recruitRepository;
     private final ApplicationRepository applicationRepository;
+    private final PreUserRepository preUserRepository;
 
     private final GoogleFormUtil googleFormUtil;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final EmailSender emailSender;
 
     public GetRecruitsResponse getRecruits() {
 
@@ -63,6 +73,7 @@ public class AdminRecruitService {
             .recruitEndDate(LocalDate.parse(dto.recruitEndDate(), DATE_FORMATTER))
             .interviewStartDate(LocalDate.parse(dto.interviewStartDate(), DATE_FORMATTER))
             .interviewEndDate(LocalDate.parse(dto.interviewEndDate(), DATE_FORMATTER))
+            .finalized(false)
             .build();
 
         Form form = googleFormUtil.createForm(recruit);
@@ -103,6 +114,41 @@ public class AdminRecruitService {
         recruitRepository.delete(recruit);
     }
 
+    public void finalizeRecruit(String recruitId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        List<Application> applications = applicationRepository.findAllByRecruit(recruit);
+
+        for (Application application : applications) {
+
+            EmailTemplate emailTemplate;
+
+            if (application.getPassed()) {
+
+                PreUser preUser = PreUser.builder()
+                    .email(application.getEmail())
+                    .name(application.getName())
+                    .studentId(application.getStudentId())
+                    .phoneNumber(application.getPhoneNumber())
+                    .token(UUID.randomUUID().toString())
+                    .build();
+
+                preUserRepository.save(preUser);
+
+                emailTemplate = ApplicationPassTemplate.of(application, preUser);
+            } else {
+
+                emailTemplate = ApplicationFailTemplate.of(application);
+            }
+
+            emailSender.send(application.getEmail(), Objects.requireNonNull(emailTemplate));
+        }
+
+        recruit.setFinalized(true);
+
+        recruitRepository.save(recruit);
+    }
+
     public GetApplicationsResponse getApplications(String recruitId) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
@@ -137,5 +183,25 @@ public class AdminRecruitService {
         return GetApplicationResponse.builder()
             .application(application)
             .build();
+    }
+
+    public void passApplication(String recruitId, String applicationId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
+
+        application.setPassed(true);
+
+        applicationRepository.save(application);
+    }
+
+    public void failApplication(String recruitId, String applicationId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
+
+        application.setPassed(false);
+
+        applicationRepository.save(application);
     }
 }
