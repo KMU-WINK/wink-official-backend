@@ -61,7 +61,7 @@ public class GoogleFormUtil {
     @SneakyThrows(IOException.class)
     public Form createForm(Recruit recruit) {
 
-        String title = "[WINK] %d년 %d학기 신규 부원 모집".formatted(recruit.getYear(), recruit.getSemester());
+        String title = "[WINK] %d학년도 %d학기 신규 부원 모집".formatted(recruit.getYear(), recruit.getSemester());
         Form form = forms.forms().create(new Form().setInfo(new Info().setTitle(title).setDocumentTitle(title))).execute();
 
         forms.forms().batchUpdate(form.getFormId(), new BatchUpdateFormRequest().setRequests(createRequest(

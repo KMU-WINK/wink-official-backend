@@ -129,7 +129,8 @@ public class RecruitService {
                 .designTechStacks(designTechStacks)
                 .favoriteProject(dto.favoriteProject())
                 .lastComment(dto.lastComment())
-                .passed(null)
+                .paperPass(null)
+                .interviewPass(null)
                 .build();
 
         googleFormUtil.createResponse(application);

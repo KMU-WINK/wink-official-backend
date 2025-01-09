@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.CreateRecruitRequest;
+import com.github.kmu_wink.wink_official.domain.recruit.dto.request.FinalizePaperRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
@@ -69,11 +70,20 @@ public class AdminRecruitController {
 		return ApiResponse.ok();
 	}
 
-	@PostMapping("/{recruitId}/finalize")
-	@Operation(summary = "모집 확정")
-	public ApiResponse<Void> finalizeRecruit(@PathVariable String recruitId) {
+	@PostMapping("/{recruitId}/finalize/paper")
+	@Operation(summary = "서류 결과 확정")
+	public ApiResponse<Void> finalizePaper(@PathVariable String recruitId, @RequestBody @Valid FinalizePaperRequest request) {
 
-		adminRecruitService.finalizeRecruit(recruitId);
+		adminRecruitService.finalizePaper(recruitId, request);
+
+		return ApiResponse.ok();
+	}
+
+	@PostMapping("/{recruitId}/finalize/interview")
+	@Operation(summary = "면접 결과 확정")
+	public ApiResponse<Void> finalizeInterview(@PathVariable String recruitId) {
+
+		adminRecruitService.finalizeInterview(recruitId);
 
 		return ApiResponse.ok();
 	}
@@ -92,20 +102,38 @@ public class AdminRecruitController {
 		return ApiResponse.ok(adminRecruitService.getApplication(recruitId, applicationId));
 	}
 
-	@PostMapping("/{recruitId}/application/{applicationId}/pass")
-	@Operation(summary = "합격 처리")
-	public ApiResponse<Void> passApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
+	@PostMapping("/{recruitId}/application/{applicationId}/pass/paper")
+	@Operation(summary = "서류 합격 처리")
+	public ApiResponse<Void> paperPass(@PathVariable String recruitId, @PathVariable String applicationId) {
 
-		adminRecruitService.passApplication(recruitId, applicationId);
+		adminRecruitService.paperPass(recruitId, applicationId);
 
 		return ApiResponse.ok();
 	}
 
-	@PostMapping("/{recruitId}/application/{applicationId}/fail")
-	@Operation(summary = "불합격 처리")
-	public ApiResponse<Void> failApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
+	@PostMapping("/{recruitId}/application/{applicationId}/fail/paper")
+	@Operation(summary = "서류 불합격 처리")
+	public ApiResponse<Void> paperFail(@PathVariable String recruitId, @PathVariable String applicationId) {
 
-		adminRecruitService.failApplication(recruitId, applicationId);
+		adminRecruitService.paperFail(recruitId, applicationId);
+
+		return ApiResponse.ok();
+	}
+
+	@PostMapping("/{recruitId}/application/{applicationId}/pass/interview")
+	@Operation(summary = "면접 합격 처리")
+	public ApiResponse<Void> interviewPass(@PathVariable String recruitId, @PathVariable String applicationId) {
+
+		adminRecruitService.interviewPass(recruitId, applicationId);
+
+		return ApiResponse.ok();
+	}
+
+	@PostMapping("/{recruitId}/application/{applicationId}/fail/interview")
+	@Operation(summary = "면접 불합격 처리")
+	public ApiResponse<Void> interviewFail(@PathVariable String recruitId, @PathVariable String applicationId) {
+
+		adminRecruitService.interviewFail(recruitId, applicationId);
 
 		return ApiResponse.ok();
 	}

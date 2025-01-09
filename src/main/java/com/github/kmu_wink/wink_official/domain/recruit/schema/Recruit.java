@@ -33,5 +33,9 @@ public class Recruit extends BaseSchema {
     LocalDate interviewStartDate;
     LocalDate interviewEndDate;
 
-    boolean finalized;
+    Step step;
+
+    public enum Step {
+        PRE, PAPER_END, INTERVIEW_END
+    }
 }

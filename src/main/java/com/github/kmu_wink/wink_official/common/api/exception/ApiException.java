@@ -1,12 +1,12 @@
 package com.github.kmu_wink.wink_official.common.api.exception;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 public class ApiException extends RuntimeException {
 
     private final HttpStatus httpStatus;

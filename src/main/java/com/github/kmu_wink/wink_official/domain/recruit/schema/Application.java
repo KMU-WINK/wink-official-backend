@@ -47,5 +47,6 @@ public class Application extends BaseSchema {
 
     String lastComment;
 
-    Boolean passed;
+    Boolean paperPass;
+    Boolean interviewPass;
 }

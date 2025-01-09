@@ -9,4 +9,5 @@ spring:
       - classpath:config/notion.yaml
       - classpath:config/redis.yaml
       - classpath:config/server.fixed.yaml
+      - classpath:config/sms.yaml
       - classpath:config/swagger.fixed.yaml

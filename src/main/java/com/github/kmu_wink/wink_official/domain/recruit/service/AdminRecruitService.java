@@ -5,28 +5,35 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
-import com.github.kmu_wink.wink_official.common.email.EmailTemplate;
+import com.github.kmu_wink.wink_official.common.sms.SmsSender;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormEntryKeys;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.CreateRecruitRequest;
+import com.github.kmu_wink.wink_official.domain.recruit.dto.request.FinalizePaperRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitsResponse;
-import com.github.kmu_wink.wink_official.domain.recruit.email.ApplicationFailTemplate;
-import com.github.kmu_wink.wink_official.domain.recruit.email.ApplicationPassTemplate;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyInterviewEndedException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyPaperEndedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.ApplicationNotFoundException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.ItsPaperFailedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.RemainSmsLackException;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.ApplicationRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Application;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
+import com.github.kmu_wink.wink_official.domain.recruit.sms.InterviewFailTemplate;
+import com.github.kmu_wink.wink_official.domain.recruit.sms.InterviewPassTemplate;
+import com.github.kmu_wink.wink_official.domain.recruit.sms.PaperFailTemplate;
+import com.github.kmu_wink.wink_official.domain.recruit.sms.PaperPassTemplate;
 import com.github.kmu_wink.wink_official.domain.recruit.util.GoogleFormUtil;
+import com.github.kmu_wink.wink_official.domain.user.email.InviteTemplate;
 import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.google.api.services.forms.v1.model.Form;
@@ -42,6 +49,8 @@ public class AdminRecruitService {
     private final PreUserRepository preUserRepository;
 
     private final GoogleFormUtil googleFormUtil;
+
+    private final SmsSender smsSender;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final EmailSender emailSender;
@@ -73,7 +82,7 @@ public class AdminRecruitService {
             .recruitEndDate(LocalDate.parse(dto.recruitEndDate(), DATE_FORMATTER))
             .interviewStartDate(LocalDate.parse(dto.interviewStartDate(), DATE_FORMATTER))
             .interviewEndDate(LocalDate.parse(dto.interviewEndDate(), DATE_FORMATTER))
-            .finalized(false)
+            .step(Recruit.Step.PRE)
             .build();
 
         Form form = googleFormUtil.createForm(recruit);
@@ -114,37 +123,74 @@ public class AdminRecruitService {
         recruitRepository.delete(recruit);
     }
 
-    public void finalizeRecruit(String recruitId) {
+    public void finalizePaper(String recruitId, FinalizePaperRequest dto) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
+
         List<Application> applications = applicationRepository.findAllByRecruit(recruit);
 
-        for (Application application : applications) {
+        if (smsSender.remain() < applications.size()) throw new RemainSmsLackException();
 
-            EmailTemplate emailTemplate;
+        smsSender.send(
+            applications.stream()
+                .filter(Application::getPaperPass)
+                .map(Application::getPhoneNumber)
+                .toList(),
+            PaperPassTemplate.of(recruit, dto.interviewUrl()));
 
-            if (application.getPassed()) {
+        smsSender.send(
+            applications.stream()
+                .filter(application -> !application.getPaperPass())
+                .map(Application::getPhoneNumber)
+                .toList(),
+            PaperFailTemplate.of(recruit));
 
-                PreUser preUser = PreUser.builder()
-                    .email(application.getEmail())
-                    .name(application.getName())
-                    .studentId(application.getStudentId())
-                    .phoneNumber(application.getPhoneNumber())
-                    .token(UUID.randomUUID().toString())
-                    .build();
+        recruit.setStep(Recruit.Step.PAPER_END);
 
-                preUserRepository.save(preUser);
+        recruitRepository.save(recruit);
+    }
 
-                emailTemplate = ApplicationPassTemplate.of(application, preUser);
-            } else {
+    public void finalizeInterview(String recruitId) {
 
-                emailTemplate = ApplicationFailTemplate.of(application);
-            }
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-            emailSender.send(application.getEmail(), Objects.requireNonNull(emailTemplate));
-        }
+        if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
 
-        recruit.setFinalized(true);
+        List<Application> applications = applicationRepository.findAllByRecruit(recruit);
+
+        if (smsSender.remain() < applications.size()) throw new RemainSmsLackException();
+
+        smsSender.send(
+            applications.stream()
+                .filter(Application::getInterviewPass)
+                .peek(application -> {
+                    PreUser preUser = PreUser.builder()
+                        .email(application.getEmail())
+                        .name(application.getName())
+                        .studentId(application.getStudentId())
+                        .phoneNumber(application.getPhoneNumber())
+                        .token(UUID.randomUUID().toString())
+                        .build();
+
+                    preUserRepository.save(preUser);
+
+                    emailSender.send(application.getEmail(), InviteTemplate.of(preUser));
+                })
+                .map(Application::getPhoneNumber)
+                .toList(),
+            InterviewPassTemplate.of(recruit));
+
+
+        smsSender.send(
+            applications.stream()
+                .filter(application -> !application.getInterviewPass())
+                .map(Application::getPhoneNumber)
+                .toList(),
+            InterviewFailTemplate.of(recruit));
+
+        recruit.setStep(Recruit.Step.INTERVIEW_END);
 
         recruitRepository.save(recruit);
     }
@@ -185,22 +231,58 @@ public class AdminRecruitService {
             .build();
     }
 
-    public void passApplication(String recruitId, String applicationId) {
+    public void paperPass(String recruitId, String applicationId) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
+
         Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
 
-        application.setPassed(true);
+        application.setPaperPass(true);
 
         applicationRepository.save(application);
     }
 
-    public void failApplication(String recruitId, String applicationId) {
+    public void paperFail(String recruitId, String applicationId) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
+
         Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
 
-        application.setPassed(false);
+        application.setPaperPass(false);
+
+        applicationRepository.save(application);
+    }
+
+    public void interviewPass(String recruitId, String applicationId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
+
+        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
+
+        if (!application.getPaperPass()) throw new ItsPaperFailedException();
+
+        application.setInterviewPass(true);
+
+        applicationRepository.save(application);
+    }
+
+    public void interviewFail(String recruitId, String applicationId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
+
+        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
+
+        if (!application.getPaperPass()) throw new ItsPaperFailedException();
+
+        application.setInterviewPass(false);
 
         applicationRepository.save(application);
     }
