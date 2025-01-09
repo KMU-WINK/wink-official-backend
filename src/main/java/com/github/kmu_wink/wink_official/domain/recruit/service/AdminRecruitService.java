@@ -14,7 +14,6 @@ import com.github.kmu_wink.wink_official.common.sms.SmsSender;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormEntryKeys;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.CreateRecruitRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.FinalizePaperRequest;
-import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitsResponse;
@@ -200,34 +199,11 @@ public class AdminRecruitService {
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
         List<Application> applications = applicationRepository.findAllByRecruitOrderByCreatedAtDesc(recruit).stream()
-            .peek(application -> {
-                application.setRecruit(null);
-                application.setJiwonDonggi(null);
-                application.setBaeugoSipeunJeom(null);
-                application.setGithub(null);
-                application.setFrontendTechStacks(null);
-                application.setBackendTechStacks(null);
-                application.setDevOpsTechStacks(null);
-                application.setDevOpsTechStacks(null);
-                application.setFavoriteProject(null);
-                application.setLastComment(null);
-            })
+            .peek(application -> application.setRecruit(null))
             .toList();
 
         return GetApplicationsResponse.builder()
             .applications(applications)
-            .build();
-    }
-
-    public GetApplicationResponse getApplication(String recruitId, String applicationId) {
-
-        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
-        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
-
-        application.setRecruit(null);
-
-        return GetApplicationResponse.builder()
-            .application(application)
             .build();
     }
 

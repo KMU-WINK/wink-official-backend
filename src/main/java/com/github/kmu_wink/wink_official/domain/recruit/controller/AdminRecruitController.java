@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.CreateRecruitRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.FinalizePaperRequest;
-import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitsResponse;
@@ -93,13 +92,6 @@ public class AdminRecruitController {
 	public ApiResponse<GetApplicationsResponse> getApplications(@PathVariable String recruitId) {
 
 		return ApiResponse.ok(adminRecruitService.getApplications(recruitId));
-	}
-
-	@GetMapping("/{recruitId}/application/{applicationId}")
-	@Operation(summary = "신청자 조회")
-	public ApiResponse<GetApplicationResponse> getApplication(@PathVariable String recruitId, @PathVariable String applicationId) {
-
-		return ApiResponse.ok(adminRecruitService.getApplication(recruitId, applicationId));
 	}
 
 	@PostMapping("/{recruitId}/application/{applicationId}/pass/paper")
