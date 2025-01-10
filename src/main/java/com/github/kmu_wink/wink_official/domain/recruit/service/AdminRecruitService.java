@@ -2,6 +2,7 @@
 package com.github.kmu_wink.wink_official.domain.recruit.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyIntervi
 import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyPaperEndedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.ApplicationNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.ItsPaperFailedException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.NowIsRecruitingException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RemainSmsLackException;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.ApplicationRepository;
@@ -98,22 +100,6 @@ public class AdminRecruitService {
             .build();
     }
 
-    public GetRecruitResponse updateRecruit(String recruitId, CreateRecruitRequest dto) {
-
-        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
-
-        recruit.setYear(dto.year());
-        recruit.setSemester(dto.semester());
-        recruit.setRecruitStartDate(LocalDate.parse(dto.recruitStartDate(), DATE_FORMATTER));
-        recruit.setRecruitEndDate(LocalDate.parse(dto.recruitEndDate(), DATE_FORMATTER));
-
-        recruit = recruitRepository.save(recruit);
-
-        return GetRecruitResponse.builder()
-            .recruit(recruit)
-            .build();
-    }
-
     public void deleteRecruit(String recruitId) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
@@ -125,6 +111,11 @@ public class AdminRecruitService {
     public void finalizePaper(String recruitId, FinalizePaperRequest dto) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        LocalDateTime now = LocalDateTime.now();
+        if (!now.isAfter(recruit.getRecruitEndDate().atTime(23, 59, 59))) {
+            throw new NowIsRecruitingException();
+        }
 
         if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
 
