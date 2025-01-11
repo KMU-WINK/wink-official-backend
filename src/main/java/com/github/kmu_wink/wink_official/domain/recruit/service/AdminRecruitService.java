@@ -20,14 +20,14 @@ import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitR
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyInterviewEndedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyPaperEndedException;
-import com.github.kmu_wink.wink_official.domain.recruit.exception.ApplicationNotFoundException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitFormNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.ItsPaperFailedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.NowIsRecruitingException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RemainSmsLackException;
-import com.github.kmu_wink.wink_official.domain.recruit.repository.ApplicationRepository;
+import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitFormRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
-import com.github.kmu_wink.wink_official.domain.recruit.schema.Application;
+import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 import com.github.kmu_wink.wink_official.domain.recruit.sms.InterviewFailTemplate;
 import com.github.kmu_wink.wink_official.domain.recruit.sms.InterviewPassTemplate;
@@ -46,7 +46,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminRecruitService {
 
     private final RecruitRepository recruitRepository;
-    private final ApplicationRepository applicationRepository;
+    private final RecruitFormRepository applicationRepository;
     private final PreUserRepository preUserRepository;
 
     private final GoogleFormUtil googleFormUtil;
@@ -119,21 +119,21 @@ public class AdminRecruitService {
 
         if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
 
-        List<Application> applications = applicationRepository.findAllByRecruit(recruit);
+        List<RecruitForm> applications = applicationRepository.findAllByRecruit(recruit);
 
         if (smsSender.remain() < applications.size()) throw new RemainSmsLackException();
 
         smsSender.send(
             applications.stream()
-                .filter(Application::getPaperPass)
-                .map(Application::getPhoneNumber)
+                .filter(RecruitForm::getPaperPass)
+                .map(RecruitForm::getPhoneNumber)
                 .toList(),
             PaperPassTemplate.of(recruit, dto.interviewUrl()));
 
         smsSender.send(
             applications.stream()
                 .filter(application -> !application.getPaperPass())
-                .map(Application::getPhoneNumber)
+                .map(RecruitForm::getPhoneNumber)
                 .toList(),
             PaperFailTemplate.of(recruit));
 
@@ -148,13 +148,13 @@ public class AdminRecruitService {
 
         if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
 
-        List<Application> applications = applicationRepository.findAllByRecruit(recruit);
+        List<RecruitForm> applications = applicationRepository.findAllByRecruit(recruit);
 
         if (smsSender.remain() < applications.size()) throw new RemainSmsLackException();
 
         smsSender.send(
             applications.stream()
-                .filter(Application::getInterviewPass)
+                .filter(RecruitForm::getInterviewPass)
                 .peek(application -> {
                     PreUser preUser = PreUser.builder()
                         .email(application.getEmail())
@@ -168,7 +168,7 @@ public class AdminRecruitService {
 
                     emailSender.send(application.getEmail(), InviteTemplate.of(preUser));
                 })
-                .map(Application::getPhoneNumber)
+                .map(RecruitForm::getPhoneNumber)
                 .toList(),
             InterviewPassTemplate.of(recruit));
 
@@ -176,7 +176,7 @@ public class AdminRecruitService {
         smsSender.send(
             applications.stream()
                 .filter(application -> !application.getInterviewPass())
-                .map(Application::getPhoneNumber)
+                .map(RecruitForm::getPhoneNumber)
                 .toList(),
             InterviewFailTemplate.of(recruit));
 
@@ -189,7 +189,7 @@ public class AdminRecruitService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        List<Application> applications = applicationRepository.findAllByRecruitOrderByCreatedAtDesc(recruit).stream()
+        List<RecruitForm> applications = applicationRepository.findAllByRecruitOrderByCreatedAtDesc(recruit).stream()
             .peek(application -> application.setRecruit(null))
             .toList();
 
@@ -204,7 +204,8 @@ public class AdminRecruitService {
 
         if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
 
-        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
+        RecruitForm application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(
+            RecruitFormNotFoundException::new);
 
         application.setPaperPass(true);
 
@@ -217,7 +218,8 @@ public class AdminRecruitService {
 
         if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
 
-        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
+        RecruitForm application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(
+            RecruitFormNotFoundException::new);
 
         application.setPaperPass(false);
 
@@ -230,7 +232,8 @@ public class AdminRecruitService {
 
         if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
 
-        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
+        RecruitForm application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(
+            RecruitFormNotFoundException::new);
 
         if (!application.getPaperPass()) throw new ItsPaperFailedException();
 
@@ -245,7 +248,8 @@ public class AdminRecruitService {
 
         if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
 
-        Application application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(ApplicationNotFoundException::new);
+        RecruitForm application = applicationRepository.findByIdAndRecruit(applicationId, recruit).orElseThrow(
+            RecruitFormNotFoundException::new);
 
         if (!application.getPaperPass()) throw new ItsPaperFailedException();
 

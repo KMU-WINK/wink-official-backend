@@ -26,7 +26,7 @@ import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.Backe
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.schema.Application;
+import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.Permission;
@@ -88,7 +88,7 @@ public class GoogleFormUtil {
         return forms.forms().get(form.getFormId()).execute();
     }
 
-    public void createResponse(Application application) {
+    public void createResponse(RecruitForm application) {
 
         Recruit recruit = application.getRecruit();
 

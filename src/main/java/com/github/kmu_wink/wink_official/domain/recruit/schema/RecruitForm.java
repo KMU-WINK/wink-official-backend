@@ -22,7 +22,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Document
-public class Application extends BaseSchema {
+public class RecruitForm extends BaseSchema {
 
     @DBRef
     Recruit recruit;

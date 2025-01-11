@@ -1,5 +1,6 @@
 package com.github.kmu_wink.wink_official.common.external.aws.s3;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.github.kmu_wink.wink_official.common.property.AwsProperty;
 
@@ -23,10 +25,19 @@ public class S3Service {
     private final AmazonS3Client amazonS3Client;
 
     public List<S3ObjectSummary> files(String prefix) {
+
         return amazonS3Client.listObjects(awsProperty.getS3().getBucket(), prefix).getObjectSummaries();
     }
 
+    public String upload(String path, File file) {
+
+        amazonS3Client.putObject(new PutObjectRequest(awsProperty.getS3().getBucket(), path, file).withCannedAcl(CannedAccessControlList.PublicRead));
+
+        return amazonS3Client.getUrl(awsProperty.getS3().getBucket(), path).toString();
+    }
+
     public String generatePresignedUrl(String path) {
+
         GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(awsProperty.getS3().getBucket(), path)
                 .withMethod(HttpMethod.PUT)
                 .withExpiration(new Date(System.currentTimeMillis() + 1000 * 60));

@@ -21,6 +21,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -47,4 +48,8 @@ dependencies {
     implementation("com.konghq:unirest-java-core:4.4.5")
     implementation("com.konghq:unirest-objectmapper-jackson:4.2.9")
     implementation("org.jsoup:jsoup:1.18.1")
+
+    implementation("com.github.atomfrede:jadenticon:3.0.4")
+    implementation("org.apache.xmlgraphics:batik-transcoder:1.18")
+
 }

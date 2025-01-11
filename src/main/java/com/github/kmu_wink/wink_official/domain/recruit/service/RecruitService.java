@@ -18,12 +18,12 @@ import com.github.kmu_wink.wink_official.domain.recruit.dto.request.PhoneNumberC
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.StudentIdCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.DuplicationCheckResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
-import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyApplicationException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyRecruitedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.NotValidPeriodException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
-import com.github.kmu_wink.wink_official.domain.recruit.repository.ApplicationRepository;
+import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitFormRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
-import com.github.kmu_wink.wink_official.domain.recruit.schema.Application;
+import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 import com.github.kmu_wink.wink_official.domain.recruit.util.GoogleFormUtil;
 import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
@@ -38,7 +38,7 @@ public class RecruitService {
     private final UserRepository userRepository;
     private final PreUserRepository preUserRepository;
     private final RecruitRepository recruitRepository;
-    private final ApplicationRepository applicationRepository;
+    private final RecruitFormRepository applicationRepository;
 
     private final GoogleFormUtil googleFormUtil;
 
@@ -100,7 +100,7 @@ public class RecruitService {
             || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent()
             || applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent()) {
 
-            throw new AlreadyApplicationException();
+            throw new AlreadyRecruitedException();
         }
 
         if (userRepository.findByStudentId(dto.studentId()).isPresent()
@@ -113,7 +113,7 @@ public class RecruitService {
             throw new AlreadyRegisteredException();
         }
 
-        Application application = Application.builder()
+        RecruitForm application = RecruitForm.builder()
                 .recruit(recruit)
                 .name(dto.name())
                 .studentId(dto.studentId())
