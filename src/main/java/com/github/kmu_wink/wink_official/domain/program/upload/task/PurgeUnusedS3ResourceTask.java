@@ -1,5 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.program.upload.task;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -50,6 +51,8 @@ public class PurgeUnusedS3ResourceTask {
 			.filter(file -> !use.contains(file))
 			.peek((file) -> size.getAndAdd(1))
 			.map(s3Service::urlToKey)
+			.filter(Optional::isPresent)
+			.map(Optional::get)
 			.forEach(s3Service::deleteFile);
 
 		if (size.get() > 0) {

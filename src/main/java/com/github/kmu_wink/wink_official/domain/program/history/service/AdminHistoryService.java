@@ -57,7 +57,7 @@ public class AdminHistoryService {
 		History history = historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
 
 		if (history.getImage() != null) {
-			s3Service.deleteFile(s3Service.urlToKey(history.getImage()));
+			s3Service.urlToKey(history.getImage()).ifPresent(s3Service::deleteFile);
 		}
 
 		historyRepository.delete(history);

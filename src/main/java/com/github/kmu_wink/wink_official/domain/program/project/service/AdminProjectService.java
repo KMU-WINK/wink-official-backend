@@ -21,7 +21,7 @@ public class AdminProjectService {
 		Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
 
 		if (project.getImage() != null) {
-			s3Service.deleteFile(s3Service.urlToKey(project.getImage()));
+			s3Service.urlToKey(project.getImage()).ifPresent(s3Service::deleteFile);
 		}
 
 		projectRepository.delete(project);

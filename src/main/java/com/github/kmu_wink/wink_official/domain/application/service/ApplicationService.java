@@ -113,7 +113,7 @@ public class ApplicationService {
 
         if (!application.getImg().equals(dto.img())) {
 
-            s3Service.deleteFile(s3Service.urlToKey(application.getImg()));
+            s3Service.urlToKey(application.getImg()).ifPresent(s3Service::deleteFile);
         }
 
         application.setName(dto.name());
@@ -169,7 +169,7 @@ public class ApplicationService {
 
         if (!application.getUser().equals(user)) throw new ApplicationNotFoundException();
 
-        s3Service.deleteFile(s3Service.urlToKey(application.getImg()));
+        s3Service.urlToKey(application.getImg()).ifPresent(s3Service::deleteFile);
 
         applicationRepository.delete(application);
     }

@@ -3,6 +3,7 @@ package com.github.kmu_wink.wink_official.common.external.aws.s3;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -52,8 +53,10 @@ public class S3Service {
         amazonS3Client.deleteObject(awsProperty.getS3().getBucket(), path);
     }
 
-    public String urlToKey(String url) {
+    public Optional<String> urlToKey(String url) {
 
-        return url.split("amazonaws.com/")[1];
+        if (!url.contains("amazonaws.com/")) return Optional.empty();
+
+        return Optional.of(url.split("amazonaws.com/")[1]);
     }
 }

@@ -66,7 +66,7 @@ public class AdminActivityService {
 
 		Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
 
-		activity.getImages().forEach(image -> s3Service.deleteFile(s3Service.urlToKey(image)));
+		activity.getImages().forEach(image -> s3Service.urlToKey(image).ifPresent(s3Service::deleteFile));
 
 		activityRepository.delete(activity);
 	}
