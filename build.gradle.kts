@@ -51,5 +51,16 @@ dependencies {
 
     implementation("com.github.atomfrede:jadenticon:3.0.4")
     implementation("org.apache.xmlgraphics:batik-transcoder:1.18")
+}
 
+tasks.register("dockerBuild") {
+    dependsOn("bootJar")
+    doLast {
+        val version = project.version
+        val imageName = "wink-official-backend:$version"
+        println("Building Docker image: $imageName")
+        exec {
+            commandLine("docker", "build", "-t", imageName, ".")
+        }
+    }
 }
