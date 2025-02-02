@@ -1,6 +1,7 @@
 spring:
   config:
     import:
+      - classpath:config/actuator.fixed.yaml
       - classpath:config/aws.yaml
       - classpath:config/google.yaml
       - classpath:config/jwt.yaml
