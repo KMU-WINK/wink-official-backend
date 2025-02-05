@@ -115,9 +115,9 @@ public class AuthService {
                 .fee(false)
                 .build();
 
-        syncNotionDbTask.manual(user);
+        user = userRepository.save(user);
 
-        userRepository.save(user);
+        syncNotionDbTask.manual(user);
     }
 
     public LoginResponse refresh(RefreshRequest dto) {
