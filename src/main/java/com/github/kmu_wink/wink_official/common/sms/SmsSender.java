@@ -37,6 +37,8 @@ public class SmsSender {
 
     public void send(Collection<String> targets, String message) {
 
+        if (!smsProperty.isEnabled()) return;
+
         try (UnirestInstance instance = Unirest.spawnInstance()) {
 
             HttpResponse<String> response = instance.post("https://www.munja123.com/Remote/RemoteMms.html")
@@ -53,12 +55,12 @@ public class SmsSender {
 
                 throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "문자박사 API 오류: %s".formatted(response.getBody().split("\\|")[0]));
             }
-
-
         }
     }
 
     public int remain() {
+
+        if (!smsProperty.isEnabled()) return 100_000_000;
 
         try (UnirestInstance instance = Unirest.spawnInstance()) {
 

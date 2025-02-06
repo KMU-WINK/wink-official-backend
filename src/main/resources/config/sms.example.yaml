@@ -1,4 +1,5 @@
 sms:
+  enabled: true
   id: id
   pw: pw
   send_phone: 01012345678
