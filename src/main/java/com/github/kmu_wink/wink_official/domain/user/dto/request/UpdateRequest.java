@@ -1,7 +1,5 @@
 package com.github.kmu_wink.wink_official.domain.user.dto.request;
 
-import org.hibernate.validator.constraints.Length;
-
 import com.github.kmu_wink.wink_official.common.validation.Validation;
 import com.github.kmu_wink.wink_official.common.validation.custom.Enum;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
@@ -9,6 +7,7 @@ import com.github.kmu_wink.wink_official.domain.user.schema.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 @Builder
@@ -18,7 +17,7 @@ public record UpdateRequest(
         String name,
 
         @NotBlank
-        @Length(min=8, max=8, message = Validation.STUDENT_ID_MESSAGE)
+        @Size(min=8, max=8, message = Validation.STUDENT_ID_MESSAGE)
         String studentId,
 
         @NotBlank

@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Validation {
 
+    public static final String NAME_EXPRESSION = "^[가-힣]{2,5}$";
+    public static final String NAME_MESSAGE = "올바른 이름이 아닙니다.";
+
     public static final String PASSWORD_EXPRESSION = "^(?=.*[a-zA-Z])(?=.*\\d)\\S{8,}$";
     public static final String PASSWORD_MESSAGE = "비밀번호는 8자 이상의 영문자 및 숫자 조합으로 작성해주세요.";
 

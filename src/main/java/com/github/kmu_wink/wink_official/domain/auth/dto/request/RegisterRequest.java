@@ -1,11 +1,12 @@
 package com.github.kmu_wink.wink_official.domain.auth.dto.request;
 
 import com.github.kmu_wink.wink_official.common.validation.Validation;
+
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
-import org.hibernate.validator.constraints.Length;
 
 @Builder
 public record RegisterRequest(
@@ -18,7 +19,7 @@ public record RegisterRequest(
         String password,
 
         @Nullable
-        @Length(max = 40)
+        @Size(max = 30)
         String description,
 
         @Nullable
