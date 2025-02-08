@@ -91,31 +91,31 @@ public class GoogleFormUtil {
         return forms.forms().get(form.getFormId()).execute();
     }
 
-    public void createResponse(RecruitForm application) {
+    public void createResponse(RecruitForm recruitForm) {
 
-        Recruit recruit = application.getRecruit();
+        Recruit recruit = recruitForm.getRecruit();
 
         String baseUri = recruit.getGoogleFormUri().replace("viewform", "formResponse");
         Map<FormEntryKeys, String> entry = recruit.getGoogleFormResponseEntry();
 
         Map<String, Object> pairs = new HashMap<>() {{
             put("submit", "Submit");
-            put("entry." + entry.get(FormEntryKeys.NAME), application.getName());
-            put("entry." + entry.get(FormEntryKeys.STUDENT_ID), application.getStudentId());
-            put("entry." + entry.get(FormEntryKeys.DEPARTMENT), application.getDepartment());
-            put("entry." + entry.get(FormEntryKeys.EMAIL), application.getEmail());
-            put("entry." + entry.get(FormEntryKeys.PHONE_NUMBER), application.getPhoneNumber());
-            put("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), application.getJiwonDonggi());
-            put("entry." + entry.get(FormEntryKeys.SELF_INTRODUCE), application.getSelfIntroduce());
-            put("entry." + entry.get(FormEntryKeys.OUTINGS), String.join("\n", application.getOutings()));
-            application.getInterviewDates().forEach(date -> put("entry." + entry.get(FormEntryKeys.INTERVIEW_DATES), formatDate(date)));
+            put("entry." + entry.get(FormEntryKeys.NAME), recruitForm.getName());
+            put("entry." + entry.get(FormEntryKeys.STUDENT_ID), recruitForm.getStudentId());
+            put("entry." + entry.get(FormEntryKeys.DEPARTMENT), recruitForm.getDepartment());
+            put("entry." + entry.get(FormEntryKeys.EMAIL), recruitForm.getEmail());
+            put("entry." + entry.get(FormEntryKeys.PHONE_NUMBER), recruitForm.getPhoneNumber());
+            put("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), recruitForm.getJiwonDonggi());
+            put("entry." + entry.get(FormEntryKeys.SELF_INTRODUCE), recruitForm.getSelfIntroduce());
+            put("entry." + entry.get(FormEntryKeys.OUTINGS), String.join("\n", recruitForm.getOutings()));
+            recruitForm.getInterviewDates().forEach(date -> put("entry." + entry.get(FormEntryKeys.INTERVIEW_DATES), formatDate(date)));
 
-            if (application.getGithub() != null) put("entry." + entry.get(FormEntryKeys.GITHUB), application.getGithub());
-            if (!application.getFrontendTechStacks().isEmpty()) application.getFrontendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), stack.getDisplayName()));
-            if (!application.getBackendTechStacks().isEmpty()) application.getBackendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), stack.getDisplayName()));
-            if (!application.getDevOpsTechStacks().isEmpty()) application.getDevOpsTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), stack.getDisplayName()));
-            if (!application.getDesignTechStacks().isEmpty()) application.getDesignTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), stack.getDisplayName()));
-            if (application.getFavoriteProject() != null) put("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), application.getFavoriteProject());
+            if (recruitForm.getGithub() != null) put("entry." + entry.get(FormEntryKeys.GITHUB), recruitForm.getGithub());
+            if (!recruitForm.getFrontendTechStacks().isEmpty()) recruitForm.getFrontendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), stack.getDisplayName()));
+            if (!recruitForm.getBackendTechStacks().isEmpty()) recruitForm.getBackendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), stack.getDisplayName()));
+            if (!recruitForm.getDevOpsTechStacks().isEmpty()) recruitForm.getDevOpsTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), stack.getDisplayName()));
+            if (!recruitForm.getDesignTechStacks().isEmpty()) recruitForm.getDesignTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), stack.getDisplayName()));
+            if (recruitForm.getFavoriteProject() != null) put("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), recruitForm.getFavoriteProject());
         }};
 
         try (UnirestInstance instance = Unirest.spawnInstance()) {

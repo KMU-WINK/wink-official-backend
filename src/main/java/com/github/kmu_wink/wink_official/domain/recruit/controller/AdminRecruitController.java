@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.CreateRecruitRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.FinalizePaperRequest;
-import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetApplicationsResponse;
+import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetFormsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.service.AdminRecruitService;
@@ -79,45 +79,45 @@ public class AdminRecruitController {
 		return ApiResponse.ok();
 	}
 
-	@GetMapping("/{recruitId}/application")
+	@GetMapping("/{recruitId}/form")
 	@Operation(summary = "신청자 목록")
-	public ApiResponse<GetApplicationsResponse> getApplications(@PathVariable String recruitId) {
+	public ApiResponse<GetFormsResponse> getForms(@PathVariable String recruitId) {
 
-		return ApiResponse.ok(adminRecruitService.getApplications(recruitId));
+		return ApiResponse.ok(adminRecruitService.getForms(recruitId));
 	}
 
-	@PostMapping("/{recruitId}/application/{applicationId}/pass/paper")
+	@PostMapping("/{recruitId}/form/{formId}/pass/paper")
 	@Operation(summary = "서류 합격 처리")
-	public ApiResponse<Void> paperPass(@PathVariable String recruitId, @PathVariable String applicationId) {
+	public ApiResponse<Void> paperPass(@PathVariable String recruitId, @PathVariable String formId) {
 
-		adminRecruitService.paperPass(recruitId, applicationId);
+		adminRecruitService.paperPass(recruitId, formId);
 
 		return ApiResponse.ok();
 	}
 
-	@PostMapping("/{recruitId}/application/{applicationId}/fail/paper")
+	@PostMapping("/{recruitId}/form/{formId}/fail/paper")
 	@Operation(summary = "서류 불합격 처리")
-	public ApiResponse<Void> paperFail(@PathVariable String recruitId, @PathVariable String applicationId) {
+	public ApiResponse<Void> paperFail(@PathVariable String recruitId, @PathVariable String formId) {
 
-		adminRecruitService.paperFail(recruitId, applicationId);
+		adminRecruitService.paperFail(recruitId, formId);
 
 		return ApiResponse.ok();
 	}
 
-	@PostMapping("/{recruitId}/application/{applicationId}/pass/interview")
+	@PostMapping("/{recruitId}/form/{formId}/pass/interview")
 	@Operation(summary = "면접 합격 처리")
-	public ApiResponse<Void> interviewPass(@PathVariable String recruitId, @PathVariable String applicationId) {
+	public ApiResponse<Void> interviewPass(@PathVariable String recruitId, @PathVariable String formId) {
 
-		adminRecruitService.interviewPass(recruitId, applicationId);
+		adminRecruitService.interviewPass(recruitId, formId);
 
 		return ApiResponse.ok();
 	}
 
-	@PostMapping("/{recruitId}/application/{applicationId}/fail/interview")
+	@PostMapping("/{recruitId}/form/{formId}/fail/interview")
 	@Operation(summary = "면접 불합격 처리")
-	public ApiResponse<Void> interviewFail(@PathVariable String recruitId, @PathVariable String applicationId) {
+	public ApiResponse<Void> interviewFail(@PathVariable String recruitId, @PathVariable String formId) {
 
-		adminRecruitService.interviewFail(recruitId, applicationId);
+		adminRecruitService.interviewFail(recruitId, formId);
 
 		return ApiResponse.ok();
 	}

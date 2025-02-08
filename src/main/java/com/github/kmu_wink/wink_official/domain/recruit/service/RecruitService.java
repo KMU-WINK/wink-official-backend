@@ -12,7 +12,7 @@ import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.Backe
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.dto.request.ApplicationRequest;
+import com.github.kmu_wink.wink_official.domain.recruit.dto.request.RecruitFormRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.EmailCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.PhoneNumberCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.StudentIdCheckRequest;
@@ -38,7 +38,7 @@ public class RecruitService {
     private final UserRepository userRepository;
     private final PreUserRepository preUserRepository;
     private final RecruitRepository recruitRepository;
-    private final RecruitFormRepository applicationRepository;
+    private final RecruitFormRepository recruitFormRepository;
 
     private final GoogleFormUtil googleFormUtil;
 
@@ -59,7 +59,7 @@ public class RecruitService {
             .build();
     }
 
-    public void application(String recruitId, ApplicationRequest dto) {
+    public void recruitForm(String recruitId, RecruitFormRequest dto) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
@@ -96,9 +96,9 @@ public class RecruitService {
             throw new NotValidPeriodException();
         }
 
-        if (applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent()
-            || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent()
-            || applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent()) {
+        if (recruitFormRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent()
+            || recruitFormRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent()
+            || recruitFormRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent()) {
 
             throw new AlreadyRecruitedException();
         }
@@ -113,7 +113,7 @@ public class RecruitService {
             throw new AlreadyRegisteredException();
         }
 
-        RecruitForm application = RecruitForm.builder()
+        RecruitForm form = RecruitForm.builder()
             .recruit(recruit)
             .name(dto.name())
             .studentId(dto.studentId())
@@ -134,8 +134,8 @@ public class RecruitService {
             .interviewPass(null)
             .build();
 
-        googleFormUtil.createResponse(application);
-        applicationRepository.save(application);
+        googleFormUtil.createResponse(form);
+        recruitFormRepository.save(form);
     }
 
     public DuplicationCheckResponse checkStudentId(String recruitId, StudentIdCheckRequest dto) {
@@ -144,7 +144,7 @@ public class RecruitService {
 
         boolean duplicated = userRepository.findByStudentId(dto.studentId()).isPresent()
             || preUserRepository.findByStudentId(dto.studentId()).isPresent()
-            || applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent();
+            || recruitFormRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent();
 
         return DuplicationCheckResponse.builder()
             .duplicated(duplicated)
@@ -157,7 +157,7 @@ public class RecruitService {
 
         boolean duplicated = userRepository.findByEmail(dto.email()).isPresent()
             || preUserRepository.findByEmail(dto.email()).isPresent()
-            || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent();
+            || recruitFormRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent();
 
         return DuplicationCheckResponse.builder()
             .duplicated(duplicated)
@@ -170,7 +170,7 @@ public class RecruitService {
 
         boolean duplicated = userRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
             || preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
-            || applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent();
+            || recruitFormRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent();
 
         return DuplicationCheckResponse.builder()
             .duplicated(duplicated)

@@ -17,7 +17,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
 @Builder
-public record ApplicationRequest(
+public record RecruitFormRequest(
 
         @NotBlank
         @Pattern(regexp = Validation.NAME_EXPRESSION, message = Validation.NAME_MESSAGE)

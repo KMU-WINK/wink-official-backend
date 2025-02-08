@@ -8,6 +8,6 @@ public class RecruitFormNotFoundException extends ApiException {
 
     public RecruitFormNotFoundException() {
 
-        super(HttpStatus.NOT_FOUND, "Application을 찾을 수 없습니다.");
+        super(HttpStatus.NOT_FOUND, "지원서를 찾을 수 없습니다.");
     }
 }

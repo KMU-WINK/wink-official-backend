@@ -7,8 +7,8 @@ import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import lombok.Builder;
 
 @Builder
-public record GetApplicationsResponse(
+public record GetFormsResponse(
 
-        List<RecruitForm> applications
+        List<RecruitForm> forms
 ) {
 }

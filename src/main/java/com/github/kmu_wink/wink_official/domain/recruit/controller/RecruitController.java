@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
-import com.github.kmu_wink.wink_official.domain.recruit.dto.request.ApplicationRequest;
+import com.github.kmu_wink.wink_official.domain.recruit.dto.request.RecruitFormRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.EmailCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.PhoneNumberCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.StudentIdCheckRequest;
@@ -38,9 +38,9 @@ public class RecruitController {
 
     @PostMapping("/{recruitId}")
     @Operation(summary = "지원하기")
-    public ApiResponse<Void> application(@PathVariable String recruitId, @RequestBody @Valid ApplicationRequest request) {
+    public ApiResponse<Void> recruitForm(@PathVariable String recruitId, @RequestBody @Valid RecruitFormRequest request) {
 
-        recruitService.application(recruitId, request);
+        recruitService.recruitForm(recruitId, request);
 
         return ApiResponse.ok();
     }
