@@ -55,41 +55,41 @@ public class RecruitService {
         }
 
         return GetRecruitResponse.builder()
-                .recruit(recruit)
-                .build();
+            .recruit(recruit)
+            .build();
     }
 
     public void application(String recruitId, ApplicationRequest dto) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        List<LocalDate> canInterviewDates = dto.canInterviewDates().stream()
-                .map(s -> LocalDate.parse(s, DATE_FORMATTER))
-                .toList();
+        List<LocalDate> interviewDates = dto.interviewDates().stream()
+            .map(s -> LocalDate.parse(s, DATE_FORMATTER))
+            .toList();
 
         List<FrontendTechStack> frontendTechStacks = dto.frontendTechStacks() != null
-                ? dto.frontendTechStacks().stream()
-                .map(FrontendTechStack::valueOf)
-                .toList()
-                : List.of();
+            ? dto.frontendTechStacks().stream()
+            .map(FrontendTechStack::valueOf)
+            .toList()
+            : List.of();
 
         List<BackendTechStack> backendTechStacks = dto.backendTechStacks() != null
-                ? dto.backendTechStacks().stream()
-                .map(BackendTechStack::valueOf)
-                .toList()
-                : List.of();
+            ? dto.backendTechStacks().stream()
+            .map(BackendTechStack::valueOf)
+            .toList()
+            : List.of();
 
         List<DevOpsTechStack> devOpsTechStacks = dto.devOpsTechStacks() != null
-                ? dto.devOpsTechStacks().stream()
-                .map(DevOpsTechStack::valueOf)
-                .toList()
-                : List.of();
+            ? dto.devOpsTechStacks().stream()
+            .map(DevOpsTechStack::valueOf)
+            .toList()
+            : List.of();
 
         List<DesignTechStack> designTechStacks = dto.designTechStacks() != null
-                ? dto.designTechStacks().stream()
-                .map(DesignTechStack::valueOf)
-                .toList()
-                : List.of();
+            ? dto.designTechStacks().stream()
+            .map(DesignTechStack::valueOf)
+            .toList()
+            : List.of();
 
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(recruit.getRecruitStartDate().atStartOfDay()) || now.isAfter(recruit.getRecruitEndDate().atTime(23, 59, 59))) {
@@ -114,24 +114,25 @@ public class RecruitService {
         }
 
         RecruitForm application = RecruitForm.builder()
-                .recruit(recruit)
-                .name(dto.name())
-                .studentId(dto.studentId())
-                .email(dto.email())
-                .phoneNumber(dto.phoneNumber())
-                .jiwonDonggi(dto.jiwonDonggi())
-                .baeugoSipeunJeom(dto.baeugoSipeunJeom())
-                .canInterviewDates(canInterviewDates)
-                .github(dto.github())
-                .frontendTechStacks(frontendTechStacks)
-                .backendTechStacks(backendTechStacks)
-                .devOpsTechStacks(devOpsTechStacks)
-                .designTechStacks(designTechStacks)
-                .favoriteProject(dto.favoriteProject())
-                .lastComment(dto.lastComment())
-                .paperPass(null)
-                .interviewPass(null)
-                .build();
+            .recruit(recruit)
+            .name(dto.name())
+            .studentId(dto.studentId())
+            .department(dto.department())
+            .email(dto.email())
+            .phoneNumber(dto.phoneNumber())
+            .jiwonDonggi(dto.jiwonDonggi())
+            .selfIntroduce(dto.selfIntroduce())
+            .outings(dto.outings())
+            .interviewDates(interviewDates)
+            .github(dto.github())
+            .frontendTechStacks(frontendTechStacks)
+            .backendTechStacks(backendTechStacks)
+            .devOpsTechStacks(devOpsTechStacks)
+            .designTechStacks(designTechStacks)
+            .favoriteProject(dto.favoriteProject())
+            .paperPass(null)
+            .interviewPass(null)
+            .build();
 
         googleFormUtil.createResponse(application);
         applicationRepository.save(application);
@@ -146,8 +147,8 @@ public class RecruitService {
             || applicationRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent();
 
         return DuplicationCheckResponse.builder()
-                .duplicated(duplicated)
-                .build();
+            .duplicated(duplicated)
+            .build();
     }
 
     public DuplicationCheckResponse checkEmail(String recruitId, EmailCheckRequest dto) {
@@ -159,8 +160,8 @@ public class RecruitService {
             || applicationRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent();
 
         return DuplicationCheckResponse.builder()
-                .duplicated(duplicated)
-                .build();
+            .duplicated(duplicated)
+            .build();
     }
 
     public DuplicationCheckResponse checkPhoneNumber(String recruitId, PhoneNumberCheckRequest dto) {
@@ -172,7 +173,7 @@ public class RecruitService {
             || applicationRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent();
 
         return DuplicationCheckResponse.builder()
-                .duplicated(duplicated)
-                .build();
+            .duplicated(duplicated)
+            .build();
     }
 }

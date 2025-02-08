@@ -20,11 +20,15 @@ import lombok.Builder;
 public record ApplicationRequest(
 
         @NotBlank
+        @Pattern(regexp = Validation.NAME_EXPRESSION, message = Validation.NAME_MESSAGE)
         String name,
 
         @NotBlank
         @Size(min=8, max=8, message = Validation.STUDENT_ID_MESSAGE)
         String studentId,
+
+        @NotBlank
+        String department,
 
         @NotBlank
         @Pattern(regexp = Validation.KOOKMIN_EMAIL_EXPRESSION, message = Validation.KOOKMIN_EMAIL_MESSAGE)
@@ -35,36 +39,37 @@ public record ApplicationRequest(
         String phoneNumber,
 
         @NotBlank
-        @Length(min = 30, max = 300)
+        @Size(min = 100, max = 500)
         String jiwonDonggi,
 
         @NotBlank
-        @Length(min = 30, max = 300)
-        String baeugoSipeunJeom,
+        @Size(min = 100, max = 500)
+        String selfIntroduce,
 
         @NotNull
-        List<@Pattern(regexp = Validation.YYYY_MM_DD_EXPRESSION, message = Validation.YYYY_MM_DD_MESSAGE) String> canInterviewDates,
+        List<@NotBlank String> outings,
+
+        @NotNull
+        @Size(min = 1, max = 100)
+        List<@Pattern(regexp = Validation.YYYY_MM_DD_EXPRESSION, message = Validation.YYYY_MM_DD_MESSAGE) String> interviewDates,
 
         @Nullable
         @Pattern(regexp = Validation.GITHUB_USERNAME_EXPRESSION, message = Validation.GITHUB_USERNAME_MESSAGE)
         String github,
 
-        @Nullable
+        @NotNull
         List<@Enum(enumClass = FrontendTechStack.class) String> frontendTechStacks,
 
-        @Nullable
+        @NotNull
         List<@Enum(enumClass = BackendTechStack.class) String> backendTechStacks,
 
-        @Nullable
+        @NotNull
         List<@Enum(enumClass = DevOpsTechStack.class) String> devOpsTechStacks,
 
-        @Nullable
+        @NotNull
         List<@Enum(enumClass = DesignTechStack.class) String> designTechStacks,
 
         @Nullable
-        String favoriteProject,
-
-        @Nullable
-        String lastComment
+        String favoriteProject
 ) {
 }

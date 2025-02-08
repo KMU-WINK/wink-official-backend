@@ -26,8 +26,9 @@ import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.Backe
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.InvalidRecruitFormException;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
+import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.Permission;
 import com.google.api.services.forms.v1.Forms;
@@ -44,6 +45,7 @@ import com.google.api.services.forms.v1.model.QuestionItem;
 import com.google.api.services.forms.v1.model.Request;
 import com.google.api.services.forms.v1.model.TextQuestion;
 
+import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestInstance;
 import lombok.RequiredArgsConstructor;
@@ -67,18 +69,19 @@ public class GoogleFormUtil {
         forms.forms().batchUpdate(form.getFormId(), new BatchUpdateFormRequest().setRequests(createRequest(
             shortText("이름", true),
             shortText("학번", true),
+            shortText("학과", true),
             shortText("이메일", true),
             shortText("전화번호", true),
             longText("지원 동기", true),
-            longText("배우고 싶은 점", true),
+            longText("자기소개", true),
+            shortText("외부 활동", false),
             checkBox("면접 가능 날짜", betweenDates(recruit.getInterviewStartDate(), recruit.getInterviewEndDate()), true),
             shortText("Github 아이디", false),
             checkBox("프론트엔드 기술 스택", FrontendTechStack.values(), false),
             checkBox("백엔드 기술 스택", BackendTechStack.values(), false),
             checkBox("DevOps 기술 스택", DevOpsTechStack.values(), false),
             checkBox("디자인 도구", DesignTechStack.values(), false),
-            longText("가장 기억에 남는 프로젝트", false),
-            longText("마지막 한마디", false)))).execute();
+            longText("가장 기억에 남는 프로젝트", false)))).execute();
 
         drive.permissions().create(form.getFormId(), new Permission()
             .setType("user")
@@ -99,11 +102,13 @@ public class GoogleFormUtil {
             put("submit", "Submit");
             put("entry." + entry.get(FormEntryKeys.NAME), application.getName());
             put("entry." + entry.get(FormEntryKeys.STUDENT_ID), application.getStudentId());
+            put("entry." + entry.get(FormEntryKeys.DEPARTMENT), application.getDepartment());
             put("entry." + entry.get(FormEntryKeys.EMAIL), application.getEmail());
             put("entry." + entry.get(FormEntryKeys.PHONE_NUMBER), application.getPhoneNumber());
             put("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), application.getJiwonDonggi());
-            put("entry." + entry.get(FormEntryKeys.BAEUGO_SIPEUN_JEOM), application.getBaeugoSipeunJeom());
-            application.getCanInterviewDates().forEach(date -> put("entry." + entry.get(FormEntryKeys.CAN_INTERVIEW_DATES), formatDate(date)));
+            put("entry." + entry.get(FormEntryKeys.SELF_INTRODUCE), application.getSelfIntroduce());
+            put("entry." + entry.get(FormEntryKeys.OUTINGS), String.join("\n", application.getOutings()));
+            application.getInterviewDates().forEach(date -> put("entry." + entry.get(FormEntryKeys.INTERVIEW_DATES), formatDate(date)));
 
             if (application.getGithub() != null) put("entry." + entry.get(FormEntryKeys.GITHUB), application.getGithub());
             if (!application.getFrontendTechStacks().isEmpty()) application.getFrontendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), stack.getDisplayName()));
@@ -111,11 +116,14 @@ public class GoogleFormUtil {
             if (!application.getDevOpsTechStacks().isEmpty()) application.getDevOpsTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), stack.getDisplayName()));
             if (!application.getDesignTechStacks().isEmpty()) application.getDesignTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), stack.getDisplayName()));
             if (application.getFavoriteProject() != null) put("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), application.getFavoriteProject());
-            if (application.getLastComment() != null) put("entry." + entry.get(FormEntryKeys.LAST_COMMENT), application.getLastComment());
         }};
 
         try (UnirestInstance instance = Unirest.spawnInstance()) {
-            instance.get(baseUri).queryString(pairs).asEmpty();
+            HttpResponse<String> response = instance.get(baseUri).queryString(pairs).asString();
+
+            if (!response.getBody().contains("응답이 기록되었습니다.")) {
+                throw new InvalidRecruitFormException();
+            }
         }
     }
 

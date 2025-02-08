@@ -29,13 +29,15 @@ public class RecruitForm extends BaseSchema {
 
     String name;
     String studentId;
+    String department;
     String email;
     String phoneNumber;
 
     String jiwonDonggi;
-    String baeugoSipeunJeom;
+    String selfIntroduce;
 
-    List<LocalDate> canInterviewDates;
+    List<String> outings;
+    List<LocalDate> interviewDates;
 
     String github;
     List<FrontendTechStack> frontendTechStacks;
@@ -44,8 +46,6 @@ public class RecruitForm extends BaseSchema {
     List<DesignTechStack> designTechStacks;
 
     String favoriteProject;
-
-    String lastComment;
 
     Boolean paperPass;
     Boolean interviewPass;

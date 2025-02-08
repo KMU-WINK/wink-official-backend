@@ -1,5 +1,10 @@
 package com.github.kmu_wink.wink_official.common.security.jwt;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+import org.springframework.stereotype.Component;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -7,12 +12,9 @@ import com.github.kmu_wink.wink_official.common.property.JwtProperty;
 import com.github.kmu_wink.wink_official.domain.auth.repository.RefreshTokenRepository;
 import com.github.kmu_wink.wink_official.domain.auth.schema.RefreshToken;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
+
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -82,7 +84,13 @@ public class JwtUtil {
             return false;
         }
 
-        JWT.require(algorithm).build().verify(token);
+        try {
+            JWT.require(algorithm).build().verify(token);
+        } catch (TokenExpiredException e) {
+            throw e;
+        } catch (Exception e) {
+            return false;
+        }
 
         return true;
     }
