@@ -8,6 +8,7 @@ import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.Backe
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
+import com.github.kmu_wink.wink_official.domain.recruit.validation.DepartmentValidate;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +29,7 @@ public record RecruitFormRequest(
         String studentId,
 
         @NotBlank
+        @DepartmentValidate
         String department,
 
         @NotBlank

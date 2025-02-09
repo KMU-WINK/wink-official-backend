@@ -20,15 +20,16 @@ import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitR
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitsResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyInterviewEndedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyPaperEndedException;
-import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitFormNotFoundException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadySameRecruitExistsException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.ItsPaperFailedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.NowIsRecruitingException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitFormNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RemainSmsLackException;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitFormRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
-import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
+import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.github.kmu_wink.wink_official.domain.recruit.sms.InterviewFailTemplate;
 import com.github.kmu_wink.wink_official.domain.recruit.sms.InterviewPassTemplate;
 import com.github.kmu_wink.wink_official.domain.recruit.sms.PaperFailTemplate;
@@ -75,6 +76,8 @@ public class AdminRecruitService {
     }
 
     public GetRecruitResponse createRecruit(CreateRecruitRequest dto) {
+
+        if (recruitRepository.existsRecruitByYearAndSemester(dto.year(), dto.semester())) throw new AlreadySameRecruitExistsException();
 
         Recruit recruit = Recruit.builder()
             .year(dto.year())

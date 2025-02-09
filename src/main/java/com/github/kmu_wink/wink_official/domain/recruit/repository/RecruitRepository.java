@@ -21,4 +21,6 @@ public interface RecruitRepository extends MongoRepository<Recruit, String> {
         "{ $limit: 1 }"
     })
     Optional<Recruit> findLatestRecruit();
+
+    boolean existsRecruitByYearAndSemester(int year, int semester);
 }
