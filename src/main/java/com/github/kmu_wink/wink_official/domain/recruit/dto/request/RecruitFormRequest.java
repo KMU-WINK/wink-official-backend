@@ -72,6 +72,7 @@ public record RecruitFormRequest(
         List<@Enum(enumClass = DesignTechStack.class) String> designTechStacks,
 
         @Nullable
+        @Size(max = 700)
         String favoriteProject
 ) {
 }

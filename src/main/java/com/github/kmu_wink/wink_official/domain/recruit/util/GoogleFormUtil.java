@@ -74,7 +74,7 @@ public class GoogleFormUtil {
             shortText("전화번호", true),
             longText("지원 동기", true),
             longText("자기소개", true),
-            shortText("외부 활동", false),
+            longText("외부 활동", false),
             checkBox("면접 가능 날짜", betweenDates(recruit.getInterviewStartDate(), recruit.getInterviewEndDate()), true),
             shortText("Github 아이디", false),
             checkBox("프론트엔드 기술 스택", FrontendTechStack.values(), false),

@@ -12,19 +12,20 @@ import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.Backe
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.dto.request.RecruitFormRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.EmailCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.PhoneNumberCheckRequest;
+import com.github.kmu_wink.wink_official.domain.recruit.dto.request.RecruitFormRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.StudentIdCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.DuplicationCheckResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyRecruitedException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.NotValidInterviewDatesException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.NotValidPeriodException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitFormRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
-import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
+import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.github.kmu_wink.wink_official.domain.recruit.util.GoogleFormUtil;
 import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
@@ -65,6 +66,9 @@ public class RecruitService {
 
         List<LocalDate> interviewDates = dto.interviewDates().stream()
             .map(s -> LocalDate.parse(s, DATE_FORMATTER))
+            .peek(date -> {
+                if (date.isBefore(recruit.getInterviewStartDate()) || date.isAfter(recruit.getInterviewEndDate())) throw new NotValidInterviewDatesException();
+            })
             .toList();
 
         List<FrontendTechStack> frontendTechStacks = dto.frontendTechStacks() != null
