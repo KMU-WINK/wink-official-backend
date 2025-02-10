@@ -18,6 +18,7 @@ public record NotionDbUser(
 	LocalDateTime updatedAt,
 	String name,
 	String studentId,
+	String department,
 	String email,
 	String phoneNumber,
 	User.Role role,
@@ -33,6 +34,7 @@ public record NotionDbUser(
 				.id(object.getJSONObject("properties").getJSONObject("UUID").getJSONArray("rich_text").getJSONObject(0).getString("plain_text"))
 				.name(object.getJSONObject("properties").getJSONObject("이름").getJSONArray("title").getJSONObject(0).getString("plain_text"))
 				.studentId(object.getJSONObject("properties").getJSONObject("학번").getJSONArray("rich_text").getJSONObject(0).getString("plain_text"))
+				.department(object.getJSONObject("properties").getJSONObject("학부(과)").getJSONArray("rich_text").getJSONObject(0).getString("plain_text"))
 				.email(object.getJSONObject("properties").getJSONObject("이메일").getJSONArray("rich_text").getJSONObject(0).getString("plain_text"))
 				.phoneNumber(object.getJSONObject("properties").getJSONObject("전화번호").getJSONArray("rich_text").getJSONObject(0).getString("plain_text"))
 				.role(User.Role.fromKorean(object.getJSONObject("properties").getJSONObject("역할").getJSONObject("select").getString("name")))
