@@ -163,6 +163,7 @@ public class AdminRecruitService {
                         .email(form.getEmail())
                         .name(form.getName())
                         .studentId(form.getStudentId())
+                        .department(form.getDepartment())
                         .phoneNumber(form.getPhoneNumber())
                         .token(UUID.randomUUID().toString())
                         .build();
@@ -174,7 +175,6 @@ public class AdminRecruitService {
                 .map(RecruitForm::getPhoneNumber)
                 .toList(),
             InterviewPassTemplate.of(recruit));
-
 
         smsSender.send(
             forms.stream()

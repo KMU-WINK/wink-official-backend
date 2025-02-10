@@ -121,6 +121,7 @@ public class SyncNotionDbTask {
 						Map.entry("UUID", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getId()))))),
 						Map.entry("이름", Map.of("title", List.of(Map.of("text", Map.of("content", user.getName()))))),
 						Map.entry("학번", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getStudentId()))))),
+						Map.entry("학부(과)", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getDepartment()))))),
 						Map.entry("이메일", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getEmail()))))),
 						Map.entry("전화번호", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getPhoneNumber()))))),
 						Map.entry("역할", Map.of("select", Map.of("name", user.getRole().toKorean()))),
@@ -144,6 +145,7 @@ public class SyncNotionDbTask {
 				.body(Map.of("properties", Map.ofEntries(
 					Map.entry("이름", Map.of("title", List.of(Map.of("text", Map.of("content", user.getName()))))),
 					Map.entry("학번", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getStudentId()))))),
+					Map.entry("학부(과)", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getDepartment()))))),
 					Map.entry("이메일", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getEmail()))))),
 					Map.entry("전화번호", Map.of("rich_text", List.of(Map.of("text", Map.of("content", user.getPhoneNumber()))))),
 					Map.entry("역할", Map.of("select", Map.of("name", user.getRole().toKorean()))),
@@ -159,6 +161,7 @@ public class SyncNotionDbTask {
 
 		return !user.getName().equals(notionDbUser.name())
 			|| !user.getStudentId().equals(notionDbUser.studentId())
+			|| !user.getDepartment().equals(notionDbUser.department())
 			|| !user.getEmail().equals(notionDbUser.email())
 			|| !user.getPhoneNumber().equals(notionDbUser.phoneNumber())
 			|| !user.getRole().equals(notionDbUser.role())
