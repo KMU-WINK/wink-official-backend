@@ -50,7 +50,7 @@ public class Application extends BaseSchema {
 
         public enum Scope {
 
-            UUID, EMAIL, NAME, STUDENT_ID, PHONE_NUMBER, AVATAR, DESCRIPTION, SOCIAL, ROLE, FEE
+            UUID, EMAIL, NAME, STUDENT_ID, DEPARTMENT, PHONE_NUMBER, AVATAR, DESCRIPTION, SOCIAL, ROLE, FEE
         }
     }
 }

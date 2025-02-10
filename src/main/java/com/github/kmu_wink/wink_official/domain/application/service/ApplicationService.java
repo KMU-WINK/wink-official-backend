@@ -213,6 +213,7 @@ public class ApplicationService {
             .email(oauthLogin.scopes().contains(Application.Login.Scope.EMAIL) ? user.getEmail() : null)
             .name(oauthLogin.scopes().contains(Application.Login.Scope.NAME) ? user.getName() : null)
             .studentId(oauthLogin.scopes().contains(Application.Login.Scope.STUDENT_ID) ? user.getStudentId() : null)
+            .department(oauthLogin.scopes().contains(Application.Login.Scope.DEPARTMENT) ? user.getDepartment() : null)
             .phoneNumber(oauthLogin.scopes().contains(Application.Login.Scope.PHONE_NUMBER) ? user.getPhoneNumber() : null)
             .avatar(oauthLogin.scopes().contains(Application.Login.Scope.AVATAR) ? user.getAvatar() : null)
             .description(oauthLogin.scopes().contains(Application.Login.Scope.DESCRIPTION) ? user.getDescription() : null)
