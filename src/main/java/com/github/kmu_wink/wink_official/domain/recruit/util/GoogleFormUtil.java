@@ -99,6 +99,7 @@ public class GoogleFormUtil {
 
         try (UnirestInstance instance = Unirest.spawnInstance()) {
             GetRequest request = instance.get(baseUri)
+                .queryString("hl", "ko")
                 .queryString("submit", "Submit")
                 .queryString("entry." + entry.get(FormEntryKeys.NAME), recruitForm.getName())
                 .queryString("entry." + entry.get(FormEntryKeys.STUDENT_ID), recruitForm.getStudentId())
