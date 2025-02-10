@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,7 +44,7 @@ import com.google.api.services.forms.v1.model.QuestionItem;
 import com.google.api.services.forms.v1.model.Request;
 import com.google.api.services.forms.v1.model.TextQuestion;
 
-import kong.unirest.core.HttpResponse;
+import kong.unirest.core.GetRequest;
 import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestInstance;
 import lombok.RequiredArgsConstructor;
@@ -98,30 +97,27 @@ public class GoogleFormUtil {
         String baseUri = recruit.getGoogleFormUri().replace("viewform", "formResponse");
         Map<FormEntryKeys, String> entry = recruit.getGoogleFormResponseEntry();
 
-        Map<String, Object> pairs = new HashMap<>() {{
-            put("submit", "Submit");
-            put("entry." + entry.get(FormEntryKeys.NAME), recruitForm.getName());
-            put("entry." + entry.get(FormEntryKeys.STUDENT_ID), recruitForm.getStudentId());
-            put("entry." + entry.get(FormEntryKeys.DEPARTMENT), recruitForm.getDepartment());
-            put("entry." + entry.get(FormEntryKeys.EMAIL), recruitForm.getEmail());
-            put("entry." + entry.get(FormEntryKeys.PHONE_NUMBER), recruitForm.getPhoneNumber());
-            put("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), recruitForm.getJiwonDonggi());
-            put("entry." + entry.get(FormEntryKeys.SELF_INTRODUCE), recruitForm.getSelfIntroduce());
-            put("entry." + entry.get(FormEntryKeys.OUTINGS), String.join("\n", recruitForm.getOutings()));
-            recruitForm.getInterviewDates().forEach(date -> put("entry." + entry.get(FormEntryKeys.INTERVIEW_DATES), formatDate(date)));
-
-            if (recruitForm.getGithub() != null) put("entry." + entry.get(FormEntryKeys.GITHUB), recruitForm.getGithub());
-            if (!recruitForm.getFrontendTechStacks().isEmpty()) recruitForm.getFrontendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), stack.getDisplayName()));
-            if (!recruitForm.getBackendTechStacks().isEmpty()) recruitForm.getBackendTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), stack.getDisplayName()));
-            if (!recruitForm.getDevOpsTechStacks().isEmpty()) recruitForm.getDevOpsTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), stack.getDisplayName()));
-            if (!recruitForm.getDesignTechStacks().isEmpty()) recruitForm.getDesignTechStacks().forEach(stack -> put("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), stack.getDisplayName()));
-            if (recruitForm.getFavoriteProject() != null) put("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), recruitForm.getFavoriteProject());
-        }};
-
         try (UnirestInstance instance = Unirest.spawnInstance()) {
-            HttpResponse<String> response = instance.get(baseUri).queryString(pairs).asString();
+            GetRequest request = instance.get(baseUri)
+                .queryString("submit", "Submit")
+                .queryString("entry." + entry.get(FormEntryKeys.NAME), recruitForm.getName())
+                .queryString("entry." + entry.get(FormEntryKeys.STUDENT_ID), recruitForm.getStudentId())
+                .queryString("entry." + entry.get(FormEntryKeys.DEPARTMENT), recruitForm.getDepartment())
+                .queryString("entry." + entry.get(FormEntryKeys.EMAIL), recruitForm.getEmail())
+                .queryString("entry." + entry.get(FormEntryKeys.PHONE_NUMBER), recruitForm.getPhoneNumber())
+                .queryString("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), recruitForm.getJiwonDonggi())
+                .queryString("entry." + entry.get(FormEntryKeys.SELF_INTRODUCE), recruitForm.getSelfIntroduce())
+                .queryString("entry." + entry.get(FormEntryKeys.OUTINGS), String.join("\n", recruitForm.getOutings()))
+                .queryString("entry." + entry.get(FormEntryKeys.INTERVIEW_DATES), recruitForm.getInterviewDates().stream().map(this::formatDate).toList());
 
-            if (!response.getBody().contains("응답이 기록되었습니다.")) {
+            if (recruitForm.getGithub() != null) request = request.queryString("entry." + entry.get(FormEntryKeys.GITHUB), recruitForm.getGithub());
+            if (!recruitForm.getFrontendTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), recruitForm.getFrontendTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
+            if (!recruitForm.getBackendTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), recruitForm.getBackendTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
+            if (!recruitForm.getDevOpsTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), recruitForm.getDevOpsTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
+            if (!recruitForm.getDesignTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), recruitForm.getDesignTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
+            if (recruitForm.getFavoriteProject() != null) request = request.queryString("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), recruitForm.getFavoriteProject());
+
+            if (!request.asString().getBody().contains("응답이 기록되었습니다.")) {
                 throw new InvalidRecruitFormException();
             }
         }
