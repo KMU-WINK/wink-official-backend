@@ -67,6 +67,7 @@ public class RecruitService {
         List<LocalDate> interviewDates = dto.interviewDates().stream()
             .map(s -> LocalDate.parse(s, DATE_FORMATTER))
             .peek(date -> {
+                if (date.isEqual(LocalDate.of(1, 1, 1))) return;
                 if (date.isBefore(recruit.getInterviewStartDate()) || date.isAfter(recruit.getInterviewEndDate())) throw new NotValidInterviewDatesException();
             })
             .toList();
@@ -128,6 +129,7 @@ public class RecruitService {
             .selfIntroduce(dto.selfIntroduce())
             .outings(dto.outings())
             .interviewDates(interviewDates)
+            .whyCannotInterview(dto.whyCannotInterview())
             .github(dto.github())
             .frontendTechStacks(frontendTechStacks)
             .backendTechStacks(backendTechStacks)

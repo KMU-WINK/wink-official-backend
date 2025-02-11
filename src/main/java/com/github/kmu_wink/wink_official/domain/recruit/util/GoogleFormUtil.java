@@ -74,7 +74,8 @@ public class GoogleFormUtil {
             longText("지원 동기", true),
             longText("자기소개", true),
             longText("외부 활동", false),
-            checkBox("면접 가능 날짜", betweenDates(recruit.getInterviewStartDate(), recruit.getInterviewEndDate()), true),
+            checkBox("면접 가능 날짜", Stream.concat(betweenDates(recruit.getInterviewStartDate(), recruit.getInterviewEndDate()).stream(), Stream.of("기타")).toList(), true),
+            shortText("면접 불가 사유", false),
             shortText("Github 아이디", false),
             checkBox("프론트엔드 기술 스택", FrontendTechStack.values(), false),
             checkBox("백엔드 기술 스택", BackendTechStack.values(), false),
@@ -109,8 +110,9 @@ public class GoogleFormUtil {
                 .queryString("entry." + entry.get(FormEntryKeys.JIWON_DONGGI), recruitForm.getJiwonDonggi())
                 .queryString("entry." + entry.get(FormEntryKeys.SELF_INTRODUCE), recruitForm.getSelfIntroduce())
                 .queryString("entry." + entry.get(FormEntryKeys.OUTINGS), String.join("\n", recruitForm.getOutings()))
-                .queryString("entry." + entry.get(FormEntryKeys.INTERVIEW_DATES), recruitForm.getInterviewDates().stream().map(this::formatDate).toList());
+                .queryString("entry." + entry.get(FormEntryKeys.INTERVIEW_DATES), recruitForm.getInterviewDates().stream().map(date -> date.isEqual(LocalDate.of(1, 1, 1)) ? "기타" : formatDate(date)).toList());
 
+            if (recruitForm.getWhyCannotInterview() != null) request = request.queryString("entry." + entry.get(FormEntryKeys.WHY_CANNOT_INTERVIEW), recruitForm.getWhyCannotInterview());
             if (recruitForm.getGithub() != null) request = request.queryString("entry." + entry.get(FormEntryKeys.GITHUB), recruitForm.getGithub());
             if (!recruitForm.getFrontendTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), recruitForm.getFrontendTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
             if (!recruitForm.getBackendTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), recruitForm.getBackendTechStacks().stream().map(FormCheckbox::getDisplayName).toList());

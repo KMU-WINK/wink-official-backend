@@ -56,6 +56,9 @@ public record RecruitFormRequest(
         List<@Pattern(regexp = Validation.YYYY_MM_DD_EXPRESSION, message = Validation.YYYY_MM_DD_MESSAGE) String> interviewDates,
 
         @Nullable
+        String whyCannotInterview,
+
+        @Nullable
         @Pattern(regexp = Validation.GITHUB_USERNAME_EXPRESSION, message = Validation.GITHUB_USERNAME_MESSAGE)
         String github,
 

@@ -38,6 +38,7 @@ public class RecruitForm extends BaseSchema {
 
     List<String> outings;
     List<LocalDate> interviewDates;
+    String whyCannotInterview;
 
     String github;
     List<FrontendTechStack> frontendTechStacks;
