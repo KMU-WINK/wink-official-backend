@@ -181,7 +181,7 @@ public class ApplicationService {
         if (!application.getLogin().isEnable()) throw new OauthIsNotSupportedException();
 
         OauthLogin oauthLogin = OauthLogin.builder()
-            .token(randomString.generate(64))
+            .token(randomString.generate(32))
             .clientId(application.getId())
             .userId(user.getId())
             .scopes(application.getLogin().getScopes())

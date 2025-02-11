@@ -1,13 +1,12 @@
 package com.github.kmu_wink.wink_official.domain.user.service;
 
-import java.util.UUID;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
+import com.github.kmu_wink.wink_official.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official.domain.auth.exception.AlreadyRegisteredException;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.InviteRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateRequest;
@@ -33,6 +32,7 @@ public class AdminUserService {
     private final PreUserRepository preUserRepository;
 
     private final EmailSender emailSender;
+    private final RandomString randomString;
 
     private final SyncNotionDbTask syncNotionDbTask;
 
@@ -79,9 +79,10 @@ public class AdminUserService {
         PreUser preUser = PreUser.builder()
                 .name(dto.name())
                 .studentId(dto.studentId())
+                .department(dto.department())
                 .email(dto.email())
                 .phoneNumber(dto.phoneNumber())
-                .token(UUID.randomUUID().toString())
+                .token(randomString.generate(64))
                 .build();
 
         preUser = preUserRepository.save(preUser);

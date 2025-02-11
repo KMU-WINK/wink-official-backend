@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
 import com.github.kmu_wink.wink_official.common.sms.SmsSender;
+import com.github.kmu_wink.wink_official.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormEntryKeys;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.CreateRecruitRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.FinalizePaperRequest;
@@ -56,6 +56,7 @@ public class AdminRecruitService {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final EmailSender emailSender;
+    private final RandomString randomString;
 
     public GetRecruitsResponse getRecruits() {
 
@@ -165,7 +166,7 @@ public class AdminRecruitService {
                         .studentId(form.getStudentId())
                         .department(form.getDepartment())
                         .phoneNumber(form.getPhoneNumber())
-                        .token(UUID.randomUUID().toString())
+                        .token(randomString.generate(64))
                         .build();
 
                     preUserRepository.save(preUser);

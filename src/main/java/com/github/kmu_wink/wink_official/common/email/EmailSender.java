@@ -1,13 +1,14 @@
 package com.github.kmu_wink.wink_official.common.email;
 
 import java.io.UnsupportedEncodingException;
-import java.util.UUID;
 
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import com.github.kmu_wink.wink_official.domain.application.util.RandomString;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -21,6 +22,8 @@ public class EmailSender {
 
     private final MailProperties properties;
     private final JavaMailSender javaMailSender;
+
+    private final RandomString randomString;
 
     private static final String ORGANIZATION_NAME = "WINK";
 
@@ -45,7 +48,7 @@ public class EmailSender {
         message.addHeader("List-Unsubscribe", "<mailto:%s>".formatted(properties.getUsername()));
         message.addHeader("Precedence", "bulk");
         message.addHeader("X-Auto-Response-Suppress", "OOF, AutoReply");
-        message.addHeader("Message-ID", "<" + UUID.randomUUID() + "@%s>".formatted(properties.getUsername().split("@")[1]));
+        message.addHeader("Message-ID", "<" + randomString.generate(16) + "@%s>".formatted(properties.getUsername().split("@")[1]));
 
         javaMailSender.send(message);
     }

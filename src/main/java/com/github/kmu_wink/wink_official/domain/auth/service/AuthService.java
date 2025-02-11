@@ -1,7 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.auth.service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
 import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
 import com.github.kmu_wink.wink_official.common.security.jwt.JwtUtil;
+import com.github.kmu_wink.wink_official.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official.domain.auth.dto.request.CheckRegisterRequest;
 import com.github.kmu_wink.wink_official.domain.auth.dto.request.CheckResetPasswordRequest;
 import com.github.kmu_wink.wink_official.domain.auth.dto.request.LoginRequest;
@@ -56,6 +56,7 @@ public class AuthService {
     private final EmailSender emailSender;
 
     private final SyncNotionDbTask syncNotionDbTask;
+    private final RandomString randomString;
 
     public LoginResponse login(LoginRequest dto) {
 
@@ -136,7 +137,7 @@ public class AuthService {
     public void requestResetPassword(RequestResetPasswordRequest dto) {
 
         userRepository.findByEmail(dto.email()).ifPresent((user) -> {
-            String passwordResetTokenRaw = UUID.randomUUID().toString();
+            String passwordResetTokenRaw = randomString.generate(64);
 
             PasswordResetToken passwordResetToken = PasswordResetToken.builder()
                 .token(passwordResetTokenRaw)

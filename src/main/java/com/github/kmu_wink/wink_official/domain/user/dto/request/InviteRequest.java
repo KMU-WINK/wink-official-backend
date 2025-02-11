@@ -1,6 +1,8 @@
 package com.github.kmu_wink.wink_official.domain.user.dto.request;
 
 import com.github.kmu_wink.wink_official.common.validation.Validation;
+import com.github.kmu_wink.wink_official.domain.recruit.validation.DepartmentValidate;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -15,6 +17,10 @@ public record InviteRequest(
         @NotBlank
         @Size(min=8, max=8, message = Validation.STUDENT_ID_MESSAGE)
         String studentId,
+
+        @NotBlank
+        @DepartmentValidate
+        String department,
 
         @NotBlank
         @Pattern(regexp = Validation.KOOKMIN_EMAIL_EXPRESSION, message = Validation.KOOKMIN_EMAIL_MESSAGE)
