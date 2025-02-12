@@ -3,6 +3,7 @@ package com.github.kmu_wink.wink_official.domain.user.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.email.EmailSender;
@@ -30,6 +31,7 @@ public class AdminUserService {
 
     private final UserRepository userRepository;
     private final PreUserRepository preUserRepository;
+    private final MongoTemplate mongoTemplate;
 
     private final EmailSender emailSender;
     private final RandomString randomString;
@@ -47,7 +49,7 @@ public class AdminUserService {
                 Sort.Order.asc("name")
             )
         );
-        Page<User> users = userRepository.findAllSearch(query, pageRequest);
+        Page<User> users = userRepository.findAllSearch(query, pageRequest, mongoTemplate);
 
         return AdminUsersResponse.builder()
                 .users(users)

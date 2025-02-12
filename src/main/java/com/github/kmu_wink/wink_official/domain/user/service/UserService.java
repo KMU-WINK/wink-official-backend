@@ -3,6 +3,7 @@ package com.github.kmu_wink.wink_official.domain.user.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final MongoTemplate mongoTemplate;
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder encoder;
@@ -37,7 +39,7 @@ public class UserService {
 
     public UsersResponse getUsers() {
 
-        List<User> users = userRepository.findAllWithMask();
+        List<User> users = userRepository.findAllWithMask(mongoTemplate);
 
         return UsersResponse.builder()
                 .users(users)
