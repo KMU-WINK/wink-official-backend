@@ -2,6 +2,7 @@ package com.github.kmu_wink.wink_official.domain.user.dto.request;
 
 import com.github.kmu_wink.wink_official.common.validation.Validation;
 import com.github.kmu_wink.wink_official.common.validation.custom.Enum;
+import com.github.kmu_wink.wink_official.domain.recruit.validation.DepartmentValidate;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +20,10 @@ public record UpdateRequest(
         @NotBlank
         @Size(min=8, max=8, message = Validation.STUDENT_ID_MESSAGE)
         String studentId,
+
+        @NotBlank
+        @DepartmentValidate
+        String department,
 
         @NotBlank
         @Pattern(regexp = Validation.KOOKMIN_EMAIL_EXPRESSION, message = Validation.KOOKMIN_EMAIL_MESSAGE)

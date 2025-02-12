@@ -106,9 +106,9 @@ public class AdminUserService {
 
         user.setName(dto.name());
         user.setStudentId(dto.studentId());
+        user.setDepartment(dto.department());
         user.setEmail(dto.email());
         user.setPhoneNumber(dto.phoneNumber());
-
         user.setRole(User.Role.valueOf(dto.role()));
         user.setFee(dto.fee());
 
