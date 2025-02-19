@@ -11,8 +11,6 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "sms")
 public class SmsProperty {
 
-    private boolean enabled;
-
     @NotBlank
     private String id;
 

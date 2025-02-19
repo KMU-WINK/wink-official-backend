@@ -22,8 +22,6 @@ public class SmsSender {
 
     public void send(Collection<SmsObject> smsObjects) {
 
-        if (!smsProperty.isEnabled()) return;
-
         try (UnirestInstance instance = Unirest.spawnInstance()) {
 
             HttpResponse<String> response = instance.post("https://www.munja123.com/Remote/RemoteMms.html")
@@ -44,8 +42,6 @@ public class SmsSender {
     }
 
     public int remain() {
-
-        if (!smsProperty.isEnabled()) return Integer.MAX_VALUE;
 
         try (UnirestInstance instance = Unirest.spawnInstance()) {
 
