@@ -84,7 +84,7 @@ public class ApplicationService {
             .updatedAt(LocalDateTime.now())
             .name(dto.name())
             .img(s3Service.upload("application/%s.png".formatted(id), Jadenticon.from(id).png()))
-            .secret(randomString.generate(32))
+            .secret(randomString.generate(96))
             .user(user)
             .login(Application.Login.empty())
             .build();
@@ -132,7 +132,7 @@ public class ApplicationService {
 
         if (!application.getUser().equals(user)) throw new ApplicationNotFoundException();
 
-        application.setSecret(randomString.generate(32));
+        application.setSecret(randomString.generate(96));
 
         application = applicationRepository.save(application);
 
@@ -181,7 +181,7 @@ public class ApplicationService {
         if (!application.getLogin().isEnable()) throw new OauthIsNotSupportedException();
 
         OauthLogin oauthLogin = OauthLogin.builder()
-            .token(randomString.generate(32))
+            .token(randomString.generate(128))
             .clientId(application.getId())
             .userId(user.getId())
             .scopes(application.getLogin().getScopes())

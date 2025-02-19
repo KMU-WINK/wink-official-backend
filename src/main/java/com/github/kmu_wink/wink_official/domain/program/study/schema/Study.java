@@ -3,7 +3,7 @@ package com.github.kmu_wink.wink_official.domain.program.study.schema;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.github.kmu_wink.wink_official.common.database.mongo.schema.BaseSchema;
+import com.github.kmu_wink.wink_official.common.database.mongo.BaseSchema;
 
 import jakarta.annotation.Nullable;
 import lombok.Data;

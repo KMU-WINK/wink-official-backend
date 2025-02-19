@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/recruit")
 @RequiredArgsConstructor
-@Tag(name = "Recruit")
+@Tag(name = "[Recuit] Index")
 public class RecruitController {
 
     private final RecruitService recruitService;

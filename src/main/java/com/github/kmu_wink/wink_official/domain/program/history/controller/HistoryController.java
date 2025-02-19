@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/program/history")
 @RequiredArgsConstructor
-@Tag(name = "Program - History")
+@Tag(name = "[Program] [History] Index")
 public class HistoryController {
 
 	private final HistoryService historyService;

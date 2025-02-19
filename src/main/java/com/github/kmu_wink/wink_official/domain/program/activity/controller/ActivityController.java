@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/program/activity")
 @RequiredArgsConstructor
-@Tag(name = "Program - Activity")
+@Tag(name = "[Program] [Activity] Index")
 public class ActivityController {
 
 	private final ActivityService activityService;

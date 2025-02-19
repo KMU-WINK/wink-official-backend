@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.application.dto.request;
 
-import com.github.kmu_wink.wink_official.common.validation.Validation;
+import com.github.kmu_wink.wink_official.common.validation.RegExp;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,7 +13,7 @@ public record UpdateApplicationRequest(
 	String name,
 
 	@NotBlank
-	@Pattern(regexp = Validation.URL_EXPRESSION, message = Validation.URL_MESSAGE)
+	@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
 	String img
 ) {
 }

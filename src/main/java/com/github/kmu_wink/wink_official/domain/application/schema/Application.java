@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.github.kmu_wink.wink_official.common.database.mongo.schema.BaseSchema;
+import com.github.kmu_wink.wink_official.common.database.mongo.BaseSchema;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 
 import lombok.Builder;

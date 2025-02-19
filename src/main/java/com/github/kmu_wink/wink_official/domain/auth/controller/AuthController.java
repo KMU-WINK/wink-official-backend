@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@Tag(name = "Auth")
+@Tag(name = "[Auth] Index")
 public class AuthController {
 
     private final AuthService authService;

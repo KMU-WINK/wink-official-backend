@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.auth.email;
 
-import com.github.kmu_wink.wink_official.common.email.EmailTemplate;
+import com.github.kmu_wink.wink_official.common.communicate.email.EmailTemplate;
 import com.github.kmu_wink.wink_official.domain.auth.schema.PasswordResetToken;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,7 @@ public class PasswordResetTokenTemplate implements EmailTemplate {
 
     @Override
     public String getTitle() {
+
         return "[WINK] 비밀번호 재설정";
     }
 

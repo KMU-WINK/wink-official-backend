@@ -2,13 +2,13 @@ package com.github.kmu_wink.wink_official.domain.recruit.dto.request;
 
 import java.util.List;
 
-import com.github.kmu_wink.wink_official.common.validation.Validation;
+import com.github.kmu_wink.wink_official.common.validation.RegExp;
 import com.github.kmu_wink.wink_official.common.validation.custom.Enum;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.BackendTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DesignTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.DevOpsTechStack;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.techStack.FrontendTechStack;
-import com.github.kmu_wink.wink_official.domain.recruit.validation.DepartmentValidate;
+import com.github.kmu_wink.wink_official.domain.recruit.util.validation.DepartmentValidate;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -21,11 +21,11 @@ import lombok.Builder;
 public record RecruitFormRequest(
 
         @NotBlank
-        @Pattern(regexp = Validation.NAME_EXPRESSION, message = Validation.NAME_MESSAGE)
+        @Pattern(regexp = RegExp.NAME_EXPRESSION, message = RegExp.NAME_MESSAGE)
         String name,
 
         @NotBlank
-        @Size(min=8, max=8, message = Validation.STUDENT_ID_MESSAGE)
+        @Size(min=8, max=8, message = RegExp.STUDENT_ID_MESSAGE)
         String studentId,
 
         @NotBlank
@@ -33,11 +33,11 @@ public record RecruitFormRequest(
         String department,
 
         @NotBlank
-        @Pattern(regexp = Validation.KOOKMIN_EMAIL_EXPRESSION, message = Validation.KOOKMIN_EMAIL_MESSAGE)
+        @Pattern(regexp = RegExp.KOOKMIN_EMAIL_EXPRESSION, message = RegExp.KOOKMIN_EMAIL_MESSAGE)
         String email,
 
         @NotBlank
-        @Pattern(regexp = Validation.PHONE_NUMBER_EXPRESSION, message = Validation.PHONE_NUMBER_MESSAGE)
+        @Pattern(regexp = RegExp.PHONE_NUMBER_EXPRESSION, message = RegExp.PHONE_NUMBER_MESSAGE)
         String phoneNumber,
 
         @NotBlank
@@ -53,13 +53,13 @@ public record RecruitFormRequest(
 
         @NotNull
         @Size(min = 1, max = 100)
-        List<@Pattern(regexp = Validation.YYYY_MM_DD_EXPRESSION, message = Validation.YYYY_MM_DD_MESSAGE) String> interviewDates,
+        List<@Pattern(regexp = RegExp.YYYY_MM_DD_EXPRESSION, message = RegExp.YYYY_MM_DD_MESSAGE) String> interviewDates,
 
         @Nullable
         String whyCannotInterview,
 
         @Nullable
-        @Pattern(regexp = Validation.GITHUB_USERNAME_EXPRESSION, message = Validation.GITHUB_USERNAME_MESSAGE)
+        @Pattern(regexp = RegExp.GITHUB_USERNAME_EXPRESSION, message = RegExp.GITHUB_USERNAME_MESSAGE)
         String github,
 
         @NotNull

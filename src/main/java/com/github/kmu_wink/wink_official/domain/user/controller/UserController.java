@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-@Tag(name = "User")
+@Tag(name = "[User] Index")
 public class UserController {
 
     private final UserService userService;

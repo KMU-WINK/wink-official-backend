@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.github.kmu_wink.wink_official.common.database.mongo.schema.BaseSchema;
+import com.github.kmu_wink.wink_official.common.database.mongo.BaseSchema;
 import com.github.kmu_wink.wink_official.domain.recruit.constant.FormEntryKeys;
 
 import lombok.Data;

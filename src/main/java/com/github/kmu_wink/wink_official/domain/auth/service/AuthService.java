@@ -6,7 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.github.kmu_wink.wink_official.common.email.EmailSender;
+import com.github.kmu_wink.wink_official.common.communicate.email.EmailSender;
 import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
 import com.github.kmu_wink.wink_official.common.security.jwt.JwtUtil;
 import com.github.kmu_wink.wink_official.domain.application.util.RandomString;
@@ -137,7 +137,7 @@ public class AuthService {
     public void requestResetPassword(RequestResetPasswordRequest dto) {
 
         userRepository.findByEmail(dto.email()).ifPresent((user) -> {
-            String passwordResetTokenRaw = randomString.generate(64);
+            String passwordResetTokenRaw = randomString.generate(128);
 
             PasswordResetToken passwordResetToken = PasswordResetToken.builder()
                 .token(passwordResetTokenRaw)

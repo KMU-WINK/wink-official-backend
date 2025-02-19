@@ -17,13 +17,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/program/upload")
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
-@Tag(name = "Program - Upload")
+@Tag(name = "[Program] [Upload] Index")
 public class UploadController {
 
 	private final UploadService uploadService;
 
-	@PostMapping
-	@Operation(summary = "사진 업로드")
+	@PostMapping("/image")
+	@Operation(summary = "이미지 업로드")
 	public ApiResponse<UploadImageResponse> uploadImage() {
 
 		return ApiResponse.ok(uploadService.uploadImage());

@@ -2,7 +2,7 @@ package com.github.kmu_wink.wink_official.domain.user.schema;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 
-import com.github.kmu_wink.wink_official.common.database.mongo.schema.BaseSchema;
+import com.github.kmu_wink.wink_official.common.database.mongo.BaseSchema;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

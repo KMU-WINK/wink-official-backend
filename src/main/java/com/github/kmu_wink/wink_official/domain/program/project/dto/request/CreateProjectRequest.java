@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official.domain.program.project.dto.request;
 
-import com.github.kmu_wink.wink_official.common.validation.Validation;
+import com.github.kmu_wink.wink_official.common.validation.RegExp;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,11 +13,11 @@ public record CreateProjectRequest(
 	String title,
 
 	@NotBlank
-	@Pattern(regexp = Validation.URL_EXPRESSION, message = Validation.URL_MESSAGE)
+	@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
 	String image,
 
 	@NotBlank
-	@Pattern(regexp = Validation.GITHUB_PROJECT_URL_EXPRESSION, message = Validation.GITHUB_PROJECT_URL_MESSAGE)
+	@Pattern(regexp = RegExp.GITHUB_PROJECT_URL_EXPRESSION, message = RegExp.GITHUB_PROJECT_URL_MESSAGE)
 	String link
 ) {
 }

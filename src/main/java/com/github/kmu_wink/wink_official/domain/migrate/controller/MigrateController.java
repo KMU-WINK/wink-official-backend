@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/migrate")
 @RequiredArgsConstructor
-@Tag(name = "Migrate")
+@Tag(name = "[Migrate] Index")
 public class MigrateController {
 
 	private final MigrateService migrateService;

@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/program/project")
 @RequiredArgsConstructor
-@Tag(name = "Program - Project")
+@Tag(name = "[Program] [Project] Index")
 public class ProjectController {
 
 	private final ProjectService projectService;

@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/application")
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
-@Tag(name = "Application")
+@Tag(name = "[Application] Index")
 public class ApplicationController {
 
     private final ApplicationService applicationService;

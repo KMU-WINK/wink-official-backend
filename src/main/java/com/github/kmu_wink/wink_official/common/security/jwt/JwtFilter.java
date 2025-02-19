@@ -1,5 +1,12 @@
 package com.github.kmu_wink.wink_official.common.security.jwt;
 
+import java.io.IOException;
+import java.util.stream.Stream;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
@@ -9,17 +16,13 @@ import com.github.kmu_wink.wink_official.domain.auth.exception.AccessTokenExpire
 import com.github.kmu_wink.wink_official.domain.auth.exception.AuthenticationFailException;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
+
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
@@ -69,12 +72,20 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private void handleException(HttpServletResponse response, ApiException e) throws IOException {
-        ApiResponse<?> apiResponse = ApiResponse.error(e);
+        ApiResponse<?> apiResponse = ApiResponse.error(e.getHttpStatus(), e.getMessage());
 
         String content = new ObjectMapper().writeValueAsString(apiResponse);
 
         response.addHeader("Content-Type", "application/json");
         response.getWriter().write(content);
         response.getWriter().flush();
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        String uri  = request.getRequestURI();
+
+        return Stream.of("/api/auth/refresh-token").anyMatch(uri::equalsIgnoreCase);
     }
 }
