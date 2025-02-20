@@ -9,9 +9,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.github.kmu_wink.wink_official.common.property.JwtProperty;
-import com.github.kmu_wink.wink_official.domain.auth.repository.RefreshTokenRepository;
+import com.github.kmu_wink.wink_official.domain.auth.repository.RefreshTokenRedisRepository;
 import com.github.kmu_wink.wink_official.domain.auth.schema.RefreshToken;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
+import com.google.common.base.Strings;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtUtil {
 
     private final JwtProperty jwtProperty;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     private Algorithm algorithm;
 
@@ -63,7 +64,7 @@ public class JwtUtil {
                 .ttl(jwtProperty.getRefreshTokenExpirationHours())
                 .build();
 
-        refreshTokenRepository.save(refreshToken);
+        refreshTokenRedisRepository.save(refreshToken);
 
         return token;
     }
@@ -79,7 +80,7 @@ public class JwtUtil {
 
     public boolean validateToken(String token) throws TokenExpiredException {
 
-        if (token == null) {
+        if (Strings.isNullOrEmpty(token)) {
 
             return false;
         }

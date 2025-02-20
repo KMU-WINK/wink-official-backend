@@ -1,8 +1,0 @@
-cloud:
-  aws:
-    region: ap-northeast-2
-    s3:
-      bucket: wink
-    credential:
-      accessKey: accessKey
-      secretKey: secretKey

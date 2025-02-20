@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "notion")
+@ConfigurationProperties(prefix = "app.notion")
 public class NotionProperty {
 
     @NotBlank

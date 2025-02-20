@@ -1,5 +1,7 @@
 package com.github.kmu_wink.wink_official.common.api.exception;
 
+import java.util.Objects;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -38,7 +40,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<?> methodArgumentNotValidException(MethodArgumentNotValidException e) {
 
-        if (e.getBindingResult().getFieldError() == null) {
+        if (Objects.isNull(e.getBindingResult().getFieldError())) {
 
             return ApiResponse.error(HttpStatus.BAD_REQUEST, e.getMessage());
         }

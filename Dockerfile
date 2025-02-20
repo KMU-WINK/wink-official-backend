@@ -2,7 +2,7 @@ FROM azul/zulu-openjdk:17-jre-latest
 
 WORKDIR /app
 
-COPY build/libs/wink-official-backend-2.0.jar app.jar
+COPY build/libs/backend.jar app.jar
 
 EXPOSE 8080
 

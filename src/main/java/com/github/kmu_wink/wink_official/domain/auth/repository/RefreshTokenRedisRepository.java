@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.github.kmu_wink.wink_official.domain.auth.schema.RefreshToken;
 
 @Repository
-public interface RefreshTokenRepository extends KeyValueRepository<RefreshToken, Long> {
+public interface RefreshTokenRedisRepository extends KeyValueRepository<RefreshToken, Long> {
     
     Optional<RefreshToken> findByToken(String token);
 }

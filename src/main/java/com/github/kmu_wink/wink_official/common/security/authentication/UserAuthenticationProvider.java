@@ -1,5 +1,7 @@
 package com.github.kmu_wink.wink_official.common.security.authentication;
 
+import java.util.Objects;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -26,7 +28,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         String credentials = userAuthentication.getCredentials();
         User principal = userAuthentication.getPrincipal();
 
-        if (principal == null || credentials == null) {
+        if (Objects.isNull(principal) || Objects.isNull(credentials)) {
 
             throw new AuthenticationFailException();
         }

@@ -1,5 +1,7 @@
 package com.github.kmu_wink.wink_official.common.validation.custom;
 
+import java.util.Objects;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -16,7 +18,7 @@ public class EnumValidator implements ConstraintValidator<Enum, String> {
     public boolean isValid(String value, ConstraintValidatorContext context) {
         Object[] enumValues = this.annotation.enumClass().getEnumConstants();
 
-        if (enumValues != null && value != null) {
+        if (Objects.nonNull(enumValues) && Objects.nonNull(value)) {
             for (Object enumValue : enumValues) {
                 if (value.equals(enumValue.toString())) {
                     return true;

@@ -9,13 +9,14 @@ import java.util.Optional;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.github.kmu_wink.wink_official.domain.program.study.repository.StudyRepository;
 import com.github.kmu_wink.wink_official.domain.program.study.schema.Study;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +30,8 @@ public class TistoryParseTask {
 
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy. M. d. HH:mm");
 
-	@PostConstruct
-	@Scheduled(cron = "0 0 0 * * *")
+	@EventListener(ApplicationReadyEvent.class)
+	@Scheduled(cron = "0 0 6 * * *")
 	private void run() {
 
 		int remoteLatestIndex = getRemoteLatestIndex();

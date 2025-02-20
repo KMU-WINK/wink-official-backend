@@ -20,6 +20,7 @@ import com.github.kmu_wink.wink_official.domain.user.dto.response.UsersResponse;
 import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
+import com.google.common.base.Strings;
 
 import kong.unirest.core.json.JSONObject;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +72,7 @@ public class UserService {
 
     public UserResponse deleteMyAvatar(User user) {
 
-        if (user.getAvatar() == null) {
+        if (Strings.isNullOrEmpty(user.getAvatar())) {
             return UserResponse.builder()
                 .user(user)
                 .build();

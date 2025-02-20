@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "sms")
+@ConfigurationProperties(prefix = "app.sms")
 public class SmsProperty {
 
     @NotBlank

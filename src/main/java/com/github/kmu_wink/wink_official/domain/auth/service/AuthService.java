@@ -26,8 +26,8 @@ import com.github.kmu_wink.wink_official.domain.auth.exception.AuthenticationFai
 import com.github.kmu_wink.wink_official.domain.auth.exception.InvalidPasswordResetTokenException;
 import com.github.kmu_wink.wink_official.domain.auth.exception.InvalidRefreshTokenException;
 import com.github.kmu_wink.wink_official.domain.auth.exception.InvalidRegisterTokenException;
-import com.github.kmu_wink.wink_official.domain.auth.repository.PasswordResetTokenRepository;
-import com.github.kmu_wink.wink_official.domain.auth.repository.RefreshTokenRepository;
+import com.github.kmu_wink.wink_official.domain.auth.repository.PasswordResetTokenRedisRepository;
+import com.github.kmu_wink.wink_official.domain.auth.repository.RefreshTokenRedisRepository;
 import com.github.kmu_wink.wink_official.domain.auth.schema.PasswordResetToken;
 import com.github.kmu_wink.wink_official.domain.auth.schema.RefreshToken;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
@@ -46,8 +46,8 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PreUserRepository preUserRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final PasswordResetTokenRedisRepository passwordResetTokenRedisRepository;
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder encoder;
@@ -117,11 +117,11 @@ public class AuthService {
 
     public LoginResponse refresh(RefreshRequest dto) {
 
-        RefreshToken refreshToken = refreshTokenRepository
+        RefreshToken refreshToken = refreshTokenRedisRepository
             .findByToken(dto.token())
             .orElseThrow(InvalidRefreshTokenException::new);
 
-        refreshTokenRepository.delete(refreshToken);
+        refreshTokenRedisRepository.delete(refreshToken);
 
         String userId = refreshToken.userId();
 
@@ -144,7 +144,7 @@ public class AuthService {
                 .userId(user.getId())
                 .build();
 
-            passwordResetTokenRepository.save(passwordResetToken);
+            passwordResetTokenRedisRepository.save(passwordResetToken);
 
             emailSender.send(dto.email(), PasswordResetTokenTemplate.of(user, passwordResetToken));
         });
@@ -152,7 +152,7 @@ public class AuthService {
 
     public CheckResetPasswordResponse checkResetPassword(CheckResetPasswordRequest dto) {
 
-        boolean isVerified = passwordResetTokenRepository.findByToken(dto.token()).isPresent();
+        boolean isVerified = passwordResetTokenRedisRepository.findByToken(dto.token()).isPresent();
 
         return CheckResetPasswordResponse.builder()
             .isValid(isVerified)
@@ -161,10 +161,10 @@ public class AuthService {
 
     public void resetPassword(ResetPasswordRequest request) {
 
-        PasswordResetToken passwordResetTokenEntity = passwordResetTokenRepository.findByToken(request.token())
+        PasswordResetToken passwordResetTokenEntity = passwordResetTokenRedisRepository.findByToken(request.token())
             .orElseThrow(InvalidPasswordResetTokenException::new);
 
-        passwordResetTokenRepository.delete(passwordResetTokenEntity);
+        passwordResetTokenRedisRepository.delete(passwordResetTokenEntity);
 
         String userId = passwordResetTokenEntity.userId();
 

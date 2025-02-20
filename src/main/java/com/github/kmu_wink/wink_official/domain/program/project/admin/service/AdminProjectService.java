@@ -1,5 +1,7 @@
 package com.github.kmu_wink.wink_official.domain.program.project.admin.service;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.external.aws.s3.S3Service;
@@ -20,7 +22,7 @@ public class AdminProjectService {
 
 		Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
 
-		if (project.getImage() != null) {
+		if (Objects.nonNull(project.getImage())) {
 			s3Service.urlToKey(project.getImage()).ifPresent(s3Service::deleteFile);
 		}
 

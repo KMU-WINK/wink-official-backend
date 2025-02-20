@@ -1,6 +1,7 @@
 package com.github.kmu_wink.wink_official.common.database.mongo;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -30,7 +31,7 @@ public abstract class BaseSchema {
             return true;
         }
 
-        if (obj == null || getClass() != obj.getClass()) {
+        if (Objects.isNull(obj) ||  !getClass().equals(obj.getClass())) {
             return false;
         }
 

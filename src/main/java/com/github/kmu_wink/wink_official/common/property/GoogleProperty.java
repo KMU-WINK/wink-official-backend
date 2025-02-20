@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "google")
+@ConfigurationProperties(prefix = "app.cloud.google")
 public class GoogleProperty {
 
     @NotBlank

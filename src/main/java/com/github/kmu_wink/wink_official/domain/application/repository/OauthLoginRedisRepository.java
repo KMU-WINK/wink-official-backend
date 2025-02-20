@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.github.kmu_wink.wink_official.domain.application.schema.OauthLogin;
 
 @Repository
-public interface OauthLoginRepository extends KeyValueRepository<OauthLogin, Long> {
+public interface OauthLoginRedisRepository extends KeyValueRepository<OauthLogin, Long> {
     
     Optional<OauthLogin> findByToken(String token);
 }

@@ -2,6 +2,7 @@ package com.github.kmu_wink.wink_official.domain.program.history.admin.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,7 @@ public class AdminHistoryService {
 
 		History history = historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
 
-		if (history.getImage() != null) {
+		if (Objects.nonNull(history.getImage())) {
 			s3Service.urlToKey(history.getImage()).ifPresent(s3Service::deleteFile);
 		}
 

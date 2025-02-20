@@ -36,7 +36,7 @@ public class GoogleConfig {
 	@SneakyThrows(IOException.class)
 	public HttpRequestInitializer httpRequestInitializer() {
 
-		InputStream credentialsStream = new ClassPathResource("credential/google.json").getInputStream();
+		InputStream credentialsStream = new ClassPathResource("google-service-account.json").getInputStream();
 
 		Collection<String> scopes = new HashSet<>() {{
 			addAll(DriveScopes.all());

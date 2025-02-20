@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.google.common.base.Strings;
+
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,6 +45,6 @@ public class LoggerFilter extends OncePerRequestFilter {
 
         String xfHeader = request.getHeader("X-Forwarded-For");
 
-        return xfHeader == null ? request.getRemoteAddr() : xfHeader.split(",")[0];
+        return Strings.isNullOrEmpty(xfHeader) ? request.getRemoteAddr() : xfHeader.split(",")[0];
     }
 }

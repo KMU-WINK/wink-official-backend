@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,7 @@ public class RecruitService {
 
         Recruit recruit = recruitRepository.findLatestRecruit().orElse(null);
 
-        if (recruit != null) {
+        if (Objects.nonNull(recruit)) {
             recruit.setGoogleFormId(null);
             recruit.setGoogleFormUri(null);
             recruit.setGoogleFormResponseEntry(null);
@@ -72,28 +73,20 @@ public class RecruitService {
             })
             .toList();
 
-        List<FrontendTechStack> frontendTechStacks = dto.frontendTechStacks() != null
-            ? dto.frontendTechStacks().stream()
-            .map(FrontendTechStack::valueOf)
-            .toList()
+        List<FrontendTechStack> frontendTechStacks = Objects.nonNull(dto.frontendTechStacks())
+            ? dto.frontendTechStacks().stream().map(FrontendTechStack::valueOf).toList()
             : List.of();
 
-        List<BackendTechStack> backendTechStacks = dto.backendTechStacks() != null
-            ? dto.backendTechStacks().stream()
-            .map(BackendTechStack::valueOf)
-            .toList()
+        List<BackendTechStack> backendTechStacks = Objects.nonNull(dto.backendTechStacks())
+            ? dto.backendTechStacks().stream().map(BackendTechStack::valueOf).toList()
             : List.of();
 
-        List<DevOpsTechStack> devOpsTechStacks = dto.devOpsTechStacks() != null
-            ? dto.devOpsTechStacks().stream()
-            .map(DevOpsTechStack::valueOf)
-            .toList()
+        List<DevOpsTechStack> devOpsTechStacks = Objects.nonNull(dto.devOpsTechStacks())
+            ? dto.devOpsTechStacks().stream().map(DevOpsTechStack::valueOf).toList()
             : List.of();
 
-        List<DesignTechStack> designTechStacks = dto.designTechStacks() != null
-            ? dto.designTechStacks().stream()
-            .map(DesignTechStack::valueOf)
-            .toList()
+        List<DesignTechStack> designTechStacks = Objects.nonNull(dto.designTechStacks())
+            ? dto.designTechStacks().stream().map(DesignTechStack::valueOf).toList()
             : List.of();
 
         LocalDateTime now = LocalDateTime.now();

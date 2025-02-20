@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +19,6 @@ import com.github.kmu_wink.wink_official.domain.program.history.schema.History;
 import com.github.kmu_wink.wink_official.domain.program.project.repository.ProjectRepository;
 import com.github.kmu_wink.wink_official.domain.program.project.schema.Project;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +32,8 @@ public class PurgeUnusedProgramResourceInS3Task {
 	private final ProjectRepository projectRepository;
 	private final S3Service s3Service;
 
-	@PostConstruct
-	@Scheduled(cron = "0 0 3 * * *")
+	@EventListener(ApplicationReadyEvent.class)
+	@Scheduled(cron = "0 0 6 * * *")
 	private void run() {
 
 		Set<String> use = Stream.of(

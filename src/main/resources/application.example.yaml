@@ -1,0 +1,80 @@
+server:
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      force-response: true
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  data:
+    mongodb:
+      host: ${MONGODB_HOST}
+      port: 27017
+      username: ${MONGODB_USERNAME}
+      password: ${MONGODB_PASSWORD}
+      database: ${MONGODB_DATABASE}
+      authentication-database: admin
+    redis:
+      host: ${REDIS_HOST}
+      password: ${REDIS_PASSWORD}
+      port: 6379
+  mvc:
+    log-resolved-exception: false
+
+app:
+  jwt:
+    key: ${JWT_SECRET_KEY}
+    access-token-expiration-hours: 4
+    refresh-token-expiration-hours: 168
+  cloud:
+    aws:
+      region: ap-northeast-2
+      s3:
+        bucket: ${AWS_S3_BUCKET}
+      credential:
+        accessKey: ${AWS_ACCESS_KEY}
+        secretKey: ${AWS_SECRET_KEY}
+    google:
+      application-name: ${GOOGLE_APP_NAME}
+      owner-email: ${GOOGLE_OWNER_EMAIL}
+  sms:
+    id: ${SMS_ID}
+    pw: ${SMS_PASSWORD}
+    send_phone: ${SMS_PHONE_NUMBER}
+  notion:
+    secret: ${NOTION_SECRET}
+    database-id: ${NOTION_DATABASE_ID}
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    path: /docs
+    disable-swagger-default-url: true
+    display-request-duration: true
+    defaultModelsExpandDepth: -1
+    groups-order: asc
+    tags-sorter: alpha
+    operations-sorter: alpha
+  cache:
+    disabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"

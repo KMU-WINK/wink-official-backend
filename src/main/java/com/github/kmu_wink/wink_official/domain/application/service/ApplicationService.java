@@ -3,7 +3,9 @@ package com.github.kmu_wink.wink_official.domain.application.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -26,7 +28,7 @@ import com.github.kmu_wink.wink_official.domain.application.exception.Applicatio
 import com.github.kmu_wink.wink_official.domain.application.exception.OauthIsNotSupportedException;
 import com.github.kmu_wink.wink_official.domain.application.exception.OauthTokenNotFoundException;
 import com.github.kmu_wink.wink_official.domain.application.repository.ApplicationRepository;
-import com.github.kmu_wink.wink_official.domain.application.repository.OauthLoginRepository;
+import com.github.kmu_wink.wink_official.domain.application.repository.OauthLoginRedisRepository;
 import com.github.kmu_wink.wink_official.domain.application.schema.Application;
 import com.github.kmu_wink.wink_official.domain.application.schema.OauthLogin;
 import com.github.kmu_wink.wink_official.domain.application.util.RandomString;
@@ -43,7 +45,7 @@ import lombok.SneakyThrows;
 public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
-    private final OauthLoginRepository oauthLoginRepository;
+    private final OauthLoginRedisRepository oauthLoginRedisRepository;
 
     private final S3Service s3Service;
     private final RandomString randomString;
@@ -187,7 +189,7 @@ public class ApplicationService {
             .scopes(application.getLogin().getScopes())
             .build();
 
-        oauthLoginRepository.save(oauthLogin);
+        oauthLoginRedisRepository.save(oauthLogin);
 
         return OauthLoginResponse.builder()
             .token(oauthLogin.token())
@@ -200,30 +202,30 @@ public class ApplicationService {
 
         if (!application.getSecret().equals(dto.clientSecret())) throw new ApplicationSecretWrongException();
 
-        OauthLogin oauthLogin = oauthLoginRepository.findByToken(dto.token()).orElseThrow(OauthTokenNotFoundException::new);
+        OauthLogin oauthLogin = oauthLoginRedisRepository.findByToken(dto.token()).orElseThrow(OauthTokenNotFoundException::new);
 
         if (!oauthLogin.clientId().equals(dto.clientId())) throw new OauthTokenNotFoundException();
 
-        oauthLoginRepository.delete(oauthLogin);
+        oauthLoginRedisRepository.delete(oauthLogin);
 
-        User user = userRepository.findById(oauthLogin.userId()).orElseThrow(UserNotFoundException::new);
+        User raw = userRepository.findById(oauthLogin.userId()).orElseThrow(UserNotFoundException::new);
 
-        User maskedUser = User.builder()
-            .id(oauthLogin.scopes().contains(Application.Login.Scope.UUID) ? user.getId() : null)
-            .email(oauthLogin.scopes().contains(Application.Login.Scope.EMAIL) ? user.getEmail() : null)
-            .name(oauthLogin.scopes().contains(Application.Login.Scope.NAME) ? user.getName() : null)
-            .studentId(oauthLogin.scopes().contains(Application.Login.Scope.STUDENT_ID) ? user.getStudentId() : null)
-            .department(oauthLogin.scopes().contains(Application.Login.Scope.DEPARTMENT) ? user.getDepartment() : null)
-            .phoneNumber(oauthLogin.scopes().contains(Application.Login.Scope.PHONE_NUMBER) ? user.getPhoneNumber() : null)
-            .avatar(oauthLogin.scopes().contains(Application.Login.Scope.AVATAR) ? user.getAvatar() : null)
-            .description(oauthLogin.scopes().contains(Application.Login.Scope.DESCRIPTION) ? user.getDescription() : null)
-            .social(oauthLogin.scopes().contains(Application.Login.Scope.SOCIAL) ? user.getSocial() : null)
-            .role(oauthLogin.scopes().contains(Application.Login.Scope.ROLE) ? user.getRole() : null)
-            .fee(oauthLogin.scopes().contains(Application.Login.Scope.FEE) && user.isFee())
-            .build();
+        Map<String, Object> user = new HashMap<>();
+
+        if (oauthLogin.scopes().contains(Application.Login.Scope.UUID)) user.put("id", raw.getId());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.EMAIL)) user.put("email", raw.getEmail());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.NAME)) user.put("name", raw.getName());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.STUDENT_ID)) user.put("studentId", raw.getStudentId());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.DEPARTMENT)) user.put("department", raw.getDescription());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.PHONE_NUMBER)) user.put("phoneNumber", raw.getPassword());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.AVATAR)) user.put("avatar", raw.getAvatar());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.DESCRIPTION)) user.put("description", raw.getDescription());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.SOCIAL)) user.put("social", raw.getStudentId());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.ROLE)) user.put("role", raw.getRole());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.FEE)) user.put("fee", raw.isFee());
 
         return OauthTokenResponse.builder()
-            .user(maskedUser)
+            .user(user)
             .scopes(oauthLogin.scopes())
             .build();
     }

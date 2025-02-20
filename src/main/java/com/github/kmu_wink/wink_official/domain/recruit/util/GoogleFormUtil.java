@@ -112,13 +112,13 @@ public class GoogleFormUtil {
                 .queryString("entry." + entry.get(FormEntryKeys.OUTINGS), String.join("\n", recruitForm.getOutings()))
                 .queryString("entry." + entry.get(FormEntryKeys.INTERVIEW_DATES), recruitForm.getInterviewDates().stream().map(date -> date.isEqual(LocalDate.of(1, 1, 1)) ? "기타" : formatDate(date)).toList());
 
-            if (recruitForm.getWhyCannotInterview() != null) request = request.queryString("entry." + entry.get(FormEntryKeys.WHY_CANNOT_INTERVIEW), recruitForm.getWhyCannotInterview());
-            if (recruitForm.getGithub() != null) request = request.queryString("entry." + entry.get(FormEntryKeys.GITHUB), recruitForm.getGithub());
+            if (Objects.nonNull(recruitForm.getWhyCannotInterview())) request = request.queryString("entry." + entry.get(FormEntryKeys.WHY_CANNOT_INTERVIEW), recruitForm.getWhyCannotInterview());
+            if (Objects.nonNull(recruitForm.getGithub())) request = request.queryString("entry." + entry.get(FormEntryKeys.GITHUB), recruitForm.getGithub());
             if (!recruitForm.getFrontendTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.FRONTEND_TECH_STACKS), recruitForm.getFrontendTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
             if (!recruitForm.getBackendTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.BACKEND_TECH_STACKS), recruitForm.getBackendTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
             if (!recruitForm.getDevOpsTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.DEV_OPS_TECH_STACKS), recruitForm.getDevOpsTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
             if (!recruitForm.getDesignTechStacks().isEmpty()) request.queryString("entry." + entry.get(FormEntryKeys.DESIGN_TECH_STACKS), recruitForm.getDesignTechStacks().stream().map(FormCheckbox::getDisplayName).toList());
-            if (recruitForm.getFavoriteProject() != null) request = request.queryString("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), recruitForm.getFavoriteProject());
+            if (Objects.nonNull(recruitForm.getFavoriteProject())) request = request.queryString("entry." + entry.get(FormEntryKeys.FAVORITE_PROJECT), recruitForm.getFavoriteProject());
 
             if (!request.asString().getBody().contains("응답이 기록되었습니다.")) {
                 throw new InvalidRecruitFormException();

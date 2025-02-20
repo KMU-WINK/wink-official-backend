@@ -37,10 +37,5 @@ out/
 .vscode/
 
 ### Configuration ###
-src/main/resources/config/*.yaml
-!src/main/resources/config/*.example.yaml
-!src/main/resources/config/*.fixed.yaml
-
-### Credential ###
-src/main/resources/credential/*.json
-!src/main/resources/credential/*.example.json
+src/main/resources/application.yaml
+src/main/resources/google-service-account.json

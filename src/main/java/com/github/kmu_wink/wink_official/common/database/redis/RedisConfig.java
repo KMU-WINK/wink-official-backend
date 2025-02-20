@@ -1,11 +1,14 @@
 package com.github.kmu_wink.wink_official.common.database.redis;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 import com.github.kmu_wink.wink_official.common.property.RedisProperty;
 
@@ -13,6 +16,13 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableRedisRepositories(
+    basePackages = "com.github.kmu_wink.wink_official",
+    includeFilters = @ComponentScan.Filter(
+        type = FilterType.REGEX,
+        pattern = ".*\\.repository\\..*Redis.*"
+    )
+)
 public class RedisConfig {
 
     private final RedisProperty redisProperty;

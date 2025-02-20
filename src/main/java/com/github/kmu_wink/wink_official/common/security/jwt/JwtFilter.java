@@ -1,6 +1,7 @@
 package com.github.kmu_wink.wink_official.common.security.jwt;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,7 @@ import com.github.kmu_wink.wink_official.domain.auth.exception.AccessTokenExpire
 import com.github.kmu_wink.wink_official.domain.auth.exception.AuthenticationFailException;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
+import com.google.common.base.Strings;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -41,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String accessToken = extractToken(request);
 
         try {
-            if (accessToken != null && jwtUtil.validateToken(accessToken)) {
+            if (Objects.nonNull(accessToken) && jwtUtil.validateToken(accessToken)) {
 
                 String id = jwtUtil.extractToken(accessToken);
                 User user = repository.findById(id)
@@ -66,7 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private String extractToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
 
-        return (authorization != null && authorization.startsWith("Bearer "))
+        return (!Strings.isNullOrEmpty(authorization) && authorization.startsWith("Bearer "))
                 ? authorization.substring(7)
                 : null;
     }

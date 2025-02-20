@@ -1,5 +1,0 @@
-app:
-  jwt:
-    key: secret
-    access-token-expiration-hours: 4
-    refresh-token-expiration-hours: 168

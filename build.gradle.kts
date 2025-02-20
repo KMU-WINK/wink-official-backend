@@ -1,16 +1,14 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.3.5"
+    id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.6"
 }
 
 group = "com.github.kmu_wink"
-version = "2.0"
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
