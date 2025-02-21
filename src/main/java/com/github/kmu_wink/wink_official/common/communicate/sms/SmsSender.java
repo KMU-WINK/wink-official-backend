@@ -34,7 +34,7 @@ public class SmsSender {
                 .field("remote_msg", smsObjects.stream().map(SmsObject::content).collect(Collectors.joining("__LINE__")))
                 .asString();
 
-            if (!response.getBody().startsWith("0000")) {
+            if (!response.getBody().startsWith("0000") && !response.getBody().startsWith("0004")) {
 
                 throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "문자 API 오류: %s".formatted(response.getBody().split("\\|")[0]));
             }

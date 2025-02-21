@@ -141,7 +141,7 @@ public class AdminRecruitFormService {
         LocalDateTime now = LocalDateTime.now();
         if (!now.isAfter(recruit.getInterviewEndDate().atTime(23, 59, 59))) throw new NowIsInterviewingException();
 
-        List<RecruitForm> forms = recruitFormRepository.findAllByRecruit(recruit);
+        List<RecruitForm> forms = recruitFormRepository.findAllByRecruit(recruit).stream().filter(RecruitForm::getPaperPass).toList();
         if (smsSender.remain() < forms.size()) throw new RemainSmsLackException();
 
         RecruitSms sms = recruitSmsRepository.findByRecruit(recruit);
