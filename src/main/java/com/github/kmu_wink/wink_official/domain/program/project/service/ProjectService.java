@@ -37,6 +37,7 @@ public class ProjectService {
 		Project project = Project.builder()
 			.author(user)
 			.title(dto.title())
+			.description(dto.description())
 			.image(dto.image())
 			.link(dto.link())
 			.build();
@@ -58,6 +59,7 @@ public class ProjectService {
 		}
 
 		project.setTitle(dto.title());
+		project.setDescription(dto.description());
 		project.setImage(dto.image());
 		project.setLink(dto.link());
 

@@ -25,6 +25,7 @@ public class AdminProjectService {
 		Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
 
 		project.setTitle(dto.title());
+		project.setDescription(dto.description());
 		project.setImage(dto.image());
 		project.setLink(dto.link());
 

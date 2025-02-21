@@ -21,6 +21,7 @@ public class Project extends BaseSchema {
 	@DBRef
 	User author;
 	String title;
+	String description;
 	String image;
 	String link;
 }

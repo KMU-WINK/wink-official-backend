@@ -17,6 +17,9 @@ public record CreateProjectRequest(
 	String image,
 
 	@NotBlank
+	String description,
+
+	@NotBlank
 	@Pattern(regexp = RegExp.GITHUB_PROJECT_URL_EXPRESSION, message = RegExp.GITHUB_PROJECT_URL_MESSAGE)
 	String link
 ) {
