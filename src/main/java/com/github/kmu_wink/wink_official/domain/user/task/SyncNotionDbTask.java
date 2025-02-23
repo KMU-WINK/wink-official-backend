@@ -1,7 +1,5 @@
 package com.github.kmu_wink.wink_official.domain.user.task;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,7 +34,7 @@ public class SyncNotionDbTask {
 
 	private final UserRepository userRepository;
 
-	@Scheduled(fixedDelay = 1000 * 60 * 5)
+	@Scheduled(fixedDelay = 1000 * 60)
 	private void run() {
 
 		getNotionDb().ifPresent(notionDbUsers -> {
@@ -55,7 +53,6 @@ public class SyncNotionDbTask {
 			notionDbUsers.stream()
 				.filter(x -> userMap.containsKey(x.id()))
 				.filter(x -> checkPageIsDiffer(x, userMap.get(x.id())))
-				.filter(this::checkUpdatedTime)
 				.forEach(x -> updatePage(x, userMap.get(x.id())));
 
 			userMap.entrySet().stream()
@@ -157,27 +154,6 @@ public class SyncNotionDbTask {
 		}
 	}
 
-	private boolean checkPageIsDiffer(NotionDbUser notionDbUser, User user) {
-
-		return !user.getName().equals(notionDbUser.name())
-			|| !user.getStudentId().equals(notionDbUser.studentId())
-			|| !user.getDepartment().equals(notionDbUser.department())
-			|| !user.getEmail().equals(notionDbUser.email())
-			|| !user.getPhoneNumber().equals(notionDbUser.phoneNumber())
-			|| !user.getRole().equals(notionDbUser.role())
-			|| user.isFee() != notionDbUser.fee();
-	}
-
-	private boolean checkUpdatedTime(NotionDbUser notionDbUser) {
-
-		LocalDateTime updatedAt = notionDbUser.updatedAt();
-		LocalDateTime now = LocalDateTime.now();
-
-		Duration duration = Duration.between(updatedAt, now);
-
-		return duration.getSeconds() > 90;
-	}
-
 	private void deletePage(NotionDbUser notionDbUser) {
 
 		try (UnirestInstance instance = Unirest.spawnInstance()) {
@@ -189,5 +165,16 @@ public class SyncNotionDbTask {
 
 			log.info("Delete user page. ({})", notionDbUser.notion());
 		}
+	}
+
+	private boolean checkPageIsDiffer(NotionDbUser notionDbUser, User user) {
+
+		return !user.getName().equals(notionDbUser.name())
+			|| !user.getStudentId().equals(notionDbUser.studentId())
+			|| !user.getDepartment().equals(notionDbUser.department())
+			|| !user.getEmail().equals(notionDbUser.email())
+			|| !user.getPhoneNumber().equals(notionDbUser.phoneNumber())
+			|| !user.getRole().equals(notionDbUser.role())
+			|| user.isFee() != notionDbUser.fee();
 	}
 }
