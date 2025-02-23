@@ -35,16 +35,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
     implementation("io.micrometer:micrometer-registry-prometheus")
 
-    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("com.auth0:java-jwt:4.5.0")
 
     implementation("io.awspring.cloud:spring-cloud-starter-aws:2.4.4")
     implementation("javax.xml.bind:jaxb-api:2.3.1")
 
-    implementation("com.google.apis:google-api-services-drive:v3-rev20241206-2.0.0")
-    implementation("com.google.apis:google-api-services-forms:v1-rev20241112-2.0.0")
+    implementation("com.google.apis:google-api-services-drive:v3-rev20250216-2.0.0")
+    implementation("com.google.apis:google-api-services-forms:v1-rev20250211-2.0.0")
 
     implementation("com.konghq:unirest-java-core:4.4.5")
     implementation("com.konghq:unirest-objectmapper-jackson:4.2.9")

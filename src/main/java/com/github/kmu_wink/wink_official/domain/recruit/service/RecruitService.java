@@ -21,7 +21,7 @@ import com.github.kmu_wink.wink_official.domain.recruit.dto.response.Duplication
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.AlreadyRecruitedException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.NotValidInterviewDatesException;
-import com.github.kmu_wink.wink_official.domain.recruit.exception.NotValidPeriodException;
+import com.github.kmu_wink.wink_official.domain.recruit.exception.NotValidRecruitPeriodException;
 import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitFormRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
@@ -91,7 +91,7 @@ public class RecruitService {
 
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(recruit.getRecruitStartDate().atStartOfDay()) || now.isAfter(recruit.getRecruitEndDate().atTime(23, 59, 59))) {
-            throw new NotValidPeriodException();
+            throw new NotValidRecruitPeriodException();
         }
 
         if (recruitFormRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent()

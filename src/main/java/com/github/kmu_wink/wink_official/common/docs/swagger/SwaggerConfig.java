@@ -1,11 +1,12 @@
 package com.github.kmu_wink.wink_official.common.docs.swagger;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
@@ -23,7 +24,7 @@ public class SwaggerConfig {
         return new Info()
                 .title("Wink 공식 홈페이지")
                 .description("국민대학교 소프트웨어융합대학 웹 학술 동아리 | WINK")
-                .version("1.0");
+                .version("2.0");
     }
 
     private SecurityScheme securityScheme() {
