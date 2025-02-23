@@ -1,4 +1,4 @@
-package com.github.kmu_wink.wink_official.domain.survey.controller;
+package com.github.kmu_wink.wink_official.domain.meeting.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,27 +7,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
-import com.github.kmu_wink.wink_official.domain.survey.dto.response.GetSurveyResponse;
-import com.github.kmu_wink.wink_official.domain.survey.service.SurveyService;
+import com.github.kmu_wink.wink_official.domain.meeting.dto.response.GetMettingResponse;
+import com.github.kmu_wink.wink_official.domain.meeting.service.MeetingService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/survey")
+@RequestMapping("/meeting")
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
-@Tag(name = "[Survey] Index")
-public class SurveyController {
+@Tag(name = "[Meeting] Index")
+public class MeetingController {
 
-	private final SurveyService surveyService;
+	private final MeetingService meetingService;
 
-	@GetMapping("/{surveyId}")
-	@Operation(summary = "설문 조회")
-	public ApiResponse<GetSurveyResponse> getSurvey(@PathVariable String surveyId) {
+	@GetMapping("/{meetingId}")
+	@Operation(summary = "정기 총회 조회")
+	public ApiResponse<GetMettingResponse> getMeeting(@PathVariable String meetingId) {
 
-		return ApiResponse.ok(surveyService.getSurvey(surveyId));
+		return ApiResponse.ok(meetingService.getMeeting(meetingId));
 	}
 }
 

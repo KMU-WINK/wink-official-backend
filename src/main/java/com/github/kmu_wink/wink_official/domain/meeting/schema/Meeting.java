@@ -1,12 +1,10 @@
-package com.github.kmu_wink.wink_official.domain.survey.schema;
+package com.github.kmu_wink.wink_official.domain.meeting.schema;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.github.kmu_wink.wink_official.common.database.mongo.BaseSchema;
-import com.github.kmu_wink.wink_official.domain.survey.admin.dto.request.CreateSurveyRequest;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,13 +16,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Document
-public class Survey extends BaseSchema {
+public class Meeting extends BaseSchema {
 
-    String title;
-    String description;
-
-    LocalDate start;
-    LocalDate end;
-
-    List<CreateSurveyRequest.FormItem> items;
+    LocalDate date;
 }
