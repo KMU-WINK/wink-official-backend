@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/recruit")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
-@Tag(name = "[Recuit] Admin")
+@Tag(name = "[Recruit] Admin")
 public class AdminRecruitController {
 
 	private final AdminRecruitService adminRecruitService;

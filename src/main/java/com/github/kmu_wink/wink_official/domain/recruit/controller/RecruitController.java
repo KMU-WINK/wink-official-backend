@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
-import com.github.kmu_wink.wink_official.domain.recruit.dto.request.RecruitFormRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.EmailCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.PhoneNumberCheckRequest;
+import com.github.kmu_wink.wink_official.domain.recruit.dto.request.RecruitFormRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.request.StudentIdCheckRequest;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.DuplicationCheckResponse;
 import com.github.kmu_wink.wink_official.domain.recruit.dto.response.GetRecruitResponse;
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/recruit")
 @RequiredArgsConstructor
-@Tag(name = "[Recuit] Index")
+@Tag(name = "[Recruit] Index")
 public class RecruitController {
 
     private final RecruitService recruitService;

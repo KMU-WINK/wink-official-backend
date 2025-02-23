@@ -16,6 +16,7 @@ import com.github.kmu_wink.wink_official.domain.survey.admin.dto.response.GetSur
 import com.github.kmu_wink.wink_official.domain.survey.admin.service.AdminSurveyService;
 import com.github.kmu_wink.wink_official.domain.survey.dto.response.GetSurveyResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,30 +31,35 @@ public class AdminSurveyController {
 	private final AdminSurveyService adminSurveyService;
 
 	@GetMapping
+	@Operation(summary = "설문 목록")
 	public ApiResponse<GetSurveysResponse> getSurveys() {
 
 		return ApiResponse.ok(adminSurveyService.getSurveys());
 	}
 
 	@GetMapping("/{surveyId}")
+	@Operation(summary = "설문 조회")
 	public ApiResponse<GetSurveyResponse> getSurvey(@PathVariable String surveyId) {
 
 		return ApiResponse.ok(adminSurveyService.getSurvey(surveyId));
 	}
 
 	@PostMapping
+	@Operation(summary = "설문 생성")
 	public ApiResponse<GetSurveyResponse> createSurvey(@RequestBody @Valid CreateSurveyRequest request) {
 
 		return ApiResponse.ok(adminSurveyService.createSurvey(request));
 	}
 
 	@PutMapping("/{surveyId}")
+	@Operation(summary = "설문 수정")
 	public ApiResponse<GetSurveyResponse> updateSurvey(@PathVariable String surveyId, @RequestBody @Valid CreateSurveyRequest request) {
 
 		return ApiResponse.ok(adminSurveyService.updateSurvey(surveyId, request));
 	}
 
 	@DeleteMapping("/{surveyId}")
+	@Operation(summary = "설문 삭제")
 	public ApiResponse<Void> deleteSurvey(@PathVariable String surveyId) {
 
 		adminSurveyService.deleteSurvey(surveyId);

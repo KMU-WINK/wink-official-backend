@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/recruit/{recruitId}/sms")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
-@Tag(name = "[Recuit] [SMS] Admin")
+@Tag(name = "[Recruit] [SMS] Admin")
 public class AdminRecruitSmsController {
 
 	private final AdminRecruitSmsService adminRecruitSmsService;

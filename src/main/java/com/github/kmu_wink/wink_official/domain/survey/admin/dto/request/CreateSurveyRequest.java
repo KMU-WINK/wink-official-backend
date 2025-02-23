@@ -5,8 +5,8 @@ import java.util.List;
 import com.github.kmu_wink.wink_official.common.validation.RegExp;
 import com.github.kmu_wink.wink_official.common.validation.custom.Enum;
 import com.github.kmu_wink.wink_official.domain.survey.admin.constant.SurveyItemType;
-import com.github.kmu_wink.wink_official.domain.survey.admin.util.validation.FormItemValidate;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +18,7 @@ public record CreateSurveyRequest(
 	@NotBlank
 	String title,
 
+	@Nullable
 	String description,
 
 	@NotBlank
@@ -34,7 +35,6 @@ public record CreateSurveyRequest(
 	List<FormItem> items
 ) {
 
-	@FormItemValidate
 	public record FormItem(
 
 		@NotBlank
@@ -44,13 +44,15 @@ public record CreateSurveyRequest(
 		@NotBlank
 		String title,
 
+		@Nullable
 		String description,
 
 		boolean require,
 
+		@NotNull
 		List<String> options,
 
-		Boolean other
+		boolean other
 	) {
 	}
 }
