@@ -47,4 +47,10 @@ public class LoggerFilter extends OncePerRequestFilter {
 
         return Strings.isNullOrEmpty(xfHeader) ? request.getRemoteAddr() : xfHeader.split(",")[0];
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        return "/api/actuator/prometheus".equals(request.getRequestURI());
+    }
 }

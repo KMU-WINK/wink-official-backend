@@ -45,18 +45,6 @@ public class SyncNotionDbTask {
 				.map(NotionDbUser::id)
 				.collect(Collectors.toSet());
 
-			// Delete pages that don't exist in user repository
-			for (NotionDbUser notionUser : notionDbUsers) {
-				if (!userMap.containsKey(notionUser.id())) {
-					try {
-						deletePage(notionUser);
-					} catch (Exception e) {
-						log.error("Failed to delete page for user {}: {}", notionUser.id(), e.getMessage());
-					}
-				}
-			}
-
-			// Update changed pages
 			for (NotionDbUser notionUser : notionDbUsers) {
 				if (userMap.containsKey(notionUser.id())) {
 					User user = userMap.get(notionUser.id());
@@ -70,7 +58,6 @@ public class SyncNotionDbTask {
 				}
 			}
 
-			// Create new pages
 			for (User user : userMap.values()) {
 				if (!notionSet.contains(user.getId())) {
 					try {
@@ -201,21 +188,6 @@ public class SyncNotionDbTask {
 			}
 
 			log.info("Updated user page. ({} {})", user.getStudentId(), user.getName());
-		}
-	}
-
-	private void deletePage(NotionDbUser notionDbUser) {
-		try (UnirestInstance instance = createUnirestInstance()) {
-			String url = "https://api.notion.com/v1/pages/%s".formatted(notionDbUser.notion());
-			HttpResponse<Empty> response = instance.patch(url)
-				.body(Map.ofEntries(Map.entry("archived", true)))
-				.asEmpty();
-
-			if (!response.isSuccess()) {
-				throw new RuntimeException("Failed to delete page. Status: " + response.getStatus());
-			}
-
-			log.info("Deleted user page. ({})", notionDbUser.notion());
 		}
 	}
 
