@@ -36,7 +36,6 @@ import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepositor
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
-import com.github.kmu_wink.wink_official.domain.user.task.SyncNotionDbTask;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,7 +54,6 @@ public class AuthService {
 
     private final EmailSender emailSender;
 
-    private final SyncNotionDbTask syncNotionDbTask;
     private final RandomString randomString;
 
     public LoginResponse login(LoginRequest dto) {
@@ -110,9 +108,7 @@ public class AuthService {
             .fee(false)
             .build();
 
-        user = userRepository.save(user);
-
-        syncNotionDbTask.manual(user);
+        userRepository.save(user);
     }
 
     public LoginResponse refresh(RefreshRequest dto) {

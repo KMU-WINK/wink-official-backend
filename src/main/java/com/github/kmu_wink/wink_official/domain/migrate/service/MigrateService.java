@@ -7,7 +7,6 @@ import com.github.kmu_wink.wink_official.domain.auth.exception.AlreadyRegistered
 import com.github.kmu_wink.wink_official.domain.migrate.dto.request.MigrateRequest;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
-import com.github.kmu_wink.wink_official.domain.user.task.SyncNotionDbTask;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +17,6 @@ public class MigrateService {
 	private final UserRepository userRepository;
 
 	private final PasswordEncoder encoder;
-	private final SyncNotionDbTask syncNotionDbTask;
 
 	public void migrate(MigrateRequest dto) {
 
@@ -42,6 +40,5 @@ public class MigrateService {
 			.build();
 
 		userRepository.save(user);
-		syncNotionDbTask.manual(user);
 	}
 }

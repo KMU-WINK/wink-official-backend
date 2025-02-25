@@ -14,14 +14,13 @@ import com.github.kmu_wink.wink_official.domain.user.admin.dto.request.UpdateReq
 import com.github.kmu_wink.wink_official.domain.user.admin.dto.response.AdminPreUserResponse;
 import com.github.kmu_wink.wink_official.domain.user.admin.dto.response.AdminPreUsersResponse;
 import com.github.kmu_wink.wink_official.domain.user.admin.dto.response.AdminUsersResponse;
-import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official.domain.user.admin.email.InviteTemplate;
+import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
 import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
-import com.github.kmu_wink.wink_official.domain.user.task.SyncNotionDbTask;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,8 +34,6 @@ public class AdminUserService {
 
     private final EmailSender emailSender;
     private final RandomString randomString;
-
-    private final SyncNotionDbTask syncNotionDbTask;
 
     public AdminUsersResponse getUsers(int page, String query) {
 
@@ -115,8 +112,6 @@ public class AdminUserService {
         user.setFee(dto.fee());
 
         user = userRepository.save(user);
-
-        syncNotionDbTask.manual(user);
 
         return UserResponse.builder()
             .user(user)
