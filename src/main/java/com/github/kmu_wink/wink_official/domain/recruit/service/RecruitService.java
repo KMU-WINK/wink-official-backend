@@ -27,7 +27,6 @@ import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitFormRe
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
-import com.github.kmu_wink.wink_official.domain.recruit.util.GoogleFormUtil;
 import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 
@@ -42,19 +41,11 @@ public class RecruitService {
     private final RecruitRepository recruitRepository;
     private final RecruitFormRepository recruitFormRepository;
 
-    private final GoogleFormUtil googleFormUtil;
-
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public GetRecruitResponse getLatestRecruit() {
 
         Recruit recruit = recruitRepository.findLatestRecruit().orElse(null);
-
-        if (Objects.nonNull(recruit)) {
-            recruit.setGoogleFormId(null);
-            recruit.setGoogleFormUri(null);
-            recruit.setGoogleFormResponseEntry(null);
-        }
 
         return GetRecruitResponse.builder()
             .recruit(recruit)
@@ -133,7 +124,6 @@ public class RecruitService {
             .interviewPass(null)
             .build();
 
-        googleFormUtil.createResponse(form);
         recruitFormRepository.save(form);
     }
 

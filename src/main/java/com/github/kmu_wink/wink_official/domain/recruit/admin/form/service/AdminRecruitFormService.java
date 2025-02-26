@@ -27,7 +27,6 @@ import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
 import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
-import com.google.common.base.Strings;
 
 import lombok.RequiredArgsConstructor;
 
@@ -82,7 +81,7 @@ public class AdminRecruitFormService {
         if (smsSender.remain() < forms.size()) throw new RemainSmsLackException();
 
         RecruitSms sms = recruitSmsRepository.findByRecruit(recruit);
-        if (Strings.isNullOrEmpty(sms.getPaperFail()) || Strings.isNullOrEmpty(sms.getPaperPass())) throw new SmsMessageIsEmptyException();
+        if (sms.getPaperFail() == null || sms.getPaperPass() == null) throw new SmsMessageIsEmptyException();
 
         smsSender.send(
             forms.stream()
@@ -145,7 +144,7 @@ public class AdminRecruitFormService {
         if (smsSender.remain() < forms.size()) throw new RemainSmsLackException();
 
         RecruitSms sms = recruitSmsRepository.findByRecruit(recruit);
-        if (Strings.isNullOrEmpty(sms.getPaperFail()) || Strings.isNullOrEmpty(sms.getPaperPass())) throw new SmsMessageIsEmptyException();
+        if (sms.getPaperFail() == null || sms.getPaperPass() == null) throw new SmsMessageIsEmptyException();
 
         smsSender.send(
             forms.stream()

@@ -2,6 +2,7 @@ package com.github.kmu_wink.wink_official.common.security.jwt;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,6 @@ import com.github.kmu_wink.wink_official.common.property.JwtProperty;
 import com.github.kmu_wink.wink_official.domain.auth.repository.RefreshTokenRedisRepository;
 import com.github.kmu_wink.wink_official.domain.auth.schema.RefreshToken;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
-import com.google.common.base.Strings;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +80,7 @@ public class JwtUtil {
 
     public boolean validateToken(String token) throws TokenExpiredException {
 
-        if (Strings.isNullOrEmpty(token)) {
+        if (Objects.isNull(token)) {
 
             return false;
         }

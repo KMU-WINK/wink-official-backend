@@ -45,9 +45,6 @@ app:
       credential:
         accessKey: ${AWS_ACCESS_KEY}
         secretKey: ${AWS_SECRET_KEY}
-    google:
-      application-name: ${GOOGLE_APP_NAME}
-      owner-email: ${GOOGLE_OWNER_EMAIL}
   sms:
     id: ${SMS_ID}
     pw: ${SMS_PASSWORD}

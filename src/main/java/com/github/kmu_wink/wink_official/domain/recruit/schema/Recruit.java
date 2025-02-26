@@ -1,12 +1,10 @@
 package com.github.kmu_wink.wink_official.domain.recruit.schema;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.github.kmu_wink.wink_official.common.database.mongo.BaseSchema;
-import com.github.kmu_wink.wink_official.domain.recruit.constant.FormEntryKeys;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,10 +20,6 @@ public class Recruit extends BaseSchema {
 
     int year;
     int semester;
-
-    String googleFormId;
-    String googleFormUri;
-    Map<FormEntryKeys, String> googleFormResponseEntry;
 
     LocalDate recruitStartDate;
     LocalDate recruitEndDate;

@@ -17,7 +17,6 @@ import com.github.kmu_wink.wink_official.domain.auth.exception.AccessTokenExpire
 import com.github.kmu_wink.wink_official.domain.auth.exception.AuthenticationFailException;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
-import com.google.common.base.Strings;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -68,7 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private String extractToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
 
-        return (!Strings.isNullOrEmpty(authorization) && authorization.startsWith("Bearer "))
+        return (authorization != null && authorization.startsWith("Bearer "))
                 ? authorization.substring(7)
                 : null;
     }
