@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk:17-jre-latest
+FROM container-registry.oracle.com/graalvm/jdk:21
 
 WORKDIR /app
 
