@@ -26,6 +26,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     default List<User> findAllWithMask(MongoTemplate mongoTemplate) {
         Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("role").ne("ADMIN")),
             Aggregation.addFields().addField("roleOrder")
                 .withValue(new Document("$indexOfArray", Arrays.asList(roleOrderList, "$role")))
                 .build(),
@@ -41,6 +42,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     default Page<User> findAllSearch(String query, Pageable pageable, MongoTemplate mongoTemplate) {
         Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("role").ne("ADMIN")),
             Aggregation.match(new Criteria().orOperator(
                 Criteria.where("name").regex(query, "i"),
                 Criteria.where("studentId").regex(query, "i"),
