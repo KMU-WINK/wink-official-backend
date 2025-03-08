@@ -14,12 +14,12 @@ import lombok.Builder;
 public record RefreshToken(
 
 	@Id
-	Long id,
+	long id,
 
 	@Indexed
 	String token,
 
-	String userId,
+	long userId,
 
 	@TimeToLive(unit = TimeUnit.HOURS)
 	long ttl

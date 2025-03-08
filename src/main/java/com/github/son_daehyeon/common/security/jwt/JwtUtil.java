@@ -36,7 +36,7 @@ public class JwtUtil {
         return generateAccessToken(user.getId());
     }
 
-    public String generateAccessToken(String userId) {
+    public String generateAccessToken(long userId) {
 
         return JWT.create()
             .withIssuedAt(Instant.now())
@@ -50,7 +50,7 @@ public class JwtUtil {
         return generateRefreshToken(user.getId());
     }
 
-    public String generateRefreshToken(String userId) {
+    public String generateRefreshToken(long userId) {
 
         String token = JWT.create()
             .withIssuedAt(Instant.now())
@@ -68,13 +68,13 @@ public class JwtUtil {
         return token;
     }
 
-    public String extractToken(String token) {
+    public long extractToken(String token) {
 
         return JWT.require(algorithm)
             .build()
             .verify(token)
             .getClaim("id")
-            .asString();
+            .asLong();
     }
 
     public boolean validateToken(String token) throws TokenExpiredException {

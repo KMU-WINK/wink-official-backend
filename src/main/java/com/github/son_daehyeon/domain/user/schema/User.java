@@ -4,27 +4,36 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.github.son_daehyeon.common.database.mongo.BaseSchema;
+import com.github.son_daehyeon.common.database.mariadb.BaseSchema;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Data
+@Entity
 @SuperBuilder
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Table(name = "user")
 public class User extends BaseSchema {
 
-    @Indexed(unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     String email;
 
+    @Column(name = "password", nullable = false)
     String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
     Role role;
 
     public enum Role {

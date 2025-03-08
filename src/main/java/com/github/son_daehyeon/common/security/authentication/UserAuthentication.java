@@ -52,6 +52,6 @@ public class UserAuthentication implements Authentication {
     @Override
     public String getName() {
 
-        return user.getId();
+        return Long.toString(user.getId());
     }
 }

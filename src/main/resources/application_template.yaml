@@ -9,11 +9,20 @@ server:
 spring:
   mvc:
     log-resolved-exception: false
+  datasource:
+    url: jdbc:mariadb://localhost:3306/mydb
+    username: myuser
+    password: mypassword
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: test
     redis:
       host: localhost
       port: 6379

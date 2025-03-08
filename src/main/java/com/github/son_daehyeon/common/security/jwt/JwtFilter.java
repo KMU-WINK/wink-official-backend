@@ -43,10 +43,8 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             if (accessToken != null && jwtUtil.validateToken(accessToken)) {
 
-                String id = jwtUtil.extractToken(accessToken);
-                User user = repository.findById(id)
-                    .orElseThrow(AuthenticationFailException::new);
-
+                long id = jwtUtil.extractToken(accessToken);
+                User user = repository.findById(id).orElseThrow(AuthenticationFailException::new);
                 UserAuthentication authentication = new UserAuthentication(user);
                 authentication.setAuthenticated(true);
 
