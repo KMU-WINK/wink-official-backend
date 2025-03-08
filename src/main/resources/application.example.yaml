@@ -19,12 +19,8 @@ spring:
             enable: true
   data:
     mongodb:
-      host: ${MONGODB_HOST}
-      port: 27017
-      username: ${MONGODB_USERNAME}
-      password: ${MONGODB_PASSWORD}
+      uri: ${MONGODB_URI}
       database: ${MONGODB_DATABASE}
-      authentication-database: admin
     redis:
       host: ${REDIS_HOST}
       password: ${REDIS_PASSWORD}
