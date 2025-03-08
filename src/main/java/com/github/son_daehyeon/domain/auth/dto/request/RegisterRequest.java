@@ -1,6 +1,6 @@
 package com.github.son_daehyeon.domain.auth.dto.request;
 
-import com.github.son_daehyeon.common.validation.RegExp;
+import com.github.son_daehyeon.global.validation.RegExp;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

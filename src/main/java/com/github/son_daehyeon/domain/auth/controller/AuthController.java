@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.github.son_daehyeon.common.api.ApiController;
-import com.github.son_daehyeon.common.api.ApiResponse;
-import com.github.son_daehyeon.common.api.permission.MemberPermission;
+import com.github.son_daehyeon.global.api.ApiController;
+import com.github.son_daehyeon.global.api.ApiResponse;
+import com.github.son_daehyeon.global.api.permission.MemberPermission;
 import com.github.son_daehyeon.domain.auth.dto.request.LoginRequest;
 import com.github.son_daehyeon.domain.auth.dto.request.RefreshTokenRequest;
 import com.github.son_daehyeon.domain.auth.dto.request.RegisterRequest;

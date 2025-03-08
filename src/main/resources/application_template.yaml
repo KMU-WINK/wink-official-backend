@@ -1,6 +1,5 @@
 server:
   servlet:
-    context-path: /api
     encoding:
       charset: UTF-8
       enabled: true
@@ -22,13 +21,37 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    open-in-view: false
   data:
     redis:
       host: localhost
       port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: test@gmail.com
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 app:
   jwt:
-    key: (secret-key)
+    key: secret
     access-token-expiration-hours: 1
     refresh-token-expiration-hours: 720
+  cloud:
+    aws:
+      region: ap-northeast-2
+      s3:
+        bucket: bucket
+      credential:
+        accessKey: access
+        secretKey: secret
+  sms:
+    id: test
+    pw: test
+    phoneNumber: 010-0000-0000

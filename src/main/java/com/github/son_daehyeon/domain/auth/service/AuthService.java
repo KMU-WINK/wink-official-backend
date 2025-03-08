@@ -4,8 +4,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.github.son_daehyeon.common.security.authentication.UserAuthentication;
-import com.github.son_daehyeon.common.security.jwt.JwtUtil;
+import com.github.son_daehyeon.global.security.authentication.UserAuthentication;
+import com.github.son_daehyeon.global.security.jwt.JwtUtil;
 import com.github.son_daehyeon.domain.auth.dto.request.LoginRequest;
 import com.github.son_daehyeon.domain.auth.dto.request.RefreshTokenRequest;
 import com.github.son_daehyeon.domain.auth.dto.request.RegisterRequest;

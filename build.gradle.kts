@@ -30,9 +30,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
     implementation("com.auth0:java-jwt:4.4.0")
+
+    implementation("com.konghq:unirest-java-core:4.4.5")
+    implementation("com.konghq:unirest-objectmapper-jackson:4.2.9")
 }

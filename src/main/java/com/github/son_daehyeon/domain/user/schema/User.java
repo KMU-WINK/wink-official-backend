@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.github.son_daehyeon.common.database.mariadb.BaseSchema;
+import com.github.son_daehyeon.global.database.mariadb.BaseSchema;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

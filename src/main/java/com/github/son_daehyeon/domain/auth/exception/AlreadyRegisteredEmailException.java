@@ -2,7 +2,7 @@ package com.github.son_daehyeon.domain.auth.exception;
 
 import org.springframework.http.HttpStatus;
 
-import com.github.son_daehyeon.common.api.ApiException;
+import com.github.son_daehyeon.global.api.ApiException;
 
 public class AlreadyRegisteredEmailException extends ApiException {
 
