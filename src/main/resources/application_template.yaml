@@ -1,0 +1,25 @@
+server:
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force-response: true
+
+spring:
+  mvc:
+    log-resolved-exception: false
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: test
+    redis:
+      host: localhost
+      port: 6379
+
+app:
+  jwt:
+    key: (secret-key)
+    access-token-expiration-hours: 1
+    refresh-token-expiration-hours: 720
