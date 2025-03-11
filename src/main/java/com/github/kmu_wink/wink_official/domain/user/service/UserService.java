@@ -1,6 +1,7 @@
 package com.github.kmu_wink.wink_official.domain.user.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,14 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.external.aws.s3.S3Service;
-import com.github.kmu_wink.wink_official.common.property.AwsProperty;
 import com.github.kmu_wink.wink_official.common.security.authentication.UserAuthentication;
+import com.github.kmu_wink.wink_official.domain.program.upload.dto.response.UploadImageResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyInfoRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyPasswordRequest;
-import com.github.kmu_wink.wink_official.domain.user.dto.response.UpdateMyAvatarResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UsersResponse;
-import com.github.kmu_wink.wink_official.domain.user.exception.UserNotFoundException;
 import com.github.kmu_wink.wink_official.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 
@@ -31,7 +30,6 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder encoder;
 
-    private final AwsProperty awsProperty;
     private final S3Service s3Service;
 
     public UsersResponse getUsers() {
@@ -45,6 +43,7 @@ public class UserService {
 
     public UserResponse updateMyInfo(User user, UpdateMyInfoRequest dto) {
 
+        user.setAvatar(dto.avatar());
         user.setDescription(dto.description());
         user.getSocial().setGithub(dto.github());
         user.getSocial().setInstagram(dto.instagram());
@@ -57,11 +56,11 @@ public class UserService {
             .build();
     }
 
-    public UpdateMyAvatarResponse updateMyAvatar(User user) {
+    public UploadImageResponse uploadMyAvatar() {
 
-        String url = s3Service.generatePresignedUrl("avatar/original/%s".formatted(user.getId()));
+        String url = s3Service.generatePresignedUrl("avatar/%s".formatted(UUID.randomUUID()));
 
-        return UpdateMyAvatarResponse.builder()
+        return UploadImageResponse.builder()
                 .url(url)
                 .build();
     }
@@ -91,18 +90,6 @@ public class UserService {
         authenticationManager.authenticate(authentication);
 
         user.setPassword(encoder.encode(dto.newPassword()));
-
-        userRepository.save(user);
-    }
-
-    public void awsCallback(String userId) {
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
-        String bucket = awsProperty.getS3().getBucket();
-        String region = awsProperty.getRegion();
-
-        user.setAvatar("https://%s.s3.%s.amazonaws.com/avatar/%s.webp".formatted(bucket, region, userId));
 
         userRepository.save(user);
     }

@@ -11,6 +11,10 @@ import lombok.Builder;
 public record UpdateMyInfoRequest(
 
         @Nullable
+        @Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
+        String avatar,
+
+        @Nullable
         @Size(max = 30)
         String description,
 

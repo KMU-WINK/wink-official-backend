@@ -8,19 +8,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.kmu_wink.wink_official.common.api.dto.response.ApiResponse;
+import com.github.kmu_wink.wink_official.domain.program.upload.dto.response.UploadImageResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyInfoRequest;
 import com.github.kmu_wink.wink_official.domain.user.dto.request.UpdateMyPasswordRequest;
-import com.github.kmu_wink.wink_official.domain.user.dto.response.UpdateMyAvatarResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official.domain.user.dto.response.UsersResponse;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 import com.github.kmu_wink.wink_official.domain.user.service.UserService;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -50,11 +48,11 @@ public class UserController {
     }
 
     @PostMapping("/avatar")
-    @Operation(summary = "내 프로필 사진 수정")
+    @Operation(summary = "내 프로필 사진 업로드")
     @PreAuthorize("isAuthenticated()")
-    public ApiResponse<UpdateMyAvatarResponse> updateMyAvatar(@AuthenticationPrincipal User user) {
+    public ApiResponse<UploadImageResponse> uploadMyAvatar() {
 
-        return ApiResponse.ok(userService.updateMyAvatar(user));
+        return ApiResponse.ok(userService.uploadMyAvatar());
     }
 
     @DeleteMapping("/avatar")
@@ -73,12 +71,5 @@ public class UserController {
         userService.updateMyPassword(user, request);
 
         return ApiResponse.ok();
-    }
-
-    @GetMapping("/callback/aws")
-    @Hidden
-    public void awsCallback(@RequestParam String userId) {
-
-        userService.awsCallback(userId);
     }
 }
