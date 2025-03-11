@@ -13,7 +13,6 @@ import com.github.kmu_wink.wink_official.domain.recruit.admin.form.dto.response.
 import com.github.kmu_wink.wink_official.domain.recruit.admin.form.exception.AlreadyInterviewEndedException;
 import com.github.kmu_wink.wink_official.domain.recruit.admin.form.exception.AlreadyPaperEndedException;
 import com.github.kmu_wink.wink_official.domain.recruit.admin.form.exception.ItsPaperFailedException;
-import com.github.kmu_wink.wink_official.domain.recruit.admin.form.exception.NowIsInterviewingException;
 import com.github.kmu_wink.wink_official.domain.recruit.admin.form.exception.NowIsRecruitingException;
 import com.github.kmu_wink.wink_official.domain.recruit.admin.form.exception.RecruitFormNotFoundException;
 import com.github.kmu_wink.wink_official.domain.recruit.admin.form.exception.SmsMessageIsEmptyException;
@@ -164,9 +163,6 @@ public class AdminRecruitFormService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
         if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
-
-        LocalDateTime now = LocalDateTime.now();
-        if (!now.isAfter(recruit.getInterviewEndDate().atTime(23, 59, 59))) throw new NowIsInterviewingException();
 
         List<RecruitForm> forms = recruitFormRepository.findAllByRecruit(recruit).stream().filter(RecruitForm::getPaperPass).toList();
         if (smsSender.remain() < forms.size()) throw new RemainSmsLackException();
