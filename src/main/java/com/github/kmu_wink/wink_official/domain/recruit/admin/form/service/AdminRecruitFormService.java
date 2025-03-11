@@ -43,6 +43,19 @@ public class AdminRecruitFormService {
 
     private final RandomString randomString;
 
+    public void paperClear(String recruitId, String formId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
+
+        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit).orElseThrow(RecruitFormNotFoundException::new);
+
+        recruitForm.setPaperPass(null);
+
+        recruitFormRepository.save(recruitForm);
+    }
+
     public void paperPass(String recruitId, String formId) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
@@ -100,6 +113,21 @@ public class AdminRecruitFormService {
         recruit.setStep(Recruit.Step.PAPER_END);
 
         recruitRepository.save(recruit);
+    }
+
+    public void interviewClear(String recruitId, String formId) {
+
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+
+        if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
+
+        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit).orElseThrow(RecruitFormNotFoundException::new);
+
+        if (!recruitForm.getPaperPass()) throw new ItsPaperFailedException();
+
+        recruitForm.setInterviewPass(null);
+
+        recruitFormRepository.save(recruitForm);
     }
 
     public void interviewPass(String recruitId, String formId) {

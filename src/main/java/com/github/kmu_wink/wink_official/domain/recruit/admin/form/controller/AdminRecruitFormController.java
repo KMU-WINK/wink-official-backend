@@ -31,6 +31,15 @@ public class AdminRecruitFormController {
 		return ApiResponse.ok(adminRecruitFormService.getForms(recruitId));
 	}
 
+	@PostMapping("/{formId}/paper/clear")
+	@Operation(summary = "서류 합격 초기화")
+	public ApiResponse<Void> paperClear(@PathVariable String recruitId, @PathVariable String formId) {
+
+		adminRecruitFormService.paperClear(recruitId, formId);
+
+		return ApiResponse.ok();
+	}
+
 	@PostMapping("/{formId}/paper/pass")
 	@Operation(summary = "서류 합격 처리")
 	public ApiResponse<Void> paperPass(@PathVariable String recruitId, @PathVariable String formId) {
@@ -54,6 +63,15 @@ public class AdminRecruitFormController {
 	public ApiResponse<Void> finalizePaper(@PathVariable String recruitId) {
 
 		adminRecruitFormService.finalizePaper(recruitId);
+
+		return ApiResponse.ok();
+	}
+
+	@PostMapping("/{formId}/interview/clear")
+	@Operation(summary = "면접 합격 초기화")
+	public ApiResponse<Void> interviewClear(@PathVariable String recruitId, @PathVariable String formId) {
+
+		adminRecruitFormService.interviewClear(recruitId, formId);
 
 		return ApiResponse.ok();
 	}
