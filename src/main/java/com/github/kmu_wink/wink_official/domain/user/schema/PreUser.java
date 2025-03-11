@@ -15,4 +15,5 @@ import lombok.experimental.SuperBuilder;
 public class PreUser extends BaseUser {
 
     String token;
+    boolean test;
 }

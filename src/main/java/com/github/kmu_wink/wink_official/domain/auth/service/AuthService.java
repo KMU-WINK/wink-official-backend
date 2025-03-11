@@ -26,6 +26,7 @@ import com.github.kmu_wink.wink_official.domain.auth.exception.AuthenticationFai
 import com.github.kmu_wink.wink_official.domain.auth.exception.InvalidPasswordResetTokenException;
 import com.github.kmu_wink.wink_official.domain.auth.exception.InvalidRefreshTokenException;
 import com.github.kmu_wink.wink_official.domain.auth.exception.InvalidRegisterTokenException;
+import com.github.kmu_wink.wink_official.domain.auth.exception.TestUserCannotRealRegisterException;
 import com.github.kmu_wink.wink_official.domain.auth.repository.PasswordResetTokenRedisRepository;
 import com.github.kmu_wink.wink_official.domain.auth.repository.RefreshTokenRedisRepository;
 import com.github.kmu_wink.wink_official.domain.auth.schema.PasswordResetToken;
@@ -88,6 +89,11 @@ public class AuthService {
         PreUser preUser = preUserRepository.findByToken(dto.token()).orElseThrow(InvalidRegisterTokenException::new);
 
         preUserRepository.delete(preUser);
+
+        if (preUser.isTest()) {
+
+            throw new TestUserCannotRealRegisterException();
+        }
 
         if (userRepository.findByEmail(preUser.getEmail()).isPresent()
             || userRepository.findByStudentId(preUser.getStudentId()).isPresent()

@@ -165,6 +165,7 @@ public class AdminRecruitFormService {
                             .department(form.getDepartment())
                             .phoneNumber(form.getPhoneNumber())
                             .token(randomString.generate(128))
+                            .test(false)
                             .build()
                     );
 

@@ -2,12 +2,12 @@
 package com.github.kmu_wink.wink_official.domain.recruit.admin.sms.service;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.github.kmu_wink.wink_official.common.communicate.sms.SmsObject;
 import com.github.kmu_wink.wink_official.common.communicate.sms.SmsSender;
+import com.github.kmu_wink.wink_official.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official.domain.recruit.admin.form.exception.SmsMessageIsEmptyException;
 import com.github.kmu_wink.wink_official.domain.recruit.admin.sms.constant.TestSmsField;
 import com.github.kmu_wink.wink_official.domain.recruit.admin.sms.dto.request.SendTestSmsRequest;
@@ -20,6 +20,7 @@ import com.github.kmu_wink.wink_official.domain.recruit.exception.RecruitNotFoun
 import com.github.kmu_wink.wink_official.domain.recruit.repository.RecruitRepository;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.Recruit;
 import com.github.kmu_wink.wink_official.domain.recruit.schema.RecruitForm;
+import com.github.kmu_wink.wink_official.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official.domain.user.schema.User;
 
@@ -31,7 +32,9 @@ public class AdminRecruitSmsService {
 
     private final RecruitRepository recruitRepository;
     private final RecruitSmsRepository recruitSmsRepository;
+    private final PreUserRepository preUserRepository;
 
+    private final RandomString randomString;
     private final SmsSender smsSender;
 
     public GetRecruitSmsResponse getRecruitSms(String recruitId) {
@@ -81,14 +84,17 @@ public class AdminRecruitSmsService {
         String transform = field.equals(TestSmsField.FINAL_PASS)
             ? RecruitSms.transform(
                 content,
-                PreUser.builder()
-                    .name(user.getName())
-                    .studentId(user.getStudentId())
-                    .department(user.getDepartment())
-                    .email(user.getEmail())
-                    .phoneNumber(user.getPhoneNumber())
-                    .token(UUID.randomUUID().toString())
-                    .build()
+                preUserRepository.save(
+                    PreUser.builder()
+                        .name(user.getName() + " (테스트)")
+                        .studentId(user.getStudentId())
+                        .department(user.getDepartment())
+                        .email(user.getEmail())
+                        .phoneNumber(user.getPhoneNumber())
+                        .token(randomString.generate(128))
+                        .test(true)
+                        .build()
+                )
             )
             : RecruitSms.transform(
                 content,

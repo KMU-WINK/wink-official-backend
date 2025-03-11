@@ -82,6 +82,7 @@ public class AdminUserService {
                 .email(dto.email())
                 .phoneNumber(dto.phoneNumber())
                 .token(randomString.generate(128))
+                .test(false)
                 .build();
 
         preUser = preUserRepository.save(preUser);
