@@ -41,11 +41,11 @@ public record RecruitFormRequest(
         String phoneNumber,
 
         @NotBlank
-        @Size(min = 100, max = 500)
+        @Size(min = 300, max = 500)
         String jiwonDonggi,
 
         @NotBlank
-        @Size(min = 100, max = 500)
+        @Size(min = 300, max = 500)
         String selfIntroduce,
 
         @NotNull
@@ -75,7 +75,7 @@ public record RecruitFormRequest(
         List<@Enum(enumClass = DesignTechStack.class) String> designTechStacks,
 
         @Nullable
-        @Size(max = 700)
+        @Size(max = 750)
         String favoriteProject
 ) {
 }
