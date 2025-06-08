@@ -1,7 +1,6 @@
 server:
   forward-headers-strategy: NATIVE
   servlet:
-    context-path: /api
     encoding:
       charset: UTF-8
       force-response: true

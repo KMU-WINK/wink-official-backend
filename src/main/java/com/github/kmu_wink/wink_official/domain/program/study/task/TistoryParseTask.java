@@ -38,7 +38,6 @@ public class TistoryParseTask {
 		for (int index = localLatestIndex + 1; index <= remoteLatestIndex; ++index) {
 			try {
 				Document document = Jsoup.connect("https://cs-kookmin-club.tistory.com/" + index).get();
-                System.out.println("https://cs-kookmin-club.tistory.com/" + index);
 
 				Optional<String> optionalCategory = transferWinkCategory(document);
 				if (optionalCategory.isEmpty()) continue;
