@@ -1,11 +1,10 @@
 package com.github.kmu_wink.wink_official.domain.program.study.task;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-import java.util.Optional;
-
+import com.github.kmu_wink.wink_official.domain.program.study.repository.StudyRepository;
+import com.github.kmu_wink.wink_official.domain.program.study.schema.Study;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,12 +13,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.github.kmu_wink.wink_official.domain.program.study.repository.StudyRepository;
-import com.github.kmu_wink.wink_official.domain.program.study.schema.Study;
-
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -40,6 +38,7 @@ public class TistoryParseTask {
 		for (int index = localLatestIndex + 1; index <= remoteLatestIndex; ++index) {
 			try {
 				Document document = Jsoup.connect("https://cs-kookmin-club.tistory.com/" + index).get();
+                System.out.println("https://cs-kookmin-club.tistory.com/" + index);
 
 				Optional<String> optionalCategory = transferWinkCategory(document);
 				if (optionalCategory.isEmpty()) continue;
@@ -48,8 +47,8 @@ public class TistoryParseTask {
 				String author = text(document, "#content > div > div.hgroup > div.post-meta > span.author");
 				String _date = text(document, "#content > div > div.hgroup > div.post-meta > span.date");
 				LocalDateTime date = LocalDateTime.parse(_date, formatter);
-				String content = text(document, "#content > div > div.entry-content > div.tt_article_useless_p_margin.contents_style");
-				Optional<String> image = firstImage(document, "#content > div > div.entry-content > div.tt_article_useless_p_margin.contents_style");
+				String content = text(document, "#content > div > div.entry-content > div.contents_style");
+				Optional<String> image = firstImage(document, "#content > div > div.entry-content > div.contents_style");
 				content = content.replaceAll("[\\s\\n\\t]+", " ")
 					.trim()
 					.substring(0, Math.min(content.length(), 300));
