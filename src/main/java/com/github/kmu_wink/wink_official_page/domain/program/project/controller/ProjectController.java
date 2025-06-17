@@ -6,11 +6,11 @@ import com.github.kmu_wink.wink_official_page.domain.program.project.dto.respons
 import com.github.kmu_wink.wink_official_page.domain.program.project.service.ProjectService;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.global.response.ApiResponse;
+import com.github.kmu_wink.wink_official_page.global.security.guard.IsMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
+    @IsMember
     @Operation(summary = "프로젝트 생성")
     public ApiResponse<GetProjectResponse> createProject(
             @AuthenticationPrincipal User user,
@@ -52,7 +52,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @IsMember
     @Operation(summary = "프로젝트 수정")
     public ApiResponse<GetProjectResponse> updateProject(
             @AuthenticationPrincipal User user,
@@ -64,7 +64,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @IsMember
     @Operation(summary = "프로젝트 삭제")
     public ApiResponse<Void> deleteProject(@AuthenticationPrincipal User user, @PathVariable String id) {
 

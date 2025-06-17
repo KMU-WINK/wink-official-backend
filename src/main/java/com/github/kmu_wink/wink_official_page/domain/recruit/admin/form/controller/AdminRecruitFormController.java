@@ -3,10 +3,10 @@ package com.github.kmu_wink.wink_official_page.domain.recruit.admin.form.control
 import com.github.kmu_wink.wink_official_page.domain.recruit.admin.form.dto.response.GetFormsResponse;
 import com.github.kmu_wink.wink_official_page.domain.recruit.admin.form.service.AdminRecruitFormService;
 import com.github.kmu_wink.wink_official_page.global.response.ApiResponse;
+import com.github.kmu_wink.wink_official_page.global.security.guard.IsAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/recruit/{recruitId}/form")
-@PreAuthorize("hasRole('ADMIN')")
+@IsAdmin
 @RequiredArgsConstructor
 @Tag(name = "[Recruit] [Form] Admin")
 public class AdminRecruitFormController {

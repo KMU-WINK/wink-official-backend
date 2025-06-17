@@ -8,11 +8,11 @@ import com.github.kmu_wink.wink_official_page.domain.user.admin.dto.response.Adm
 import com.github.kmu_wink.wink_official_page.domain.user.admin.service.AdminUserService;
 import com.github.kmu_wink.wink_official_page.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official_page.global.response.ApiResponse;
+import com.github.kmu_wink.wink_official_page.global.security.guard.IsAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/user")
-@PreAuthorize("hasRole('ADMIN')")
+@IsAdmin
 @RequiredArgsConstructor
 @Tag(name = "[User] Admin")
 public class AdminUserController {

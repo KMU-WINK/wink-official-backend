@@ -4,11 +4,11 @@ import com.github.kmu_wink.wink_official_page.domain.program.project.admin.servi
 import com.github.kmu_wink.wink_official_page.domain.program.project.dto.request.CreateProjectRequest;
 import com.github.kmu_wink.wink_official_page.domain.program.project.dto.response.GetProjectResponse;
 import com.github.kmu_wink.wink_official_page.global.response.ApiResponse;
+import com.github.kmu_wink.wink_official_page.global.security.guard.IsAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/program/project")
-@PreAuthorize("hasRole('ADMIN')")
+@IsAdmin
 @RequiredArgsConstructor
 @Tag(name = "[Program] [Project] Admin")
 public class AdminProjectController {

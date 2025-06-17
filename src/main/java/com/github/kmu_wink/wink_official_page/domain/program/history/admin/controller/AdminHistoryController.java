@@ -4,11 +4,11 @@ import com.github.kmu_wink.wink_official_page.domain.program.history.admin.dto.r
 import com.github.kmu_wink.wink_official_page.domain.program.history.admin.dto.response.GetHistoryResponse;
 import com.github.kmu_wink.wink_official_page.domain.program.history.admin.service.AdminHistoryService;
 import com.github.kmu_wink.wink_official_page.global.response.ApiResponse;
+import com.github.kmu_wink.wink_official_page.global.security.guard.IsAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/program/history")
-@PreAuthorize("hasRole('ADMIN')")
+@IsAdmin
 @RequiredArgsConstructor
 @Tag(name = "[Program] [History] Admin")
 public class AdminHistoryController {

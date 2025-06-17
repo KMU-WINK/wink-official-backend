@@ -5,11 +5,11 @@ import com.github.kmu_wink.wink_official_page.domain.program.activity.admin.dto.
 import com.github.kmu_wink.wink_official_page.domain.program.activity.admin.dto.response.GetActivityResponse;
 import com.github.kmu_wink.wink_official_page.domain.program.activity.admin.service.AdminActivityService;
 import com.github.kmu_wink.wink_official_page.global.response.ApiResponse;
+import com.github.kmu_wink.wink_official_page.global.security.guard.IsAdmin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/program/activity")
-@PreAuthorize("hasRole('ADMIN')")
+@IsAdmin
 @RequiredArgsConstructor
 @Tag(name = "[Program] [Activity] Admin")
 public class AdminActivityController {

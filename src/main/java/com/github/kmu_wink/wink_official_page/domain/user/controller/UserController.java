@@ -8,11 +8,11 @@ import com.github.kmu_wink.wink_official_page.domain.user.dto.response.UsersResp
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.domain.user.service.UserService;
 import com.github.kmu_wink.wink_official_page.global.response.ApiResponse;
+import com.github.kmu_wink.wink_official_page.global.security.guard.IsMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +39,7 @@ public class UserController {
 
     @PutMapping("/info")
     @Operation(summary = "내 정보 수정")
-    @PreAuthorize("isAuthenticated()")
+    @IsMember
     public ApiResponse<UserResponse> updateMyInfo(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UpdateMyInfoRequest request
@@ -50,7 +50,7 @@ public class UserController {
 
     @PostMapping("/avatar")
     @Operation(summary = "내 프로필 사진 업로드")
-    @PreAuthorize("isAuthenticated()")
+    @IsMember
     public ApiResponse<UploadImageResponse> uploadMyAvatar() {
 
         return ApiResponse.ok(userService.uploadMyAvatar());
@@ -58,7 +58,7 @@ public class UserController {
 
     @DeleteMapping("/avatar")
     @Operation(summary = "내 프로필 사진 삭제")
-    @PreAuthorize("isAuthenticated()")
+    @IsMember
     public ApiResponse<UserResponse> deleteMyAvatar(@AuthenticationPrincipal User user) {
 
         return ApiResponse.ok(userService.deleteMyAvatar(user));
@@ -66,7 +66,7 @@ public class UserController {
 
     @PutMapping("/password")
     @Operation(summary = "내 비밀번호 수정")
-    @PreAuthorize("isAuthenticated()")
+    @IsMember
     public ApiResponse<Void> updateMyPassword(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UpdateMyPasswordRequest request
