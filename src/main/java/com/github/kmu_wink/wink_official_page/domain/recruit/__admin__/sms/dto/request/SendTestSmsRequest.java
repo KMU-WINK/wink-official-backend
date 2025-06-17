@@ -3,6 +3,7 @@ package com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.sms.dto.
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.sms.constant.TestSmsField;
 import com.github.kmu_wink.wink_official_page.global.util.RegExp;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
@@ -13,7 +14,7 @@ public record SendTestSmsRequest(
         @Pattern(regexp = RegExp.PHONE_NUMBER_EXPRESSION, message = RegExp.PHONE_NUMBER_MESSAGE)
         String phoneNumber,
 
-        @NotBlank
+        @NotNull
         TestSmsField field
 ) {
 

@@ -1,7 +1,20 @@
+import java.util.*
+
 plugins {
     java
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
+    id("io.sentry.jvm.gradle") version "5.7.0"
+}
+
+val envFile = rootProject.file(".env")
+if (!envFile.exists()) {
+    throw GradleException("The .env file is missing. Please create it with the required properties.")
+}
+val props = Properties()
+envFile.inputStream().use { props.load(it) }
+props.forEach { key, value ->
+    System.setProperty(key.toString(), value.toString())
 }
 
 group = "com.github.kmu_wink"
@@ -51,4 +64,12 @@ dependencies {
 
     implementation("com.github.atomfrede:jadenticon:3.0.4")
     implementation("org.apache.xmlgraphics:batik-transcoder:1.19")
+}
+
+sentry {
+    includeSourceContext = true
+
+    org = System.getProperty("SENTRY_ORG")
+    projectName = System.getProperty("SENTRY_PROJECT")
+    authToken = System.getProperty("SENTRY_AUTH_TOKEN")
 }
