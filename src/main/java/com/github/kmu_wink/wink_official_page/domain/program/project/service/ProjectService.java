@@ -3,8 +3,7 @@ package com.github.kmu_wink.wink_official_page.domain.program.project.service;
 import com.github.kmu_wink.wink_official_page.domain.program.project.dto.request.CreateProjectRequest;
 import com.github.kmu_wink.wink_official_page.domain.program.project.dto.response.GetProjectResponse;
 import com.github.kmu_wink.wink_official_page.domain.program.project.dto.response.GetProjectsPageableResponse;
-import com.github.kmu_wink.wink_official_page.domain.program.project.exception.NotOwnedProjectException;
-import com.github.kmu_wink.wink_official_page.domain.program.project.exception.ProjectNotFoundException;
+import com.github.kmu_wink.wink_official_page.domain.program.project.exception.ProjectExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.program.project.repository.ProjectRepository;
 import com.github.kmu_wink.wink_official_page.domain.program.project.schema.Project;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
@@ -45,11 +44,11 @@ public class ProjectService {
 
     public GetProjectResponse updateProject(User user, String id, CreateProjectRequest dto) {
 
-        Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+        Project project = projectRepository.findById(id).orElseThrow(ProjectExceptionCode.NOT_FOUND::toException);
 
         if (!project.getAuthor().equals(user)) {
 
-            throw new NotOwnedProjectException();
+            throw ProjectExceptionCode.NOT_OWNER.toException();
         }
 
         project.setTitle(dto.title());
@@ -64,11 +63,11 @@ public class ProjectService {
 
     public void deleteProject(User user, String id) {
 
-        Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+        Project project = projectRepository.findById(id).orElseThrow(ProjectExceptionCode.NOT_FOUND::toException);
 
         if (!project.getAuthor().equals(user)) {
 
-            throw new NotOwnedProjectException();
+            throw ProjectExceptionCode.NOT_OWNER.toException();
         }
 
         projectRepository.delete(project);

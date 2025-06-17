@@ -9,17 +9,14 @@ import com.github.kmu_wink.wink_official_page.domain.application.dto.response.Ge
 import com.github.kmu_wink.wink_official_page.domain.application.dto.response.GetApplicationsResponse;
 import com.github.kmu_wink.wink_official_page.domain.application.dto.response.OauthLoginResponse;
 import com.github.kmu_wink.wink_official_page.domain.application.dto.response.OauthTokenResponse;
-import com.github.kmu_wink.wink_official_page.domain.application.exception.ApplicationNotFoundException;
-import com.github.kmu_wink.wink_official_page.domain.application.exception.ApplicationSecretWrongException;
-import com.github.kmu_wink.wink_official_page.domain.application.exception.OauthIsNotSupportedException;
-import com.github.kmu_wink.wink_official_page.domain.application.exception.OauthTokenNotFoundException;
+import com.github.kmu_wink.wink_official_page.domain.application.exception.ApplicationExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.application.repository.ApplicationRepository;
 import com.github.kmu_wink.wink_official_page.domain.application.repository.OauthLoginRedisRepository;
 import com.github.kmu_wink.wink_official_page.domain.application.schema.Application;
 import com.github.kmu_wink.wink_official_page.domain.application.schema.OauthLogin;
 import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official_page.domain.program.upload.dto.response.UploadImageResponse;
-import com.github.kmu_wink.wink_official_page.domain.user.exception.UserNotFoundException;
+import com.github.kmu_wink.wink_official_page.domain.user.exception.UserExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.global.infra.s3.S3Service;
@@ -58,7 +55,8 @@ public class ApplicationService {
 
     public GetApplicationResponse getApplication(User user, String id) {
 
-        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(ApplicationExceptionCode.NOT_FOUND::toException);
 
         if (!application.getUser().equals(user)) {
 
@@ -99,10 +97,10 @@ public class ApplicationService {
 
     public GetApplicationResponse updateApplication(User user, String id, UpdateApplicationRequest dto) {
 
-        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
+        Application application = applicationRepository.findById(id).orElseThrow(ApplicationExceptionCode.NOT_FOUND::toException);
 
         if (!application.getUser().equals(user)) {
-            throw new ApplicationNotFoundException();
+            throw ApplicationExceptionCode.NOT_FOUND.toException();
         }
 
         if (!application.getImg().equals(dto.img())) {
@@ -120,10 +118,10 @@ public class ApplicationService {
 
     public GetApplicationResponse resetSecret(User user, String id) {
 
-        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
+        Application application = applicationRepository.findById(id).orElseThrow(ApplicationExceptionCode.NOT_FOUND::toException);
 
         if (!application.getUser().equals(user)) {
-            throw new ApplicationNotFoundException();
+            throw ApplicationExceptionCode.NOT_FOUND.toException();
         }
 
         application.setSecret(randomString.generate(96));
@@ -135,10 +133,10 @@ public class ApplicationService {
 
     public GetApplicationResponse updateApplicationLogin(User user, String id, UpdateApplicationLoginRequest dto) {
 
-        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
+        Application application = applicationRepository.findById(id).orElseThrow(ApplicationExceptionCode.NOT_FOUND::toException);
 
         if (!application.getUser().equals(user)) {
-            throw new ApplicationNotFoundException();
+            throw ApplicationExceptionCode.NOT_FOUND.toException();
         }
 
         application.getLogin().setEnable(dto.enable());
@@ -156,10 +154,10 @@ public class ApplicationService {
 
     public void deleteApplication(User user, String id) {
 
-        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
+        Application application = applicationRepository.findById(id).orElseThrow(ApplicationExceptionCode.NOT_FOUND::toException);
 
         if (!application.getUser().equals(user)) {
-            throw new ApplicationNotFoundException();
+            throw ApplicationExceptionCode.NOT_FOUND.toException();
         }
 
         s3Service.urlToKey(application.getImg()).ifPresent(s3Service::delete);
@@ -169,10 +167,10 @@ public class ApplicationService {
 
     public OauthLoginResponse oauthLogin(User user, String id) {
 
-        Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
+        Application application = applicationRepository.findById(id).orElseThrow(ApplicationExceptionCode.NOT_FOUND::toException);
 
         if (!application.getLogin().isEnable()) {
-            throw new OauthIsNotSupportedException();
+            throw ApplicationExceptionCode.OAUTH_NOT_SUPPORTED.toException();
         }
 
         OauthLogin oauthLogin = OauthLogin.builder()
@@ -190,22 +188,22 @@ public class ApplicationService {
     public OauthTokenResponse oauthToken(OauthTokenRequest dto) {
 
         Application application = applicationRepository.findById(dto.clientId())
-                .orElseThrow(ApplicationNotFoundException::new);
+                .orElseThrow(ApplicationExceptionCode.NOT_FOUND::toException);
 
         if (!application.getSecret().equals(dto.clientSecret())) {
-            throw new ApplicationSecretWrongException();
+            throw ApplicationExceptionCode.INVALID_SECRET.toException();
         }
 
         OauthLogin oauthLogin = oauthLoginRedisRepository.findByToken(dto.token())
-                .orElseThrow(OauthTokenNotFoundException::new);
+                .orElseThrow(ApplicationExceptionCode.OAUTH_TOKEN_NOT_FOUND::toException);
 
         if (!oauthLogin.clientId().equals(dto.clientId())) {
-            throw new OauthTokenNotFoundException();
+            throw ApplicationExceptionCode.OAUTH_TOKEN_NOT_FOUND.toException();
         }
 
         oauthLoginRedisRepository.delete(oauthLogin);
 
-        User raw = userRepository.findById(oauthLogin.userId()).orElseThrow(UserNotFoundException::new);
+        User raw = userRepository.findById(oauthLogin.userId()).orElseThrow(UserExceptionCode.NOT_FOUND::toException);
 
         Map<String, Object> user = new HashMap<>();
 

@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official_page.global.security.authentication;
 
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthenticationFailException;
+import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,12 +30,12 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
         if (Objects.isNull(principal) || Objects.isNull(credentials)) {
 
-            throw new AuthenticationFailException();
+            throw AuthExceptionCode.AUTHENTICATION_FAILED.toException();
         }
 
         if (!passwordEncoder().matches(credentials, principal.getPassword())) {
 
-            throw new AuthenticationFailException();
+            throw AuthExceptionCode.AUTHENTICATION_FAILED.toException();
         }
 
         userAuthentication.setAuthenticated(true);

@@ -3,7 +3,7 @@ package com.github.kmu_wink.wink_official_page.domain.program.activity.__admin__
 import com.github.kmu_wink.wink_official_page.domain.program.activity.__admin__.dto.request.CreateActivityRequest;
 import com.github.kmu_wink.wink_official_page.domain.program.activity.__admin__.dto.response.GetActivitiesPageableResponse;
 import com.github.kmu_wink.wink_official_page.domain.program.activity.__admin__.dto.response.GetActivityResponse;
-import com.github.kmu_wink.wink_official_page.domain.program.activity.__admin__.exception.ActivityNotFoundException;
+import com.github.kmu_wink.wink_official_page.domain.program.activity.__admin__.exception.ActivityAdminExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.program.activity.repository.ActivityRepository;
 import com.github.kmu_wink.wink_official_page.domain.program.activity.schema.Activity;
 import com.github.kmu_wink.wink_official_page.global.infra.s3.S3Service;
@@ -50,7 +50,7 @@ public class AdminActivityService {
 
     public GetActivityResponse updateActivity(String id, CreateActivityRequest dto) {
 
-        Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+        Activity activity = activityRepository.findById(id).orElseThrow(ActivityAdminExceptionCode.NOT_FOUND::toException);
 
         activity.setTitle(dto.title());
         activity.setDescription(dto.description());
@@ -62,7 +62,7 @@ public class AdminActivityService {
 
     public void deleteActivity(String id) {
 
-        Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+        Activity activity = activityRepository.findById(id).orElseThrow(ActivityAdminExceptionCode.NOT_FOUND::toException);
 
         activity.getImages().forEach(image -> s3Service.urlToKey(image).ifPresent(s3Service::delete));
 
@@ -71,7 +71,7 @@ public class AdminActivityService {
 
     public GetActivityResponse pinActivity(String id) {
 
-        Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+        Activity activity = activityRepository.findById(id).orElseThrow(ActivityAdminExceptionCode.NOT_FOUND::toException);
 
         activity.setPinned(true);
 
@@ -82,7 +82,7 @@ public class AdminActivityService {
 
     public GetActivityResponse unpinActivity(String id) {
 
-        Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+        Activity activity = activityRepository.findById(id).orElseThrow(ActivityAdminExceptionCode.NOT_FOUND::toException);
 
         activity.setPinned(false);
 

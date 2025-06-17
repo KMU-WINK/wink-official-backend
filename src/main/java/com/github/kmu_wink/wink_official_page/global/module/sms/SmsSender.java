@@ -6,7 +6,6 @@ import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestInstance;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -37,10 +36,7 @@ public class SmsSender {
 
             if (!response.getBody().startsWith("0000") && !response.getBody().startsWith("0004")) {
 
-                throw new ApiException(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        "문자 API 오류: %s".formatted(response.getBody().split("\\|")[0])
-                );
+                throw new ApiException("문자 API 오류: %s".formatted(response.getBody().split("\\|")[0]));
             }
         }
     }
@@ -58,10 +54,7 @@ public class SmsSender {
 
             if (!response.getBody().startsWith("0000")) {
 
-                throw new ApiException(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        "문자 API 오류: %s".formatted(response.getBody().split("\\|")[0])
-                );
+                throw new ApiException("문자 API 오류: %s".formatted(response.getBody().split("\\|")[0]));
             }
 
             return Integer.parseInt(response.getBody().split("\\|")[2]);

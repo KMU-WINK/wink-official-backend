@@ -2,8 +2,7 @@ package com.github.kmu_wink.wink_official_page.global.security.jwt;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.AccessTokenExpiredException;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthenticationFailException;
+import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.global.exception.ApiException;
@@ -43,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (Objects.nonNull(accessToken) && jwtUtil.validateToken(accessToken)) {
 
                 String id = jwtUtil.extractToken(accessToken);
-                User user = repository.findById(id).orElseThrow(AuthenticationFailException::new);
+                User user = repository.findById(id).orElseThrow(AuthExceptionCode.AUTHENTICATION_FAILED::toException);
 
                 UserAuthentication authentication = new UserAuthentication(user);
                 authentication.setAuthenticated(true);
@@ -51,7 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (TokenExpiredException e) {
-            handleException(response, new AccessTokenExpiredException());
+            handleException(response, AuthExceptionCode.ACCESS_TOKEN_EXPIRED.toException());
             return;
         } catch (ApiException e) {
             handleException(response, e);

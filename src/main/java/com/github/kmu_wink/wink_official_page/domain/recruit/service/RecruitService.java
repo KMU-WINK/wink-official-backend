@@ -1,16 +1,12 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.service;
 
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.AlreadyRegisteredException;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.EmailCheckRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.PhoneNumberCheckRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.RecruitFormRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.StudentIdCheckRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.response.DuplicationCheckResponse;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.response.GetRecruitResponse;
-import com.github.kmu_wink.wink_official_page.domain.recruit.exception.AlreadyRecruitedException;
-import com.github.kmu_wink.wink_official_page.domain.recruit.exception.NotValidInterviewDatesException;
-import com.github.kmu_wink.wink_official_page.domain.recruit.exception.NotValidRecruitPeriodException;
-import com.github.kmu_wink.wink_official_page.domain.recruit.exception.RecruitNotFoundException;
+import com.github.kmu_wink.wink_official_page.domain.recruit.exception.RecruitExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.recruit.repository.RecruitFormRepository;
 import com.github.kmu_wink.wink_official_page.domain.recruit.repository.RecruitRepository;
 import com.github.kmu_wink.wink_official_page.domain.recruit.schema.Recruit;
@@ -41,14 +37,15 @@ public class RecruitService {
 
     public void recruitForm(String recruitId, RecruitFormRequest dto) {
 
-        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        Recruit recruit = recruitRepository.findById(recruitId)
+                .orElseThrow(RecruitExceptionCode.NOT_FOUND::toException);
 
-        dto.interviewDates().stream().peek(date -> {
+        dto.interviewDates().forEach(date -> {
             if (date.isEqual(LocalDate.of(1, 1, 1))) {
                 return;
             }
             if (date.isBefore(recruit.getInterviewStartDate()) || date.isAfter(recruit.getInterviewEndDate())) {
-                throw new NotValidInterviewDatesException();
+                throw RecruitExceptionCode.NOT_VALID_INTERVIEW_DATES.toException();
             }
         });
 
@@ -56,14 +53,14 @@ public class RecruitService {
         if (now.isBefore(recruit.getRecruitStartDate().atStartOfDay()) ||
                 now.isAfter(recruit.getRecruitEndDate().atTime(23, 59, 59))) {
 
-            throw new NotValidRecruitPeriodException();
+            throw RecruitExceptionCode.NOT_RECRUIT_PERIOD.toException();
         }
 
         if (recruitFormRepository.findByRecruitAndStudentId(recruit, dto.studentId()).isPresent() ||
                 recruitFormRepository.findByRecruitAndEmail(recruit, dto.email()).isPresent() ||
                 recruitFormRepository.findByRecruitAndPhoneNumber(recruit, dto.phoneNumber()).isPresent()) {
 
-            throw new AlreadyRecruitedException();
+            throw RecruitExceptionCode.ALREADY_RECRUIT_SUBMITTED.toException();
         }
 
         if (userRepository.findByStudentId(dto.studentId()).isPresent() ||
@@ -73,7 +70,7 @@ public class RecruitService {
                 preUserRepository.findByEmail(dto.email()).isPresent() ||
                 preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()) {
 
-            throw new AlreadyRegisteredException();
+            throw RecruitExceptionCode.ALREADY_MEMBER.toException();
         }
 
         RecruitForm form = RecruitForm.builder()
@@ -103,7 +100,7 @@ public class RecruitService {
 
     public DuplicationCheckResponse checkStudentId(String recruitId, StudentIdCheckRequest dto) {
 
-        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitExceptionCode.NOT_FOUND::toException);
 
         boolean duplicated = userRepository.findByStudentId(dto.studentId()).isPresent() ||
                 preUserRepository.findByStudentId(dto.studentId()).isPresent() ||
@@ -114,7 +111,7 @@ public class RecruitService {
 
     public DuplicationCheckResponse checkEmail(String recruitId, EmailCheckRequest dto) {
 
-        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitExceptionCode.NOT_FOUND::toException);
 
         boolean duplicated = userRepository.findByEmail(dto.email()).isPresent() ||
                 preUserRepository.findByEmail(dto.email()).isPresent() ||
@@ -125,7 +122,7 @@ public class RecruitService {
 
     public DuplicationCheckResponse checkPhoneNumber(String recruitId, PhoneNumberCheckRequest dto) {
 
-        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitExceptionCode.NOT_FOUND::toException);
 
         boolean duplicated = userRepository.findByPhoneNumber(dto.phoneNumber()).isPresent() ||
                 preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent() ||

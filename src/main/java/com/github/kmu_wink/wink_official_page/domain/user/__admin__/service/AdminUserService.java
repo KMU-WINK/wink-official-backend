@@ -1,7 +1,7 @@
 package com.github.kmu_wink.wink_official_page.domain.user.__admin__.service;
 
 import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.AlreadyRegisteredException;
+import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.user.__admin__.dto.request.InviteRequest;
 import com.github.kmu_wink.wink_official_page.domain.user.__admin__.dto.request.UpdateRequest;
 import com.github.kmu_wink.wink_official_page.domain.user.__admin__.dto.response.AdminPreUserResponse;
@@ -9,7 +9,7 @@ import com.github.kmu_wink.wink_official_page.domain.user.__admin__.dto.response
 import com.github.kmu_wink.wink_official_page.domain.user.__admin__.dto.response.AdminUsersResponse;
 import com.github.kmu_wink.wink_official_page.domain.user.__admin__.util.email.InviteTemplate;
 import com.github.kmu_wink.wink_official_page.domain.user.dto.response.UserResponse;
-import com.github.kmu_wink.wink_official_page.domain.user.exception.UserNotFoundException;
+import com.github.kmu_wink.wink_official_page.domain.user.exception.UserExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official_page.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.PreUser;
@@ -62,7 +62,7 @@ public class AdminUserService {
                 preUserRepository.findByEmail(dto.email()).isPresent() ||
                 preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()) {
 
-            throw new AlreadyRegisteredException();
+            throw AuthExceptionCode.ALREADY_REGISTERED.toException();
         }
 
         PreUser preUser = PreUser.builder()
@@ -83,14 +83,14 @@ public class AdminUserService {
 
     public void removePreUser(String id) {
 
-        PreUser preUser = preUserRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        PreUser preUser = preUserRepository.findById(id).orElseThrow(UserExceptionCode.NOT_FOUND::toException);
 
         preUserRepository.delete(preUser);
     }
 
     public UserResponse update(String id, UpdateRequest dto) {
 
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(id).orElseThrow(UserExceptionCode.NOT_FOUND::toException);
 
         user.setName(dto.name());
         user.setStudentId(dto.studentId());

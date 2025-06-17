@@ -1,12 +1,12 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.service;
 
+import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__sms__.repository.RecruitSmsRepository;
+import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__sms__.schema.RecruitSms;
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.dto.request.CreateRecruitRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.dto.response.GetRecruitsResponse;
-import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.exception.AlreadySameRecruitExistsException;
-import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.sms.repository.RecruitSmsRepository;
-import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.sms.schema.RecruitSms;
+import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.exception.AdminRecruitExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.response.GetRecruitResponse;
-import com.github.kmu_wink.wink_official_page.domain.recruit.exception.RecruitNotFoundException;
+import com.github.kmu_wink.wink_official_page.domain.recruit.exception.RecruitExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.recruit.repository.RecruitFormRepository;
 import com.github.kmu_wink.wink_official_page.domain.recruit.repository.RecruitRepository;
 import com.github.kmu_wink.wink_official_page.domain.recruit.schema.Recruit;
@@ -32,7 +32,8 @@ public class AdminRecruitService {
 
     public GetRecruitResponse getRecruit(String recruitId) {
 
-        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        Recruit recruit = recruitRepository.findById(recruitId)
+                .orElseThrow(RecruitExceptionCode.NOT_FOUND::toException);
 
         return GetRecruitResponse.builder().recruit(recruit).build();
     }
@@ -40,7 +41,7 @@ public class AdminRecruitService {
     public GetRecruitResponse createRecruit(CreateRecruitRequest dto) {
 
         if (recruitRepository.existsRecruitByYearAndSemester(dto.year(), dto.semester())) {
-            throw new AlreadySameRecruitExistsException();
+            throw AdminRecruitExceptionCode.ALREADY_EXISTS.toException();
         }
 
         Recruit recruit = Recruit.builder()
@@ -61,7 +62,8 @@ public class AdminRecruitService {
 
     public void deleteRecruit(String recruitId) {
 
-        Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
+        Recruit recruit = recruitRepository.findById(recruitId)
+                .orElseThrow(RecruitExceptionCode.NOT_FOUND::toException);
         recruitSmsRepository.delete(recruitSmsRepository.findByRecruit(recruit));
         recruitFormRepository.deleteAll(recruitFormRepository.findAllByRecruit(recruit));
         recruitRepository.delete(recruit);

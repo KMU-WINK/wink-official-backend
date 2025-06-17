@@ -11,19 +11,14 @@ import com.github.kmu_wink.wink_official_page.domain.auth.dto.request.ResetPassw
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.response.CheckRegisterResponse;
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.response.CheckResetPasswordResponse;
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.response.LoginResponse;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.AlreadyRegisteredException;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthenticationFailException;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.InvalidPasswordResetTokenException;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.InvalidRefreshTokenException;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.InvalidRegisterTokenException;
-import com.github.kmu_wink.wink_official_page.domain.auth.exception.TestUserCannotRealRegisterException;
+import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.auth.repository.PasswordResetTokenRedisRepository;
 import com.github.kmu_wink.wink_official_page.domain.auth.repository.RefreshTokenRedisRepository;
 import com.github.kmu_wink.wink_official_page.domain.auth.schema.PasswordResetToken;
 import com.github.kmu_wink.wink_official_page.domain.auth.schema.RefreshToken;
 import com.github.kmu_wink.wink_official_page.domain.auth.util.email.PasswordResetTokenTemplate;
 import com.github.kmu_wink.wink_official_page.domain.user.dto.response.UserResponse;
-import com.github.kmu_wink.wink_official_page.domain.user.exception.UserNotFoundException;
+import com.github.kmu_wink.wink_official_page.domain.user.exception.UserExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.user.repository.PreUserRepository;
 import com.github.kmu_wink.wink_official_page.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.PreUser;
@@ -57,7 +52,8 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest dto) {
 
-        User user = userRepository.findByEmail(dto.email()).orElseThrow(AuthenticationFailException::new);
+        User user = userRepository.findByEmail(dto.email())
+                .orElseThrow(AuthExceptionCode.AUTHENTICATION_FAILED::toException);
 
         UserAuthentication authentication = new UserAuthentication(user, dto.password());
         authenticationManager.authenticate(authentication);
@@ -77,20 +73,21 @@ public class AuthService {
 
     public void register(RegisterRequest dto) {
 
-        PreUser preUser = preUserRepository.findByToken(dto.token()).orElseThrow(InvalidRegisterTokenException::new);
+        PreUser preUser = preUserRepository.findByToken(dto.token())
+                .orElseThrow(AuthExceptionCode.INVALID_REGISTER_TOKEN::toException);
 
         preUserRepository.delete(preUser);
 
         if (preUser.isTest()) {
 
-            throw new TestUserCannotRealRegisterException();
+            throw AuthExceptionCode.TEST_USER_CANNOT_REAL_REGISTER.toException();
         }
 
         if (userRepository.findByEmail(preUser.getEmail()).isPresent() ||
                 userRepository.findByStudentId(preUser.getStudentId()).isPresent() ||
                 userRepository.findByPhoneNumber(preUser.getPhoneNumber()).isPresent()) {
 
-            throw new AlreadyRegisteredException();
+            throw AuthExceptionCode.ALREADY_REGISTERED.toException();
         }
 
         User user = User.builder()
@@ -111,7 +108,7 @@ public class AuthService {
     public LoginResponse refresh(RefreshRequest dto) {
 
         RefreshToken refreshToken = refreshTokenRedisRepository.findByToken(dto.token())
-                .orElseThrow(InvalidRefreshTokenException::new);
+                .orElseThrow(AuthExceptionCode.INVALID_REFRESH_TOKEN::toException);
 
         refreshTokenRedisRepository.delete(refreshToken);
 
@@ -149,13 +146,13 @@ public class AuthService {
     public void resetPassword(ResetPasswordRequest request) {
 
         PasswordResetToken passwordResetTokenEntity = passwordResetTokenRedisRepository.findByToken(request.token())
-                .orElseThrow(InvalidPasswordResetTokenException::new);
+                .orElseThrow(AuthExceptionCode.INVALID_PASSWORD_RESET_TOKEN::toException);
 
         passwordResetTokenRedisRepository.delete(passwordResetTokenEntity);
 
         String userId = passwordResetTokenEntity.userId();
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserExceptionCode.NOT_FOUND::toException);
 
         user.setPassword(encoder.encode(request.newPassword()));
 
