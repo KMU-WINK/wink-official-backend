@@ -1,7 +1,8 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.4.2"
-    id("io.spring.dependency-management") version "1.1.6"
+    id("org.springframework.boot") version "3.5.0"
+    id("io.spring.dependency-management") version "1.1.7"
+    id("io.sentry.jvm.gradle") version "5.7.0"
 }
 
 group = "com.github.kmu_wink"
@@ -38,17 +39,25 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
 
     implementation("com.auth0:java-jwt:4.5.0")
 
     implementation("io.awspring.cloud:spring-cloud-starter-aws:2.4.4")
     implementation("javax.xml.bind:jaxb-api:2.3.1")
 
-    implementation("com.konghq:unirest-java-core:4.4.5")
+    implementation("com.konghq:unirest-java-core:4.4.7")
     implementation("com.konghq:unirest-objectmapper-jackson:4.2.9")
-    implementation("org.jsoup:jsoup:1.18.3")
+    implementation("org.jsoup:jsoup:1.20.1")
 
     implementation("com.github.atomfrede:jadenticon:3.0.4")
-    implementation("org.apache.xmlgraphics:batik-transcoder:1.18")
+    implementation("org.apache.xmlgraphics:batik-transcoder:1.19")
+}
+
+sentry {
+    includeSourceContext = true
+
+    org = System.getenv("SENTRY_ORG")
+    projectName = System.getenv("SENTRY_PROJECT")
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
