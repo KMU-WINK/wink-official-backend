@@ -5,6 +5,7 @@ import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.PhoneNu
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.RecruitFormRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.StudentIdCheckRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.response.DuplicationCheckResponse;
+import com.github.kmu_wink.wink_official_page.domain.recruit.dto.response.GetFormResponse;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.response.GetRecruitResponse;
 import com.github.kmu_wink.wink_official_page.domain.recruit.service.RecruitService;
 import com.github.kmu_wink.wink_official_page.global.response.ApiResponse;
@@ -35,13 +36,29 @@ public class RecruitController {
     }
 
     @PostMapping("/{recruitId}")
-    @Operation(summary = "지원하기")
-    public ApiResponse<Void> recruitForm(
+    @Operation(summary = "지원서 제출하기")
+    public ApiResponse<Void> submitForm(
             @PathVariable String recruitId,
             @RequestBody @Valid RecruitFormRequest request
     ) {
 
-        recruitService.recruitForm(recruitId, request);
+        recruitService.saveForm(recruitId, request);
+
+        return ApiResponse.ok();
+    }
+
+    @GetMapping("/edit/{editToken}")
+    @Operation(summary = "지원서 수정토큰으로 조회")
+    public ApiResponse<GetFormResponse> getEditForm(@PathVariable String editToken) {
+
+        return ApiResponse.ok(recruitService.getEditForm(editToken));
+    }
+
+    @PostMapping("/edit/{editToken}")
+    @Operation(summary = "지원서 수정하기")
+    public ApiResponse<Void> editForm(@PathVariable String editToken, @RequestBody @Valid RecruitFormRequest request) {
+
+        recruitService.editForm(editToken, request);
 
         return ApiResponse.ok();
     }

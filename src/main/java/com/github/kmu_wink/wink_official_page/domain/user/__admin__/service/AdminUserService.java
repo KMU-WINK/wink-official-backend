@@ -1,6 +1,5 @@
 package com.github.kmu_wink.wink_official_page.domain.user.__admin__.service;
 
-import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.user.__admin__.dto.request.InviteRequest;
 import com.github.kmu_wink.wink_official_page.domain.user.__admin__.dto.request.UpdateRequest;
@@ -15,6 +14,7 @@ import com.github.kmu_wink.wink_official_page.domain.user.repository.UserReposit
 import com.github.kmu_wink.wink_official_page.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.global.module.email.EmailSender;
+import com.github.kmu_wink.wink_official_page.global.util.RandomString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,9 +29,7 @@ public class AdminUserService {
     private final UserRepository userRepository;
     private final PreUserRepository preUserRepository;
     private final MongoTemplate mongoTemplate;
-
     private final EmailSender emailSender;
-    private final RandomString randomString;
 
     public AdminUsersResponse getUsers(int page, String query) {
 
@@ -71,7 +69,7 @@ public class AdminUserService {
                 .department(dto.department())
                 .email(dto.email())
                 .phoneNumber(dto.phoneNumber())
-                .token(randomString.generate(128))
+                .token(RandomString.generate(128))
                 .test(false)
                 .build();
 

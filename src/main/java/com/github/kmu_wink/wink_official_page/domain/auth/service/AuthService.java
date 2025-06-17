@@ -1,6 +1,5 @@
 package com.github.kmu_wink.wink_official_page.domain.auth.service;
 
-import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.request.CheckRegisterRequest;
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.request.CheckResetPasswordRequest;
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.request.LoginRequest;
@@ -26,6 +25,7 @@ import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.global.module.email.EmailSender;
 import com.github.kmu_wink.wink_official_page.global.security.authentication.UserAuthentication;
 import com.github.kmu_wink.wink_official_page.global.security.jwt.JwtUtil;
+import com.github.kmu_wink.wink_official_page.global.util.RandomString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,8 +47,6 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     private final EmailSender emailSender;
-
-    private final RandomString randomString;
 
     public LoginResponse login(LoginRequest dto) {
 
@@ -123,7 +121,7 @@ public class AuthService {
     public void requestResetPassword(RequestResetPasswordRequest dto) {
 
         userRepository.findByEmail(dto.email()).ifPresent((user) -> {
-            String passwordResetTokenRaw = randomString.generate(128);
+            String passwordResetTokenRaw = RandomString.generate(128);
 
             PasswordResetToken passwordResetToken = PasswordResetToken.builder()
                     .token(passwordResetTokenRaw)

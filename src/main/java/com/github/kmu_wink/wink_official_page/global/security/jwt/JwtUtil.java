@@ -7,27 +7,25 @@ import com.github.kmu_wink.wink_official_page.domain.auth.repository.RefreshToke
 import com.github.kmu_wink.wink_official_page.domain.auth.schema.RefreshToken;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.global.property.JwtProperty;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-@Component
+@Configuration
 @RequiredArgsConstructor
 public class JwtUtil {
 
     private final JwtProperty jwtProperty;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
-    private Algorithm algorithm;
+    @Bean
+    public Algorithm algorithm() {
 
-    @PostConstruct
-    public void init() {
-
-        algorithm = Algorithm.HMAC256(jwtProperty.getKey());
+        return Algorithm.HMAC256(jwtProperty.getKey());
     }
 
     public String generateAccessToken(User user) {
@@ -38,10 +36,14 @@ public class JwtUtil {
     public String generateAccessToken(String userId) {
 
         return JWT.create()
-                .withIssuedAt(Instant.now())
+                .withIssuer("WINK")
+                .withSubject("access-token")
+                .withAudience("wink-official-page")
                 .withExpiresAt(Instant.now().plus(jwtProperty.getAccessTokenExpirationHours(), ChronoUnit.HOURS))
+                .withNotBefore(Instant.now())
+                .withIssuedAt(Instant.now())
                 .withClaim("id", userId)
-                .sign(algorithm);
+                .sign(algorithm());
     }
 
     public String generateRefreshToken(User user) {
@@ -52,9 +54,13 @@ public class JwtUtil {
     public String generateRefreshToken(String userId) {
 
         String token = JWT.create()
-                .withIssuedAt(Instant.now())
+                .withIssuer("WINK")
+                .withSubject("refresh-token")
+                .withAudience("wink-official-page")
                 .withExpiresAt(Instant.now().plus(jwtProperty.getRefreshTokenExpirationHours(), ChronoUnit.HOURS))
-                .sign(algorithm);
+                .withNotBefore(Instant.now())
+                .withIssuedAt(Instant.now())
+                .sign(algorithm());
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .userId(userId)
@@ -69,7 +75,7 @@ public class JwtUtil {
 
     public String extractToken(String token) {
 
-        return JWT.require(algorithm).build().verify(token).getClaim("id").asString();
+        return JWT.require(algorithm()).build().verify(token).getClaim("id").asString();
     }
 
     public boolean validateToken(String token) throws TokenExpiredException {
@@ -80,7 +86,12 @@ public class JwtUtil {
         }
 
         try {
-            JWT.require(algorithm).build().verify(token);
+            JWT.require(algorithm())
+                    .withIssuer("WINK")
+                    .withSubject("access-token")
+                    .withAudience("wink-official-page")
+                    .build()
+                    .verify(token);
         } catch (TokenExpiredException e) {
             throw e;
         } catch (Exception e) {

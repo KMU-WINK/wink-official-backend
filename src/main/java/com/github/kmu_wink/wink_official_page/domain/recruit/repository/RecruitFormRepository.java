@@ -13,6 +13,7 @@ public interface RecruitFormRepository extends MongoRepository<RecruitForm, Stri
 
     List<RecruitForm> findAllByRecruit(Recruit recruit);
 
+    Optional<RecruitForm> findByEditToken(String editTokn);
     Optional<RecruitForm> findByIdAndRecruit(String id, Recruit recruit);
     Optional<RecruitForm> findByRecruitAndStudentId(Recruit recruit, String studentId);
     Optional<RecruitForm> findByRecruitAndEmail(Recruit recruit, String email);

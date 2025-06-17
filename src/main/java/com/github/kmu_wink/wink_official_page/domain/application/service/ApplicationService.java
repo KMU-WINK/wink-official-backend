@@ -14,12 +14,12 @@ import com.github.kmu_wink.wink_official_page.domain.application.repository.Appl
 import com.github.kmu_wink.wink_official_page.domain.application.repository.OauthLoginRedisRepository;
 import com.github.kmu_wink.wink_official_page.domain.application.schema.Application;
 import com.github.kmu_wink.wink_official_page.domain.application.schema.OauthLogin;
-import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official_page.domain.program.upload.dto.response.UploadImageResponse;
 import com.github.kmu_wink.wink_official_page.domain.user.exception.UserExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.user.repository.UserRepository;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.global.infra.s3.S3Service;
+import com.github.kmu_wink.wink_official_page.global.util.RandomString;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.batik.transcoder.TranscoderException;
@@ -43,7 +43,6 @@ public class ApplicationService {
     private final OauthLoginRedisRepository oauthLoginRedisRepository;
 
     private final S3Service s3Service;
-    private final RandomString randomString;
     private final UserRepository userRepository;
 
     public GetApplicationsResponse getApplications(User user) {
@@ -78,7 +77,7 @@ public class ApplicationService {
                 .updatedAt(LocalDateTime.now())
                 .name(dto.name())
                 .img(s3Service.upload("application/%s.png".formatted(id), Jadenticon.from(id).png()))
-                .secret(randomString.generate(96))
+                .secret(RandomString.generate(96))
                 .user(user)
                 .login(Application.Login.empty())
                 .build();
@@ -124,7 +123,7 @@ public class ApplicationService {
             throw ApplicationExceptionCode.NOT_FOUND.toException();
         }
 
-        application.setSecret(randomString.generate(96));
+        application.setSecret(RandomString.generate(96));
 
         application = applicationRepository.save(application);
 
@@ -174,7 +173,7 @@ public class ApplicationService {
         }
 
         OauthLogin oauthLogin = OauthLogin.builder()
-                .token(randomString.generate(128))
+                .token(RandomString.generate(128))
                 .clientId(application.getId())
                 .userId(user.getId())
                 .scopes(application.getLogin().getScopes())

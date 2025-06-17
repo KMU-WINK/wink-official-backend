@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official_page.global.module.email;
 
-import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
+import com.github.kmu_wink.wink_official_page.global.util.RandomString;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -24,7 +24,6 @@ public class EmailSender {
     private final MailProperties properties;
 
     private final JavaMailSender javaMailSender;
-    private final RandomString randomString;
 
     @Async
     @SneakyThrows({ MessagingException.class, UnsupportedEncodingException.class })
@@ -53,6 +52,6 @@ public class EmailSender {
 
     private String generateMessageId() {
 
-        return "<" + randomString.generate(16) + "@%s>".formatted(properties.getUsername().split("@")[1]);
+        return "<" + RandomString.generate(16) + "@%s>".formatted(properties.getUsername().split("@")[1]);
     }
 }

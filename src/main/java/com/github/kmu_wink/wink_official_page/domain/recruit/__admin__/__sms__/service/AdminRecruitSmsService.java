@@ -1,6 +1,5 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__sms__.service;
 
-import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__sms__.constant.TestSmsField;
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__sms__.dto.request.SendTestSmsRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__sms__.dto.request.UpdateRecruitSmsRequest;
@@ -17,6 +16,7 @@ import com.github.kmu_wink.wink_official_page.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official_page.domain.user.schema.User;
 import com.github.kmu_wink.wink_official_page.global.module.sms.SmsObject;
 import com.github.kmu_wink.wink_official_page.global.module.sms.SmsSender;
+import com.github.kmu_wink.wink_official_page.global.util.RandomString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,6 @@ public class AdminRecruitSmsService {
     private final RecruitRepository recruitRepository;
     private final RecruitSmsRepository recruitSmsRepository;
     private final PreUserRepository preUserRepository;
-
-    private final RandomString randomString;
     private final SmsSender smsSender;
 
     public GetRecruitSmsResponse getRecruitSms(String recruitId) {
@@ -86,7 +84,7 @@ public class AdminRecruitSmsService {
                         .department(user.getDepartment())
                         .email(user.getEmail())
                         .phoneNumber(user.getPhoneNumber())
-                        .token(randomString.generate(128))
+                        .token(RandomString.generate(128))
                         .test(true)
                         .build())
         ) : RecruitSms.transform(

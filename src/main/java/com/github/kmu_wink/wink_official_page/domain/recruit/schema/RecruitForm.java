@@ -1,5 +1,6 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.schema;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.kmu_wink.wink_official_page.domain.recruit.constant.BackendTechStack;
 import com.github.kmu_wink.wink_official_page.domain.recruit.constant.DesignTechStack;
 import com.github.kmu_wink.wink_official_page.domain.recruit.constant.DevOpsTechStack;
@@ -24,6 +25,9 @@ public class RecruitForm extends BaseSchema {
 
     @DBRef
     Recruit recruit;
+
+    @JsonIgnore
+    String editToken;
 
     String name;
     String studentId;

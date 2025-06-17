@@ -1,6 +1,5 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__form__.service;
 
-import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__form__.dto.response.GetFormsResponse;
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__form__.exception.AdminRecruitFormExceptionCode;
 import com.github.kmu_wink.wink_official_page.domain.recruit.__admin__.__sms__.exception.AdminRecruitSmsExceptionCode;
@@ -15,6 +14,7 @@ import com.github.kmu_wink.wink_official_page.domain.user.repository.PreUserRepo
 import com.github.kmu_wink.wink_official_page.domain.user.schema.PreUser;
 import com.github.kmu_wink.wink_official_page.global.module.sms.SmsObject;
 import com.github.kmu_wink.wink_official_page.global.module.sms.SmsSender;
+import com.github.kmu_wink.wink_official_page.global.util.RandomString;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +31,6 @@ public class AdminRecruitFormService {
     private final PreUserRepository preUserRepository;
 
     private final SmsSender smsSender;
-
-    private final RandomString randomString;
 
     public void paperClear(String recruitId, String formId) {
 
@@ -219,7 +217,7 @@ public class AdminRecruitFormService {
                     .studentId(form.getStudentId())
                     .department(form.getDepartment())
                     .phoneNumber(form.getPhoneNumber())
-                    .token(randomString.generate(128))
+                    .token(RandomString.generate(128))
                     .test(false)
                     .build());
 
