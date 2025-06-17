@@ -49,5 +49,6 @@ jobs:
             docker run -d \
               --name server \
               --restart always \
+              --env-file ${{ vars.ENV_FILE }} \
               -p 8080:8080 \
               ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.sha }}
