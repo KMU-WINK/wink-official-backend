@@ -1,27 +1,27 @@
 package com.github.kmu_wink.wink_official_page.domain.application.schema;
 
-import java.util.List;
-
+import lombok.Builder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-import lombok.Builder;
+import java.util.List;
 
 @Builder
 @RedisHash(value = "oauth_login", timeToLive = 60 * 15)
 public record OauthLogin(
 
-    @Id
-    Long id,
+        @Id
+        Long id,
 
-    @Indexed
-    String token,
+        @Indexed
+        String token,
 
-    String clientId,
+        String clientId,
 
-    String userId,
+        String userId,
 
-    List<Application.Login.Scope> scopes
+        List<Application.Login.Scope> scopes
 ) {
+
 }

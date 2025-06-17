@@ -26,29 +26,36 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Recruit] [SMS] Admin")
 public class AdminRecruitSmsController {
 
-	private final AdminRecruitSmsService adminRecruitSmsService;
+    private final AdminRecruitSmsService adminRecruitSmsService;
 
-	@GetMapping
-	@Operation(summary = "SMS 설정")
-	public ApiResponse<GetRecruitSmsResponse> getRecruitSms(@PathVariable String recruitId) {
+    @GetMapping
+    @Operation(summary = "SMS 설정")
+    public ApiResponse<GetRecruitSmsResponse> getRecruitSms(@PathVariable String recruitId) {
 
-		return ApiResponse.ok(adminRecruitSmsService.getRecruitSms(recruitId));
-	}
+        return ApiResponse.ok(adminRecruitSmsService.getRecruitSms(recruitId));
+    }
 
 
-	@PostMapping
-	@Operation(summary = "SMS 설정 수정")
-	public ApiResponse<GetRecruitSmsResponse> updateRecruitSms(@PathVariable String recruitId, @RequestBody @Valid UpdateRecruitSmsRequest request) {
+    @PostMapping
+    @Operation(summary = "SMS 설정 수정")
+    public ApiResponse<GetRecruitSmsResponse> updateRecruitSms(
+            @PathVariable String recruitId,
+            @RequestBody @Valid UpdateRecruitSmsRequest request
+    ) {
 
-		return ApiResponse.ok(adminRecruitSmsService.updateRecruitSms(recruitId, request));
-	}
+        return ApiResponse.ok(adminRecruitSmsService.updateRecruitSms(recruitId, request));
+    }
 
-	@PostMapping("/test")
-	@Operation(summary = "테스트 SMS 전송")
-	public ApiResponse<Void> sendTestSms(@PathVariable String recruitId, @RequestBody @Valid SendTestSmsRequest request, @AuthenticationPrincipal User user) {
+    @PostMapping("/test")
+    @Operation(summary = "테스트 SMS 전송")
+    public ApiResponse<Void> sendTestSms(
+            @PathVariable String recruitId,
+            @RequestBody @Valid SendTestSmsRequest request,
+            @AuthenticationPrincipal User user
+    ) {
 
-		adminRecruitSmsService.sendTestSms(recruitId, request, user);
+        adminRecruitSmsService.sendTestSms(recruitId, request, user);
 
-		return ApiResponse.ok();
-	}
+        return ApiResponse.ok();
+    }
 }

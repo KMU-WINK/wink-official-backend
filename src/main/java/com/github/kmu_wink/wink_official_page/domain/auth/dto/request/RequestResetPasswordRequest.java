@@ -12,4 +12,5 @@ public record RequestResetPasswordRequest(
         @Pattern(regexp = RegExp.KOOKMIN_EMAIL_EXPRESSION, message = RegExp.KOOKMIN_EMAIL_MESSAGE)
         String email
 ) {
+
 }

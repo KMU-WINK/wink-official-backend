@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Program] [Upload] Index")
 public class UploadController {
 
-	private final UploadService uploadService;
+    private final UploadService uploadService;
 
-	@PostMapping("/image")
-	@Operation(summary = "이미지 업로드")
-	public ApiResponse<UploadImageResponse> uploadImage() {
+    @PostMapping("/image")
+    @Operation(summary = "이미지 업로드")
+    public ApiResponse<UploadImageResponse> uploadImage() {
 
-		return ApiResponse.ok(uploadService.uploadImage());
-	}
+        return ApiResponse.ok(uploadService.uploadImage());
+    }
 }

@@ -16,10 +16,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Project extends BaseSchema {
 
-	@DBRef
-	User author;
-	String title;
-	String description;
-	String image;
-	String link;
+    @DBRef
+    User author;
+    String title;
+    String description;
+    String image;
+    String link;
 }

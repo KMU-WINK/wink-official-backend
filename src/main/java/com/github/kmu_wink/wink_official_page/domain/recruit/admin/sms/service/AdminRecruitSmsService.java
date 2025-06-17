@@ -1,4 +1,3 @@
-
 package com.github.kmu_wink.wink_official_page.domain.recruit.admin.sms.service;
 
 import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
@@ -40,9 +39,7 @@ public class AdminRecruitSmsService {
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
         RecruitSms sms = recruitSmsRepository.findByRecruit(recruit);
 
-        return GetRecruitSmsResponse.builder()
-            .recruitSms(sms)
-            .build();
+        return GetRecruitSmsResponse.builder().recruitSms(sms).build();
     }
 
     public GetRecruitSmsResponse updateRecruitSms(String recruitId, UpdateRecruitSmsRequest dto) {
@@ -56,9 +53,7 @@ public class AdminRecruitSmsService {
         sms.setFinalPass(dto.finalPass());
         sms = recruitSmsRepository.save(sms);
 
-        return GetRecruitSmsResponse.builder()
-            .recruitSms(sms)
-            .build();
+        return GetRecruitSmsResponse.builder().recruitSms(sms).build();
     }
 
     public void sendTestSms(String recruitId, SendTestSmsRequest dto, User user) {
@@ -66,9 +61,13 @@ public class AdminRecruitSmsService {
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
         RecruitSms sms = recruitSmsRepository.findByRecruit(recruit);
 
-        if (smsSender.remain() < 1) throw new RemainSmsLackException();
+        if (smsSender.remain() < 1) {
+            throw new RemainSmsLackException();
+        }
 
-        if (sms.getPaperFail() == null || sms.getPaperPass() == null) throw new SmsMessageIsEmptyException();
+        if (sms.getPaperFail() == null || sms.getPaperPass() == null) {
+            throw new SmsMessageIsEmptyException();
+        }
 
         TestSmsField field = TestSmsField.valueOf(dto.field());
 
@@ -79,11 +78,9 @@ public class AdminRecruitSmsService {
             case FINAL_PASS -> sms.getFinalPass();
         };
 
-        String transform = field.equals(TestSmsField.FINAL_PASS)
-            ? RecruitSms.transform(
+        String transform = field.equals(TestSmsField.FINAL_PASS) ? RecruitSms.transform(
                 content,
-                preUserRepository.save(
-                    PreUser.builder()
+                preUserRepository.save(PreUser.builder()
                         .name(user.getName() + " (테스트)")
                         .studentId(user.getStudentId())
                         .department(user.getDepartment())
@@ -91,19 +88,17 @@ public class AdminRecruitSmsService {
                         .phoneNumber(user.getPhoneNumber())
                         .token(randomString.generate(128))
                         .test(true)
-                        .build()
-                )
-            )
-            : RecruitSms.transform(
+                        .build())
+        ) : RecruitSms.transform(
                 content,
                 RecruitForm.builder()
-                    .name(user.getName())
-                    .studentId(user.getStudentId())
-                    .department(user.getDepartment())
-                    .email(user.getEmail())
-                    .phoneNumber(user.getPhoneNumber())
-                    .build()
-            );
+                        .name(user.getName())
+                        .studentId(user.getStudentId())
+                        .department(user.getDepartment())
+                        .email(user.getEmail())
+                        .phoneNumber(user.getPhoneNumber())
+                        .build()
+        );
 
         smsSender.send(List.of(new SmsObject(dto.phoneNumber(), transform)));
     }

@@ -5,7 +5,8 @@ import lombok.Builder;
 @Builder
 public record SmsObject(
 
-	String target,
-	String content
+        String target,
+        String content
 ) {
+
 }

@@ -13,23 +13,16 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
 
-        return new OpenAPI()
-                .components(new Components().addSecuritySchemes("JWT", securityScheme()))
-                .info(info());
+        return new OpenAPI().components(new Components().addSecuritySchemes("JWT", securityScheme())).info(info());
     }
 
     private Info info() {
 
-        return new Info()
-                .title("Wink 공식 홈페이지")
-                .description("국민대학교 소프트웨어융합대학 웹 학술 동아리 | WINK")
-                .version("2.0");
+        return new Info().title("Wink 공식 홈페이지").description("국민대학교 소프트웨어융합대학 웹 학술 동아리 | WINK").version("2.0");
     }
 
     private SecurityScheme securityScheme() {
 
-        return new SecurityScheme()
-                .type(SecurityScheme.Type.HTTP)
-                .bearerFormat("JWT")
-                .scheme("bearer");
-    }}
+        return new SecurityScheme().type(SecurityScheme.Type.HTTP).bearerFormat("JWT").scheme("bearer");
+    }
+}

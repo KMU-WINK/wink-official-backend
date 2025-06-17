@@ -33,4 +33,5 @@ public record RegisterRequest(
         @Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
         String blog
 ) {
+
 }

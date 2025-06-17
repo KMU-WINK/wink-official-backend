@@ -19,12 +19,15 @@ import java.io.UnsupportedEncodingException;
 public class EmailSender {
 
     private static final String ORGANIZATION_NAME = "WINK";
+
+
     private final MailProperties properties;
+
     private final JavaMailSender javaMailSender;
     private final RandomString randomString;
 
     @Async
-    @SneakyThrows({MessagingException.class, UnsupportedEncodingException.class})
+    @SneakyThrows({ MessagingException.class, UnsupportedEncodingException.class })
     public void send(String email, EmailTemplate template) {
 
         MimeMessage message = javaMailSender.createMimeMessage();

@@ -34,4 +34,5 @@ public record CreateRecruitRequest(
         @Pattern(regexp = RegExp.YYYY_MM_DD_EXPRESSION, message = RegExp.YYYY_MM_DD_MESSAGE)
         String interviewEndDate
 ) {
+
 }

@@ -8,15 +8,16 @@ import lombok.Builder;
 @Builder
 public record CreateHistoryRequest(
 
-	@NotBlank
-	String title,
+        @NotBlank
+        String title,
 
-	@NotBlank
-	@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
-	String image,
+        @NotBlank
+        @Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
+        String image,
 
-	@NotBlank
-	@Pattern(regexp = RegExp.YYYY_MM_DD_EXPRESSION, message = RegExp.YYYY_MM_DD_MESSAGE)
-	String date
+        @NotBlank
+        @Pattern(regexp = RegExp.YYYY_MM_DD_EXPRESSION, message = RegExp.YYYY_MM_DD_MESSAGE)
+        String date
 ) {
+
 }

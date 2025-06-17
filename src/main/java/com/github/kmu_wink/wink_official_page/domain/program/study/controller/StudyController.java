@@ -19,31 +19,33 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Program] [Study] Index")
 public class StudyController {
 
-	private final StudyService studyService;
+    private final StudyService studyService;
 
-	@GetMapping
-	@Operation(summary = "모든 게시글 목록")
-	public ApiResponse<GetStudiesResponse> getStudies(
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "") String query) {
+    @GetMapping
+    @Operation(summary = "모든 게시글 목록")
+    public ApiResponse<GetStudiesResponse> getStudies(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "") String query
+    ) {
 
-		return ApiResponse.ok(studyService.getStudies(page, query));
-	}
+        return ApiResponse.ok(studyService.getStudies(page, query));
+    }
 
-	@GetMapping("/{category}")
-	@Operation(summary = "카테고리 게시글 목록")
-	public ApiResponse<GetStudiesResponse> getStudies(
-		@PathVariable String category,
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "") String query) {
+    @GetMapping("/{category}")
+    @Operation(summary = "카테고리 게시글 목록")
+    public ApiResponse<GetStudiesResponse> getStudies(
+            @PathVariable String category,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "") String query
+    ) {
 
-		return ApiResponse.ok(studyService.getStudies(category, page, query));
-	}
+        return ApiResponse.ok(studyService.getStudies(category, page, query));
+    }
 
-	@GetMapping("/category")
-	@Operation(summary = "모든 카테고리 목록")
-	public ApiResponse<GetCategoriesResponse> getCategories() {
+    @GetMapping("/category")
+    @Operation(summary = "모든 카테고리 목록")
+    public ApiResponse<GetCategoriesResponse> getCategories() {
 
-		return ApiResponse.ok(studyService.getCategories());
-	}
+        return ApiResponse.ok(studyService.getCategories());
+    }
 }

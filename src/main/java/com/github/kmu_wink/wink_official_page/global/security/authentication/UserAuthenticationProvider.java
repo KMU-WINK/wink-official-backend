@@ -22,6 +22,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) {
+
         UserAuthentication userAuthentication = (UserAuthentication) authentication;
 
         String credentials = userAuthentication.getCredentials();
@@ -44,6 +45,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
+
         return authentication.equals(UserAuthentication.class);
     }
 }

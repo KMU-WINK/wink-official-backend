@@ -6,13 +6,14 @@ import lombok.Builder;
 @Builder
 public record OauthTokenRequest(
 
-	@NotBlank
-	String clientId,
+        @NotBlank
+        String clientId,
 
-	@NotBlank
-	String clientSecret,
+        @NotBlank
+        String clientSecret,
 
-	@NotBlank
-	String token
+        @NotBlank
+        String token
 ) {
+
 }

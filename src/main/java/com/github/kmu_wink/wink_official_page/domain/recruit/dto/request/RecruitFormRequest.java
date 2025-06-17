@@ -24,7 +24,7 @@ public record RecruitFormRequest(
         String name,
 
         @NotBlank
-        @Size(min=8, max=8, message = RegExp.STUDENT_ID_MESSAGE)
+        @Size(min = 8, max = 8, message = RegExp.STUDENT_ID_MESSAGE)
         String studentId,
 
         @NotBlank
@@ -77,4 +77,5 @@ public record RecruitFormRequest(
         @Size(min = 100, max = 1000)
         String favoriteProject
 ) {
+
 }

@@ -17,48 +17,44 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AdminHistoryService {
 
-	private final HistoryRepository historyRepository;
+    private final HistoryRepository historyRepository;
 
-	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private final S3Service s3Service;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final S3Service s3Service;
 
-	public GetHistoryResponse createHistory(CreateHistoryRequest dto) {
+    public GetHistoryResponse createHistory(CreateHistoryRequest dto) {
 
-		History history = History.builder()
-			.title(dto.title())
-			.image(dto.image())
-			.date(LocalDate.parse(dto.date(), formatter))
-			.build();
+        History history = History.builder()
+                .title(dto.title())
+                .image(dto.image())
+                .date(LocalDate.parse(dto.date(), formatter))
+                .build();
 
-		history = historyRepository.save(history);
+        history = historyRepository.save(history);
 
-		return GetHistoryResponse.builder()
-			.history(history)
-			.build();
-	}
+        return GetHistoryResponse.builder().history(history).build();
+    }
 
-	public GetHistoryResponse updateHistory(String id, CreateHistoryRequest dto) {
+    public GetHistoryResponse updateHistory(String id, CreateHistoryRequest dto) {
 
-		History history = historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
+        History history = historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
 
-		history.setTitle(dto.title());
-		history.setImage(dto.image());
-		history.setDate(LocalDate.parse(dto.date(), formatter));
-		history = historyRepository.save(history);
+        history.setTitle(dto.title());
+        history.setImage(dto.image());
+        history.setDate(LocalDate.parse(dto.date(), formatter));
+        history = historyRepository.save(history);
 
-		return GetHistoryResponse.builder()
-			.history(history)
-			.build();
-	}
+        return GetHistoryResponse.builder().history(history).build();
+    }
 
-	public void deleteHistory(String id) {
+    public void deleteHistory(String id) {
 
-		History history = historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
+        History history = historyRepository.findById(id).orElseThrow(HistoryNotFoundException::new);
 
-		if (Objects.nonNull(history.getImage())) {
-			s3Service.urlToKey(history.getImage()).ifPresent(s3Service::deleteFile);
-		}
+        if (Objects.nonNull(history.getImage())) {
+            s3Service.urlToKey(history.getImage()).ifPresent(s3Service::delete);
+        }
 
-		historyRepository.delete(history);
-	}
+        historyRepository.delete(history);
+    }
 }

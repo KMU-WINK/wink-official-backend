@@ -36,19 +36,13 @@ public class AdminUserService {
     public AdminUsersResponse getUsers(int page, String query) {
 
         PageRequest pageRequest = PageRequest.of(
-            page,
-            20,
-            Sort.by(
-                Sort.Order.desc("role"),
-                Sort.Order.desc("fee"),
-                Sort.Order.asc("name")
-            )
+                page,
+                20,
+                Sort.by(Sort.Order.desc("role"), Sort.Order.desc("fee"), Sort.Order.asc("name"))
         );
         Page<User> users = userRepository.findAllSearch(query, pageRequest, mongoTemplate);
 
-        return AdminUsersResponse.builder()
-                .users(users)
-                .build();
+        return AdminUsersResponse.builder().users(users).build();
     }
 
     public AdminPreUsersResponse getPreUsers(int page, String query) {
@@ -56,19 +50,17 @@ public class AdminUserService {
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by("name").ascending());
         Page<PreUser> users = preUserRepository.findAllSearch(query, pageRequest);
 
-        return AdminPreUsersResponse.builder()
-                .users(users)
-                .build();
+        return AdminPreUsersResponse.builder().users(users).build();
     }
 
     public AdminPreUserResponse invite(InviteRequest dto) {
 
-        if (userRepository.findByStudentId(dto.studentId()).isPresent()
-                || userRepository.findByEmail(dto.email()).isPresent()
-                || userRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()
-                || preUserRepository.findByStudentId(dto.studentId()).isPresent()
-                || preUserRepository.findByEmail(dto.email()).isPresent()
-                || preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()) {
+        if (userRepository.findByStudentId(dto.studentId()).isPresent() ||
+                userRepository.findByEmail(dto.email()).isPresent() ||
+                userRepository.findByPhoneNumber(dto.phoneNumber()).isPresent() ||
+                preUserRepository.findByStudentId(dto.studentId()).isPresent() ||
+                preUserRepository.findByEmail(dto.email()).isPresent() ||
+                preUserRepository.findByPhoneNumber(dto.phoneNumber()).isPresent()) {
 
             throw new AlreadyRegisteredException();
         }
@@ -86,9 +78,7 @@ public class AdminUserService {
         preUser = preUserRepository.save(preUser);
         emailSender.send(dto.email(), InviteTemplate.of(preUser));
 
-        return AdminPreUserResponse.builder()
-            .user(preUser)
-            .build();
+        return AdminPreUserResponse.builder().user(preUser).build();
     }
 
     public void removePreUser(String id) {
@@ -112,8 +102,6 @@ public class AdminUserService {
 
         user = userRepository.save(user);
 
-        return UserResponse.builder()
-            .user(user)
-            .build();
+        return UserResponse.builder().user(user).build();
     }
 }

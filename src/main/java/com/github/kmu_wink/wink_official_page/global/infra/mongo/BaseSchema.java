@@ -26,11 +26,12 @@ public abstract class BaseSchema {
 
     @Override
     public boolean equals(Object obj) {
+
         if (this == obj) {
             return true;
         }
 
-        if (Objects.isNull(obj) ||  !getClass().equals(obj.getClass())) {
+        if (Objects.isNull(obj) || !getClass().equals(obj.getClass())) {
             return false;
         }
 
@@ -41,6 +42,7 @@ public abstract class BaseSchema {
 
     @Override
     public int hashCode() {
+
         return id.hashCode();
     }
 }

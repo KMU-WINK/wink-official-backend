@@ -20,6 +20,7 @@ public class UserAuthentication implements Authentication {
     private boolean authenticated = false;
 
     public UserAuthentication(User user) {
+
         this(user, null);
     }
 

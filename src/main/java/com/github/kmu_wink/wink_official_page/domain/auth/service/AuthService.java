@@ -57,8 +57,7 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest dto) {
 
-        User user = userRepository.findByEmail(dto.email())
-            .orElseThrow(AuthenticationFailException::new);
+        User user = userRepository.findByEmail(dto.email()).orElseThrow(AuthenticationFailException::new);
 
         UserAuthentication authentication = new UserAuthentication(user, dto.password());
         authenticationManager.authenticate(authentication);
@@ -66,20 +65,14 @@ public class AuthService {
         String accessToken = jwtUtil.generateAccessToken(user);
         String refreshToken = jwtUtil.generateRefreshToken(user);
 
-        return LoginResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .build();
+        return LoginResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     public CheckRegisterResponse checkRegister(CheckRegisterRequest dto) {
 
         Optional<PreUser> preUser = preUserRepository.findByToken(dto.token());
 
-        return CheckRegisterResponse.builder()
-            .isValid(preUser.isPresent())
-            .user(preUser.orElse(null))
-            .build();
+        return CheckRegisterResponse.builder().isValid(preUser.isPresent()).user(preUser.orElse(null)).build();
     }
 
     public void register(RegisterRequest dto) {
@@ -93,33 +86,32 @@ public class AuthService {
             throw new TestUserCannotRealRegisterException();
         }
 
-        if (userRepository.findByEmail(preUser.getEmail()).isPresent()
-            || userRepository.findByStudentId(preUser.getStudentId()).isPresent()
-            || userRepository.findByPhoneNumber(preUser.getPhoneNumber()).isPresent()) {
+        if (userRepository.findByEmail(preUser.getEmail()).isPresent() ||
+                userRepository.findByStudentId(preUser.getStudentId()).isPresent() ||
+                userRepository.findByPhoneNumber(preUser.getPhoneNumber()).isPresent()) {
 
             throw new AlreadyRegisteredException();
         }
 
         User user = User.builder()
-            .email(preUser.getEmail())
-            .name(preUser.getName())
-            .studentId(preUser.getStudentId())
-            .department(preUser.getDepartment())
-            .phoneNumber(preUser.getPhoneNumber())
-            .password(encoder.encode(dto.password()))
-            .social(User.Social.builder().build())
-            .role(User.Role.MEMBER)
-            .fee(false)
-            .build();
+                .email(preUser.getEmail())
+                .name(preUser.getName())
+                .studentId(preUser.getStudentId())
+                .department(preUser.getDepartment())
+                .phoneNumber(preUser.getPhoneNumber())
+                .password(encoder.encode(dto.password()))
+                .social(User.Social.builder().build())
+                .role(User.Role.MEMBER)
+                .fee(false)
+                .build();
 
         userRepository.save(user);
     }
 
     public LoginResponse refresh(RefreshRequest dto) {
 
-        RefreshToken refreshToken = refreshTokenRedisRepository
-            .findByToken(dto.token())
-            .orElseThrow(InvalidRefreshTokenException::new);
+        RefreshToken refreshToken = refreshTokenRedisRepository.findByToken(dto.token())
+                .orElseThrow(InvalidRefreshTokenException::new);
 
         refreshTokenRedisRepository.delete(refreshToken);
 
@@ -128,10 +120,7 @@ public class AuthService {
         String accessToken = jwtUtil.generateAccessToken(userId);
         String newRefreshToken = jwtUtil.generateRefreshToken(userId);
 
-        return LoginResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(newRefreshToken)
-            .build();
+        return LoginResponse.builder().accessToken(accessToken).refreshToken(newRefreshToken).build();
     }
 
     public void requestResetPassword(RequestResetPasswordRequest dto) {
@@ -140,9 +129,9 @@ public class AuthService {
             String passwordResetTokenRaw = randomString.generate(128);
 
             PasswordResetToken passwordResetToken = PasswordResetToken.builder()
-                .token(passwordResetTokenRaw)
-                .userId(user.getId())
-                .build();
+                    .token(passwordResetTokenRaw)
+                    .userId(user.getId())
+                    .build();
 
             passwordResetTokenRedisRepository.save(passwordResetToken);
 
@@ -154,22 +143,19 @@ public class AuthService {
 
         boolean isVerified = passwordResetTokenRedisRepository.findByToken(dto.token()).isPresent();
 
-        return CheckResetPasswordResponse.builder()
-            .isValid(isVerified)
-            .build();
+        return CheckResetPasswordResponse.builder().isValid(isVerified).build();
     }
 
     public void resetPassword(ResetPasswordRequest request) {
 
         PasswordResetToken passwordResetTokenEntity = passwordResetTokenRedisRepository.findByToken(request.token())
-            .orElseThrow(InvalidPasswordResetTokenException::new);
+                .orElseThrow(InvalidPasswordResetTokenException::new);
 
         passwordResetTokenRedisRepository.delete(passwordResetTokenEntity);
 
         String userId = passwordResetTokenEntity.userId();
 
-        User user = userRepository.findById(userId)
-            .orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         user.setPassword(encoder.encode(request.newPassword()));
 
@@ -178,8 +164,6 @@ public class AuthService {
 
     public UserResponse me(User user) {
 
-        return UserResponse.builder()
-            .user(user)
-            .build();
+        return UserResponse.builder().user(user).build();
     }
 }

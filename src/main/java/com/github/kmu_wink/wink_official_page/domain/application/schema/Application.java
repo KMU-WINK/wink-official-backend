@@ -39,16 +39,22 @@ public class Application extends BaseSchema {
 
         public static Login empty() {
 
-            return Login.builder()
-                .enable(false)
-                .urls(List.of())
-                .scopes(List.of(Scope.UUID))
-                .build();
+            return Login.builder().enable(false).urls(List.of()).scopes(List.of(Scope.UUID)).build();
         }
 
         public enum Scope {
 
-            UUID, EMAIL, NAME, STUDENT_ID, DEPARTMENT, PHONE_NUMBER, AVATAR, DESCRIPTION, SOCIAL, ROLE, FEE
+            UUID,
+            EMAIL,
+            NAME,
+            STUDENT_ID,
+            DEPARTMENT,
+            PHONE_NUMBER,
+            AVATAR,
+            DESCRIPTION,
+            SOCIAL,
+            ROLE,
+            FEE
         }
     }
 }

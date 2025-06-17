@@ -40,7 +40,10 @@ public class UserController {
     @PutMapping("/info")
     @Operation(summary = "내 정보 수정")
     @PreAuthorize("isAuthenticated()")
-    public ApiResponse<UserResponse> updateMyInfo(@AuthenticationPrincipal User user, @RequestBody @Valid UpdateMyInfoRequest request) {
+    public ApiResponse<UserResponse> updateMyInfo(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid UpdateMyInfoRequest request
+    ) {
 
         return ApiResponse.ok(userService.updateMyInfo(user, request));
     }
@@ -64,7 +67,10 @@ public class UserController {
     @PutMapping("/password")
     @Operation(summary = "내 비밀번호 수정")
     @PreAuthorize("isAuthenticated()")
-    public ApiResponse<Void> updateMyPassword(@AuthenticationPrincipal User user, @RequestBody @Valid UpdateMyPasswordRequest request) {
+    public ApiResponse<Void> updateMyPassword(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid UpdateMyPasswordRequest request
+    ) {
 
         userService.updateMyPassword(user, request);
 

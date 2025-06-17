@@ -36,7 +36,8 @@ public class AdminUserController {
     @Operation(summary = "유저 목록")
     public ApiResponse<AdminUsersResponse> getUsers(
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "") String query) {
+            @RequestParam(required = false, defaultValue = "") String query
+    ) {
 
         return ApiResponse.ok(adminUserService.getUsers(page, query));
     }
@@ -45,7 +46,8 @@ public class AdminUserController {
     @Operation(summary = "임시 유저 목록")
     public ApiResponse<AdminPreUsersResponse> getPreUsers(
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "") String query) {
+            @RequestParam(required = false, defaultValue = "") String query
+    ) {
 
         return ApiResponse.ok(adminUserService.getPreUsers(page, query));
     }

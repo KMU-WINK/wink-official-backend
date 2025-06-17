@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class ConferenceNotFoundException extends ApiException {
 
-	public ConferenceNotFoundException() {
+    public ConferenceNotFoundException() {
 
-		super(HttpStatus.NOT_FOUND, "정기 회의를 찾을 수 없습니다.");
-	}
+        super(HttpStatus.NOT_FOUND, "정기 회의를 찾을 수 없습니다.");
+    }
 }

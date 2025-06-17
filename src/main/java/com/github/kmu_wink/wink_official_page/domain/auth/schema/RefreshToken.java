@@ -23,4 +23,5 @@ public record RefreshToken(
         @TimeToLive(unit = TimeUnit.HOURS)
         long ttl
 ) {
+
 }

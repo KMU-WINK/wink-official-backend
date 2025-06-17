@@ -9,7 +9,8 @@ import lombok.Builder;
 public record StudentIdCheckRequest(
 
         @NotBlank
-        @Size(min=8, max=8, message = RegExp.STUDENT_ID_MESSAGE)
+        @Size(min = 8, max = 8, message = RegExp.STUDENT_ID_MESSAGE)
         String studentId
 ) {
+
 }

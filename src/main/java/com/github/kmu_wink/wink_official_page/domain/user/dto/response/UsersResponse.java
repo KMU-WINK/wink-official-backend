@@ -10,4 +10,5 @@ public record UsersResponse(
 
         List<User> users
 ) {
+
 }

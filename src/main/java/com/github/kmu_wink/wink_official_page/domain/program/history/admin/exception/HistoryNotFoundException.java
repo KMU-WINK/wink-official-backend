@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class HistoryNotFoundException extends ApiException {
 
-	public HistoryNotFoundException() {
-		super(HttpStatus.NOT_FOUND, "연혁을 찾을 수 없습니다.");
-	}
+    public HistoryNotFoundException() {
+
+        super(HttpStatus.NOT_FOUND, "연혁을 찾을 수 없습니다.");
+    }
 }

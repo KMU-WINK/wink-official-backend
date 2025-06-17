@@ -28,6 +28,8 @@ public class Recruit extends BaseSchema {
     Step step;
 
     public enum Step {
-        PRE, PAPER_END, INTERVIEW_END
+        PRE,
+        PAPER_END,
+        INTERVIEW_END
     }
 }

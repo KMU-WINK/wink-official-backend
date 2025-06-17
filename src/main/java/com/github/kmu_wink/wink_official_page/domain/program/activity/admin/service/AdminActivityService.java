@@ -17,82 +17,77 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AdminActivityService {
 
-	private final ActivityRepository activityRepository;
-	private final S3Service s3Service;
+    private final ActivityRepository activityRepository;
+    private final S3Service s3Service;
 
-	public GetActivitiesPageableResponse getActivities(int page, String query) {
+    public GetActivitiesPageableResponse getActivities(int page, String query) {
 
-		PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Order.desc("pinned"), Sort.Order.desc("createdAt")));
-		Page<Activity> activities = activityRepository.findAllSearch(query, pageRequest);
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                20,
+                Sort.by(Sort.Order.desc("pinned"), Sort.Order.desc("createdAt"))
+        );
+        Page<Activity> activities = activityRepository.findAllSearch(query, pageRequest);
 
-		return GetActivitiesPageableResponse.builder()
-			.activities(activities)
-			.build();
-	}
+        return GetActivitiesPageableResponse.builder().activities(activities).build();
+    }
 
-	public GetActivityResponse createActivity(
-		CreateActivityRequest dto) {
+    public GetActivityResponse createActivity(
+            CreateActivityRequest dto
+    ) {
 
-		Activity activity = Activity.builder()
-			.title(dto.title())
-			.description(dto.description())
-			.images(dto.images())
-			.pinned(false)
-			.build();
+        Activity activity = Activity.builder()
+                .title(dto.title())
+                .description(dto.description())
+                .images(dto.images())
+                .pinned(false)
+                .build();
 
-		activity = activityRepository.save(activity);
+        activity = activityRepository.save(activity);
 
-		return GetActivityResponse.builder()
-			.activity(activity)
-			.build();
-	}
+        return GetActivityResponse.builder().activity(activity).build();
+    }
 
-	public GetActivityResponse updateActivity(String id, CreateActivityRequest dto) {
+    public GetActivityResponse updateActivity(String id, CreateActivityRequest dto) {
 
-		Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+        Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
 
-		activity.setTitle(dto.title());
-		activity.setDescription(dto.description());
-		activity.setImages(dto.images());
-		activity = activityRepository.save(activity);
+        activity.setTitle(dto.title());
+        activity.setDescription(dto.description());
+        activity.setImages(dto.images());
+        activity = activityRepository.save(activity);
 
-		return GetActivityResponse.builder()
-			.activity(activity)
-			.build();
-	}
+        return GetActivityResponse.builder().activity(activity).build();
+    }
 
-	public void deleteActivity(String id) {
+    public void deleteActivity(String id) {
 
-		Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+        Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
 
-		activity.getImages().forEach(image -> s3Service.urlToKey(image).ifPresent(s3Service::deleteFile));
+        activity.getImages().forEach(image -> s3Service.urlToKey(image).ifPresent(s3Service::delete));
 
-		activityRepository.delete(activity);
-	}
+        activityRepository.delete(activity);
+    }
 
-	public GetActivityResponse pinActivity(String id) {
+    public GetActivityResponse pinActivity(String id) {
 
-		Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+        Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
 
-		activity.setPinned(true);
+        activity.setPinned(true);
 
-		activity = activityRepository.save(activity);
+        activity = activityRepository.save(activity);
 
-		return GetActivityResponse.builder()
-			.activity(activity)
-			.build();
-	}
+        return GetActivityResponse.builder().activity(activity).build();
+    }
 
-	public GetActivityResponse unpinActivity(String id) {
+    public GetActivityResponse unpinActivity(String id) {
 
-		Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
+        Activity activity = activityRepository.findById(id).orElseThrow(ActivityNotFoundException::new);
 
-		activity.setPinned(false);
+        activity.setPinned(false);
 
-		activity = activityRepository.save(activity);
+        activity = activityRepository.save(activity);
 
-		return GetActivityResponse.builder()
-			.activity(activity)
-			.build();
-	}
+        return GetActivityResponse.builder().activity(activity).build();
+    }
 }

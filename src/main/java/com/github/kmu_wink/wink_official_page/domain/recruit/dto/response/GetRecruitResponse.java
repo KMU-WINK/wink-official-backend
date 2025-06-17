@@ -8,4 +8,5 @@ public record GetRecruitResponse(
 
         Recruit recruit
 ) {
+
 }

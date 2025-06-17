@@ -20,9 +20,9 @@ public class LoggerFilter extends OncePerRequestFilter {
 
     @Override
     public void doFilterInternal(
-        @Nonnull HttpServletRequest request,
-        @Nonnull HttpServletResponse response,
-        @Nonnull FilterChain filterChain
+            @Nonnull HttpServletRequest request,
+            @Nonnull HttpServletResponse response,
+            @Nonnull FilterChain filterChain
     ) throws ServletException, IOException {
 
         long start = System.currentTimeMillis();
@@ -34,24 +34,27 @@ public class LoggerFilter extends OncePerRequestFilter {
         long elapsed = end - start;
 
         ResponseInfo responseInfo = getResponseInfo(wrappedResponse);
-        log.info("{} {} {} {}ms {}{}",
-            request.getMethod(),
-            request.getRequestURI(),
-            getIp(request),
-            elapsed,
-            responseInfo.statusCode(),
-            responseInfo.error() == null ? "" : " - %s".formatted(responseInfo.error())
+        log.info(
+                "{} {} {} {}ms {}{}",
+                request.getMethod(),
+                request.getRequestURI(),
+                getIp(request),
+                elapsed,
+                responseInfo.statusCode(),
+                responseInfo.error() == null ? "" : " - %s".formatted(responseInfo.error())
         );
 
         wrappedResponse.copyBodyToResponse();
     }
 
     private ResponseInfo getResponseInfo(ContentCachingResponseWrapper response) {
+
         try {
             String responseBody = new String(response.getContentAsByteArray(), response.getCharacterEncoding());
             JsonNode jsonNode = new ObjectMapper().readTree(responseBody);
             int statusCode = jsonNode.has("statusCode") ? jsonNode.get("statusCode").asInt() : response.getStatus();
-            String error = jsonNode.has("error") && !jsonNode.get("error").isNull() ? jsonNode.get("error").asText() : null;
+            String error =
+                    jsonNode.has("error") && !jsonNode.get("error").isNull() ? jsonNode.get("error").asText() : null;
             return new ResponseInfo(statusCode, error);
         } catch (Exception e) {
             return new ResponseInfo(response.getStatus(), null);
@@ -59,10 +62,16 @@ public class LoggerFilter extends OncePerRequestFilter {
     }
 
     private String getIp(HttpServletRequest request) {
+
         String xfHeader = request.getHeader("X-Forwarded-For");
         return xfHeader == null ? request.getRemoteAddr() : xfHeader.split(",")[0];
     }
 
-    private record ResponseInfo(int statusCode, String error) {}
+    private record ResponseInfo(
+            int statusCode,
+            String error
+    ) {
+
+    }
 }
 

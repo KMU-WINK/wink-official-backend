@@ -15,33 +15,31 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AdminProjectService {
 
-	private final ProjectRepository projectRepository;
-	private final S3Service s3Service;
+    private final ProjectRepository projectRepository;
+    private final S3Service s3Service;
 
-	public GetProjectResponse updateProject(String id, CreateProjectRequest dto) {
+    public GetProjectResponse updateProject(String id, CreateProjectRequest dto) {
 
-		Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+        Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
 
-		project.setTitle(dto.title());
-		project.setDescription(dto.description());
-		project.setImage(dto.image());
-		project.setLink(dto.link());
+        project.setTitle(dto.title());
+        project.setDescription(dto.description());
+        project.setImage(dto.image());
+        project.setLink(dto.link());
 
-		project = projectRepository.save(project);
+        project = projectRepository.save(project);
 
-		return GetProjectResponse.builder()
-			.project(project)
-			.build();
-	}
+        return GetProjectResponse.builder().project(project).build();
+    }
 
-	public void deleteProject(String id) {
+    public void deleteProject(String id) {
 
-		Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+        Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
 
-		if (Objects.nonNull(project.getImage())) {
-			s3Service.urlToKey(project.getImage()).ifPresent(s3Service::deleteFile);
-		}
+        if (Objects.nonNull(project.getImage())) {
+            s3Service.urlToKey(project.getImage()).ifPresent(s3Service::delete);
+        }
 
-		projectRepository.delete(project);
-	}
+        projectRepository.delete(project);
+    }
 }

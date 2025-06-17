@@ -24,28 +24,31 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Program] [History] Admin")
 public class AdminHistoryController {
 
-	private final AdminHistoryService adminHistoryService;
+    private final AdminHistoryService adminHistoryService;
 
-	@PostMapping
-	@Operation(summary = "연혁 생성")
-	public ApiResponse<GetHistoryResponse> getHistories(@RequestBody @Valid CreateHistoryRequest request) {
+    @PostMapping
+    @Operation(summary = "연혁 생성")
+    public ApiResponse<GetHistoryResponse> getHistories(@RequestBody @Valid CreateHistoryRequest request) {
 
-		return ApiResponse.ok(adminHistoryService.createHistory(request));
-	}
+        return ApiResponse.ok(adminHistoryService.createHistory(request));
+    }
 
-	@PutMapping("/{id}")
-	@Operation(summary = "연혁 수정")
-	public ApiResponse<GetHistoryResponse> updateHistory(@PathVariable String id, @RequestBody @Valid CreateHistoryRequest request) {
+    @PutMapping("/{id}")
+    @Operation(summary = "연혁 수정")
+    public ApiResponse<GetHistoryResponse> updateHistory(
+            @PathVariable String id,
+            @RequestBody @Valid CreateHistoryRequest request
+    ) {
 
-		return ApiResponse.ok(adminHistoryService.updateHistory(id, request));
-	}
+        return ApiResponse.ok(adminHistoryService.updateHistory(id, request));
+    }
 
-	@DeleteMapping("/{id}")
-	@Operation(summary = "연혁 삭제")
-	public ApiResponse<Void> deleteHistory(@PathVariable String id) {
+    @DeleteMapping("/{id}")
+    @Operation(summary = "연혁 삭제")
+    public ApiResponse<Void> deleteHistory(@PathVariable String id) {
 
-		adminHistoryService.deleteHistory(id);
+        adminHistoryService.deleteHistory(id);
 
-		return ApiResponse.ok();
-	}
+        return ApiResponse.ok();
+    }
 }

@@ -1,4 +1,3 @@
-
 package com.github.kmu_wink.wink_official_page.domain.recruit.admin.form.service;
 
 import com.github.kmu_wink.wink_official_page.domain.application.util.RandomString;
@@ -44,9 +43,12 @@ public class AdminRecruitFormService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
+        if (recruit.getStep() != Recruit.Step.PRE) {
+            throw new AlreadyPaperEndedException();
+        }
 
-        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit).orElseThrow(RecruitFormNotFoundException::new);
+        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit)
+                .orElseThrow(RecruitFormNotFoundException::new);
 
         recruitForm.setPaperPass(null);
 
@@ -57,9 +59,12 @@ public class AdminRecruitFormService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
+        if (recruit.getStep() != Recruit.Step.PRE) {
+            throw new AlreadyPaperEndedException();
+        }
 
-        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit).orElseThrow(RecruitFormNotFoundException::new);
+        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit)
+                .orElseThrow(RecruitFormNotFoundException::new);
 
         recruitForm.setPaperPass(true);
 
@@ -70,9 +75,12 @@ public class AdminRecruitFormService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
+        if (recruit.getStep() != Recruit.Step.PRE) {
+            throw new AlreadyPaperEndedException();
+        }
 
-        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit).orElseThrow(RecruitFormNotFoundException::new);
+        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit)
+                .orElseThrow(RecruitFormNotFoundException::new);
 
         recruitForm.setPaperPass(false);
 
@@ -82,30 +90,34 @@ public class AdminRecruitFormService {
     public void finalizePaper(String recruitId) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
-        if (recruit.getStep() != Recruit.Step.PRE) throw new AlreadyPaperEndedException();
+        if (recruit.getStep() != Recruit.Step.PRE) {
+            throw new AlreadyPaperEndedException();
+        }
 
         LocalDateTime now = LocalDateTime.now();
-        if (!now.isAfter(recruit.getRecruitEndDate().atTime(23, 59, 59))) throw new NowIsRecruitingException();
+        if (!now.isAfter(recruit.getRecruitEndDate().atTime(23, 59, 59))) {
+            throw new NowIsRecruitingException();
+        }
 
         List<RecruitForm> forms = recruitFormRepository.findAllByRecruit(recruit);
-        if (smsSender.remain() < forms.size()) throw new RemainSmsLackException();
+        if (smsSender.remain() < forms.size()) {
+            throw new RemainSmsLackException();
+        }
 
         RecruitSms sms = recruitSmsRepository.findByRecruit(recruit);
-        if (sms.getPaperFail() == null || sms.getPaperPass() == null) throw new SmsMessageIsEmptyException();
+        if (sms.getPaperFail() == null || sms.getPaperPass() == null) {
+            throw new SmsMessageIsEmptyException();
+        }
 
-        smsSender.send(
-            forms.stream()
+        smsSender.send(forms.stream()
                 .filter(form -> !form.getPaperPass())
                 .map(form -> new SmsObject(form.getPhoneNumber(), RecruitSms.transform(sms.getPaperFail(), form)))
-                .toList()
-        );
+                .toList());
 
-        smsSender.send(
-            forms.stream()
+        smsSender.send(forms.stream()
                 .filter(RecruitForm::getPaperPass)
                 .map(form -> new SmsObject(form.getPhoneNumber(), RecruitSms.transform(sms.getPaperPass(), form)))
-                .toList()
-        );
+                .toList());
 
         recruit.setStep(Recruit.Step.PAPER_END);
 
@@ -116,11 +128,16 @@ public class AdminRecruitFormService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
+        if (recruit.getStep() != Recruit.Step.PAPER_END) {
+            throw new AlreadyInterviewEndedException();
+        }
 
-        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit).orElseThrow(RecruitFormNotFoundException::new);
+        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit)
+                .orElseThrow(RecruitFormNotFoundException::new);
 
-        if (!recruitForm.getPaperPass()) throw new ItsPaperFailedException();
+        if (!recruitForm.getPaperPass()) {
+            throw new ItsPaperFailedException();
+        }
 
         recruitForm.setInterviewPass(null);
 
@@ -131,11 +148,16 @@ public class AdminRecruitFormService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
+        if (recruit.getStep() != Recruit.Step.PAPER_END) {
+            throw new AlreadyInterviewEndedException();
+        }
 
-        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit).orElseThrow(RecruitFormNotFoundException::new);
+        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit)
+                .orElseThrow(RecruitFormNotFoundException::new);
 
-        if (!recruitForm.getPaperPass()) throw new ItsPaperFailedException();
+        if (!recruitForm.getPaperPass()) {
+            throw new ItsPaperFailedException();
+        }
 
         recruitForm.setInterviewPass(true);
 
@@ -146,11 +168,16 @@ public class AdminRecruitFormService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
+        if (recruit.getStep() != Recruit.Step.PAPER_END) {
+            throw new AlreadyInterviewEndedException();
+        }
 
-        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit).orElseThrow(RecruitFormNotFoundException::new);
+        RecruitForm recruitForm = recruitFormRepository.findByIdAndRecruit(formId, recruit)
+                .orElseThrow(RecruitFormNotFoundException::new);
 
-        if (!recruitForm.getPaperPass()) throw new ItsPaperFailedException();
+        if (!recruitForm.getPaperPass()) {
+            throw new ItsPaperFailedException();
+        }
 
         recruitForm.setInterviewPass(false);
 
@@ -160,41 +187,41 @@ public class AdminRecruitFormService {
     public void finalizeInterview(String recruitId) {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
-        if (recruit.getStep() != Recruit.Step.PAPER_END) throw new AlreadyInterviewEndedException();
+        if (recruit.getStep() != Recruit.Step.PAPER_END) {
+            throw new AlreadyInterviewEndedException();
+        }
 
-        List<RecruitForm> forms = recruitFormRepository.findAllByRecruit(recruit).stream().filter(RecruitForm::getPaperPass).toList();
-        if (smsSender.remain() < forms.size()) throw new RemainSmsLackException();
+        List<RecruitForm> forms = recruitFormRepository.findAllByRecruit(recruit)
+                .stream()
+                .filter(RecruitForm::getPaperPass)
+                .toList();
+        if (smsSender.remain() < forms.size()) {
+            throw new RemainSmsLackException();
+        }
 
         RecruitSms sms = recruitSmsRepository.findByRecruit(recruit);
-        if (sms.getPaperFail() == null || sms.getPaperPass() == null) throw new SmsMessageIsEmptyException();
+        if (sms.getPaperFail() == null || sms.getPaperPass() == null) {
+            throw new SmsMessageIsEmptyException();
+        }
 
-        smsSender.send(
-            forms.stream()
+        smsSender.send(forms.stream()
                 .filter(form -> !form.getInterviewPass())
                 .map(form -> new SmsObject(form.getPhoneNumber(), RecruitSms.transform(sms.getFinalFail(), form)))
-                .toList()
-        );
+                .toList());
 
-        smsSender.send(
-            forms.stream()
-                .filter(RecruitForm::getInterviewPass)
-                .map(form -> {
-                    PreUser preUser = preUserRepository.save(
-                        PreUser.builder()
-                            .email(form.getEmail())
-                            .name(form.getName())
-                            .studentId(form.getStudentId())
-                            .department(form.getDepartment())
-                            .phoneNumber(form.getPhoneNumber())
-                            .token(randomString.generate(128))
-                            .test(false)
-                            .build()
-                    );
+        smsSender.send(forms.stream().filter(RecruitForm::getInterviewPass).map(form -> {
+            PreUser preUser = preUserRepository.save(PreUser.builder()
+                    .email(form.getEmail())
+                    .name(form.getName())
+                    .studentId(form.getStudentId())
+                    .department(form.getDepartment())
+                    .phoneNumber(form.getPhoneNumber())
+                    .token(randomString.generate(128))
+                    .test(false)
+                    .build());
 
-                    return new SmsObject(form.getPhoneNumber(), RecruitSms.transform(sms.getFinalPass(), preUser));
-                })
-                .toList()
-        );
+            return new SmsObject(form.getPhoneNumber(), RecruitSms.transform(sms.getFinalPass(), preUser));
+        }).toList());
 
         recruit.setStep(Recruit.Step.INTERVIEW_END);
 
@@ -205,12 +232,11 @@ public class AdminRecruitFormService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        List<RecruitForm> forms = recruitFormRepository.findAllByRecruitOrderByCreatedAtDesc(recruit).stream()
-            .peek(form -> form.setRecruit(null))
-            .toList();
+        List<RecruitForm> forms = recruitFormRepository.findAllByRecruitOrderByCreatedAtDesc(recruit)
+                .stream()
+                .peek(form -> form.setRecruit(null))
+                .toList();
 
-        return GetFormsResponse.builder()
-            .forms(forms)
-            .build();
+        return GetFormsResponse.builder().forms(forms).build();
     }
 }

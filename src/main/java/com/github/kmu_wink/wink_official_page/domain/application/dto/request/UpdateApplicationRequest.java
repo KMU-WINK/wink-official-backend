@@ -8,11 +8,12 @@ import lombok.Builder;
 @Builder
 public record UpdateApplicationRequest(
 
-	@NotBlank
-	String name,
+        @NotBlank
+        String name,
 
-	@NotBlank
-	@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
-	String img
+        @NotBlank
+        @Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
+        String img
 ) {
+
 }

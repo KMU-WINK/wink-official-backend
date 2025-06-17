@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class ConferenceAlreadyStartException extends ApiException {
 
-	public ConferenceAlreadyStartException() {
+    public ConferenceAlreadyStartException() {
 
-		super(HttpStatus.BAD_REQUEST, "정기 회의가 이미 시작되었습니다.");
-	}
+        super(HttpStatus.BAD_REQUEST, "정기 회의가 이미 시작되었습니다.");
+    }
 }

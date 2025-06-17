@@ -36,7 +36,10 @@ public class RecruitController {
 
     @PostMapping("/{recruitId}")
     @Operation(summary = "지원하기")
-    public ApiResponse<Void> recruitForm(@PathVariable String recruitId, @RequestBody @Valid RecruitFormRequest request) {
+    public ApiResponse<Void> recruitForm(
+            @PathVariable String recruitId,
+            @RequestBody @Valid RecruitFormRequest request
+    ) {
 
         recruitService.recruitForm(recruitId, request);
 
@@ -45,21 +48,30 @@ public class RecruitController {
 
     @PostMapping("/{recruitId}/check/studentId")
     @Operation(summary = "학번 중복 확인")
-    public ApiResponse<DuplicationCheckResponse> checkStudentId(@PathVariable String recruitId, @RequestBody @Valid StudentIdCheckRequest request) {
+    public ApiResponse<DuplicationCheckResponse> checkStudentId(
+            @PathVariable String recruitId,
+            @RequestBody @Valid StudentIdCheckRequest request
+    ) {
 
         return ApiResponse.ok(recruitService.checkStudentId(recruitId, request));
     }
 
     @PostMapping("/{recruitId}/check/email")
     @Operation(summary = "이메일 중복 확인")
-    public ApiResponse<DuplicationCheckResponse> checkEmail(@PathVariable String recruitId, @RequestBody @Valid EmailCheckRequest request) {
+    public ApiResponse<DuplicationCheckResponse> checkEmail(
+            @PathVariable String recruitId,
+            @RequestBody @Valid EmailCheckRequest request
+    ) {
 
         return ApiResponse.ok(recruitService.checkEmail(recruitId, request));
     }
 
     @PostMapping("/{recruitId}/check/phoneNumber")
     @Operation(summary = "전화번호 중복 확인")
-    public ApiResponse<DuplicationCheckResponse> checkPhoneNumber(@PathVariable String recruitId, @RequestBody @Valid PhoneNumberCheckRequest request) {
+    public ApiResponse<DuplicationCheckResponse> checkPhoneNumber(
+            @PathVariable String recruitId,
+            @RequestBody @Valid PhoneNumberCheckRequest request
+    ) {
 
         return ApiResponse.ok(recruitService.checkPhoneNumber(recruitId, request));
     }

@@ -6,7 +6,8 @@ import lombok.Builder;
 @Builder
 public record CreateApplicationRequest(
 
-	@NotBlank
-	String name
+        @NotBlank
+        String name
 ) {
+
 }

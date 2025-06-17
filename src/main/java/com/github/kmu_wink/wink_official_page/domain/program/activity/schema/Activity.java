@@ -16,8 +16,8 @@ import java.util.List;
 @Document
 public class Activity extends BaseSchema {
 
-	String title;
-	String description;
-	List<String> images;
-	boolean pinned;
+    String title;
+    String description;
+    List<String> images;
+    boolean pinned;
 }

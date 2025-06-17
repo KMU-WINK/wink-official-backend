@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public class ActivityNotFoundException extends ApiException {
 
-	public ActivityNotFoundException() {
-		super(HttpStatus.NOT_FOUND, "활동을 찾을 수 없습니다.");
-	}
+    public ActivityNotFoundException() {
+
+        super(HttpStatus.NOT_FOUND, "활동을 찾을 수 없습니다.");
+    }
 }

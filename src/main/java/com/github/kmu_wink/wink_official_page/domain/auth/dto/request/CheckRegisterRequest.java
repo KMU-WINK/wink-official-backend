@@ -9,4 +9,5 @@ public record CheckRegisterRequest(
         @NotBlank
         String token
 ) {
+
 }

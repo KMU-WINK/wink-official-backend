@@ -11,14 +11,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UploadService {
 
-	private final S3Service s3Service;
+    private final S3Service s3Service;
 
-	public UploadImageResponse uploadImage() {
+    public UploadImageResponse uploadImage() {
 
-		String url = s3Service.generatePresignedUrl("program/%s".formatted(UUID.randomUUID().toString()));
+        String url = s3Service.generatePresignedUrl("program/%s".formatted(UUID.randomUUID().toString()));
 
-		return UploadImageResponse.builder()
-			.url(url)
-			.build();
-	}
+        return UploadImageResponse.builder().url(url).build();
+    }
 }

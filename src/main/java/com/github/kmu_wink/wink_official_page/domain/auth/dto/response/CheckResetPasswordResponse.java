@@ -7,4 +7,5 @@ public record CheckResetPasswordResponse(
 
         boolean isValid
 ) {
+
 }

@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Program] [Activity] Index")
 public class ActivityController {
 
-	private final ActivityService activityService;
+    private final ActivityService activityService;
 
-	@GetMapping
-	@Operation(summary = "활동 목록")
-	public ApiResponse<GetActivitiesResponse> getActivities() {
+    @GetMapping
+    @Operation(summary = "활동 목록")
+    public ApiResponse<GetActivitiesResponse> getActivities() {
 
-		return ApiResponse.ok(activityService.getActivities());
-	}
+        return ApiResponse.ok(activityService.getActivities());
+    }
 }

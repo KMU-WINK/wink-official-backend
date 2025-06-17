@@ -11,13 +11,14 @@ import java.util.List;
 @Builder
 public record CreateActivityRequest(
 
-	@NotBlank
-	String title,
+        @NotBlank
+        String title,
 
-	@NotBlank
-	String description,
+        @NotBlank
+        String description,
 
-	@NotNull
-	List<@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE) String> images
+        @NotNull
+        List<@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE) String> images
 ) {
+
 }

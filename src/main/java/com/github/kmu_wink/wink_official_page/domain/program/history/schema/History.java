@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Document
 public class History extends BaseSchema {
 
-	String title;
-	String image;
-	LocalDate date;
+    String title;
+    String image;
+    LocalDate date;
 }

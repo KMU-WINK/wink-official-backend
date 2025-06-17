@@ -10,4 +10,5 @@ public record CheckRegisterResponse(
 
         PreUser user
 ) {
+
 }

@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Program] [History] Index")
 public class HistoryController {
 
-	private final HistoryService historyService;
+    private final HistoryService historyService;
 
-	@GetMapping
-	@Operation(summary = "연혁 목록")
-	public ApiResponse<GetHistoriesResponse> getHistories() {
+    @GetMapping
+    @Operation(summary = "연혁 목록")
+    public ApiResponse<GetHistoriesResponse> getHistories() {
 
-		return ApiResponse.ok(historyService.getHistories());
-	}
+        return ApiResponse.ok(historyService.getHistories());
+    }
 }

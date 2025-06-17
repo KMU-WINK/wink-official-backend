@@ -5,7 +5,8 @@ import lombok.Builder;
 @Builder
 public record GetCurrentParticipantResponse(
 
-	boolean survey,
-	boolean present
+        boolean survey,
+        boolean present
 ) {
+
 }

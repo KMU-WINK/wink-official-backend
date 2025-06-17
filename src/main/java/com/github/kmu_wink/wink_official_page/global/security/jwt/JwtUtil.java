@@ -69,11 +69,7 @@ public class JwtUtil {
 
     public String extractToken(String token) {
 
-        return JWT.require(algorithm)
-                .build()
-                .verify(token)
-                .getClaim("id")
-                .asString();
+        return JWT.require(algorithm).build().verify(token).getClaim("id").asString();
     }
 
     public boolean validateToken(String token) throws TokenExpiredException {

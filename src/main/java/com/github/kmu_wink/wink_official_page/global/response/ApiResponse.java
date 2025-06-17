@@ -3,28 +3,27 @@ package com.github.kmu_wink.wink_official_page.global.response;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
 
-    private final int statusCode;
+    private final boolean success;
     private final String error;
     private final T content;
 
     public static ApiResponse<Void> ok() {
 
-        return new ApiResponse<>(200, null, null);
+        return new ApiResponse<>(true, null, null);
     }
 
     public static <T> ApiResponse<T> ok(T content) {
 
-        return new ApiResponse<>(200, null, content);
+        return new ApiResponse<>(true, null, content);
     }
 
-    public static <T> ApiResponse<T> error(HttpStatus status, String error) {
+    public static <T> ApiResponse<T> error(String error) {
 
-        return new ApiResponse<>(status.value(), error, null);
+        return new ApiResponse<>(false, error, null);
     }
 }

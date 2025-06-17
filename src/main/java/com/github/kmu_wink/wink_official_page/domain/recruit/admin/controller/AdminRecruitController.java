@@ -25,35 +25,35 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Recruit] Admin")
 public class AdminRecruitController {
 
-	private final AdminRecruitService adminRecruitService;
+    private final AdminRecruitService adminRecruitService;
 
-	@GetMapping
-	@Operation(summary = "모집 목록")
-	public ApiResponse<GetRecruitsResponse> getRecruits() {
+    @GetMapping
+    @Operation(summary = "모집 목록")
+    public ApiResponse<GetRecruitsResponse> getRecruits() {
 
-		return ApiResponse.ok(adminRecruitService.getRecruits());
-	}
+        return ApiResponse.ok(adminRecruitService.getRecruits());
+    }
 
-	@GetMapping("/{recruitId}")
-	@Operation(summary = "모집 조회")
-	public ApiResponse<GetRecruitResponse> getRecruit(@PathVariable String recruitId) {
+    @GetMapping("/{recruitId}")
+    @Operation(summary = "모집 조회")
+    public ApiResponse<GetRecruitResponse> getRecruit(@PathVariable String recruitId) {
 
-		return ApiResponse.ok(adminRecruitService.getRecruit(recruitId));
-	}
+        return ApiResponse.ok(adminRecruitService.getRecruit(recruitId));
+    }
 
-	@PostMapping
-	@Operation(summary = "모집 생성")
-	public ApiResponse<GetRecruitResponse> createRecruit(@RequestBody @Valid CreateRecruitRequest request) {
+    @PostMapping
+    @Operation(summary = "모집 생성")
+    public ApiResponse<GetRecruitResponse> createRecruit(@RequestBody @Valid CreateRecruitRequest request) {
 
-		return ApiResponse.ok(adminRecruitService.createRecruit(request));
-	}
+        return ApiResponse.ok(adminRecruitService.createRecruit(request));
+    }
 
-	@DeleteMapping("/{recruitId}")
-	@Operation(summary = "모집 삭제")
-	public ApiResponse<Void> deleteRecruit(@PathVariable String recruitId) {
+    @DeleteMapping("/{recruitId}")
+    @Operation(summary = "모집 삭제")
+    public ApiResponse<Void> deleteRecruit(@PathVariable String recruitId) {
 
-		adminRecruitService.deleteRecruit(recruitId);
+        adminRecruitService.deleteRecruit(recruitId);
 
-		return ApiResponse.ok();
-	}
+        return ApiResponse.ok();
+    }
 }

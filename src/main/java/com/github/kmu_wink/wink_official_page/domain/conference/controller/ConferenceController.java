@@ -23,37 +23,40 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Conference] Index")
 public class ConferenceController {
 
-	private final ConferenceService conferenceService;
+    private final ConferenceService conferenceService;
 
-	@GetMapping("/{conferenceId}")
-	@Operation(summary = "정기 회의")
-	public ApiResponse<GetConferenceResponse> getConference(@PathVariable String conferenceId) {
+    @GetMapping("/{conferenceId}")
+    @Operation(summary = "정기 회의")
+    public ApiResponse<GetConferenceResponse> getConference(@PathVariable String conferenceId) {
 
-		return ApiResponse.ok(conferenceService.getConference(conferenceId));
-	}
+        return ApiResponse.ok(conferenceService.getConference(conferenceId));
+    }
 
-	@GetMapping("/{conferenceId}/survey")
-	@Operation(summary = "정기 회의 참석 투표 상태")
-	public ApiResponse<GetCurrentParticipantResponse> current(@PathVariable String conferenceId, @AuthenticationPrincipal User user) {
+    @GetMapping("/{conferenceId}/survey")
+    @Operation(summary = "정기 회의 참석 투표 상태")
+    public ApiResponse<GetCurrentParticipantResponse> current(
+            @PathVariable String conferenceId,
+            @AuthenticationPrincipal User user
+    ) {
 
-		return ApiResponse.ok(conferenceService.current(conferenceId, user));
-	}
+        return ApiResponse.ok(conferenceService.current(conferenceId, user));
+    }
 
-	@PostMapping("/{conferenceId}/survey/present")
-	@Operation(summary = "정기 회의 참석 투표 - O")
-	public ApiResponse<Void> surveyPresent(@PathVariable String conferenceId, @AuthenticationPrincipal User user) {
+    @PostMapping("/{conferenceId}/survey/present")
+    @Operation(summary = "정기 회의 참석 투표 - O")
+    public ApiResponse<Void> surveyPresent(@PathVariable String conferenceId, @AuthenticationPrincipal User user) {
 
-		conferenceService.surveyPresent(conferenceId, user);
+        conferenceService.surveyPresent(conferenceId, user);
 
-		return ApiResponse.ok();
-	}
+        return ApiResponse.ok();
+    }
 
-	@PostMapping("/{conferenceId}/survey/absent")
-	@Operation(summary = "정기 회의 참석 투표 - X")
-	public ApiResponse<Void> surveyAbsent(@PathVariable String conferenceId, @AuthenticationPrincipal User user) {
+    @PostMapping("/{conferenceId}/survey/absent")
+    @Operation(summary = "정기 회의 참석 투표 - X")
+    public ApiResponse<Void> surveyAbsent(@PathVariable String conferenceId, @AuthenticationPrincipal User user) {
 
-		conferenceService.surveyAbsent(conferenceId, user);
+        conferenceService.surveyAbsent(conferenceId, user);
 
-		return ApiResponse.ok();
-	}
+        return ApiResponse.ok();
+    }
 }

@@ -9,4 +9,5 @@ public record CheckResetPasswordRequest(
         @NotBlank
         String token
 ) {
+
 }

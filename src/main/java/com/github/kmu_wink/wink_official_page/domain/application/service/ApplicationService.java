@@ -53,9 +53,7 @@ public class ApplicationService {
 
         List<Application> applications = applicationRepository.findAllByUser(user);
 
-        return GetApplicationsResponse.builder()
-            .applications(applications)
-            .build();
+        return GetApplicationsResponse.builder().applications(applications).build();
     }
 
     public GetApplicationResponse getApplication(User user, String id) {
@@ -68,52 +66,48 @@ public class ApplicationService {
             application.setUser(null);
         }
 
-        return GetApplicationResponse.builder()
-            .application(application)
-            .build();
+        return GetApplicationResponse.builder().application(application).build();
     }
 
-    @SneakyThrows({IOException.class, TranscoderException.class})
+    @SneakyThrows({ IOException.class, TranscoderException.class })
     public GetApplicationResponse createApplication(User user, CreateApplicationRequest dto) {
 
         String id = ObjectId.get().toHexString();
 
         Application application = Application.builder()
-            .id(id)
-            .createdAt(LocalDateTime.now())
-            .updatedAt(LocalDateTime.now())
-            .name(dto.name())
-            .img(s3Service.upload("application/%s.png".formatted(id), Jadenticon.from(id).png()))
-            .secret(randomString.generate(96))
-            .user(user)
-            .login(Application.Login.empty())
-            .build();
+                .id(id)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .name(dto.name())
+                .img(s3Service.upload("application/%s.png".formatted(id), Jadenticon.from(id).png()))
+                .secret(randomString.generate(96))
+                .user(user)
+                .login(Application.Login.empty())
+                .build();
 
         application = applicationRepository.save(application);
 
-        return GetApplicationResponse.builder()
-            .application(application)
-            .build();
+        return GetApplicationResponse.builder().application(application).build();
     }
 
     public UploadImageResponse uploadImg() {
 
         String url = s3Service.generatePresignedUrl("application/%s".formatted(UUID.randomUUID().toString()));
 
-        return UploadImageResponse.builder()
-            .url(url)
-            .build();
+        return UploadImageResponse.builder().url(url).build();
     }
 
     public GetApplicationResponse updateApplication(User user, String id, UpdateApplicationRequest dto) {
 
         Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
 
-        if (!application.getUser().equals(user)) throw new ApplicationNotFoundException();
+        if (!application.getUser().equals(user)) {
+            throw new ApplicationNotFoundException();
+        }
 
         if (!application.getImg().equals(dto.img())) {
 
-            s3Service.urlToKey(application.getImg()).ifPresent(s3Service::deleteFile);
+            s3Service.urlToKey(application.getImg()).ifPresent(s3Service::delete);
         }
 
         application.setName(dto.name());
@@ -121,55 +115,55 @@ public class ApplicationService {
 
         application = applicationRepository.save(application);
 
-        return GetApplicationResponse.builder()
-            .application(application)
-            .build();
+        return GetApplicationResponse.builder().application(application).build();
     }
 
     public GetApplicationResponse resetSecret(User user, String id) {
 
         Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
 
-        if (!application.getUser().equals(user)) throw new ApplicationNotFoundException();
+        if (!application.getUser().equals(user)) {
+            throw new ApplicationNotFoundException();
+        }
 
         application.setSecret(randomString.generate(96));
 
         application = applicationRepository.save(application);
 
-        return GetApplicationResponse.builder()
-            .application(application)
-            .build();
+        return GetApplicationResponse.builder().application(application).build();
     }
 
     public GetApplicationResponse updateApplicationLogin(User user, String id, UpdateApplicationLoginRequest dto) {
 
         Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
 
-        if (!application.getUser().equals(user)) throw new ApplicationNotFoundException();
+        if (!application.getUser().equals(user)) {
+            throw new ApplicationNotFoundException();
+        }
 
         application.getLogin().setEnable(dto.enable());
         application.getLogin().setUrls(dto.urls());
-        application.getLogin().setScopes(
-            Stream.concat(dto.scopes().stream(), Stream.of("UUID"))
-                .map(Application.Login.Scope::valueOf)
-                .distinct()
-                .sorted(Comparator.comparingInt(Enum::ordinal))
-                .toList());
+        application.getLogin()
+                .setScopes(Stream.concat(dto.scopes().stream(), Stream.of("UUID"))
+                        .map(Application.Login.Scope::valueOf)
+                        .distinct()
+                        .sorted(Comparator.comparingInt(Enum::ordinal))
+                        .toList());
 
         application = applicationRepository.save(application);
 
-        return GetApplicationResponse.builder()
-            .application(application)
-            .build();
+        return GetApplicationResponse.builder().application(application).build();
     }
 
     public void deleteApplication(User user, String id) {
 
         Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
 
-        if (!application.getUser().equals(user)) throw new ApplicationNotFoundException();
+        if (!application.getUser().equals(user)) {
+            throw new ApplicationNotFoundException();
+        }
 
-        s3Service.urlToKey(application.getImg()).ifPresent(s3Service::deleteFile);
+        s3Service.urlToKey(application.getImg()).ifPresent(s3Service::delete);
 
         applicationRepository.delete(application);
     }
@@ -178,31 +172,37 @@ public class ApplicationService {
 
         Application application = applicationRepository.findById(id).orElseThrow(ApplicationNotFoundException::new);
 
-        if (!application.getLogin().isEnable()) throw new OauthIsNotSupportedException();
+        if (!application.getLogin().isEnable()) {
+            throw new OauthIsNotSupportedException();
+        }
 
         OauthLogin oauthLogin = OauthLogin.builder()
-            .token(randomString.generate(128))
-            .clientId(application.getId())
-            .userId(user.getId())
-            .scopes(application.getLogin().getScopes())
-            .build();
+                .token(randomString.generate(128))
+                .clientId(application.getId())
+                .userId(user.getId())
+                .scopes(application.getLogin().getScopes())
+                .build();
 
         oauthLoginRedisRepository.save(oauthLogin);
 
-        return OauthLoginResponse.builder()
-            .token(oauthLogin.token())
-            .build();
+        return OauthLoginResponse.builder().token(oauthLogin.token()).build();
     }
 
     public OauthTokenResponse oauthToken(OauthTokenRequest dto) {
 
-        Application application = applicationRepository.findById(dto.clientId()).orElseThrow(ApplicationNotFoundException::new);
+        Application application = applicationRepository.findById(dto.clientId())
+                .orElseThrow(ApplicationNotFoundException::new);
 
-        if (!application.getSecret().equals(dto.clientSecret())) throw new ApplicationSecretWrongException();
+        if (!application.getSecret().equals(dto.clientSecret())) {
+            throw new ApplicationSecretWrongException();
+        }
 
-        OauthLogin oauthLogin = oauthLoginRedisRepository.findByToken(dto.token()).orElseThrow(OauthTokenNotFoundException::new);
+        OauthLogin oauthLogin = oauthLoginRedisRepository.findByToken(dto.token())
+                .orElseThrow(OauthTokenNotFoundException::new);
 
-        if (!oauthLogin.clientId().equals(dto.clientId())) throw new OauthTokenNotFoundException();
+        if (!oauthLogin.clientId().equals(dto.clientId())) {
+            throw new OauthTokenNotFoundException();
+        }
 
         oauthLoginRedisRepository.delete(oauthLogin);
 
@@ -210,21 +210,40 @@ public class ApplicationService {
 
         Map<String, Object> user = new HashMap<>();
 
-        if (oauthLogin.scopes().contains(Application.Login.Scope.UUID)) user.put("id", raw.getId());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.EMAIL)) user.put("email", raw.getEmail());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.NAME)) user.put("name", raw.getName());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.STUDENT_ID)) user.put("studentId", raw.getStudentId());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.DEPARTMENT)) user.put("department", raw.getDescription());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.PHONE_NUMBER)) user.put("phoneNumber", raw.getPassword());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.AVATAR)) user.put("avatar", raw.getAvatar());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.DESCRIPTION)) user.put("description", raw.getDescription());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.SOCIAL)) user.put("social", raw.getStudentId());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.ROLE)) user.put("role", raw.getRole());
-        if (oauthLogin.scopes().contains(Application.Login.Scope.FEE)) user.put("fee", raw.isFee());
+        if (oauthLogin.scopes().contains(Application.Login.Scope.UUID)) {
+            user.put("id", raw.getId());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.EMAIL)) {
+            user.put("email", raw.getEmail());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.NAME)) {
+            user.put("name", raw.getName());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.STUDENT_ID)) {
+            user.put("studentId", raw.getStudentId());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.DEPARTMENT)) {
+            user.put("department", raw.getDescription());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.PHONE_NUMBER)) {
+            user.put("phoneNumber", raw.getPassword());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.AVATAR)) {
+            user.put("avatar", raw.getAvatar());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.DESCRIPTION)) {
+            user.put("description", raw.getDescription());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.SOCIAL)) {
+            user.put("social", raw.getStudentId());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.ROLE)) {
+            user.put("role", raw.getRole());
+        }
+        if (oauthLogin.scopes().contains(Application.Login.Scope.FEE)) {
+            user.put("fee", raw.isFee());
+        }
 
-        return OauthTokenResponse.builder()
-            .user(user)
-            .scopes(oauthLogin.scopes())
-            .build();
+        return OauthTokenResponse.builder().user(user).scopes(oauthLogin.scopes()).build();
     }
 }

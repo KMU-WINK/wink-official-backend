@@ -18,4 +18,5 @@ public record UpdateRecruitSmsRequest(
         @NotBlank
         String finalPass
 ) {
+
 }

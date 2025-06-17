@@ -1,19 +1,17 @@
 package com.github.kmu_wink.wink_official_page.domain.user.schema;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @SuperBuilder
@@ -35,15 +33,6 @@ public class User extends BaseUser {
 
     boolean fee;
 
-    @Data
-    @Builder
-    public static class Social {
-
-        String github;
-        String instagram;
-        String blog;
-    }
-
     public enum Role {
 
         MEMBER,
@@ -64,25 +53,8 @@ public class User extends BaseUser {
         private final Role[] inheritedRoles;
 
         Role(Role... inheritedRoles) {
+
             this.inheritedRoles = inheritedRoles;
-        }
-
-        public Collection<SimpleGrantedAuthority> getAuthorization() {
-
-            Set<Role> authorization = new HashSet<>();
-
-            collectAuthorization(this, authorization);
-
-            return authorization.stream().map(role -> "ROLE_" + role.name()).map(SimpleGrantedAuthority::new).toList();
-        }
-
-        private void collectAuthorization(Role role, Set<Role> roles) {
-
-            roles.add(role);
-
-            for (Role inheritedRole : role.inheritedRoles) {
-                collectAuthorization(inheritedRole, roles);
-            }
         }
 
         public static Role fromKorean(String role) {
@@ -104,6 +76,24 @@ public class User extends BaseUser {
             };
         }
 
+        public Collection<SimpleGrantedAuthority> getAuthorization() {
+
+            Set<Role> authorization = new HashSet<>();
+
+            collectAuthorization(this, authorization);
+
+            return authorization.stream().map(role -> "ROLE_" + role.name()).map(SimpleGrantedAuthority::new).toList();
+        }
+
+        private void collectAuthorization(Role role, Set<Role> roles) {
+
+            roles.add(role);
+
+            for (Role inheritedRole : role.inheritedRoles) {
+                collectAuthorization(inheritedRole, roles);
+            }
+        }
+
         public String toKorean() {
 
             return switch (this) {
@@ -122,6 +112,15 @@ public class User extends BaseUser {
                 default -> throw new IllegalStateException("Unexpected value: " + this);
             };
         }
+    }
+
+    @Data
+    @Builder
+    public static class Social {
+
+        String github;
+        String instagram;
+        String blog;
     }
 }
 

@@ -17,7 +17,7 @@ public record UpdateRequest(
         String name,
 
         @NotBlank
-        @Size(min=8, max=8, message = RegExp.STUDENT_ID_MESSAGE)
+        @Size(min = 8, max = 8, message = RegExp.STUDENT_ID_MESSAGE)
         String studentId,
 
         @NotBlank
@@ -39,4 +39,5 @@ public record UpdateRequest(
         @NotNull
         boolean fee
 ) {
+
 }

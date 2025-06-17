@@ -8,18 +8,19 @@ import lombok.Builder;
 @Builder
 public record CreateProjectRequest(
 
-	@NotBlank
-	String title,
+        @NotBlank
+        String title,
 
-	@NotBlank
-	@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
-	String image,
+        @NotBlank
+        @Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE)
+        String image,
 
-	@NotBlank
-	String description,
+        @NotBlank
+        String description,
 
-	@NotBlank
-	@Pattern(regexp = RegExp.GITHUB_PROJECT_URL_EXPRESSION, message = RegExp.GITHUB_PROJECT_URL_MESSAGE)
-	String link
+        @NotBlank
+        @Pattern(regexp = RegExp.GITHUB_PROJECT_URL_EXPRESSION, message = RegExp.GITHUB_PROJECT_URL_MESSAGE)
+        String link
 ) {
+
 }

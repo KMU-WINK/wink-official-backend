@@ -1,4 +1,3 @@
-
 package com.github.kmu_wink.wink_official_page.domain.recruit.dto.request;
 
 import com.github.kmu_wink.wink_official_page.global.util.validation.RegExp;
@@ -13,4 +12,5 @@ public record PhoneNumberCheckRequest(
         @Pattern(regexp = RegExp.PHONE_NUMBER_EXPRESSION, message = RegExp.PHONE_NUMBER_MESSAGE)
         String phoneNumber
 ) {
+
 }

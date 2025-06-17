@@ -19,19 +19,19 @@ import java.util.Set;
 @Document
 public class Conference extends BaseSchema {
 
-	String location;
+    String location;
 
-	LocalDateTime date;
+    LocalDateTime date;
 
-	@DBRef
-	Set<User> surveyPresent;
+    @DBRef
+    Set<User> surveyPresent;
 
-	@DBRef
-	Set<User> surveyAbsent;
+    @DBRef
+    Set<User> surveyAbsent;
 
-	@DBRef
-	Set<User> present;
+    @DBRef
+    Set<User> present;
 
-	@DBRef
-	Set<User> absent;
+    @DBRef
+    Set<User> absent;
 }

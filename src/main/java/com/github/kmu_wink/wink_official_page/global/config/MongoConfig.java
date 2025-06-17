@@ -17,19 +17,14 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 @Configuration
 @EnableMongoAuditing
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
-@EnableMongoRepositories(
-    basePackages = "com.github.kmu_wink.wink_official_page",
-    excludeFilters = @ComponentScan.Filter(
-        type = FilterType.REGEX,
-        pattern = ".*\\.repository\\..*Redis.*"
-    )
-)
+@EnableMongoRepositories(basePackages = "com.github.kmu_wink.wink_official_page", excludeFilters =
+@ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*\\.repository\\..*Redis.*"))
 public class MongoConfig {
 
     @Bean
     public MappingMongoConverter mappingMongoConverter(
-        MongoDatabaseFactory mongoDatabaseFactory,
-        MongoMappingContext mongoMappingContext
+            MongoDatabaseFactory mongoDatabaseFactory,
+            MongoMappingContext mongoMappingContext
     ) {
 
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDatabaseFactory);

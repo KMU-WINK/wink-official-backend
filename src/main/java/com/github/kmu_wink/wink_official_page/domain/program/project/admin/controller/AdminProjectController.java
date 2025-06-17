@@ -23,21 +23,24 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "[Program] [Project] Admin")
 public class AdminProjectController {
 
-	private final AdminProjectService adminProjectService;
+    private final AdminProjectService adminProjectService;
 
-	@PutMapping("/{id}")
-	@Operation(summary = "프로젝트 수정")
-	public ApiResponse<GetProjectResponse> updateProject(@PathVariable String id, @RequestBody @Valid CreateProjectRequest request) {
+    @PutMapping("/{id}")
+    @Operation(summary = "프로젝트 수정")
+    public ApiResponse<GetProjectResponse> updateProject(
+            @PathVariable String id,
+            @RequestBody @Valid CreateProjectRequest request
+    ) {
 
-		return ApiResponse.ok(adminProjectService.updateProject(id, request));
-	}
+        return ApiResponse.ok(adminProjectService.updateProject(id, request));
+    }
 
-	@DeleteMapping("/{id}")
-	@Operation(summary = "프로젝트 삭제")
-	public ApiResponse<Void> deleteProject(@PathVariable String id) {
+    @DeleteMapping("/{id}")
+    @Operation(summary = "프로젝트 삭제")
+    public ApiResponse<Void> deleteProject(@PathVariable String id) {
 
-		adminProjectService.deleteProject(id);
+        adminProjectService.deleteProject(id);
 
-		return ApiResponse.ok();
-	}
+        return ApiResponse.ok();
+    }
 }

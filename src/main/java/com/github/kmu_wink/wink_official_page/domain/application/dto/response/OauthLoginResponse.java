@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record OauthLoginResponse(
 
-	String token
+        String token
 ) {
+
 }

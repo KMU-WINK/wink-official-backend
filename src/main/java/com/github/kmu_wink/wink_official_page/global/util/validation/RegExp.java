@@ -19,13 +19,15 @@ public class RegExp {
     public static final String GITHUB_USERNAME_EXPRESSION = "^(?!-)[a-zA-Z0-9-]{1,39}(?<!-)$";
     public static final String GITHUB_USERNAME_MESSAGE = "올바른 Github 유저가 아닙니다.";
 
-    public static final String GITHUB_PROJECT_URL_EXPRESSION = "^https?:\\/\\/(?:www\\.)?github\\.com\\/[a-zA-Z0-9-]+(?:\\/[a-zA-Z0-9._-]+)?\\/?$";
+    public static final String GITHUB_PROJECT_URL_EXPRESSION = "^https?:\\/\\/(?:www\\.)?github\\.com\\/[a-zA-Z0-9-]+" +
+            "(?:\\/[a-zA-Z0-9._-]+)?\\/?$";
     public static final String GITHUB_PROJECT_URL_MESSAGE = "올바른 Github URL이 아닙니다.";
 
     public static final String INSTAGRAM_EXPRESSION = "^(?!.*\\.\\.)(?!.*\\.$)[a-zA-Z0-9._]{1,30}$";
     public static final String INSTAGRAM_MESSAGE = "올바른 Instagram 유저가 아닙니다.";
 
-    public static final String URL_EXPRESSION = "^https?:\\/\\/(localhost|www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)$|^https?:\\/\\/localhost(:\\d+)?(\\/.*)?$";
+    public static final String URL_EXPRESSION = "^https?:\\/\\/(localhost|www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\" +
+            ".[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)$|^https?:\\/\\/localhost(:\\d+)?(\\/.*)?$";
     public static final String URL_MESSAGE = "올바른 URL이 아닙니다.";
 
     public static final String STUDENT_ID_MESSAGE = "올바른 학번이 아닙니다.";

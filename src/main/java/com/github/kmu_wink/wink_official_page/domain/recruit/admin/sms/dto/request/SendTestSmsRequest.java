@@ -10,12 +10,13 @@ import lombok.Builder;
 @Builder
 public record SendTestSmsRequest(
 
-    @NotBlank
-    @Pattern(regexp = RegExp.PHONE_NUMBER_EXPRESSION, message = RegExp.PHONE_NUMBER_MESSAGE)
-    String phoneNumber,
+        @NotBlank
+        @Pattern(regexp = RegExp.PHONE_NUMBER_EXPRESSION, message = RegExp.PHONE_NUMBER_MESSAGE)
+        String phoneNumber,
 
-    @NotBlank
-    @Enum(enumClass = TestSmsField.class)
-    String field
+        @NotBlank
+        @Enum(enumClass = TestSmsField.class)
+        String field
 ) {
+
 }

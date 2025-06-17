@@ -1,4 +1,3 @@
-
 package com.github.kmu_wink.wink_official_page.domain.recruit.dto.request;
 
 import com.github.kmu_wink.wink_official_page.global.util.validation.RegExp;
@@ -13,4 +12,5 @@ public record EmailCheckRequest(
         @Pattern(regexp = RegExp.KOOKMIN_EMAIL_EXPRESSION, message = RegExp.KOOKMIN_EMAIL_MESSAGE)
         String email
 ) {
+
 }

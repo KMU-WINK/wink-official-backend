@@ -1,12 +1,11 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.github.kmu_wink.wink_official_page.domain.recruit.schema.Recruit;
+import com.github.kmu_wink.wink_official_page.domain.recruit.schema.RecruitForm;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.github.kmu_wink.wink_official_page.domain.recruit.schema.RecruitForm;
-import com.github.kmu_wink.wink_official_page.domain.recruit.schema.Recruit;
+import java.util.List;
+import java.util.Optional;
 
 public interface RecruitFormRepository extends MongoRepository<RecruitForm, String> {
 

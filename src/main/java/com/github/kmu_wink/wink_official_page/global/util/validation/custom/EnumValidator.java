@@ -11,11 +11,13 @@ public class EnumValidator implements ConstraintValidator<Enum, String> {
 
     @Override
     public void initialize(Enum constraintAnnotation) {
+
         this.annotation = constraintAnnotation;
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+
         Object[] enumValues = this.annotation.enumClass().getEnumConstants();
 
         if (Objects.nonNull(enumValues) && Objects.nonNull(value)) {

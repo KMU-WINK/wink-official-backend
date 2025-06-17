@@ -34,9 +34,7 @@ public class UserService {
 
         List<User> users = userRepository.findAllWithMask(mongoTemplate);
 
-        return UsersResponse.builder()
-                .users(users)
-                .build();
+        return UsersResponse.builder().users(users).build();
     }
 
     public UserResponse updateMyInfo(User user, UpdateMyInfoRequest dto) {
@@ -49,37 +47,29 @@ public class UserService {
 
         user = userRepository.save(user);
 
-        return UserResponse.builder()
-            .user(user)
-            .build();
+        return UserResponse.builder().user(user).build();
     }
 
     public UploadImageResponse uploadMyAvatar() {
 
         String url = s3Service.generatePresignedUrl("avatar/%s".formatted(UUID.randomUUID()));
 
-        return UploadImageResponse.builder()
-                .url(url)
-                .build();
+        return UploadImageResponse.builder().url(url).build();
     }
 
     public UserResponse deleteMyAvatar(User user) {
 
         if (user.getAvatar() == null) {
-            return UserResponse.builder()
-                .user(user)
-                .build();
+            return UserResponse.builder().user(user).build();
         }
 
-        s3Service.deleteFile("avatar/%s.webp".formatted(user.getId()));
+        s3Service.delete("avatar/%s.webp".formatted(user.getId()));
 
         user.setAvatar(null);
 
         user = userRepository.save(user);
 
-        return UserResponse.builder()
-            .user(user)
-            .build();
+        return UserResponse.builder().user(user).build();
     }
 
     public void updateMyPassword(User user, UpdateMyPasswordRequest dto) {

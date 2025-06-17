@@ -14,13 +14,8 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 
 @Configuration
 @RequiredArgsConstructor
-@EnableRedisRepositories(
-    basePackages = "com.github.kmu_wink.wink_official_page",
-    includeFilters = @ComponentScan.Filter(
-        type = FilterType.REGEX,
-        pattern = ".*\\.repository\\..*Redis.*"
-    )
-)
+@EnableRedisRepositories(basePackages = "com.github.kmu_wink.wink_official_page", includeFilters =
+@ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*\\.repository\\..*Redis.*"))
 public class RedisConfig {
 
     private final RedisProperty redisProperty;

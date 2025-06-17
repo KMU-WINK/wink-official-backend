@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record UploadImageResponse(
 
-	String url
+        String url
 ) {
+
 }

@@ -30,30 +30,37 @@ public class S3Service {
 
     public String upload(String path, File file) {
 
-        amazonS3Client.putObject(new PutObjectRequest(awsProperty.getS3().getBucket(), path, file).withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3Client.putObject(new PutObjectRequest(awsProperty.getS3().getBucket(), path, file).withCannedAcl(
+                CannedAccessControlList.PublicRead));
 
         return amazonS3Client.getUrl(awsProperty.getS3().getBucket(), path).toString();
     }
 
     public String generatePresignedUrl(String path) {
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(awsProperty.getS3().getBucket(), path)
-                .withMethod(HttpMethod.PUT)
-                .withExpiration(new Date(System.currentTimeMillis() + 1000 * 60));
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(
+                awsProperty.getS3()
+                        .getBucket(), path
+        ).withMethod(HttpMethod.PUT).withExpiration(new Date(System.currentTimeMillis() + 1000 * 60));
 
-        generatePresignedUrlRequest.addRequestParameter(Headers.S3_CANNED_ACL, CannedAccessControlList.PublicRead.toString());
+        generatePresignedUrlRequest.addRequestParameter(
+                Headers.S3_CANNED_ACL,
+                CannedAccessControlList.PublicRead.toString()
+        );
 
         return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
     }
 
-    public void deleteFile(String path) {
+    public void delete(String path) {
 
         amazonS3Client.deleteObject(awsProperty.getS3().getBucket(), path);
     }
 
     public Optional<String> urlToKey(String url) {
 
-        if (!url.contains("amazonaws.com/")) return Optional.empty();
+        if (!url.contains("amazonaws.com/")) {
+            return Optional.empty();
+        }
 
         return Optional.of(url.split("amazonaws.com/")[1]);
     }

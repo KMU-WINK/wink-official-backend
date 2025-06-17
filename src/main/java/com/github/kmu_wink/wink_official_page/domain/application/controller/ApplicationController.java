@@ -45,14 +45,20 @@ public class ApplicationController {
 
     @GetMapping("/{id}")
     @Operation(summary = "애플리케이션 조회")
-    public ApiResponse<GetApplicationResponse> getApplication(@AuthenticationPrincipal User user, @PathVariable String id) {
+    public ApiResponse<GetApplicationResponse> getApplication(
+            @AuthenticationPrincipal User user,
+            @PathVariable String id
+    ) {
 
         return ApiResponse.ok(applicationService.getApplication(user, id));
     }
 
     @PostMapping
     @Operation(summary = "내 애플리케이션 추가")
-    public ApiResponse<GetApplicationResponse> createApplication(@AuthenticationPrincipal User user, @RequestBody @Valid CreateApplicationRequest request) {
+    public ApiResponse<GetApplicationResponse> createApplication(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid CreateApplicationRequest request
+    ) {
 
         return ApiResponse.ok(applicationService.createApplication(user, request));
     }
@@ -66,21 +72,32 @@ public class ApplicationController {
 
     @PutMapping("/{id}")
     @Operation(summary = "내 애플리케이션 수정")
-    public ApiResponse<GetApplicationResponse> updateApplication(@AuthenticationPrincipal User user, @PathVariable String id, @RequestBody @Valid UpdateApplicationRequest request) {
+    public ApiResponse<GetApplicationResponse> updateApplication(
+            @AuthenticationPrincipal User user,
+            @PathVariable String id,
+            @RequestBody @Valid UpdateApplicationRequest request
+    ) {
 
         return ApiResponse.ok(applicationService.updateApplication(user, id, request));
     }
 
     @PostMapping("/{id}/secret")
     @Operation(summary = "애플리케이션 시크릿 재발급")
-    public ApiResponse<GetApplicationResponse> resetSecret(@AuthenticationPrincipal User user, @PathVariable String id) {
+    public ApiResponse<GetApplicationResponse> resetSecret(
+            @AuthenticationPrincipal User user,
+            @PathVariable String id
+    ) {
 
         return ApiResponse.ok(applicationService.resetSecret(user, id));
     }
 
     @PutMapping("/{id}/login")
     @Operation(summary = "애플리케이션 로그인 설정 수정")
-    public ApiResponse<GetApplicationResponse> updateApplicationLogin(@AuthenticationPrincipal User user, @PathVariable String id, @RequestBody @Valid UpdateApplicationLoginRequest request) {
+    public ApiResponse<GetApplicationResponse> updateApplicationLogin(
+            @AuthenticationPrincipal User user,
+            @PathVariable String id,
+            @RequestBody @Valid UpdateApplicationLoginRequest request
+    ) {
 
         return ApiResponse.ok(applicationService.updateApplicationLogin(user, id, request));
     }

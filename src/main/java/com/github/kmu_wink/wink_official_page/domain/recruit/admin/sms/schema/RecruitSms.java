@@ -29,22 +29,20 @@ public class RecruitSms extends BaseSchema {
 
     public static String transform(String content, RecruitForm form) {
 
-        return content
-            .replace("{NAME}", form.getName())
-            .replace("{STUDENT_ID}", form.getStudentId())
-            .replace("{DEPARTMENT}", form.getDepartment())
-            .replace("{EMAIL}", form.getEmail())
-            .replace("{PHONE_NUMBER}", form.getPhoneNumber());
+        return content.replace("{NAME}", form.getName())
+                .replace("{STUDENT_ID}", form.getStudentId())
+                .replace("{DEPARTMENT}", form.getDepartment())
+                .replace("{EMAIL}", form.getEmail())
+                .replace("{PHONE_NUMBER}", form.getPhoneNumber());
     }
 
     public static String transform(String content, PreUser preUser) {
 
-        return content
-            .replace("{NAME}", preUser.getName())
-            .replace("{STUDENT_ID}", preUser.getStudentId())
-            .replace("{DEPARTMENT}", preUser.getDepartment())
-            .replace("{EMAIL}", preUser.getEmail())
-            .replace("{PHONE_NUMBER}", preUser.getPhoneNumber())
-            .replace("{TOKEN}", preUser.getToken());
+        return content.replace("{NAME}", preUser.getName())
+                .replace("{STUDENT_ID}", preUser.getStudentId())
+                .replace("{DEPARTMENT}", preUser.getDepartment())
+                .replace("{EMAIL}", preUser.getEmail())
+                .replace("{PHONE_NUMBER}", preUser.getPhoneNumber())
+                .replace("{TOKEN}", preUser.getToken());
     }
 }

@@ -14,7 +14,7 @@ public record InviteRequest(
         String name,
 
         @NotBlank
-        @Size(min=8, max=8, message = RegExp.STUDENT_ID_MESSAGE)
+        @Size(min = 8, max = 8, message = RegExp.STUDENT_ID_MESSAGE)
         String studentId,
 
         @NotBlank
@@ -29,4 +29,5 @@ public record InviteRequest(
         @Pattern(regexp = RegExp.PHONE_NUMBER_EXPRESSION, message = RegExp.PHONE_NUMBER_MESSAGE)
         String phoneNumber
 ) {
+
 }

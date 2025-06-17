@@ -15,4 +15,5 @@ public record ResetPasswordRequest(
         @Pattern(regexp = RegExp.PASSWORD_EXPRESSION, message = RegExp.PASSWORD_MESSAGE)
         String newPassword
 ) {
+
 }

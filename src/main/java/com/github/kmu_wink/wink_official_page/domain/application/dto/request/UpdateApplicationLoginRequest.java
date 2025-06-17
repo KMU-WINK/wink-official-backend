@@ -12,12 +12,13 @@ import java.util.List;
 @Builder
 public record UpdateApplicationLoginRequest(
 
-	boolean enable,
+        boolean enable,
 
-	@NotNull
-	List<@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE) String> urls,
+        @NotNull
+        List<@Pattern(regexp = RegExp.URL_EXPRESSION, message = RegExp.URL_MESSAGE) String> urls,
 
-	@NotNull
-	List<@Enum(enumClass = Application.Login.Scope.class) String> scopes
+        @NotNull
+        List<@Enum(enumClass = Application.Login.Scope.class) String> scopes
 ) {
+
 }

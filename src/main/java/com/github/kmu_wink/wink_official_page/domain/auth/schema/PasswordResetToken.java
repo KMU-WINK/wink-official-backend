@@ -17,4 +17,5 @@ public record PasswordResetToken(
 
         String userId
 ) {
+
 }

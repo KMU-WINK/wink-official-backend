@@ -9,4 +9,5 @@ public record RefreshRequest(
         @NotBlank
         String token
 ) {
+
 }

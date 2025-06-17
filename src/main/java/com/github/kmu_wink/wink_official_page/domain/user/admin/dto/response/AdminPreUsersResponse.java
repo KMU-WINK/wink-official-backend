@@ -9,4 +9,5 @@ public record AdminPreUsersResponse(
 
         Page<PreUser> users
 ) {
+
 }
