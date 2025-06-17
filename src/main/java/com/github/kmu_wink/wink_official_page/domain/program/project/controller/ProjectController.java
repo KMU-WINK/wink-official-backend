@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[Program] [Project] Index")
 @RestController
 @RequestMapping("/program/project")
 @RequiredArgsConstructor
-@Tag(name = "[Program] [Project] Index")
 public class ProjectController {
 
     private final ProjectService projectService;

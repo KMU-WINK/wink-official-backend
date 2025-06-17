@@ -48,9 +48,9 @@ public class ConferenceService {
         Conference conference = conferenceRepository.findById(conferenceId)
                 .orElseThrow(ConferenceNotFoundException::new);
 
-		if (LocalDateTime.now().isAfter(conference.getDate())) {
-			throw new ConferenceAlreadyStartException();
-		}
+        if (LocalDateTime.now().isAfter(conference.getDate())) {
+            throw new ConferenceAlreadyStartException();
+        }
 
         conference.getSurveyPresent().add(user);
         conference.getSurveyAbsent().remove(user);
@@ -63,9 +63,9 @@ public class ConferenceService {
         Conference conference = conferenceRepository.findById(conferenceId)
                 .orElseThrow(ConferenceNotFoundException::new);
 
-		if (LocalDateTime.now().isAfter(conference.getDate())) {
-			throw new ConferenceAlreadyStartException();
-		}
+        if (LocalDateTime.now().isAfter(conference.getDate())) {
+            throw new ConferenceAlreadyStartException();
+        }
 
         conference.getSurveyPresent().remove(user);
         conference.getSurveyAbsent().add(user);

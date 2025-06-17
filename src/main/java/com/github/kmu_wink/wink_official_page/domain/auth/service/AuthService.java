@@ -11,7 +11,6 @@ import com.github.kmu_wink.wink_official_page.domain.auth.dto.request.ResetPassw
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.response.CheckRegisterResponse;
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.response.CheckResetPasswordResponse;
 import com.github.kmu_wink.wink_official_page.domain.auth.dto.response.LoginResponse;
-import com.github.kmu_wink.wink_official_page.domain.auth.email.PasswordResetTokenTemplate;
 import com.github.kmu_wink.wink_official_page.domain.auth.exception.AlreadyRegisteredException;
 import com.github.kmu_wink.wink_official_page.domain.auth.exception.AuthenticationFailException;
 import com.github.kmu_wink.wink_official_page.domain.auth.exception.InvalidPasswordResetTokenException;
@@ -22,6 +21,7 @@ import com.github.kmu_wink.wink_official_page.domain.auth.repository.PasswordRes
 import com.github.kmu_wink.wink_official_page.domain.auth.repository.RefreshTokenRedisRepository;
 import com.github.kmu_wink.wink_official_page.domain.auth.schema.PasswordResetToken;
 import com.github.kmu_wink.wink_official_page.domain.auth.schema.RefreshToken;
+import com.github.kmu_wink.wink_official_page.domain.auth.util.email.PasswordResetTokenTemplate;
 import com.github.kmu_wink.wink_official_page.domain.user.dto.response.UserResponse;
 import com.github.kmu_wink.wink_official_page.domain.user.exception.UserNotFoundException;
 import com.github.kmu_wink.wink_official_page.domain.user.repository.PreUserRepository;

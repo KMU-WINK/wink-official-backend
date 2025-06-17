@@ -1,6 +1,6 @@
 package com.github.kmu_wink.wink_official_page.domain.user.dto.request;
 
-import com.github.kmu_wink.wink_official_page.global.util.validation.RegExp;
+import com.github.kmu_wink.wink_official_page.global.util.RegExp;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

@@ -1,12 +1,11 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.dto.request;
 
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.BackendTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.DesignTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.DevOpsTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.FrontendTechStack;
+import com.github.kmu_wink.wink_official_page.domain.recruit.constant.BackendTechStack;
+import com.github.kmu_wink.wink_official_page.domain.recruit.constant.DesignTechStack;
+import com.github.kmu_wink.wink_official_page.domain.recruit.constant.DevOpsTechStack;
+import com.github.kmu_wink.wink_official_page.domain.recruit.constant.FrontendTechStack;
 import com.github.kmu_wink.wink_official_page.domain.recruit.util.validation.DepartmentValidate;
-import com.github.kmu_wink.wink_official_page.global.util.validation.RegExp;
-import com.github.kmu_wink.wink_official_page.global.util.validation.custom.Enum;
+import com.github.kmu_wink.wink_official_page.global.util.RegExp;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +13,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Builder
@@ -52,7 +52,7 @@ public record RecruitFormRequest(
 
         @NotNull
         @Size(min = 1, max = 100)
-        List<@Pattern(regexp = RegExp.YYYY_MM_DD_EXPRESSION, message = RegExp.YYYY_MM_DD_MESSAGE) String> interviewDates,
+        List<LocalDate> interviewDates,
 
         @Nullable
         String whyCannotInterview,
@@ -62,16 +62,16 @@ public record RecruitFormRequest(
         String github,
 
         @NotNull
-        List<@Enum(enumClass = FrontendTechStack.class) String> frontendTechStacks,
+        List<FrontendTechStack> frontendTechStacks,
 
         @NotNull
-        List<@Enum(enumClass = BackendTechStack.class) String> backendTechStacks,
+        List<BackendTechStack> backendTechStacks,
 
         @NotNull
-        List<@Enum(enumClass = DevOpsTechStack.class) String> devOpsTechStacks,
+        List<DevOpsTechStack> devOpsTechStacks,
 
         @NotNull
-        List<@Enum(enumClass = DesignTechStack.class) String> designTechStacks,
+        List<DesignTechStack> designTechStacks,
 
         @Nullable
         @Size(min = 100, max = 1000)

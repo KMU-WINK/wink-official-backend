@@ -1,9 +1,9 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.schema;
 
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.BackendTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.DesignTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.DevOpsTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.FrontendTechStack;
+import com.github.kmu_wink.wink_official_page.domain.recruit.constant.BackendTechStack;
+import com.github.kmu_wink.wink_official_page.domain.recruit.constant.DesignTechStack;
+import com.github.kmu_wink.wink_official_page.domain.recruit.constant.DevOpsTechStack;
+import com.github.kmu_wink.wink_official_page.domain.recruit.constant.FrontendTechStack;
 import com.github.kmu_wink.wink_official_page.global.infra.mongo.BaseSchema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

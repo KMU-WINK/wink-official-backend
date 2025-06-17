@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[Recruit] Index")
 @RestController
 @RequestMapping("/recruit")
 @RequiredArgsConstructor
-@Tag(name = "[Recruit] Index")
 public class RecruitController {
 
     private final RecruitService recruitService;

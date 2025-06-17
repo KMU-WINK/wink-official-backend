@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[Program] [History] Index")
 @RestController
 @RequestMapping("/program/history")
 @RequiredArgsConstructor
-@Tag(name = "[Program] [History] Index")
 public class HistoryController {
 
     private final HistoryService historyService;

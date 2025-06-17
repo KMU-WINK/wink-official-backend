@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[Conference] Index")
+@IsMember
 @RestController
 @RequestMapping("/conference")
-@IsMember
 @RequiredArgsConstructor
-@Tag(name = "[Conference] Index")
 public class ConferenceController {
 
     private final ConferenceService conferenceService;

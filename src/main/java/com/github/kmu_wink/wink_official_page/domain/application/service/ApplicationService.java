@@ -144,8 +144,7 @@ public class ApplicationService {
         application.getLogin().setEnable(dto.enable());
         application.getLogin().setUrls(dto.urls());
         application.getLogin()
-                .setScopes(Stream.concat(dto.scopes().stream(), Stream.of("UUID"))
-                        .map(Application.Login.Scope::valueOf)
+                .setScopes(Stream.concat(Stream.of(Application.Login.Scope.UUID), dto.scopes().stream())
                         .distinct()
                         .sorted(Comparator.comparingInt(Enum::ordinal))
                         .toList());

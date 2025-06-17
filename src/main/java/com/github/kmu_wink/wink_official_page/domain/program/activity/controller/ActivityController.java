@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "[Program] [Activity] Index")
 @RestController
 @RequestMapping("/program/activity")
 @RequiredArgsConstructor
-@Tag(name = "[Program] [Activity] Index")
 public class ActivityController {
 
     private final ActivityService activityService;

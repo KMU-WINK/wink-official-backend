@@ -1,10 +1,6 @@
 package com.github.kmu_wink.wink_official_page.domain.recruit.service;
 
 import com.github.kmu_wink.wink_official_page.domain.auth.exception.AlreadyRegisteredException;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.BackendTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.DesignTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.DevOpsTechStack;
-import com.github.kmu_wink.wink_official_page.domain.recruit.constant.techStack.FrontendTechStack;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.EmailCheckRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.PhoneNumberCheckRequest;
 import com.github.kmu_wink.wink_official_page.domain.recruit.dto.request.RecruitFormRequest;
@@ -26,15 +22,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class RecruitService {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final UserRepository userRepository;
     private final PreUserRepository preUserRepository;
     private final RecruitRepository recruitRepository;
@@ -51,41 +43,19 @@ public class RecruitService {
 
         Recruit recruit = recruitRepository.findById(recruitId).orElseThrow(RecruitNotFoundException::new);
 
-        List<LocalDate> interviewDates = dto.interviewDates()
-                .stream()
-                .map(s -> LocalDate.parse(s, DATE_FORMATTER))
-                .peek(date -> {
-                    if (date.isEqual(LocalDate.of(1, 1, 1))) {
-                        return;
-                    }
-                    if (date.isBefore(recruit.getInterviewStartDate()) || date.isAfter(recruit.getInterviewEndDate())) {
-                        throw new NotValidInterviewDatesException();
-                    }
-                })
-                .toList();
-
-        List<FrontendTechStack> frontendTechStacks = Objects.nonNull(dto.frontendTechStacks())
-                ? dto.frontendTechStacks().stream().map(FrontendTechStack::valueOf).toList()
-                : List.of();
-
-        List<BackendTechStack> backendTechStacks = Objects.nonNull(dto.backendTechStacks()) ? dto.backendTechStacks()
-                .stream()
-                .map(BackendTechStack::valueOf)
-                .toList() : List.of();
-
-        List<DevOpsTechStack> devOpsTechStacks = Objects.nonNull(dto.devOpsTechStacks()) ? dto.devOpsTechStacks()
-                .stream()
-                .map(DevOpsTechStack::valueOf)
-                .toList() : List.of();
-
-        List<DesignTechStack> designTechStacks = Objects.nonNull(dto.designTechStacks()) ? dto.designTechStacks()
-                .stream()
-                .map(DesignTechStack::valueOf)
-                .toList() : List.of();
+        dto.interviewDates().stream().peek(date -> {
+            if (date.isEqual(LocalDate.of(1, 1, 1))) {
+                return;
+            }
+            if (date.isBefore(recruit.getInterviewStartDate()) || date.isAfter(recruit.getInterviewEndDate())) {
+                throw new NotValidInterviewDatesException();
+            }
+        });
 
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(recruit.getRecruitStartDate().atStartOfDay()) ||
                 now.isAfter(recruit.getRecruitEndDate().atTime(23, 59, 59))) {
+
             throw new NotValidRecruitPeriodException();
         }
 
@@ -116,13 +86,13 @@ public class RecruitService {
                 .jiwonDonggi(dto.jiwonDonggi())
                 .selfIntroduce(dto.selfIntroduce())
                 .outings(dto.outings())
-                .interviewDates(interviewDates)
+                .interviewDates(dto.interviewDates())
                 .whyCannotInterview(dto.whyCannotInterview())
                 .github(dto.github())
-                .frontendTechStacks(frontendTechStacks)
-                .backendTechStacks(backendTechStacks)
-                .devOpsTechStacks(devOpsTechStacks)
-                .designTechStacks(designTechStacks)
+                .frontendTechStacks(dto.frontendTechStacks())
+                .backendTechStacks(dto.backendTechStacks())
+                .devOpsTechStacks(dto.devOpsTechStacks())
+                .designTechStacks(dto.designTechStacks())
                 .favoriteProject(dto.favoriteProject())
                 .paperPass(null)
                 .interviewPass(null)

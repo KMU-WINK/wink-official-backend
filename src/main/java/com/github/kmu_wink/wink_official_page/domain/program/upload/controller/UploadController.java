@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@IsMember
+@Tag(name = "[Program] [Upload] Index")
 @RestController
 @RequestMapping("/program/upload")
-@IsMember
 @RequiredArgsConstructor
-@Tag(name = "[Program] [Upload] Index")
 public class UploadController {
 
     private final UploadService uploadService;

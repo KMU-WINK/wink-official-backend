@@ -41,7 +41,8 @@ public class S3Service {
         GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(
                 awsProperty.getS3()
                         .getBucket(), path
-        ).withMethod(HttpMethod.PUT).withExpiration(new Date(System.currentTimeMillis() + 1000 * 60));
+        ).withMethod(HttpMethod.PUT)
+                .withExpiration(new Date(System.currentTimeMillis() + 1000 * 60));
 
         generatePresignedUrlRequest.addRequestParameter(
                 Headers.S3_CANNED_ACL,
